@@ -14,7 +14,7 @@ public class Grid : DrawableGameComponent
     public int Height { get; set; }
     private Tile[] tiles;
     private int gridSize = 32;
-    public Dictionary<string, Texture2D> textures;
+    // public Dictionary<string, Texture2D> textures;
     
     private SpriteBatch _spriteBatch;
 
@@ -63,8 +63,9 @@ public class Grid : DrawableGameComponent
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-        textures = new Dictionary<string, Texture2D>();
-        textures["empty_box"] = Game.Content.Load<Texture2D>("empty_box");
+
+        // textures = new Dictionary<string, Texture2D>();
+        // textures["empty_box"] = AssetManager.GetTexture("empty_box");
 
         base.LoadContent();
     }
@@ -83,7 +84,7 @@ public class Grid : DrawableGameComponent
         _spriteBatch.Begin();
         ForEachTile(tile =>
         {
-            Texture2D tileTexture = textures[tile.texture];
+            Texture2D tileTexture = AssetManager.GetTexture(tile.texture);
             _spriteBatch.Draw(tileTexture, new Vector2(tile.X * gridSize, tile.Y * gridSize), Color.White);
         });
         _spriteBatch.End();

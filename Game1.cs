@@ -33,6 +33,11 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        AssetManager.Initialize(Content);
+        AssetManager.LoadAllAssets();
+
+        base.LoadContent();
+
         // TODO: use this.Content to load your game content here
     }
 
