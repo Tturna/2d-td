@@ -26,6 +26,10 @@ public class Game1 : Game
         grid = new Grid(this, 10, 5);
         Components.Add(grid);
 
+        var turret = new Turret(this, new Vector2(100, 100));
+        Components.Add(turret);
+        turret.takeDamage(10);
+
         base.Initialize();
     }
 
