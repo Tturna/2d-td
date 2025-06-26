@@ -1,5 +1,5 @@
 namespace TDgame;
-
+// this uses Depedency Injection design pattern
 public interface IHealthManager
 {
     void ChangeHealth(int delta);

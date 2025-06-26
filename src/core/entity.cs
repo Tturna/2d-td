@@ -13,8 +13,10 @@ public class Entity : DrawableGameComponent
     public int Height { get; set; }
     public Texture2D Texture { get; set; }
 
+    // Dependency inejctions
     IHealthManager healthManager;
 
+    // Events
     public static event EventHandler Damaged;
 
     public Entity(Game game, Vector2 position, int width, int height, IHealthManager healthManager) : base(game)
@@ -30,10 +32,11 @@ public class Entity : DrawableGameComponent
 
     public void takeDamage(int amount)
     {
-        healthManager.ChangeHealth(-amount);
+        this.healthManager.ChangeHealth(-amount);
         OnDamaged(EventArgs.Empty);
     }
 
+    // Events
     public void OnDamaged(EventArgs e)
     {
         Console.Write("Damaged!");
