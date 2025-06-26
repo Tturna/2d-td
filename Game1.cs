@@ -26,12 +26,21 @@ public class Game1 : Game
         grid = new Grid(this, 10, 5);
         Components.Add(grid);
 
+        var turret = new Turret(this, new Vector2(100, 100));
+        Components.Add(turret);
+        turret.takeDamage(10);
+
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        AssetManager.Initialize(Content);
+        AssetManager.LoadAllAssets();
+
+        base.LoadContent();
 
         // TODO: use this.Content to load your game content here
     }
