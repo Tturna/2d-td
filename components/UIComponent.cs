@@ -1,0 +1,91 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace _2d_td;
+
+public class UIComponent : DrawableGameComponent
+{
+    Game1 game;
+
+    private Texture2D slotSprite;
+    private Texture2D turretOneSprite;
+    private Texture2D turretTwoSprite;
+
+    public UIComponent(Game game) : base(game)
+    {
+        this.game = (Game1)game;
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
+    }
+
+    protected override void LoadContent()
+    {
+        slotSprite = game.Content.Load<Texture2D>("sprites/ui/slot");
+        turretOneSprite = game.Content.Load<Texture2D>("sprites/turret");
+        turretTwoSprite = game.Content.Load<Texture2D>("sprites/turretTwo");
+
+        base.LoadContent();
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        var xPos = slotSprite.Width / 2 + 20;
+        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - 20;
+        var pos = new Vector2(xPos, yPos);
+        var halfSlotSize = new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
+        var halfTurretSize = new Vector2(turretOneSprite.Width / 2, turretOneSprite.Height / 2);
+
+        game.SpriteBatch.Begin();
+        game.SpriteBatch.Draw(slotSprite,
+                pos,
+                sourceRectangle: null,
+                Color.White,
+                rotation: 0f,
+                origin: halfSlotSize,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+        game.SpriteBatch.Draw(slotSprite,
+                pos + Vector2.UnitX * (slotSprite.Width + 20),
+                sourceRectangle: null,
+                Color.White,
+                rotation: 0f,
+                origin: halfSlotSize,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+        game.SpriteBatch.Draw(turretOneSprite,
+                pos,
+                sourceRectangle: null,
+                Color.White,
+                rotation: 0f,
+                origin: halfTurretSize,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+        game.SpriteBatch.Draw(turretTwoSprite,
+                pos + Vector2.UnitX * (slotSprite.Width + 20),
+                sourceRectangle: null,
+                Color.White,
+                rotation: 0f,
+                origin: halfTurretSize,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+        game.SpriteBatch.End();
+
+        base.Draw(gameTime);
+    }
+}

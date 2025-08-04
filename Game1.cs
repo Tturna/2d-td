@@ -8,8 +8,8 @@ namespace _2d_td;
 
 public class Game1 : Game
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    public GraphicsDeviceManager Graphics;
+    public SpriteBatch SpriteBatch;
     private InputSystem _inputSystem;
 
     private Texture2D turretTexture;
@@ -19,7 +19,7 @@ public class Game1 : Game
 
     public Game1()
     {
-        _graphics = new GraphicsDeviceManager(this);
+        Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
@@ -29,12 +29,15 @@ public class Game1 : Game
         _inputSystem = new InputSystem();
         Services.AddService(typeof(InputSystem), _inputSystem);
 
+        var ui = new UIComponent(this);
+        Components.Add(ui);
+
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
 
         turretTexture = Content.Load<Texture2D>("sprites/turret");
     }
@@ -59,15 +62,15 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
-        _spriteBatch.Draw(turretTexture, gridMousePosition, Color.White);
+        SpriteBatch.Begin();
+        SpriteBatch.Draw(turretTexture, gridMousePosition, Color.White);
 
         for (int i = 0; i < turretPositions.Count; i++)
         {
-            _spriteBatch.Draw(turretTexture, turretPositions[i], Color.White);
+            SpriteBatch.Draw(turretTexture, turretPositions[i], Color.White);
         }
 
-        _spriteBatch.End();
+        SpriteBatch.End();
 
         base.Draw(gameTime);
     }
