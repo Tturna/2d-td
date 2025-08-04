@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,6 +10,12 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private InputSystem _inputSystem;
+
+    private Texture2D turretTexture;
+    private List<Vector2> turretPositions = new();
+
+    private Vector2 gridMousePosition;
 
     public Game1()
     {
@@ -18,7 +26,8 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
+        _inputSystem = new InputSystem();
+        Services.AddService(typeof(InputSystem), _inputSystem);
 
         base.Initialize();
     }
@@ -27,15 +36,21 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
+        turretTexture = Content.Load<Texture2D>("sprites/turret");
     }
 
     protected override void Update(GameTime gameTime)
     {
+        _inputSystem.Update();
+        gridMousePosition = Grid.SnapPositionToGrid(_inputSystem.GetMousePosition());
+        
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        if (_inputSystem.IsLeftMouseButtonClicked())
+        {
+            turretPositions.Add(gridMousePosition);
+        }
 
         base.Update(gameTime);
     }
@@ -44,7 +59,15 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(turretTexture, gridMousePosition, Color.White);
+
+        for (int i = 0; i < turretPositions.Count; i++)
+        {
+            _spriteBatch.Draw(turretTexture, turretPositions[i], Color.White);
+        }
+
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
