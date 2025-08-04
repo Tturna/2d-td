@@ -1,2 +1,2 @@
-﻿using var game = new TDgame.Game1();
+﻿using var game = new _2d_td.Game1();
 game.Run();

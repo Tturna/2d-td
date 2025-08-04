@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "C#: TDgame Debug",
+        "name": "C#: _2d_td Debug",
         "type": "dotnet",
         "request": "launch",
-        "projectPath": "${workspaceFolder}/TDgame.csproj"
+        "projectPath": "${workspaceFolder}/_2d_td.csproj"
       }
     ],
   }

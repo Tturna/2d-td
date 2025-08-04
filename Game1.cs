@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 
-using TDgame.Components;
-
-namespace TDgame;
+namespace _2d_td;
 
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Grid grid;
 
     public Game1()
     {
@@ -23,12 +19,6 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        grid = new Grid(this, 10, 5);
-        Components.Add(grid);
-
-        var turret = new Turret(this, new Vector2(100, 100));
-        Components.Add(turret);
-        turret.takeDamage(10);
 
         base.Initialize();
     }
@@ -36,11 +26,6 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        AssetManager.Initialize(Content);
-        AssetManager.LoadAllAssets();
-
-        base.LoadContent();
 
         // TODO: use this.Content to load your game content here
     }
@@ -51,12 +36,15 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
+
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
+
+        // TODO: Add your drawing code here
 
         base.Draw(gameTime);
     }
