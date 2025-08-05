@@ -17,6 +17,14 @@ public class Entity : DrawableGameComponent
         Size = new Vector2(sprite.Width, sprite.Height);
     }
 
+    public Entity(Game game, Vector2 position, Texture2D sprite) : base(game)
+    {
+        this.game = (Game1)Game;
+        Sprite = sprite;
+        Position = position;
+        Size = new Vector2(sprite.Width, sprite.Height);
+    }
+
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
@@ -34,8 +42,16 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-        game.SpriteBatch.Begin();
-        game.SpriteBatch.Draw(Sprite, Position, Color.White);
+        game.SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
+        game.SpriteBatch.Draw(Sprite,
+                Position,
+                sourceRectangle: null,
+                Color.White,
+                rotation: 0f,
+                origin: Vector2.Zero,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: 0.9f);
         game.SpriteBatch.End();
 
         base.Draw(gameTime);
