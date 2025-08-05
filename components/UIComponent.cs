@@ -23,9 +23,9 @@ public class UIComponent : DrawableGameComponent
 
     protected override void LoadContent()
     {
-        slotSprite = game.Content.Load<Texture2D>("sprites/ui/slot");
-        turretOneSprite = game.Content.Load<Texture2D>("sprites/turret");
-        turretTwoSprite = game.Content.Load<Texture2D>("sprites/turretTwo");
+        slotSprite = AssetManager.GetTexture("slot");
+        turretOneSprite = AssetManager.GetTexture("turret");
+        turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
         base.LoadContent();
     }

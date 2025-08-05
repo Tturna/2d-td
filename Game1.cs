@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,7 +11,6 @@ public class Game1 : Game
     public SpriteBatch SpriteBatch;
     private InputSystem _inputSystem;
 
-    private Texture2D turretTexture;
     private List<Vector2> turretPositions = new();
 
     private Vector2 gridMousePosition;
@@ -29,6 +27,10 @@ public class Game1 : Game
         _inputSystem = new InputSystem();
         Services.AddService(typeof(InputSystem), _inputSystem);
 
+        AssetManager.Initialize(Content);
+        // Load here to prevent components from trying to access assets before they're loaded.
+        AssetManager.LoadAllAssets();
+
         var ui = new UIComponent(this);
         Components.Add(ui);
 
@@ -38,8 +40,6 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         SpriteBatch = new SpriteBatch(GraphicsDevice);
-
-        turretTexture = Content.Load<Texture2D>("sprites/turret");
     }
 
     protected override void Update(GameTime gameTime)
@@ -61,6 +61,7 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
+        var turretTexture = AssetManager.GetTexture("turret");
 
         SpriteBatch.Begin();
         SpriteBatch.Draw(turretTexture, gridMousePosition, Color.White);
