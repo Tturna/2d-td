@@ -9,7 +9,6 @@ public class Game1 : Game
 {
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
-    private InputSystem _inputSystem;
 
     private List<Vector2> turretPositions = new();
 
@@ -24,9 +23,6 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        _inputSystem = new InputSystem();
-        Services.AddService(typeof(InputSystem), _inputSystem);
-
         AssetManager.Initialize(Content);
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
@@ -44,13 +40,13 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        _inputSystem.Update();
-        gridMousePosition = Grid.SnapPositionToGrid(_inputSystem.GetMousePosition());
+        InputSystem.Update();
+        gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMousePosition());
         
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        if (_inputSystem.IsLeftMouseButtonClicked())
+        if (InputSystem.IsLeftMouseButtonClicked())
         {
             turretPositions.Add(gridMousePosition);
         }
