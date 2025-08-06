@@ -42,7 +42,8 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-        game.SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
+        // Matrix translation = Camera.CalculateTranslation();
+        // game.SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
         game.SpriteBatch.Draw(Sprite,
                 Position,
                 sourceRectangle: null,
@@ -52,7 +53,7 @@ public class Entity : DrawableGameComponent
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
                 layerDepth: 0.9f);
-        game.SpriteBatch.End();
+        // game.SpriteBatch.End();
 
         base.Draw(gameTime);
     }

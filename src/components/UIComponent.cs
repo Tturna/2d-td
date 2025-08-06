@@ -43,7 +43,7 @@ public class UIComponent : DrawableGameComponent
         var halfSlotSize = new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
         var halfTurretSize = new Vector2(turretOneSprite.Width / 2, turretOneSprite.Height / 2);
 
-        game.SpriteBatch.Begin();
+        // game.SpriteBatch.Begin();
         game.SpriteBatch.Draw(slotSprite,
                 pos,
                 sourceRectangle: null,
@@ -84,7 +84,7 @@ public class UIComponent : DrawableGameComponent
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-        game.SpriteBatch.End();
+        // game.SpriteBatch.End();
 
         base.Draw(gameTime);
     }

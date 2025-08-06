@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +12,7 @@ public class Game1 : Game
 
     private Vector2 gridMousePosition;
     private bool canPlaceTurret;
+    private Vector2 camPos = new(0, 0);
 
     public Game1()
     {
@@ -24,9 +26,13 @@ public class Game1 : Game
         AssetManager.Initialize(Content);
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
+        Camera.Initialize(GraphicsDevice);
 
         var ui = new UIComponent(this);
         Components.Add(ui);
+
+        var cameraManger = new CameraManager(this);
+        Components.Add(cameraManger);
 
         base.Initialize();
     }
@@ -43,6 +49,9 @@ public class Game1 : Game
         
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+        camPos.X++;
+        camPos.Y++;
+        Camera.SetPosition(camPos);
 
         // TODO: Make a system that doesn't require collision checks against every entity.
         // This could be done by connecting tiles or tile coordinates to entities and checking
@@ -81,7 +90,8 @@ public class Game1 : Game
 
         // Draw building hologram at a certain depth so stuff like existing buildings
         // can be drawn under it.
-        SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
+        Matrix translation = Camera.CalculateTranslation();
+        SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
         SpriteBatch.Draw(texture,
                 gridMousePosition,
                 sourceRectangle: null,
@@ -91,8 +101,11 @@ public class Game1 : Game
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
                 layerDepth: 0.1f);
-        SpriteBatch.End();
 
         base.Draw(gameTime);
+        SpriteBatch.End();
+        
+
+        
     }
 }
