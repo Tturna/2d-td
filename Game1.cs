@@ -1,4 +1,4 @@
-﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,7 +12,8 @@ public class Game1 : Game
 
     private Vector2 gridMousePosition;
     private bool canPlaceTurret;
-    private Vector2 camPos = new(0, 0);
+
+    public List<Entity> Enemies = new();
 
     public Game1()
     {
@@ -34,6 +35,10 @@ public class Game1 : Game
         var cameraManger = new CameraManager(this);
         Components.Add(cameraManger);
 
+        var mockEnemy = new Enemy(this, Vector2.One * 200);
+        Components.Add(mockEnemy);
+        Enemies.Add(mockEnemy);
+
         base.Initialize();
     }
 
@@ -49,9 +54,6 @@ public class Game1 : Game
         
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        camPos.X++;
-        camPos.Y++;
-        Camera.SetPosition(camPos);
 
         // TODO: Make a system that doesn't require collision checks against every entity.
         // This could be done by connecting tiles or tile coordinates to entities and checking
@@ -75,7 +77,7 @@ public class Game1 : Game
 
         if (canPlaceTurret && InputSystem.IsLeftMouseButtonClicked())
         {
-            Components.Add(new Entity(this, gridMousePosition, AssetManager.GetTexture("turret")));
+            Components.Add(new GunTurret(this, gridMousePosition));
         }
 
         base.Update(gameTime);
@@ -104,8 +106,5 @@ public class Game1 : Game
 
         base.Draw(gameTime);
         SpriteBatch.End();
-        
-
-        
     }
 }
