@@ -22,7 +22,7 @@ class GunTurret : Entity
     {
         var actionInterval = 1f / actionsPerSecond;
 
-        actionTimer += gameTime.ElapsedGameTime.Milliseconds / 1000f;
+        actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (actionTimer >= actionInterval)
         {
