@@ -8,8 +8,8 @@ public class HealthSystem
     public int CurrentHealth { get; private set; }
     public int MaxHealth { get; private set; }
 
-    public class DiedEventArgs(Entity diedEntity) : EventArgs { }
-    public event EventHandler<DiedEventArgs> Died;
+    public delegate void DiedHandler(Entity diedEntity);
+    public event DiedHandler Died;
 
     public HealthSystem(Entity owner, int initialHealth)
     {
@@ -35,13 +35,12 @@ public class HealthSystem
         {
             CurrentHealth = 0;
 
-            var diedEventArgs = new DiedEventArgs(Owner);
-            OnDied(diedEventArgs);
+            OnDied(Owner);
         }
     }
 
-    private void OnDied(DiedEventArgs args)
+    private void OnDied(Entity diedEntity)
     {
-        Died?.Invoke(this, args);
+        Died?.Invoke(diedEntity);
     }
 }

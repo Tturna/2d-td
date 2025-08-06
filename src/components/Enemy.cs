@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -13,7 +12,7 @@ public class Enemy : Entity
         HealthSystem.Died += OnDeath;
     }
 
-    private void OnDeath(Object sender, HealthSystem.DiedEventArgs args)
+    private void OnDeath(Entity diedEntity)
     {
         Game.Components.Remove(this);
         Game.Enemies.Remove(this);
