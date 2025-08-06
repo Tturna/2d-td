@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +14,7 @@ public class Game1 : Game
     private bool canPlaceTurret;
 
     public List<Entity> Enemies = new();
+    private UIComponent ui;
 
     public Game1()
     {
@@ -29,11 +30,14 @@ public class Game1 : Game
         AssetManager.LoadAllAssets();
         Camera.Initialize(GraphicsDevice);
 
-        var ui = new UIComponent(this);
+        ui = new UIComponent(this);
         Components.Add(ui);
 
         var cameraManger = new CameraManager(this);
         Components.Add(cameraManger);
+
+        var parallax = new Parallax(this);
+        Components.Add(parallax);
 
         var mockEnemy = new Enemy(this, Vector2.One * 200);
         Components.Add(mockEnemy);
@@ -105,6 +109,11 @@ public class Game1 : Game
                 layerDepth: 0.1f);
 
         base.Draw(gameTime);
+        SpriteBatch.End();
+
+        // Draw UI separately after everything else to avoid it from being moved by the camera.
+        SpriteBatch.Begin();
+        ui.Draw(gameTime);
         SpriteBatch.End();
     }
 }
