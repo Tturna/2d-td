@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -35,6 +35,9 @@ public class Game1 : Game
 
         var cameraManger = new CameraManager(this);
         Components.Add(cameraManger);
+
+        var parallax = new Parallax(this);
+        Components.Add(parallax);
 
         var mockEnemy = new Enemy(this, Vector2.One * 200);
         Components.Add(mockEnemy);
