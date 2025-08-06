@@ -35,7 +35,10 @@ public class UIComponent : DrawableGameComponent
         base.Update(gameTime);
     }
 
-    public override void Draw(GameTime gameTime)
+    // Don't override the component's Draw function to prevent it from being called automatically.
+    // This is so that it can be called manually after everything else in Game1.
+    // This avoids the main sprite batch from translating the UI when the camera moves.
+    new public void Draw(GameTime gameTime)
     {
         var xPos = slotSprite.Width / 2 + 20;
         var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - 20;
@@ -43,7 +46,7 @@ public class UIComponent : DrawableGameComponent
         var halfSlotSize = new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
         var halfTurretSize = new Vector2(turretOneSprite.Width / 2, turretOneSprite.Height / 2);
 
-        // game.SpriteBatch.Begin();
+        game.SpriteBatch.Begin();
         game.SpriteBatch.Draw(slotSprite,
                 pos,
                 sourceRectangle: null,
@@ -84,7 +87,7 @@ public class UIComponent : DrawableGameComponent
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-        // game.SpriteBatch.End();
+        game.SpriteBatch.End();
 
         base.Draw(gameTime);
     }

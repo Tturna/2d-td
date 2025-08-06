@@ -14,6 +14,7 @@ public class Game1 : Game
     private bool canPlaceTurret;
 
     public List<Entity> Enemies = new();
+    private UIComponent ui;
 
     public Game1()
     {
@@ -29,7 +30,7 @@ public class Game1 : Game
         AssetManager.LoadAllAssets();
         Camera.Initialize(GraphicsDevice);
 
-        var ui = new UIComponent(this);
+        ui = new UIComponent(this);
         Components.Add(ui);
 
         var cameraManger = new CameraManager(this);
@@ -106,5 +107,8 @@ public class Game1 : Game
 
         base.Draw(gameTime);
         SpriteBatch.End();
+
+        // Draw UI separately after everything else to avoid it from being moved by the camera.
+        ui.Draw(gameTime);
     }
 }
