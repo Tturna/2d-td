@@ -39,6 +39,11 @@ public static class Camera
         newPos.Y += _position.Y - windowHeight / 2;
         return newPos;
     }
+
+    public static Vector2 GetCameraPosition()
+    {
+        return _position;
+    }
     
     // public static 
 }
