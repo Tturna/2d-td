@@ -1,3 +1,4 @@
+using _2d_td;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -14,7 +15,6 @@ public static class InputSystem
     public static void Update()
     {
         mouseState = Mouse.GetState();
-        cachedMousePosition = -Vector2.One;
 
         if (IsLeftMouseButtonDown())
         {
@@ -43,14 +43,17 @@ public static class InputSystem
 
     public static Vector2 GetMousePosition()
     {
-        if (cachedMousePosition != -Vector2.One)
-        {
-            return cachedMousePosition;
-        }
-
         var mousePoint = mouseState.Position;
         var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
-        cachedMousePosition = mousePos;
+        var worldPos = Camera.ScreenPosToRealPos(mousePos);
+        
+        return worldPos;
+    }
+
+    public static Vector2 GetRealMousePosition()
+    {
+        var mousePoint = mouseState.Position;
+        var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
         
         return mousePos;
     }

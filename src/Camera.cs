@@ -23,12 +23,22 @@ public static class Camera
     public static Matrix CalculateTranslation()
     {
         int windowWidth = _graphics.Viewport.Width;
-        int windowHeight = _graphics.Viewport.Width;
+        int windowHeight = _graphics.Viewport.Height;
         var dx = (windowWidth / 2) - _position.X;
         var dy = (windowHeight / 2) - _position.Y;
         _translation = Matrix.CreateTranslation(dx, dy, 0f);
         return _translation;
     }
 
+    public static Vector2 ScreenPosToRealPos(Vector2 pos)
+    {
+        int windowWidth = _graphics.Viewport.Width;
+        int windowHeight = _graphics.Viewport.Height;
+        var newPos = pos;
+        newPos.X += _position.X - windowWidth / 2;
+        newPos.Y += _position.Y - windowHeight / 2;
+        return newPos;
+    }
+    
     // public static 
 }

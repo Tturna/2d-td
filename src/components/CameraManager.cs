@@ -7,7 +7,7 @@ namespace _2d_td;
 public class CameraManager : GameComponent
 {
     private Game1 game;
-    private Vector2 _position;
+    private Vector2 _position = new(400, 400);
     public CameraManager(Game game) : base(game)
     {
         this.game = (Game1)game;
