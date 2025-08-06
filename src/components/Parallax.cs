@@ -48,7 +48,7 @@ public class Parallax : DrawableGameComponent
                 origin: Vector2.Zero,
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
-                layerDepth: 1.0f);
+                layerDepth: 0.99f);
         }
 
         for (var i = 1; i < 50; i++)
