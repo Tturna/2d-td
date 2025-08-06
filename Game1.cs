@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +12,8 @@ public class Game1 : Game
 
     private Vector2 gridMousePosition;
     private bool canPlaceTurret;
+
+    public List<Entity> Enemies = new();
 
     public Game1()
     {
@@ -27,6 +30,10 @@ public class Game1 : Game
 
         var ui = new UIComponent(this);
         Components.Add(ui);
+
+        var mockEnemy = new Enemy(this, Vector2.One * 200);
+        Components.Add(mockEnemy);
+        Enemies.Add(mockEnemy);
 
         base.Initialize();
     }
@@ -66,7 +73,7 @@ public class Game1 : Game
 
         if (canPlaceTurret && InputSystem.IsLeftMouseButtonClicked())
         {
-            Components.Add(new Entity(this, gridMousePosition, AssetManager.GetTexture("turret")));
+            Components.Add(new GunTurret(this, gridMousePosition));
         }
 
         base.Update(gameTime);

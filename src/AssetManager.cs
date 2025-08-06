@@ -26,6 +26,7 @@ public static class AssetManager
         LoadTexture("turret", "sprites/turret");
         LoadTexture("turretTwo", "sprites/turretTwo");
         LoadTexture("slot", "sprites/ui/slot");
+        LoadTexture("enemy", "sprites/enemy");
     }
 
     public static Texture2D GetTexture(string name)
