@@ -109,6 +109,8 @@ public class Game1 : Game
         SpriteBatch.End();
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
+        SpriteBatch.Begin();
         ui.Draw(gameTime);
+        SpriteBatch.End();
     }
 }
