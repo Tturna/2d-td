@@ -13,7 +13,7 @@ public class UIEntity : Entity
 
     public override void Update(GameTime gameTime)
     {
-        if (ButtonPressed is null || ButtonPressed.GetInvocationList().Length == 0) return;
+        if (ButtonPressed is null) return;
         if (!InputSystem.IsLeftMouseButtonClicked()) return;
         
         var mousePos = InputSystem.GetRealMousePosition();
