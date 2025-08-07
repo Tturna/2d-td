@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,15 +24,22 @@ public class CameraManager : GameComponent
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         KeyboardState currentState = Keyboard.GetState();
+        var speed = 500;
         if (currentState.IsKeyDown(Keys.A))
-            _position.X -= deltaTime * 100;
+            _position.X -= deltaTime * speed;
         if (currentState.IsKeyDown(Keys.D))
-            _position.X += deltaTime * 100;
+            _position.X += deltaTime * speed;
         if (currentState.IsKeyDown(Keys.W))
-            _position.Y -= deltaTime * 100;
+            _position.Y -= deltaTime * speed;
         if (currentState.IsKeyDown(Keys.S))
-            _position.Y += deltaTime * 100;
+            _position.Y += deltaTime * speed;
 
+        var scroll = (float)Mouse.GetState().ScrollWheelValue / 1000f;
+        if (scroll < 0)
+        {
+            scroll = Math.Abs(scroll);
+            Camera.SetScale(1 / (scroll+1));
+        }
 
         Camera.SetPosition(_position);
         base.Update(gameTime);
