@@ -66,6 +66,7 @@ class GunTurret : Entity
         if (closestEnemy is null) return;
 
         var enemyTurretDiff = closestEnemy.Position - turretHead.Position;
+        // Add MathHelper.Pi to rotate by 180 degrees because the turret sprite's forward direction is opposite to the mathematical zero angle.
         var radiansToEnemy = Math.Atan2(enemyTurretDiff.Y, enemyTurretDiff.X) + MathHelper.Pi;
         turretHead.RotationRadians = (float)radiansToEnemy;
         closestEnemy.HealthSystem.TakeDamage(damage);
