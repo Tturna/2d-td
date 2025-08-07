@@ -45,7 +45,7 @@ public static class InputSystem
     {
         var mousePoint = mouseState.Position;
         var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
-        var worldPos = Camera.ScreenPosToRealPos(mousePos);
+        var worldPos = Camera.ScreenToWorldPosition(mousePos);
         
         return worldPos;
     }
