@@ -42,7 +42,7 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-        Game.SpriteBatch.Draw(Sprite,
+       Game.SpriteBatch.Draw(Sprite,
                 Position,
                 sourceRectangle: null,
                 Color.White,

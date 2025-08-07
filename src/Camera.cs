@@ -30,7 +30,7 @@ public static class Camera
         return _translation;
     }
 
-    public static Vector2 ScreenPosToRealPos(Vector2 pos)
+    public static Vector2 ScreenToWorldPosition(Vector2 pos)
     {
         int windowWidth = _graphics.Viewport.Width;
         int windowHeight = _graphics.Viewport.Height;
@@ -40,5 +40,13 @@ public static class Camera
         return newPos;
     }
     
-    // public static 
+    public static Vector2 WorldToScreenPosition(Vector2 pos)
+    {
+        int windowWidth = _graphics.Viewport.Width;
+        int windowHeight = _graphics.Viewport.Height;
+        var newPos = pos;
+        newPos.X -= _position.X - windowWidth / 2;
+        newPos.Y -= _position.Y - windowHeight / 2;
+        return newPos;
+    }
 }

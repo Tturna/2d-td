@@ -10,9 +10,6 @@ public class Game1 : Game
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
 
-    private Vector2 gridMousePosition;
-    private bool canPlaceTurret;
-
     public List<Entity> Enemies = new();
     private UIComponent ui;
 
@@ -29,6 +26,7 @@ public class Game1 : Game
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
         Camera.Initialize(GraphicsDevice);
+        BuildingSystem.Initialize(this);
 
         ui = new UIComponent(this);
         Components.Add(ui);
@@ -51,35 +49,10 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         InputSystem.Update();
-        gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMousePosition());
+        BuildingSystem.Update();
         
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-
-        // TODO: Make a system that doesn't require collision checks against every entity.
-        // This could be done by connecting tiles or tile coordinates to entities and checking
-        // if the tile under the mouse has a connected entity.
-        var isColliding = false;
-
-        foreach (var component in Components)
-        {
-            if (component is not Entity) continue;
-
-            var entity = (Entity)component;
-
-            if (entity.Position == gridMousePosition)
-            {
-                isColliding = true;
-                break;
-            }
-        }
-
-        canPlaceTurret = !isColliding;
-
-        if (canPlaceTurret && InputSystem.IsLeftMouseButtonClicked())
-        {
-            Components.Add(new GunTurret(this, gridMousePosition));
-        }
 
         base.Update(gameTime);
     }
@@ -87,23 +60,8 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        var turretTexture = AssetManager.GetTexture("turret");
-        var turretTwoTexture = AssetManager.GetTexture("turretTwo");
-        var texture = canPlaceTurret ? turretTexture : turretTwoTexture;
-
-        // Draw building hologram at a certain depth so stuff like existing buildings
-        // can be drawn under it.
         Matrix translation = Camera.CalculateTranslation();
         SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
-        SpriteBatch.Draw(texture,
-                gridMousePosition,
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: Vector2.Zero,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0.1f);
 
         base.Draw(gameTime);
         SpriteBatch.End();

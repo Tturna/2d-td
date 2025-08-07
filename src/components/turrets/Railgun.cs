@@ -2,18 +2,18 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
-class GunTurret : Entity
+class Railgun : Entity
 {
-    int tileRange = 12;
-    int damage = 10;
-    float actionsPerSecond = 1;
+    int tileRange = 18;
+    int damage = 30;
+    float actionsPerSecond = 0.5f;
     float actionTimer;
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turret"))
+    public Railgun(Game game) : base(game, AssetManager.GetTexture("turretTwo"))
     {
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turret"))
+    public Railgun(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretTwo"))
     {
     }
 

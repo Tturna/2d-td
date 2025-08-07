@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,9 +9,8 @@ public class UIComponent : DrawableGameComponent
 {
     Game1 game;
 
-    private Texture2D slotSprite;
-    private Texture2D turretOneSprite;
-    private Texture2D turretTwoSprite;
+    private List<UIEntity> uiElements = new();
+    private UIEntity turretHologram;
 
     public UIComponent(Game game) : base(game)
     {
@@ -18,20 +19,56 @@ public class UIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
+        var slotSprite = AssetManager.GetTexture("slot");
+        var turretOneSprite = AssetManager.GetTexture("turret");
+        var turretTwoSprite = AssetManager.GetTexture("turretTwo");
+
+        var gunTurretIcon = new UIEntity(game, turretOneSprite);
+        var railgunIcon = new UIEntity(game, turretTwoSprite);
+        var gunTurretButton = new UIEntity(game, slotSprite);
+        var railgunButton = new UIEntity(game, slotSprite);
+
+        gunTurretButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.GunTurret);
+        railgunButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.Railgun);
+
+        var xPos = slotSprite.Width / 2 + 20;
+        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - 20;
+        var pos = new Vector2(xPos, yPos);
+
+        gunTurretButton.Position = pos;
+        gunTurretIcon.Position = pos;
+        railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + 20);
+        railgunIcon.Position = pos + Vector2.UnitX * (slotSprite.Width + 20);
+
+        game.Components.Add(gunTurretButton);
+        game.Components.Add(railgunButton);
+        game.Components.Add(gunTurretIcon);
+        game.Components.Add(railgunIcon);
+
+        uiElements.Add(gunTurretButton);
+        uiElements.Add(railgunButton);
+        uiElements.Add(gunTurretIcon);
+        uiElements.Add(railgunIcon);
+
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
-        slotSprite = AssetManager.GetTexture("slot");
-        turretOneSprite = AssetManager.GetTexture("turret");
-        turretTwoSprite = AssetManager.GetTexture("turretTwo");
-
         base.LoadContent();
     }
 
     public override void Update(GameTime gameTime)
     {
+        if (turretHologram is not null)
+        {
+            var mouseWorldPos = InputSystem.GetMousePosition();
+            var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
+            var mouseSnappedScreenPos = Camera.RealPosToScreenPos(mouseWorldGridPos);
+            var halfSpriteSize = new Vector2(turretHologram.Sprite.Width / 2, turretHologram.Sprite.Height / 2);
+            turretHologram.Position = mouseSnappedScreenPos + halfSpriteSize;
+        }
+
         base.Update(gameTime);
     }
 
@@ -40,52 +77,32 @@ public class UIComponent : DrawableGameComponent
     // This avoids the main sprite batch from translating the UI when the camera moves.
     new public void Draw(GameTime gameTime)
     {
-        var xPos = slotSprite.Width / 2 + 20;
-        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - 20;
-        var pos = new Vector2(xPos, yPos);
-        var halfSlotSize = new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
-        var halfTurretSize = new Vector2(turretOneSprite.Width / 2, turretOneSprite.Height / 2);
-
-        game.SpriteBatch.Draw(slotSprite,
-                pos,
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: halfSlotSize,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
-
-        game.SpriteBatch.Draw(slotSprite,
-                pos + Vector2.UnitX * (slotSprite.Width + 20),
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: halfSlotSize,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
-
-        game.SpriteBatch.Draw(turretOneSprite,
-                pos,
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: halfTurretSize,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
-
-        game.SpriteBatch.Draw(turretTwoSprite,
-                pos + Vector2.UnitX * (slotSprite.Width + 20),
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: halfTurretSize,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+        // Call Draw() manually on each UI element so they don't move with the camera.
+        // Game1 already creates a new sprite batch for this function call.
+        foreach (UIEntity uiElement in uiElements)
+        {
+            uiElement.DrawCentered();
+        }
 
         base.Draw(gameTime);
+    }
+
+    private void CreateTurretHologram(Texture2D sprite)
+    {
+        if (turretHologram is not null)
+        {
+            uiElements.Remove(turretHologram);
+        }
+
+        turretHologram = new UIEntity(game, sprite);
+        uiElements.Add(turretHologram);
+
+        // No need to add this to game components because it shouldn't collide with anything ever.
+    }
+
+    private void SelectTurret(BuildingSystem.TurretType turretType)
+    {
+        var turretSprite = BuildingSystem.SelectTurret(turretType);
+        CreateTurretHologram(turretSprite);
     }
 }

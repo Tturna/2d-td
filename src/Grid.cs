@@ -1,6 +1,8 @@
 using System;
 using Microsoft.Xna.Framework;
 
+namespace _2d_td;
+
 public static class Grid
 {
     public static Vector2 TileToWorldPosition(int x, int y)
