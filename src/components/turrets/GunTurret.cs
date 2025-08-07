@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -21,6 +22,7 @@ class GunTurret : Entity
 
     public override void Initialize()
     {
+        DrawLayerDepth = 0.8f;
         turretHead = new Entity(Game, Position + new Vector2(8f, 10f), AssetManager.GetTexture("gunTurretHead"));
         turretHead.DrawOrigin = new Vector2(turretHead.Sprite.Width * 0.7f, turretHead.Sprite.Height / 2);
         Game.Components.Add(turretHead);
@@ -63,6 +65,9 @@ class GunTurret : Entity
 
         if (closestEnemy is null) return;
 
+        var enemyTurretDiff = closestEnemy.Position - turretHead.Position;
+        var radiansToEnemy = Math.Atan2(enemyTurretDiff.Y, enemyTurretDiff.X) + MathHelper.Pi;
+        turretHead.RotationRadians = (float)radiansToEnemy;
         closestEnemy.HealthSystem.TakeDamage(damage);
     }
 }
