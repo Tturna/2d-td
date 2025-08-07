@@ -56,11 +56,14 @@ public static class BuildingSystem
 
     private static Entity SpawnTurret(TurretType turretType, Vector2 position)
     {
-        return turretType switch {
-            TurretType.GunTurret => new GunTurret(game, position),
-            TurretType.Railgun => new Railgun(game, position),
+        Entity turret = turretType switch {
+            TurretType.GunTurret => new GunTurret(game),
+            TurretType.Railgun => new Railgun(game),
             _ => throw new ArgumentOutOfRangeException(nameof(selectedTurretType), $"Unhandled entity type: {selectedTurretType}")
         };
+
+        turret.Position = position - Vector2.UnitY * (turret.Sprite.Height - 16f);
+        return turret;
     }
 
     public static Texture2D SelectTurret(TurretType turretType)

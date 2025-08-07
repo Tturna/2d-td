@@ -1,20 +1,31 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
 class GunTurret : Entity
 {
-    int tileRange = 12;
-    int damage = 10;
-    float actionsPerSecond = 1;
-    float actionTimer;
+    private Entity turretHead;
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turret"))
+    private int tileRange = 12;
+    private int damage = 10;
+    private float actionsPerSecond = 1;
+    private float actionTimer;
+
+    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turretBase"))
     {
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turret"))
+    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretBase"))
     {
+    }
+
+    public override void Initialize()
+    {
+        DrawLayerDepth = 0.8f;
+        turretHead = new Entity(Game, Position + new Vector2(8f, 10f), AssetManager.GetTexture("gunTurretHead"));
+        turretHead.DrawOrigin = new Vector2(turretHead.Sprite.Width * 0.7f, turretHead.Sprite.Height / 2);
+        Game.Components.Add(turretHead);
     }
 
     public override void Update(GameTime gameTime)
@@ -54,6 +65,10 @@ class GunTurret : Entity
 
         if (closestEnemy is null) return;
 
+        var enemyTurretDiff = closestEnemy.Position - turretHead.Position;
+        // Add MathHelper.Pi to rotate by 180 degrees because the turret sprite's forward direction is opposite to the mathematical zero angle.
+        var radiansToEnemy = Math.Atan2(enemyTurretDiff.Y, enemyTurretDiff.X) + MathHelper.Pi;
+        turretHead.RotationRadians = (float)radiansToEnemy;
         closestEnemy.HealthSystem.TakeDamage(damage);
     }
 }
