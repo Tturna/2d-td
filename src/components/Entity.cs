@@ -8,6 +8,7 @@ public class Entity : DrawableGameComponent
     new protected Game1 Game;
     public Vector2 Position { get; set; } = Vector2.Zero;
     public Vector2 Size { get; set; }
+    public Vector2 DrawOrigin { get; set; } = Vector2.Zero;
     public Texture2D Sprite { get; set; }
 
     public Entity(Game game, Texture2D sprite) : base(game)
@@ -47,7 +48,7 @@ public class Entity : DrawableGameComponent
                 sourceRectangle: null,
                 Color.White,
                 rotation: 0f,
-                origin: Vector2.Zero,
+                origin: DrawOrigin,
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
                 layerDepth: 0.9f);
