@@ -64,7 +64,7 @@ public class UIComponent : DrawableGameComponent
         {
             var mouseWorldPos = InputSystem.GetMousePosition();
             var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
-            var mouseSnappedScreenPos = Camera.RealPosToScreenPos(mouseWorldGridPos);
+            var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
             var halfSpriteSize = new Vector2(turretHologram.Sprite.Width / 2, turretHologram.Sprite.Height / 2);
             turretHologram.Position = mouseSnappedScreenPos + halfSpriteSize;
         }
