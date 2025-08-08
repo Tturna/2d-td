@@ -31,6 +31,8 @@ public static class AssetManager
         LoadTexture("mountain", "sprites/mountain");
         LoadTexture("turretBase", "sprites/turretBase");
         LoadTexture("gunTurretHead", "sprites/gunTurretHead");
+        LoadTexture("tile", "sprites/tile");
+        LoadTexture("tileTwo", "sprites/tileTwo");
     }
 
     public static Texture2D GetTexture(string name)
