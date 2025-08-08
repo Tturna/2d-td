@@ -5,7 +5,7 @@ namespace _2d_td;
 
 public static class Camera
 {
-    private static float _scale = 1f;
+    public static float Scale { get; set; } = 1f;
     public static Vector2 Position { get; set; } = new(0, 0);
     private static GraphicsDevice _graphics;
     private static Matrix _translation;
@@ -16,18 +16,13 @@ public static class Camera
         _graphics = graphicsDevice;
     }
 
-    public static void SetScale(float scale)
-    {
-        _scale = scale;
-    }
-
     public static Matrix CalculateTranslation()
     {
         int windowWidth = _graphics.Viewport.Width;
         int windowHeight = _graphics.Viewport.Height;
-        var dx = (windowWidth / 2) - Position.X*_scale;
-        var dy = (windowHeight / 2) - Position.Y*_scale;
-        var scale = Matrix.CreateScale(_scale);
+        var dx = (windowWidth / 2) - Position.X*Scale;
+        var dy = (windowHeight / 2) - Position.Y*Scale;
+        var scale = Matrix.CreateScale(Scale);
         _translation = Matrix.CreateTranslation(dx, dy, 0f);
         var result = scale * _translation;
         return result;

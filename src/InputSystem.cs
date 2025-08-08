@@ -1,3 +1,4 @@
+using System;
 using _2d_td;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,9 @@ public static class InputSystem
     private static bool isMouseRightDown;
     private static bool isMouseLeftClicked;
     private static bool isMouseRightClicked;
+
+    private static int totalScrollAmount;
+    private static int justScrolledAmount;
 
     public static void Update()
     {
@@ -38,13 +42,17 @@ public static class InputSystem
             isMouseRightClicked = false;
             isMouseRightDown = false;
         }
+
+        var newScrollAmount = Mouse.GetState().ScrollWheelValue;
+        justScrolledAmount = newScrollAmount - totalScrollAmount;
+        totalScrollAmount = newScrollAmount;
     }
 
     public static Vector2 GetMouseWorldPosition()
     {
         var mouseScreenPos = GetMouseScreenPosition();
         var worldPos = Camera.ScreenToWorldPosition(mouseScreenPos);
-        
+
         return worldPos;
     }
 
@@ -52,7 +60,7 @@ public static class InputSystem
     {
         Point mousePoint = mouseState.Position;
         var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
-        
+
         return mousePos;
     }
 
@@ -74,5 +82,10 @@ public static class InputSystem
     public static bool IsRightMouseButtonClicked()
     {
         return isMouseRightClicked;
+    }
+
+    public static int mouseJustScrolledAmount()
+    {
+        return justScrolledAmount;
     }
 }
