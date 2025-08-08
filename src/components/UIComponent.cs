@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,20 +30,23 @@ public class UIComponent : DrawableGameComponent
         gunTurretButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.GunTurret);
         railgunButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.Railgun);
 
-        var xPos = slotSprite.Width / 2 + 20;
-        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - 20;
+        const float Margin = 20;
+        var xPos = slotSprite.Width / 2 + Margin;
+        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - Margin;
         var pos = new Vector2(xPos, yPos);
 
         gunTurretButton.Position = pos;
         gunTurretIcon.Position = pos;
-        railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + 20);
-        railgunIcon.Position = pos + Vector2.UnitX * (slotSprite.Width + 20);
+        railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
+        railgunIcon.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
 
+        // Add UI entities to components so they update
         game.Components.Add(gunTurretButton);
         game.Components.Add(railgunButton);
         game.Components.Add(gunTurretIcon);
         game.Components.Add(railgunIcon);
 
+        // Add UI entities to separate UI elements list so they can be drawn separately
         uiElements.Add(gunTurretButton);
         uiElements.Add(railgunButton);
         uiElements.Add(gunTurretIcon);
@@ -62,9 +64,11 @@ public class UIComponent : DrawableGameComponent
     {
         if (turretHologram is not null)
         {
-            var mouseWorldPos = InputSystem.GetMousePosition();
+            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
             var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
             var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
+
+            // Offset by half sprite size because UI entities are drawn centered
             var halfSpriteSize = new Vector2(turretHologram.Sprite.Width / 2, turretHologram.Sprite.Height / 2);
             turretHologram.Position = mouseSnappedScreenPos + halfSpriteSize;
         }

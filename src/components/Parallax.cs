@@ -25,7 +25,7 @@ public class Parallax : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
-        var cam = Camera.GetCameraPosition();
+        var cam = Camera.Position;
         var layer1rate = 0.05f;
         _layer1position.X = cam.X * layer1rate;
         var layer2rate = 0.90f;

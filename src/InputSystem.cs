@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 public static class InputSystem
 {
     private static MouseState mouseState;
-    private static Vector2 cachedMousePosition;
 
     private static bool isMouseLeftDown;
     private static bool isMouseRightDown;
@@ -41,18 +40,17 @@ public static class InputSystem
         }
     }
 
-    public static Vector2 GetMousePosition()
+    public static Vector2 GetMouseWorldPosition()
     {
-        var mousePoint = mouseState.Position;
-        var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
-        var worldPos = Camera.ScreenToWorldPosition(mousePos);
+        var mouseScreenPos = GetMouseScreenPosition();
+        var worldPos = Camera.ScreenToWorldPosition(mouseScreenPos);
         
         return worldPos;
     }
 
-    public static Vector2 GetRealMousePosition()
+    public static Vector2 GetMouseScreenPosition()
     {
-        var mousePoint = mouseState.Position;
+        Point mousePoint = mouseState.Position;
         var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
         
         return mousePos;
