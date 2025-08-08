@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
@@ -7,15 +6,16 @@ namespace _2d_td;
 public class CameraManager : GameComponent
 {
     private Game1 game;
-    private Vector2 _position = new(400, 400);
+
     public CameraManager(Game game) : base(game)
     {
         this.game = (Game1)game;
-
     }
 
     public override void Initialize()
     {
+        Camera.Position = Vector2.One * 400;
+
         base.Initialize();
     }
 
@@ -23,17 +23,20 @@ public class CameraManager : GameComponent
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         KeyboardState currentState = Keyboard.GetState();
+
+        Vector2 posChange = Vector2.Zero;
+
         if (currentState.IsKeyDown(Keys.A))
-            _position.X -= deltaTime * 100;
+            posChange.X -= deltaTime * 100;
         if (currentState.IsKeyDown(Keys.D))
-            _position.X += deltaTime * 100;
+            posChange.X += deltaTime * 100;
         if (currentState.IsKeyDown(Keys.W))
-            _position.Y -= deltaTime * 100;
+            posChange.Y -= deltaTime * 100;
         if (currentState.IsKeyDown(Keys.S))
-            _position.Y += deltaTime * 100;
+            posChange.Y += deltaTime * 100;
 
 
-        Camera.SetPosition(_position);
+        Camera.Position += posChange;
         base.Update(gameTime);
     }
 }

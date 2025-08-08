@@ -9,7 +9,7 @@ class GunTurret : Entity
 
     private int tileRange = 12;
     private int damage = 10;
-    private float actionsPerSecond = 1;
+    private float actionsPerSecond = 1f;
     private float actionTimer;
 
     public GunTurret(Game game) : base(game, AssetManager.GetTexture("turretBase"))
@@ -23,8 +23,20 @@ class GunTurret : Entity
     public override void Initialize()
     {
         DrawLayerDepth = 0.8f;
-        turretHead = new Entity(Game, Position + new Vector2(8f, 10f), AssetManager.GetTexture("gunTurretHead"));
-        turretHead.DrawOrigin = new Vector2(turretHead.Sprite.Width * 0.7f, turretHead.Sprite.Height / 2);
+
+        // Position turret head to match where turret base expects it.
+        const float TurretHeadXOffset = Grid.TileLength / 2f;
+        const float TurretHeadYOffset = 10f;
+        var position = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
+
+        turretHead = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));
+
+        // Draw turret head with the origin in its axis of rotation
+        const float TurretHeadDrawXOffset = 0.7f;
+        var drawOrigin = new Vector2(turretHead.Sprite.Width * TurretHeadDrawXOffset, turretHead.Sprite.Height / 2);
+
+        turretHead.DrawOrigin = drawOrigin;
+
         Game.Components.Add(turretHead);
     }
 
@@ -53,7 +65,7 @@ class GunTurret : Entity
         {
             var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
 
-            if (distanceToEnemy > tileRange * 16f)
+            if (distanceToEnemy > tileRange * Grid.TileLength)
                 continue;
 
             if (distanceToEnemy < closestDistance)

@@ -25,7 +25,7 @@ public static class BuildingSystem
 
     public static void Update()
     {
-        var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMousePosition());
+        var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
         // TODO: Make a system that doesn't require collision checks against every entity.
         // This could be done by connecting tiles or tile coordinates to entities and checking
@@ -62,7 +62,9 @@ public static class BuildingSystem
             _ => throw new ArgumentOutOfRangeException(nameof(selectedTurretType), $"Unhandled entity type: {selectedTurretType}")
         };
 
-        turret.Position = position - Vector2.UnitY * (turret.Sprite.Height - 16f);
+        // Set position so that the bottom of the sprite is at the bottom of the clicked tile,
+        // assuming the given position is snapped to the grid.
+        turret.Position = position - Vector2.UnitY * (turret.Sprite.Height - Grid.TileLength);
         return turret;
     }
 

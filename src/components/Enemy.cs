@@ -8,7 +8,7 @@ public class Enemy : Entity
 
     public Enemy(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("enemy"))
     {
-        HealthSystem = new HealthSystem(this, 100);
+        HealthSystem = new HealthSystem(owner: this, initialHealth: 100);
         HealthSystem.Died += OnDeath;
     }
 
