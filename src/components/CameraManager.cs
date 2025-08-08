@@ -40,7 +40,6 @@ public class CameraManager : GameComponent
 
         // scroll down is negative
         var scroll = -(float)InputSystem.mouseJustScrolledAmount() / 1000f;
-        // can't go above 1, so limit it
         currentScale = Math.Max(1, currentScale + scroll);
         // eg. 1/8 will make it zoom out 8x
         var totalCameraScale = 1 / currentScale;
