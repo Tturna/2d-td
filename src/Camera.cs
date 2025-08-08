@@ -5,6 +5,7 @@ namespace _2d_td;
 
 public static class Camera
 {
+    public static float Scale { get; set; } = 1f;
     public static Vector2 Position { get; set; } = new(0, 0);
     private static GraphicsDevice _graphics;
     private static Matrix _translation;
@@ -19,10 +20,12 @@ public static class Camera
     {
         int windowWidth = _graphics.Viewport.Width;
         int windowHeight = _graphics.Viewport.Height;
-        var dx = (windowWidth / 2) - Position.X;
-        var dy = (windowHeight / 2) - Position.Y;
+        var dx = (windowWidth / 2) - Position.X*Scale;
+        var dy = (windowHeight / 2) - Position.Y*Scale;
+        var scale = Matrix.CreateScale(Scale);
         _translation = Matrix.CreateTranslation(dx, dy, 0f);
-        return _translation;
+        var result = scale * _translation;
+        return result;
     }
 
     public static Vector2 ScreenToWorldPosition(Vector2 pos)
