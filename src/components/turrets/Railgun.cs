@@ -2,6 +2,8 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
+// TODO: Abstract some of this functionality so that methods don't repeat a million times
+// across different turret implementations.
 class Railgun : Entity
 {
     int tileRange = 18;
@@ -42,7 +44,7 @@ class Railgun : Entity
         {
             var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
 
-            if (distanceToEnemy > tileRange * 16f)
+            if (distanceToEnemy > tileRange * Grid.TileLength)
                 continue;
 
             if (distanceToEnemy < closestDistance)

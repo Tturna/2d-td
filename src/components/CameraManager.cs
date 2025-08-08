@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
@@ -8,15 +7,16 @@ namespace _2d_td;
 public class CameraManager : GameComponent
 {
     private Game1 game;
-    private Vector2 _position = new(400, 400);
+
     public CameraManager(Game game) : base(game)
     {
         this.game = (Game1)game;
-
     }
 
     public override void Initialize()
     {
+        Camera.Position = Vector2.One * 400;
+
         base.Initialize();
     }
 
@@ -24,15 +24,17 @@ public class CameraManager : GameComponent
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         KeyboardState currentState = Keyboard.GetState();
-        var speed = 500;
+
+        Vector2 posChange = Vector2.Zero;
+
         if (currentState.IsKeyDown(Keys.A))
-            _position.X -= deltaTime * speed;
+            posChange.X -= deltaTime * 100;
         if (currentState.IsKeyDown(Keys.D))
-            _position.X += deltaTime * speed;
+            posChange.X += deltaTime * 100;
         if (currentState.IsKeyDown(Keys.W))
-            _position.Y -= deltaTime * speed;
+            posChange.Y -= deltaTime * 100;
         if (currentState.IsKeyDown(Keys.S))
-            _position.Y += deltaTime * speed;
+            posChange.Y += deltaTime * 100;
 
         var scroll = (float)Mouse.GetState().ScrollWheelValue / 1000f;
         if (scroll < 0)
@@ -41,7 +43,7 @@ public class CameraManager : GameComponent
             Camera.SetScale(1 / (scroll+1));
         }
 
-        Camera.SetPosition(_position);
+        Camera.Position += posChange;
         base.Update(gameTime);
     }
 }
