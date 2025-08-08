@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
-public class Terrain : GameComponent
+public class Terrain : DrawableGameComponent
 {
     private Game1 game;
+    private Tileset tileset;
+
+    private Dictionary<Vector2, int> level = new();
+    private Vector2 levelOffset = new Vector2(0, 32 * Grid.TileLength);
 
     public Terrain(Game game) : base(game)
     {
@@ -14,22 +20,45 @@ public class Terrain : GameComponent
 
     public override void Initialize()
     {
-        var initialPos = new Vector2(0, 500);
+        string levelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
+                "data", "levels", "testlevel", "testlevel.csv");
+        var reader = new StreamReader(levelPath);
+        string line = reader.ReadLine();
+        var row = 0;
 
-        for (int y = 0; y < 10; y++)
+        while (line is not null)
         {
-            Texture2D sprite = y == 0 ? null : AssetManager.GetTexture("tileTwo");
+            String[] ids = line.Split(",");
 
-            for (int x = 0; x < 80; x++)
+            for (int col = 0; col < ids.Length; col++)
             {
-                AddTile(initialPos + new Vector2(x, y) * Grid.TileLength, sprite);
+                if (!int.TryParse(ids[col], out int tileId))
+                {
+                    throw new InvalidDataException(
+                        $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {levelPath}. Expected an integer."
+                    );
+                }
+
+                if (tileId == -1) continue; // The Tiled editor sets air to -1
+
+                level[new Vector2(col, row)] = tileId;
             }
+
+            line = reader.ReadLine();
+            row++;
         }
+
+        tileset = new Tileset(AssetManager.GetTexture("tileset"),
+                tilesetWidth: 2,
+                tilesetHeight: 1);
     }
 
-    private void AddTile(Vector2 position, Texture2D sprite = null)
+    public override void Draw(GameTime gameTime)
     {
-        sprite ??= AssetManager.GetTexture("tile");
-        game.Components.Add(new Entity(game, position, sprite));
+        foreach ((Vector2 tilePosition, int tileId) in level)
+        {
+            var position = tilePosition * Grid.TileLength + levelOffset;
+            tileset.DrawTile(game.SpriteBatch, tileId, position);
+        }
     }
 }
