@@ -28,6 +28,9 @@ public class Game1 : Game
         Camera.Initialize(GraphicsDevice);
         BuildingSystem.Initialize(this);
 
+        var terrain = new Terrain(this);
+        Components.Add(terrain);
+
         ui = new UIComponent(this);
         Components.Add(ui);
 
