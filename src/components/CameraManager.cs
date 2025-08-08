@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -6,6 +7,7 @@ namespace _2d_td;
 public class CameraManager : GameComponent
 {
     private Game1 game;
+    private float currentScale = 1;
 
     public CameraManager(Game game) : base(game)
     {
@@ -26,15 +28,22 @@ public class CameraManager : GameComponent
 
         Vector2 posChange = Vector2.Zero;
 
+        var Speed = 500;
         if (currentState.IsKeyDown(Keys.A))
-            posChange.X -= deltaTime * 100;
+            posChange.X -= deltaTime * Speed;
         if (currentState.IsKeyDown(Keys.D))
-            posChange.X += deltaTime * 100;
+            posChange.X += deltaTime * Speed;
         if (currentState.IsKeyDown(Keys.W))
-            posChange.Y -= deltaTime * 100;
+            posChange.Y -= deltaTime * Speed;
         if (currentState.IsKeyDown(Keys.S))
-            posChange.Y += deltaTime * 100;
+            posChange.Y += deltaTime * Speed;
 
+        // scroll down is negative
+        var scroll = -(float)InputSystem.mouseJustScrolledAmount() / 1000f;
+        currentScale = Math.Max(1, currentScale + scroll);
+        // eg. 1/8 will make it zoom out 8x
+        var totalCameraScale = 1 / currentScale;
+        Camera.Scale = totalCameraScale;
 
         Camera.Position += posChange;
         base.Update(gameTime);
