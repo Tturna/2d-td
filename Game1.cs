@@ -27,6 +27,7 @@ public class Game1 : Game
         AssetManager.LoadAllAssets();
         Camera.Initialize(GraphicsDevice);
         BuildingSystem.Initialize(this);
+        WaveSystem.Initialize(this);
 
         ui = new UIComponent(this);
         Components.Add(ui);
