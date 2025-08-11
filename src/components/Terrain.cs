@@ -22,33 +22,38 @@ public class Terrain : DrawableGameComponent
     {
         string levelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
                 "data", "levels", "testlevel", "testlevel.csv");
-        var levelReader = new StreamReader(levelPath);
-        string line = levelReader.ReadLine();
-        var row = 0;
 
-        while (line is not null)
+        // "using" makes it so Dispose() is automatically called on StreamReader when
+        // it's not needed anymore.
+        using (var levelReader = new StreamReader(levelPath))
         {
-            String[] ids = line.Split(",");
+            string line = levelReader.ReadLine();
+            var row = 0;
 
-            for (int col = 0; col < ids.Length; col++)
+            while (line is not null)
             {
-                if (!int.TryParse(ids[col], out int tileId))
+                String[] ids = line.Split(",");
+
+                for (int col = 0; col < ids.Length; col++)
                 {
-                    throw new InvalidDataException(
-                        $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {levelPath}. Expected an integer."
-                    );
+                    if (!int.TryParse(ids[col], out int tileId))
+                    {
+                        throw new InvalidDataException(
+                            $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {levelPath}. Expected an integer."
+                        );
+                    }
+
+                    if (tileId == -1) continue; // The Tiled editor sets air to -1
+
+                    var worldPosition = new Vector2(col, row) * Grid.TileLength + levelOffset;
+                    var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
+                    tiles[tile] = tileId;
+                    game.Components.Add(tile);
                 }
 
-                if (tileId == -1) continue; // The Tiled editor sets air to -1
-
-                var worldPosition = new Vector2(col, row) * Grid.TileLength + levelOffset;
-                var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
-                tiles[tile] = tileId;
-                game.Components.Add(tile);
+                line = levelReader.ReadLine();
+                row++;
             }
-
-            line = levelReader.ReadLine();
-            row++;
         }
 
         tileset = new Tileset(AssetManager.GetTexture("tileset"),
