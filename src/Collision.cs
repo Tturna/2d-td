@@ -45,4 +45,16 @@ public static class Collision
 
         return AABB(x1, y1, w1, h1, x2, y2, 0f, 0f);
     }
+
+    public static bool IsPointInTile(Vector2 point, Vector2 tileWorldPosition)
+    {
+        var x1 = tileWorldPosition.X;
+        var y1 = tileWorldPosition.Y;
+        var w1 = Grid.TileLength;
+        var h1 = Grid.TileLength;
+        var x2 = point.X;
+        var y2 = point.Y;
+
+        return AABB(x1, y1, w1, h1, x2, y2, 0f, 0f);
+    }
 }

@@ -10,7 +10,7 @@ public class Terrain : DrawableGameComponent
     private Game1 game;
     private Tileset tileset;
 
-    private Dictionary<Entity, int> tiles = new();
+    private Dictionary<Vector2, int> tiles = new();
     private Vector2 levelOffset = new Vector2(0, 32 * Grid.TileLength);
 
     public Terrain(Game game) : base(game)
@@ -45,10 +45,11 @@ public class Terrain : DrawableGameComponent
 
                     if (tileId == -1) continue; // The Tiled editor sets air to -1
 
-                    var worldPosition = new Vector2(col, row) * Grid.TileLength + levelOffset;
-                    var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
-                    tiles[tile] = tileId;
-                    game.Components.Add(tile);
+                    var tilePosition = new Vector2(col, row);
+                    // var worldPosition = tilePosition * Grid.TileLength + levelOffset;
+                    // var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
+                    tiles[tilePosition] = tileId;
+                    // game.Components.Add(tile);
                 }
 
                 line = levelReader.ReadLine();
@@ -66,11 +67,13 @@ public class Terrain : DrawableGameComponent
     // {
     //     var mouseWorldPos = InputSystem.GetMouseWorldPosition();
     //
-    //     foreach ((Entity tile, var _) in tiles)
+    //     foreach ((Vector2 tilePosition, var _) in tiles)
     //     {
-    //         if (Collision.IsPointInEntity(mouseWorldPos, tile))
+    //         var tileWorldPosition = tilePosition * Grid.TileLength + levelOffset;
+    //
+    //         if (Collision.IsPointInTile(mouseWorldPos, tileWorldPosition))
     //         {
-    //             Console.WriteLine($"Mouse ({mouseWorldPos.ToString()}) colliding with tile ({tile.Position.ToString()})");
+    //             Console.WriteLine($"Mouse ({mouseWorldPos.ToString()}) colliding with tile ({tilePosition.ToString()})");
     //             break;
     //         }
     //     }
@@ -78,9 +81,11 @@ public class Terrain : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-        foreach ((Entity tile, int tileId) in tiles)
+        foreach ((Vector2 tilePosition, int tileId) in tiles)
         {
-            tileset.DrawTile(game.SpriteBatch, tileId, tile.Position);
+            var worldPosition = tilePosition * Grid.TileLength + levelOffset;
+            tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
         }
     }
+
 }
