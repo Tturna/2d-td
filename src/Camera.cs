@@ -32,19 +32,24 @@ public static class Camera
     {
         int windowWidth = _graphics.Viewport.Width;
         int windowHeight = _graphics.Viewport.Height;
-        var newPos = pos;
-        newPos.X += Position.X - windowWidth / 2;
-        newPos.Y += Position.Y - windowHeight / 2;
-        return newPos;
+
+        Vector2 viewportCenter = new Vector2(windowWidth / 2f, windowHeight / 2f);
+        Vector2 relativeScreenPos = pos - viewportCenter;
+        Vector2 scaledRelativePos = relativeScreenPos / Scale; 
+        Vector2 worldPos = scaledRelativePos + Position;
+        
+        return worldPos;
     }
 
     public static Vector2 WorldToScreenPosition(Vector2 pos)
     {
         int windowWidth = _graphics.Viewport.Width;
         int windowHeight = _graphics.Viewport.Height;
-        var newPos = pos;
-        newPos.X -= Position.X - windowWidth / 2;
-        newPos.Y -= Position.Y - windowHeight / 2;
-        return newPos;
+
+        Vector2 relativeWorldPos = pos - Position;
+        Vector2 scaledRelativePos = relativeWorldPos * Scale;
+        Vector2 screenPos = scaledRelativePos + new Vector2(windowWidth / 2f, windowHeight / 2f);
+
+        return screenPos;
     }
 }
