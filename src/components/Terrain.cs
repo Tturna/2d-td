@@ -10,7 +10,7 @@ public class Terrain : DrawableGameComponent
     private Game1 game;
     private Tileset tileset;
 
-    private Dictionary<Vector2, int> level = new();
+    private Dictionary<Entity, int> tiles = new();
     private Vector2 levelOffset = new Vector2(0, 32 * Grid.TileLength);
 
     public Terrain(Game game) : base(game)
@@ -22,8 +22,8 @@ public class Terrain : DrawableGameComponent
     {
         string levelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
                 "data", "levels", "testlevel", "testlevel.csv");
-        var reader = new StreamReader(levelPath);
-        string line = reader.ReadLine();
+        var levelReader = new StreamReader(levelPath);
+        string line = levelReader.ReadLine();
         var row = 0;
 
         while (line is not null)
@@ -41,10 +41,13 @@ public class Terrain : DrawableGameComponent
 
                 if (tileId == -1) continue; // The Tiled editor sets air to -1
 
-                level[new Vector2(col, row)] = tileId;
+                var worldPosition = new Vector2(col, row) * Grid.TileLength + levelOffset;
+                var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
+                tiles[tile] = tileId;
+                game.Components.Add(tile);
             }
 
-            line = reader.ReadLine();
+            line = levelReader.ReadLine();
             row++;
         }
 
@@ -53,12 +56,26 @@ public class Terrain : DrawableGameComponent
                 tilesetHeight: 1);
     }
 
+    // This was used to test tile collisions.
+    // public override void Update(GameTime gameTime)
+    // {
+    //     var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+    //
+    //     foreach ((Entity tile, var _) in tiles)
+    //     {
+    //         if (Collision.IsPointInEntity(mouseWorldPos, tile))
+    //         {
+    //             Console.WriteLine($"Mouse ({mouseWorldPos.ToString()}) colliding with tile ({tile.Position.ToString()})");
+    //             break;
+    //         }
+    //     }
+    // }
+
     public override void Draw(GameTime gameTime)
     {
-        foreach ((Vector2 tilePosition, int tileId) in level)
+        foreach ((Entity tile, int tileId) in tiles)
         {
-            var position = tilePosition * Grid.TileLength + levelOffset;
-            tileset.DrawTile(game.SpriteBatch, tileId, position);
+            tileset.DrawTile(game.SpriteBatch, tileId, tile.Position);
         }
     }
 }
