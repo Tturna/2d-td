@@ -31,14 +31,18 @@ public class UIComponent : DrawableGameComponent
         railgunButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.Railgun);
 
         const float Margin = 20;
-        var xPos = slotSprite.Width / 2 + Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height / 2 - Margin;
+        var xPos = Margin;
+        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height - Margin;
         var pos = new Vector2(xPos, yPos);
 
+        var buttonCenter = pos + new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
+        var iconPosition = buttonCenter - new Vector2(gunTurretIcon.Size.X / 2, gunTurretIcon.Size.Y / 2);
+
         gunTurretButton.Position = pos;
-        gunTurretIcon.Position = pos;
         railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
-        railgunIcon.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
+
+        gunTurretIcon.Position = iconPosition;
+        railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
 
         // Add UI entities to components so they update
         game.Components.Add(gunTurretButton);
@@ -85,7 +89,7 @@ public class UIComponent : DrawableGameComponent
         // Game1 already creates a new sprite batch for this function call.
         foreach (UIEntity uiElement in uiElements)
         {
-            uiElement.DrawCentered();
+            uiElement.DrawCustom();
         }
 
         base.Draw(gameTime);
