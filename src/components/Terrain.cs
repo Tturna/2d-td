@@ -88,4 +88,9 @@ public class Terrain : DrawableGameComponent
         }
     }
 
+    public bool TileExistsAtPosition(Vector2 rawTilePosition)
+    {
+        var tilePosition = rawTilePosition - levelOffset / Grid.TileLength;
+        return tiles.ContainsKey(tilePosition);
+    }
 }

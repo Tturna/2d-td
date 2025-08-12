@@ -11,6 +11,8 @@ public class Game1 : Game
     public SpriteBatch SpriteBatch;
 
     public List<Entity> Enemies = new();
+    public Terrain Terrain;
+
     private UIComponent ui;
 
     public Game1()
@@ -28,8 +30,8 @@ public class Game1 : Game
         Camera.Initialize(GraphicsDevice);
         BuildingSystem.Initialize(this);
 
-        var terrain = new Terrain(this);
-        Components.Add(terrain);
+        Terrain = new Terrain(this);
+        Components.Add(Terrain);
 
         ui = new UIComponent(this);
         Components.Add(ui);
