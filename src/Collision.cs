@@ -68,7 +68,7 @@ public static class Collision
 
         for (int y = 0; y < entityTileSize.Y; y++)
         {
-            for (int x = 0; x < entityTileSize.Y; x++)
+            for (int x = 0; x < entityTileSize.X; x++)
             {
                 var comparedTilePosition = entityTilePosition + new Vector2(x, y);
 
