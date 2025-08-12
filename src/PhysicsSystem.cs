@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -24,39 +25,42 @@ public class PhysicsSystem
         var oldPosition = entity.Position;
         entity.Position += Velocity;
 
-        if (Collision.IsEntityInTerrain(entity, game.Terrain, out Vector2 collidedTilePosition))
+        if (Collision.IsEntityInTerrain(entity, game.Terrain, out List<Vector2> collidedTilePositions))
         {
-            var tileWorldPosition = Grid.TileToWorldPosition(collidedTilePosition);
-
-            var x1 = entity.Position.X;
-            var x2 = tileWorldPosition.X;
-            var y1 = entity.Position.Y;
-            var y2 = tileWorldPosition.Y;
-            var w1 = x1 + entity.Size.X;
-            var w2 = x2 + Grid.TileLength;
-            var h1 = y1 + entity.Size.Y;
-            var h2 = y2 + Grid.TileLength;
-
-            var rightOverlap = w1 - x2;
-            var leftOverlap = w2 - x1;
-            var bottomOverlap = h1 - y2;
-            var topOverlap = h2 - y1;
-
-            var correctionX = (rightOverlap < leftOverlap) ? -rightOverlap : leftOverlap;
-            var correctionY = (bottomOverlap < topOverlap) ? -bottomOverlap : topOverlap;
-            Vector2 correction = Vector2.Zero;
-
-            if (Math.Abs(correctionX) < Math.Abs(correctionY))
+            foreach (var collidedTilePosition in collidedTilePositions)
             {
-                correction = Vector2.UnitX * correctionX;
-            }
-            else
-            {
-                correction = Vector2.UnitY * correctionY;
-            }
+                var tileWorldPosition = Grid.TileToWorldPosition(collidedTilePosition);
 
-            entity.Position += correction;
-            Velocity = Vector2.Zero;
+                var x1 = entity.Position.X;
+                var x2 = tileWorldPosition.X;
+                var y1 = entity.Position.Y;
+                var y2 = tileWorldPosition.Y;
+                var w1 = x1 + entity.Size.X;
+                var w2 = x2 + Grid.TileLength;
+                var h1 = y1 + entity.Size.Y;
+                var h2 = y2 + Grid.TileLength;
+
+                var rightOverlap = w1 - x2;
+                var leftOverlap = w2 - x1;
+                var bottomOverlap = h1 - y2;
+                var topOverlap = h2 - y1;
+
+                var correctionX = (rightOverlap < leftOverlap) ? -rightOverlap : leftOverlap;
+                var correctionY = (bottomOverlap < topOverlap) ? -bottomOverlap : topOverlap;
+                Vector2 correction = Vector2.Zero;
+
+                if (Math.Abs(correctionX) < Math.Abs(correctionY))
+                {
+                    correction = Vector2.UnitX * correctionX;
+                }
+                else
+                {
+                    correction = Vector2.UnitY * correctionY;
+                }
+
+                entity.Position += correction;
+                Velocity = Vector2.Zero;
+            }
         }
     }
 
