@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +9,6 @@ public class Game1 : Game
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
 
-    public List<Entity> Enemies = new();
     public Terrain Terrain;
 
     private UIComponent ui;
@@ -42,9 +40,11 @@ public class Game1 : Game
         var parallax = new Parallax(this);
         Components.Add(parallax);
 
-        var mockEnemy = new Enemy(this, Vector2.One * 200);
-        Components.Add(mockEnemy);
-        Enemies.Add(mockEnemy);
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));
 
         base.Initialize();
     }

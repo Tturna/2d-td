@@ -52,14 +52,15 @@ public class PhysicsSystem
                 if (Math.Abs(correctionX) < Math.Abs(correctionY))
                 {
                     correction = Vector2.UnitX * correctionX;
+                    Velocity = Vector2.UnitY * Velocity.Y;
                 }
                 else
                 {
                     correction = Vector2.UnitY * correctionY;
+                    Velocity = Vector2.UnitX * Velocity.X;
                 }
 
                 entity.Position += correction;
-                Velocity = Vector2.Zero;
             }
         }
     }

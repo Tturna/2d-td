@@ -83,4 +83,10 @@ public static class Collision
 
         return collidedTilePositions.Count > 0;
     }
+
+    public static bool IsPointInTerrain(Vector2 point, Terrain terrain)
+    {
+        var pointTilePosition = Grid.WorldToTilePosition(point);
+        return terrain.TileExistsAtPosition(pointTilePosition);
+    }
 }
