@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -6,19 +7,16 @@ namespace _2d_td;
 class GunTurret : Entity
 {
     private Entity turretHead;
+    private List<KeyValuePair<Vector2, float>> bullets = new();
 
     private int tileRange = 12;
     private int damage = 10;
     private float actionsPerSecond = 1f;
     private float actionTimer;
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turretBase"))
-    {
-    }
+    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turretBase")) { }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretBase"))
-    {
-    }
+    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretBase")) { }
 
     public override void Initialize()
     {
@@ -42,6 +40,7 @@ class GunTurret : Entity
 
     public override void Update(GameTime gameTime)
     {
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -52,7 +51,41 @@ class GunTurret : Entity
             actionTimer = 0f;
         }
 
+        for (int i = 0; i < bullets.Count; i++)
+        {
+            (Vector2 target, float lifetime) = bullets[i];
+
+            lifetime -= deltaTime * 2f;
+
+            if (lifetime <= 0f)
+            {
+                bullets.RemoveAt(i);
+                continue;
+            }
+
+            bullets[i] = KeyValuePair.Create(target, lifetime);
+        }
+
         base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        base.Draw(gameTime);
+
+        foreach ((Vector2 target, float lifetime) in bullets)
+        {
+            var muzzleCenter = turretHead.Position + turretHead.Size / 2;
+            var positionDiff = muzzleCenter - target;
+            var direction = positionDiff;
+            direction.Normalize();
+            var position = Vector2.Lerp(muzzleCenter, muzzleCenter + direction * 1000f, (lifetime - 1f));
+            var bulletLength = 16f;
+            var bulletStart = position - direction * bulletLength / 2f;
+            var bulletEnd = position + direction * bulletLength / 2f;
+
+            LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, 2f);
+        }
     }
 
     private void ShootAtClosestEnemy()
@@ -82,5 +115,8 @@ class GunTurret : Entity
         var radiansToEnemy = Math.Atan2(enemyTurretDiff.Y, enemyTurretDiff.X) + MathHelper.Pi;
         turretHead.RotationRadians = (float)radiansToEnemy;
         closestEnemy.HealthSystem.TakeDamage(damage);
+
+        var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
+        bullets.Add(KeyValuePair.Create(enemyCenter, 1f));
     }
 }
