@@ -7,13 +7,16 @@ public class Enemy : Entity
 {
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
+    public MovementSystem MovementSystem;
 
-    public Enemy(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("enemy"))
+    public Enemy(Game game, Vector2 position, MovementSystem.MovementData movementData)
+        : base(game, position, AssetManager.GetTexture("enemy"))
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: 100);
         HealthSystem.Died += OnDeath;
 
         PhysicsSystem = new PhysicsSystem(Game);
+        MovementSystem = new MovementSystem(Game, movementData);
     }
 
     public override void Update(GameTime gameTime)
@@ -39,12 +42,13 @@ public class Enemy : Entity
         //     PhysicsSystem.AddForce(-Vector2.UnitY);
         // }
 
+        MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, gameTime);
     }
 
     private void OnDeath(Entity diedEntity)
     {
         Game.Components.Remove(this);
-        Game.Enemies.Remove(this);
+        EnemySystem.Enemies.Remove(this);
     }
 }
