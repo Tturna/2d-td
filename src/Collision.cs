@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -44,5 +46,41 @@ public static class Collision
         var y2 = point.Y;
 
         return AABB(x1, y1, w1, h1, x2, y2, 0f, 0f);
+    }
+
+    public static bool IsPointInTile(Vector2 point, Vector2 tileWorldPosition)
+    {
+        var x1 = tileWorldPosition.X;
+        var y1 = tileWorldPosition.Y;
+        var w1 = Grid.TileLength;
+        var h1 = Grid.TileLength;
+        var x2 = point.X;
+        var y2 = point.Y;
+
+        return AABB(x1, y1, w1, h1, x2, y2, 0f, 0f);
+    }
+
+    public static bool IsEntityInTerrain(Entity ent, Terrain terrain, out List<Vector2> collidedTilePositions)
+    {
+        var entityTilePosition = Grid.WorldToTilePosition(ent.Position);
+        var entityTileSize = Vector2.Ceiling(ent.Size / Grid.TileLength) + Vector2.One;
+        collidedTilePositions = new();
+
+        for (int y = 0; y < entityTileSize.Y; y++)
+        {
+            for (int x = 0; x < entityTileSize.X; x++)
+            {
+                var comparedTilePosition = entityTilePosition + new Vector2(x, y);
+
+                // Check collision by checking if a tile exists within the grid space
+                // taken by the entity.
+                if (terrain.TileExistsAtPosition(comparedTilePosition))
+                {
+                    collidedTilePositions.Add(comparedTilePosition);
+                }
+            }
+        }
+
+        return collidedTilePositions.Count > 0;
     }
 }

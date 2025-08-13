@@ -1,23 +1,25 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
 public static class Grid
 {
-    public const float TileLength = 16f;
+    public const int TileLength = 16;
 
-    public static Vector2 TileToWorldPosition(int x, int y)
+    public static Vector2 TileToWorldPosition(Vector2 tilePosition)
     {
-        float xPos = x * TileLength;
-        float yPos = y * TileLength;
+        float xPos = tilePosition.X * TileLength;
+        float yPos = tilePosition.Y * TileLength;
         return new Vector2(xPos, yPos);
     }
 
-    public static Vector2 SnapPositionToGrid(Vector2 position)
+    public static Vector2 WorldToTilePosition(Vector2 position)
     {
-        int tilePosX = (int)Math.Floor(position.X / TileLength);
-        int tilePosY = (int)Math.Floor(position.Y / TileLength);
-        return new Vector2(tilePosX * TileLength, tilePosY * TileLength);
+        return Vector2.Floor(position / TileLength);
+    }
+
+    public static Vector2 SnapPositionToGrid(Vector2 worldPosition)
+    {
+        return WorldToTilePosition(worldPosition) * TileLength;
     }
 }

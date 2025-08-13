@@ -32,10 +32,8 @@ public class UIEntity : Entity
     // would be simple.
     public override void Draw(GameTime gameTime) { }
 
-    public void DrawCentered()
+    public void DrawCustom()
     {
-        DrawOrigin = new Vector2(Sprite.Width, Sprite.Height) * 0.5f;
-
         Game.SpriteBatch.Draw(Sprite,
                 Position,
                 sourceRectangle: null,
