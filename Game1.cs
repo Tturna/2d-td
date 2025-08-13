@@ -18,6 +18,10 @@ public class Game1 : Game
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        Graphics.PreferredBackBufferWidth = 800;
+        Graphics.PreferredBackBufferHeight = 480;
+        // Graphics.IsFullScreen = true;
     }
 
     protected override void Initialize()
@@ -69,7 +73,8 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         Matrix translation = Camera.CalculateTranslation();
-        SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
+        SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront,
+            samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
         base.Draw(gameTime);
         SpriteBatch.End();
