@@ -17,6 +17,7 @@ class GunTurret : Entity
     private Entity? turretHead;
     private Vector2 turretHeadAxisCenter;
     private List<Bullet> bullets = new();
+    List<Enemy> hitEnemies = new();
 
     private int tileRange = 12;
     private int damage = 10;
@@ -151,7 +152,7 @@ class GunTurret : Entity
 
     private void UpdateBullets(float deltaTime)
     {
-        List<Enemy> hitEnemies = new();
+        hitEnemies.Clear();
 
         for (int i = 0; i < bullets.Count; i++)
         {
