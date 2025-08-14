@@ -154,7 +154,7 @@ class GunTurret : Entity
     {
         hitEnemies.Clear();
 
-        for (int i = 0; i < bullets.Count; i++)
+        for (int i = bullets.Count - 1; i >= 0; i--)
         {
             var bullet = bullets[i];
 
