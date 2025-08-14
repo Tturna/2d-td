@@ -107,18 +107,46 @@ public static class Collision
         // t = (box.minX - P1.X) / (P2.X - P1.X)
 
         var lineDirection = linePointB - linePointA;
+        float horizontalEnterFactor, horizontalExitFactor, verticalEnterFactor, verticalExitFactor;
 
-        // Get the factors to reach all 4 intersection points.
-        var leftIntersectFactor = (entity.Position.X - linePointA.X) / lineDirection.X;
-        var rightIntersectFactor = (entity.Position.X + entity.Size.X - linePointA.X) / lineDirection.X;
-        var topIntersectFactor = (entity.Position.Y - linePointA.Y) / lineDirection.Y;
-        var bottomIntersectFactor = (entity.Position.Y + entity.Size.Y - linePointA.Y) / lineDirection.Y;
+        if (lineDirection.X < float.Epsilon)
+        {
+            // Line is vertical
+            if (linePointA.X < entity.Position.X || linePointA.X > entity.Position.X + entity.Size.X)
+            {
+                return false;
+            }
 
-        // Get the enter and exit factors regardless of line direction
-        var horizontalEnterFactor = MathHelper.Min(leftIntersectFactor, rightIntersectFactor);
-        var horizontalExitFactor = MathHelper.Max(leftIntersectFactor, rightIntersectFactor);
-        var verticalEnterFactor = MathHelper.Min(topIntersectFactor, bottomIntersectFactor);
-        var verticalExitFactor = MathHelper.Max(topIntersectFactor, bottomIntersectFactor);
+            horizontalEnterFactor = float.NegativeInfinity;
+            horizontalExitFactor = float.PositiveInfinity;
+        }
+        else
+        {
+            // Get enter and exit factors regardless of line direction
+            var leftIntersectFactor = (entity.Position.X - linePointA.X) / lineDirection.X;
+            var rightIntersectFactor = (entity.Position.X + entity.Size.X - linePointA.X) / lineDirection.X;
+            horizontalEnterFactor = MathHelper.Min(leftIntersectFactor, rightIntersectFactor);
+            horizontalExitFactor = MathHelper.Max(leftIntersectFactor, rightIntersectFactor);
+        }
+
+        if (lineDirection.Y < float.Epsilon)
+        {
+            // Line is horizontal
+            if (linePointA.Y < entity.Position.Y || linePointA.Y > entity.Position.Y + entity.Size.Y)
+            {
+                return false;
+            }
+
+            verticalEnterFactor = float.NegativeInfinity;
+            verticalExitFactor = float.PositiveInfinity;
+        }
+        else
+        {
+            var topIntersectFactor = (entity.Position.Y - linePointA.Y) / lineDirection.Y;
+            var bottomIntersectFactor = (entity.Position.Y + entity.Size.Y - linePointA.Y) / lineDirection.Y;
+            verticalEnterFactor = MathHelper.Min(topIntersectFactor, bottomIntersectFactor);
+            verticalExitFactor = MathHelper.Max(topIntersectFactor, bottomIntersectFactor);
+        }
 
         var furthestEnterFactor = MathHelper.Max(horizontalEnterFactor, verticalEnterFactor);
         var nearestExitFactor = MathHelper.Min(horizontalExitFactor, verticalExitFactor);
