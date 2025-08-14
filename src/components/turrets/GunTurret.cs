@@ -151,19 +151,49 @@ class GunTurret : Entity
 
     private void UpdateBullets(float deltaTime)
     {
+        List<Enemy> hitEnemies = new();
+
         for (int i = 0; i < bullets.Count; i++)
         {
             var bullet = bullets[i];
 
+            var positionDiff = bullet.Target - turretHeadAxisCenter;
+            var direction = positionDiff;
+            direction.Normalize();
+
+            var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
+            var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
+
+            var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
+            var oldPosition = muzzleCenter + direction * (bulletPixelsPerSecond * (reverseLifetime - deltaTime));
+
+            var bulletHit = false;
+
+            foreach (Enemy enemy in EnemySystem.Enemies)
+            {
+                if (Collision.IsLineInEntity(oldPosition, position, enemy,
+                    out Vector2 entryPoint, out Vector2 exitPoint))
+                {
+                    hitEnemies.Add(enemy);
+                    bulletHit = true;
+                }
+            }
+
             bullet.Lifetime -= deltaTime;
 
-            if (bullet.Lifetime <= 0f)
+            if (bulletHit || bullet.Lifetime <= 0f)
             {
                 bullets.RemoveAt(i);
                 continue;
             }
 
             bullets[i] = bullet;
+        }
+
+        for (int i = 0; i < hitEnemies.Count; i++)
+        {
+            var enemy = hitEnemies[i];
+            enemy.HealthSystem.TakeDamage(damage);
         }
     }
 }
