@@ -17,7 +17,18 @@ public static class EnemySystem
             JumpForce = 12f
         };
 
-        var enemy = new Enemy(game, position, movementData);
+        var texture = AssetManager.GetTexture("goon");
+        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        {
+            Texture = texture,
+            FrameCount = 8,
+            FrameSize = frameSize,
+            DelaySeconds = 0.1f
+        };
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 

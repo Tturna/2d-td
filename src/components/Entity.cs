@@ -17,7 +17,7 @@ public class Entity : DrawableGameComponent
     public float DrawLayerDepth { get; set; } = 0.9f;
     public Texture2D? Sprite { get; set; }
 
-    public Entity(Game game, Texture2D sprite, Vector2 size = default) : base(game)
+    public Entity(Game game, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
         this.Game = (Game1)game;
         Sprite = sprite;
@@ -35,11 +35,11 @@ public class Entity : DrawableGameComponent
         }
         else
         {
-            Size = new Vector2(sprite.Width, sprite.Height);
+            Size = new Vector2(sprite!.Width, sprite.Height);
         }
     }
 
-    public Entity(Game game, Vector2 position, Texture2D sprite, Vector2 size = default)
+    public Entity(Game game, Vector2 position, Texture2D? sprite = null, Vector2 size = default)
         : this(game, sprite, size)
     {
         Position = position;
