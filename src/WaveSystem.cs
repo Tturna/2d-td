@@ -1,61 +1,61 @@
-namespace _2d_td;
+using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
-public static class WaveSystem
+namespace _2d_td
 {
-    public struct Formation
+    public static class WaveSystem
     {
-        public List<Enemy> enemies;
-    }
-
-    private List<Formation> wave;
-
-    public struct Wave
-    {
-        public List<Formation> formations;
-    }
-
-    public struct Level
-    {
-        public List<Wave> waves;
-        private int waveNumber = 1;
-    }
-
-    private Formation mockForm = new Formation();
-    new protected Game1 game;
-
-    
-
-    public static void Initialize(Game1 gameRef)
-    {
-        game = gameRef;
-
-        for (int i = 0; i < 5; i++) 
+        public struct Formation
         {
-            var Enemy mockEnemy = new Enemy(game,Vector2.One);
-            mockForm.enemies.add(mockEnemy)
-            Console.WriteLine("Added the " + i + "th enemy to the formation");
+            public List<Enemy> enemies;
+        }
+
+        private static List<Formation> wave;
+
+        public struct Wave
+        {
+            public List<Formation> formations;
+        }
+
+        public struct Level
+        {
+            public List<Wave> waves;
+            public int waveNumber;
+        }
+
+        private static Formation mockForm = new Formation { enemies = new List<Enemy>() };
+        private static Game1 game;
+
+        public static void Initialize(Game1 gameRef)
+        {
+            game = gameRef;
+
+            for (int i = 0; i < 5; i++)
+            {
+                Enemy mockEnemy = new Enemy(game, Vector2.One);
+                mockForm.enemies.Add(mockEnemy);
+                Console.WriteLine("Added the " + i + "th enemy to the formation");
+            }
+        }
+
+        static void SpawnFormation(List<Enemy> formation)
+        {
+            foreach (Enemy enemy in formation)
+            {
+                //spawn each enemy, enemy needs spawn function
+            }
+        }
+
+        static void SpawnWave()
+        {
+            //will call SpawnFormation() per formation in 
+        }
+
+        static void NextWave()
+        {
+            //starts next wave
+            Level.waveNumber++;
         }
     }
-
-    void SpawnFormation(List<Enemy> formation)
-    {
-        foreach(Enemy in formation)
-        {
-            //spawn each enemy, enemy needs spawn function
-        }
-    }
-
-    void SpawnWave()
-    {
-        //will call SpawnFormation() per formation in 
-    }
-
-    void NextWave()
-    {
-        //starts next wave
-        waveNumber++;
-
-    }
-
-
 }
