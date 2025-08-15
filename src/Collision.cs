@@ -59,11 +59,11 @@ public static class Collision
         return AABB(x1, y1, w1, h1, x2, y2, 0f, 0f);
     }
 
-    public static bool IsEntityInTerrain(Entity ent, Terrain terrain, out List<Vector2> collidedTilePositions)
+    public static bool IsEntityInTerrain(Entity ent, Terrain terrain, out Vector2[] collidedTilePositions)
     {
         var entityTilePosition = Grid.WorldToTilePosition(ent.Position);
-        var entityTileSize = Vector2.Ceiling(ent.Size / Grid.TileLength) + Vector2.One;
-        collidedTilePositions = new();
+        var entityTileSize = Vector2.Floor(ent.Size / Grid.TileLength) + Vector2.One;
+        HashSet<Vector2> collided = new();
 
         for (int y = 0; y < entityTileSize.Y; y++)
         {
@@ -75,17 +75,55 @@ public static class Collision
                 // taken by the entity.
                 if (terrain.TileExistsAtPosition(comparedTilePosition))
                 {
-                    collidedTilePositions.Add(comparedTilePosition);
+                    collided.Add(comparedTilePosition);
                 }
+            }
+
+            var farEnd = ent.Position + Vector2.UnitX * ent.Size.X;
+            var feGridPos = Grid.SnapPositionToGrid(farEnd);
+            var feTilePos = Grid.WorldToTilePosition(feGridPos);
+
+            if (terrain.TileExistsAtPosition(feTilePos))
+            {
+                collided.Add(feTilePos);
             }
         }
 
-        return collidedTilePositions.Count > 0;
+        var bottomEnd = ent.Position + Vector2.UnitY * ent.Size.Y;
+        var beGridPos = Grid.SnapPositionToGrid(bottomEnd);
+        var beTilePos = Grid.WorldToTilePosition(beGridPos);
+
+        for (int x = 0; x < entityTileSize.X; x++)
+        {
+            var comparedTilePosition = beTilePos + new Vector2(x, 0f);
+
+            // Check collision by checking if a tile exists within the grid space
+            // taken by the entity.
+            if (terrain.TileExistsAtPosition(comparedTilePosition))
+            {
+                collided.Add(comparedTilePosition);
+            }
+        }
+
+        var bottomRightCorner = ent.Position + ent.Size;
+        var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
+        var brcTilePos = Grid.WorldToTilePosition(brcGridPos);
+
+        if (terrain.TileExistsAtPosition(brcTilePos))
+        {
+            collided.Add(brcTilePos);
+        }
+
+        collidedTilePositions = new Vector2[collided.Count];
+        collided.CopyTo(collidedTilePositions);
+
+        return collidedTilePositions.Length > 0;
     }
 
     public static bool IsPointInTerrain(Vector2 point, Terrain terrain)
     {
-        var pointTilePosition = Grid.WorldToTilePosition(point);
+        var pointGridPosition = Grid.SnapPositionToGrid(point);
+        var pointTilePosition = Grid.WorldToTilePosition(pointGridPosition);
         return terrain.TileExistsAtPosition(pointTilePosition);
     }
 

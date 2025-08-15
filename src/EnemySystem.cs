@@ -13,8 +13,8 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 40f,
-            JumpForce = 12f
+            WalkSpeed = 22f,
+            JumpForce = 7f
         };
 
         var texture = AssetManager.GetTexture("goon");
