@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -37,7 +38,9 @@ public class AnimationSystem
     public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotationRadians = 0f,
         Vector2 drawOrigin = default, float drawLayerDepth = 0.9f)
     {
-        (int y, int x) = int.DivRem((int)data.FrameSize.X * currentFrame, data.Texture.Width);
+        var xPosHorizontal = data.FrameSize.X * currentFrame;
+        var x = (int)Math.Floor(xPosHorizontal % data.Texture.Width);
+        var y = (int)(Math.Floor(xPosHorizontal / data.Texture.Width) * data.FrameSize.Y);
         var sourceRect = new Rectangle(x, y, (int)data.FrameSize.X, (int)data.FrameSize.Y);
 
         spriteBatch.Draw(data.Texture,
