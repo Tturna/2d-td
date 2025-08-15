@@ -55,7 +55,7 @@ namespace _2d_td
         static void NextWave()
         {
             //starts next wave
-            Level.waveNumber++;
+            //Level.waveNumber++;
         }
     }
 }
