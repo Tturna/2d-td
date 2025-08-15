@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -22,10 +21,9 @@ public class PhysicsSystem
         Velocity += Vector2.UnitY * LocalGravity * deltaTime;
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 
-        var oldPosition = entity.Position;
         entity.Position += Velocity;
 
-        if (Collision.IsEntityInTerrain(entity, game.Terrain, out List<Vector2> collidedTilePositions))
+        if (Collision.IsEntityInTerrain(entity, game.Terrain, out Vector2[] collidedTilePositions))
         {
             foreach (var collidedTilePosition in collidedTilePositions)
             {

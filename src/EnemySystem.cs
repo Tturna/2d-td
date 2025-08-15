@@ -13,11 +13,22 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 40f,
-            JumpForce = 12f
+            WalkSpeed = 22f,
+            JumpForce = 7f
         };
 
-        var enemy = new Enemy(game, position, movementData);
+        var texture = AssetManager.GetTexture("goon");
+        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        {
+            Texture = texture,
+            FrameCount = 8,
+            FrameSize = frameSize,
+            DelaySeconds = 0.1f
+        };
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 

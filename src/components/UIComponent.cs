@@ -19,7 +19,7 @@ public class UIComponent : DrawableGameComponent
     public override void Initialize()
     {
         var slotSprite = AssetManager.GetTexture("slot");
-        var turretOneSprite = AssetManager.GetTexture("turret");
+        var turretOneSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
         var gunTurretIcon = new UIEntity(game, turretOneSprite);

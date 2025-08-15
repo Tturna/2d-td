@@ -8,19 +8,22 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
+    public AnimationSystem AnimationSystem;
 
-    public Enemy(Game game, Vector2 position, MovementSystem.MovementData movementData)
-        : base(game, position, AssetManager.GetTexture("enemy"))
+    public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
+        AnimationSystem.AnimationData animationData) : base(game, position, size: size)
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: 100);
         HealthSystem.Died += OnDeath;
 
         PhysicsSystem = new PhysicsSystem(Game);
         MovementSystem = new MovementSystem(Game, movementData);
+        AnimationSystem = new AnimationSystem(animationData);
     }
 
     public override void Update(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         // Used to test enemy physics
         // if (Keyboard.GetState().IsKeyDown(Keys.H))
         // {
@@ -44,6 +47,12 @@ public class Enemy : Entity
 
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, gameTime);
+        AnimationSystem.UpdateAnimation(deltaTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawLayerDepth);
     }
 
     private void OnDeath(Entity diedEntity)
