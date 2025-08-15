@@ -4,7 +4,7 @@ namespace _2d_td;
 
 public static class Grid
 {
-    public const int TileLength = 16;
+    public const int TileLength = 8;
 
     public static Vector2 TileToWorldPosition(Vector2 tilePosition)
     {
