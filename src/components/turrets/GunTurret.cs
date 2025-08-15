@@ -29,9 +29,9 @@ class GunTurret : Entity
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("turretBase")) { }
+    public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase")) { }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretBase")) { }
+    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("gunTurretBase")) { }
 
     public override void Initialize()
     {

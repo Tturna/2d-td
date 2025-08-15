@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin sprites/background-objects/moving-objects/cloud_z1_1.png
+#begin sprites/background-objects/zone1/moving-objects/cloud_z1_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/background-objects/moving-objects/cloud_z1_1.png
+/build:sprites/background-objects/zone1/moving-objects/cloud_z1_1.png
 
-#begin sprites/background-objects/moving-objects/cloud_z1_2.png
+#begin sprites/background-objects/zone1/moving-objects/cloud_z1_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/background-objects/moving-objects/cloud_z1_2.png
+/build:sprites/background-objects/zone1/moving-objects/cloud_z1_2.png
 
-#begin sprites/background-objects/moving-objects/roboship_1.png
+#begin sprites/background-objects/zone1/moving-objects/roboship_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,7 +47,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/background-objects/moving-objects/roboship_1.png
+/build:sprites/background-objects/zone1/moving-objects/roboship_1.png
 
 #begin sprites/background-objects/zone1/skyscraper_ruins_1.png
 /importer:TextureImporter

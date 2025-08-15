@@ -10,7 +10,7 @@ public class Enemy : Entity
     public MovementSystem MovementSystem;
 
     public Enemy(Game game, Vector2 position, MovementSystem.MovementData movementData)
-        : base(game, position, AssetManager.GetTexture("enemy"))
+        : base(game, position, AssetManager.GetTexture("goon"))
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: 100);
         HealthSystem.Died += OnDeath;

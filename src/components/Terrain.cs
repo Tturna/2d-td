@@ -57,9 +57,9 @@ public class Terrain : DrawableGameComponent
             }
         }
 
-        tileset = new Tileset(AssetManager.GetTexture("tileset"),
-                tilesetWidth: 2,
-                tilesetHeight: 1);
+        tileset = new Tileset(AssetManager.GetTexture("purptiles"),
+                tilesetWidth: 12,
+                tilesetHeight: 4);
     }
 
     // This was used to test tile collisions.

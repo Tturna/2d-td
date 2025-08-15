@@ -73,7 +73,7 @@ public static class BuildingSystem
         selectedTurretType = turretType;
 
         return turretType switch {
-            TurretType.GunTurret => AssetManager.GetTexture("turret"),
+            TurretType.GunTurret => AssetManager.GetTexture("gunTurretBase"),
             TurretType.Railgun => AssetManager.GetTexture("turretTwo"),
             _ => null
         };
