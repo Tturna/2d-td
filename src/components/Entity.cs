@@ -35,7 +35,7 @@ public class Entity : DrawableGameComponent
         }
         else
         {
-            Size = new Vector2(sprite!.Width, sprite.Height);
+            Size = new Vector2(Sprite.Width, Sprite.Height);
         }
     }
 
