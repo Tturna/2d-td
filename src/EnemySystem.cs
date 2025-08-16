@@ -29,10 +29,40 @@ public static class EnemySystem
             delaySeconds: 0.1f
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture);
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture, 100);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 
         return enemy;
+    }
+
+    public static Enemy SpawnFridgeEnemy(Game game, Vector2 position)
+    {
+        var movementData = new MovementSystem.MovementData
+        {
+            Pattern = MovementSystem.MovementPattern.Charge,
+            CanWalk = true,
+            WalkSpeed = 16f,
+            JumpForce = 6f
+        };
+
+        var texture = AssetManager.GetTexture("fridge");
+        var hurtTexture = AssetManager.GetTexture("fridge_hit");
+        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        (
+            texture: texture,
+            frameCount: 8,
+            frameSize: frameSize,
+            delaySeconds: 0.1f
+        );
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture, 300);
+        Enemies.Add(enemy);
+        game.Components.Add(enemy);
+
+        return enemy;
+
     }
 }

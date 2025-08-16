@@ -26,7 +26,7 @@ public class MovementSystem
     private Vector2 defaultChargeDirection = Vector2.UnitX;
     private float jumpTimer;
     private float jumpInterval = 0.5f;
-    private float jumpCheckDistanceFactor = 1.5f;
+    private float jumpCheckDistanceFactor = 0.5f;
 
     public MovementData CurrentData { get; private set; }
 
@@ -76,12 +76,24 @@ public class MovementSystem
         }
 
         var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
+        var remainderHeight = entity.Size.Y % Grid.TileLength;
+        var halfEntityWidth = entity.Size.X / 2;
+        var jumpCheckDistance = halfEntityWidth + jumpCheckDistanceFactor * Grid.TileLength;
         var shouldJump = false;
 
-        for (int i = 0; i < entityTileHeight; i++)
+        for (int i = 0; i <= entityTileHeight; i++)
         {
-            var startPos = entity.Position + Vector2.UnitY * (Grid.TileLength * i);
-            var jumpCheckPoint = startPos + defaultChargeDirection * (jumpCheckDistanceFactor * Grid.TileLength);
+            var yOffset = Vector2.UnitY * (Grid.TileLength * i);
+
+            if (i == entityTileHeight)
+            {
+                yOffset -= Vector2.UnitY * (Grid.TileLength / 2);
+                yOffset += Vector2.UnitY * (remainderHeight / 2);
+            }
+
+            var startPos = entity.Position + yOffset;
+            var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
+            var jumpCheckPoint = horizontalEntityCenter + defaultChargeDirection * jumpCheckDistance;
             
             if (Collision.IsPointInTerrain(jumpCheckPoint, game.Terrain))
             {

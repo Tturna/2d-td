@@ -44,7 +44,7 @@ public class Game1 : Game
         var parallax = new Parallax(this);
         Components.Add(parallax);
 
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(10, 400));
+        EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
