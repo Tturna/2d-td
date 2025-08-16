@@ -35,6 +35,7 @@ public static class AssetManager
 
         // enemies
         LoadTexture("goon", "sprites/enemies/goon/goon_walk");
+        LoadTexture("goon_hit", "sprites/enemies/goon/goon_hurtframe");
 
         // environment
         LoadTexture("tree", "sprites/tree"); // temp

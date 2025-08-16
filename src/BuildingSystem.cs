@@ -62,9 +62,7 @@ public static class BuildingSystem
             _ => throw new ArgumentOutOfRangeException(nameof(selectedTurretType), $"Unhandled entity type: {selectedTurretType}")
         };
 
-        // Set position so that the bottom of the sprite is at the bottom of the clicked tile,
-        // assuming the given position is snapped to the grid.
-        turret.Position = position - Vector2.UnitY * (turret.Sprite.Height - Grid.TileLength);
+        turret.Position = position;
         return turret;
     }
 

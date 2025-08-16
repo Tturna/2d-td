@@ -18,17 +18,18 @@ public static class EnemySystem
         };
 
         var texture = AssetManager.GetTexture("goon");
+        var hurtTexture = AssetManager.GetTexture("goon_hit");
         var frameSize = new Vector2(texture.Width / 8, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData
-        {
-            Texture = texture,
-            FrameCount = 8,
-            FrameSize = frameSize,
-            DelaySeconds = 0.1f
-        };
+        (
+            texture: texture,
+            frameCount: 8,
+            frameSize: frameSize,
+            delaySeconds: 0.1f
+        );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData);
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 

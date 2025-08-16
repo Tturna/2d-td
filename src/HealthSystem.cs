@@ -1,5 +1,3 @@
-using System;
-
 namespace _2d_td;
 
 public class HealthSystem
@@ -10,6 +8,9 @@ public class HealthSystem
 
     public delegate void DiedHandler(Entity diedEntity);
     public event DiedHandler Died;
+
+    public delegate void DamagedHandler(Entity damagedEntity);
+    public event DamagedHandler Damaged;
 
     public HealthSystem(Entity owner, int initialHealth)
     {
@@ -28,8 +29,7 @@ public class HealthSystem
     public void TakeDamage(int amount)
     {
         CurrentHealth -= amount;
-
-        Console.WriteLine($"{Owner.ToString()} took {amount} damage!");
+        OnDamaged(Owner);
 
         if (CurrentHealth <= 0)
         {
@@ -42,5 +42,10 @@ public class HealthSystem
     private void OnDied(Entity diedEntity)
     {
         Died?.Invoke(diedEntity);
+    }
+
+    private void OnDamaged(Entity damagedEntity)
+    {
+        Damaged?.Invoke(damagedEntity);
     }
 }
