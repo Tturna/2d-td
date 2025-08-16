@@ -73,7 +73,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Maroon);
+        GraphicsDevice.Clear(Color.FromNonPremultiplied(new Vector4(115/255f, 55/255f, 57/255f, 1)));
         Matrix translation = Camera.CalculateTranslation();
         SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront,
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);

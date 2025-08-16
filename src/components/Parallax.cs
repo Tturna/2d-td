@@ -30,17 +30,17 @@ public class Parallax : DrawableGameComponent
             int index = rnd.Next(bigObjects.Count);
             var obj1 = new ParallaxObject(
                 new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY)),
-                0.1f,
+                rnd.Next(8,13)/100f,
                 bigObjects[index], Vector2.Zero);
             _objects.Add(obj1);
         }
         var bigSkyObjects = new List<string> {"cloud_z1_1", "cloud_z1_2", "roboship"};
-        for (var i = 1; i < 10; i++)
+        for (var i = 1; i < 20; i++)
         {
             int index = rnd.Next(bigSkyObjects.Count);
             var obj1 = new ParallaxObject(
                 new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) * 2 - 100),
-                0.1f,
+                rnd.Next(7,18)/100f,
                 bigSkyObjects[index], Vector2.UnitX);
             _objects.Add(obj1);
         }
@@ -50,7 +50,7 @@ public class Parallax : DrawableGameComponent
             int index = rnd.Next(midObjects.Count);
             var obj1 = new ParallaxObject(
                 new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY)+40),
-                0.7f,
+                rnd.Next(65,75)/100f,
                 midObjects[index], Vector2.Zero);
             _objects.Add(obj1);
         }
@@ -60,7 +60,7 @@ public class Parallax : DrawableGameComponent
             int index = rnd.Next(foreground.Count);
             var obj1 = new ParallaxObject(
                 new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) + 40),
-                0.8f,
+                rnd.Next(75,85)/100f,
                 foreground[index], Vector2.UnitX);
             _objects.Add(obj1);
         }
@@ -74,11 +74,26 @@ public class Parallax : DrawableGameComponent
         {
             if (obj.Movement != Vector2.Zero)
             {
-                var speed = 10;
+                var speed = 100;
                 var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 obj.Position = new Vector2(
                     obj.Position.X + obj.Movement.X * dt * speed * obj.ParallaxLayer,
                     obj.Position.Y + obj.Movement.Y * dt * speed * obj.ParallaxLayer);
+
+                var fixedPos = obj.Position;
+                if (obj.Position.X > 1000)
+                {
+                    fixedPos.X = -1000;
+                } else if (obj.Position.X < -1000) {
+                    fixedPos.X = 1000;
+                }
+                if (obj.Position.Y > 1000)
+                {
+                    fixedPos.Y = -1000;
+                } else if (obj.Position.Y < -1000) {
+                    fixedPos.Y = 1000;
+                }
+                obj.Position = fixedPos;
             }
         }
 
@@ -88,8 +103,10 @@ public class Parallax : DrawableGameComponent
     public override void Draw(GameTime gameTime)
     {
         foreach (var obj in _objects) {
-            var cx = obj.Position.X - Camera.Position.X;
-            var cy = (obj.Position.Y+400) - Camera.Position.Y;
+            // this is very hacky/hardcoded, just the original spawn location of the camera
+            var offset = 400;
+            var cx = (obj.Position.X+offset) - Camera.Position.X;
+            var cy = (obj.Position.Y+offset) - Camera.Position.Y;
             var position = new Vector2(
                 obj.Position.X + cx * obj.ParallaxLayer + Camera.Position.X,
                 obj.Position.Y + cy * obj.ParallaxLayer + Camera.Position.Y);
