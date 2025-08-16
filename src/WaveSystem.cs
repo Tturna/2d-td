@@ -12,12 +12,10 @@ namespace _2d_td
             //public int frequency
         }
 
-        private static List<Formation> wave;
-
         public struct Wave
         {
             public List<Formation> formations;
-            public int formationCooldown;
+            //public int formationCooldown;
         }
 
         public struct Zone
@@ -36,8 +34,7 @@ namespace _2d_td
 
         private float formCooldownRemaining;
 
-
-        
+        private int currentWave;
 
         private static Game1 game;
 
@@ -87,7 +84,7 @@ namespace _2d_td
         {
             foreach (Formation formation in zone.waves)
             {
-                if (formCooldownRemaining < 0f)
+                if (formCooldownRemaining <= 0f)
                 {
                     SpawnFormation(formation);
                 }
