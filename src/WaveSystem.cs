@@ -8,14 +8,12 @@ namespace _2d_td
     {
         public struct Formation
         {
-            public List<Enemy> enemies;
-            //public int frequency
+            public int enemies;
         }
 
         public struct Wave
         {
             public List<Formation> formations;
-            //public int formationCooldown;
         }
 
         public struct Zone
@@ -24,77 +22,110 @@ namespace _2d_td
             public int currentLvl;
         }
 
-        private static Formation mockForm;
-
+        private static Formation mockForm1;
+        private static Formation mockForm2;
+        private static Formation mockForm3;
         private static Zone zone1;
-
         private static Wave wave1;
 
-        private float formCooldown;
-
-        private float formCooldownRemaining;
-
-        private int currentWave;
+        private static float formCooldown;
+        private static float formCooldownRemaining;
+        private static int currentWaveIndex;
+        private static int currentFormationIndex;
+        private static bool waveStarted;
 
         private static Game1 game;
 
+        // Removed enemySystem variable - use EnemySystem's static methods directly
+
         public static void Initialize(Game1 gameRef)
         {
-            game = gameRef
+            game = gameRef;
 
-            formCooldownTime = 5f;
+            formCooldown = 5f;
+            formCooldownRemaining = 0f;
 
-            mockForm = new Formation { enemies = new List<Enemy>() };
+            currentFormationIndex = 0;
+            currentWaveIndex = 0;
 
-            wave1 = new Wave { formations = new List<Formation>(mockForm) };
+            waveStarted = true;
 
-            Zone1 = new Zone { waves = new List<Wave>(wave1), currentLvl = 0 }
+            mockForm1 = new Formation { enemies = 4 };
 
-            for (int i = 0; i < 5; i++)
-            {
-                Enemy mockEnemy = new Enemy(game, Vector2.One);
-                mockForm.enemies.Add(mockEnemy);
-                Console.WriteLine("Added the " + i + "th enemy to the formation");
-            }
+            mockForm2 = new Formation { enemies = 2 };
 
+            mockForm3 = new Formation { enemies = 6 };
 
+            wave1 = new Wave { formations = new List<Formation> { mockForm1, mockForm2, mockForm3 } };
+
+            zone1 = new Zone { waves = new List<Wave> { wave1 }, currentLvl = 1 };
+
+            //StartWave(zone1);
         }
 
-        public override void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime)
         {
             float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (formCooldownRemaining > 0f) 
+            if (formCooldownRemaining > 0f)
             {
                 formCooldownRemaining -= elapsedSeconds;
             }
-        }
 
-        static void SpawnFormation(Formation formation)
-        {
-            formCooldownRemaining = formCooldown;
-
-            foreach (Enemy enemy in formation)
+            if (formCooldownRemaining <= 0f && waveStarted)
             {
-                //spawn each enemy, enemy needs spawn function
+                SpawnNextFormation();
             }
         }
 
-        static void StartWave(Zone zone)
+        private static void SpawnNextFormation()
         {
-            foreach (Formation formation in zone.waves)
+            //if (zone1 == null || zone1.waves.Count <= currentWaveIndex) return;
+
+            Wave wave = zone1.waves[currentWaveIndex];
+
+            if (currentFormationIndex < wave.formations.Count)
             {
-                if (formCooldownRemaining <= 0f)
+
+                Formation formation = wave.formations[currentFormationIndex];
+
+                
+
+                SpawnFormation(formation);
+
+                currentFormationIndex++; 
+                formCooldownRemaining = formCooldown; 
+            }
+            // handle next wave if all formations are spawned
+        }
+
+        private static void SpawnFormation(Formation formation)
+        {
+            Console.WriteLine(formation.enemies);
+            for (int i = 0; i < formation.enemies; i++)
+            {
+                EnemySystem.SpawnWalkerEnemy(game, new Vector2(i*10, 400));
+            }
+        }
+
+        /*private static void StartWave(Zone zone)
+        {
+            foreach (Wave wave in zone.waves)
+            {
+                foreach (Formation formation in wave.formations)
                 {
-                    SpawnFormation(formation);
+                    if (formCooldownRemaining <= 0f)
+                    {
+                        SpawnFormation(formation);
+                    }
                 }
             }
-        }
+        }*/
 
         static void NextWave()
         {
             //starts next wave
-            Zone1.waveNumber++;
+            // zone1.waveNumber++; // waveNumber does not exist in your Zone struct
         }
     }
 }
