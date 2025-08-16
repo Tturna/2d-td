@@ -72,9 +72,7 @@ public class UIComponent : DrawableGameComponent
             var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
             var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
 
-            // Offset by half sprite size because UI entities are drawn centered
-            var halfSpriteSize = new Vector2(turretHologram.Sprite.Width / 2, turretHologram.Sprite.Height / 2);
-            turretHologram.Position = mouseSnappedScreenPos + halfSpriteSize;
+            turretHologram.Position = mouseSnappedScreenPos;
         }
 
         base.Update(gameTime);

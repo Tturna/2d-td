@@ -35,20 +35,22 @@ class GunTurret : Entity
 
     public override void Initialize()
     {
-        DrawLayerDepth = 0.8f;
-
         // Position turret head to match where turret base expects it.
-        const float TurretHeadXOffset = Grid.TileLength / 2f;
-        const float TurretHeadYOffset = 10f;
+        float TurretHeadXOffset = Sprite!.Width * 0.7f;
+        float TurretHeadYOffset = 9f;
         turretHeadAxisCenter = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
+
+        // Offset turret base pos by 2 pixels;
+        Position += Vector2.UnitX * 2;
 
         turretHead = new Entity(Game, turretHeadAxisCenter, AssetManager.GetTexture("gunTurretHead"));
 
         // Draw turret head with the origin in its axis of rotation
-        const float TurretHeadDrawXOffset = 0.7f;
+        const float TurretHeadDrawXOffset = 0.85f;
         var drawOrigin = new Vector2(turretHead!.Sprite!.Width * TurretHeadDrawXOffset, turretHead.Sprite.Height / 2);
 
         turretHead.DrawOrigin = drawOrigin;
+        turretHead.DrawLayerDepth = 0.8f;
 
         Game.Components.Add(turretHead);
     }
