@@ -40,7 +40,7 @@ class Railgun : Entity
         float closestDistance = float.PositiveInfinity;
 
         // TODO: Don't loop over all enemies. Just the ones in range.
-        foreach (Enemy enemy in Game.Enemies)
+        foreach (Enemy enemy in EnemySystem.Enemies)
         {
             var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +9,6 @@ public class Game1 : Game
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
 
-    public List<Entity> Enemies = new();
     public Terrain Terrain;
 
     private UIComponent ui;
@@ -20,6 +18,10 @@ public class Game1 : Game
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        Graphics.PreferredBackBufferWidth = 800;
+        Graphics.PreferredBackBufferHeight = 480;
+        // Graphics.IsFullScreen = true;
     }
 
     protected override void Initialize()
@@ -43,9 +45,13 @@ public class Game1 : Game
         var parallax = new Parallax(this);
         Components.Add(parallax);
 
-        var mockEnemy = new Enemy(this, Vector2.One * 200);
-        Components.Add(mockEnemy);
-        Enemies.Add(mockEnemy);
+        EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));
 
         base.Initialize();
     }
@@ -70,7 +76,8 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         Matrix translation = Camera.CalculateTranslation();
-        SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront, depthStencilState: DepthStencilState.Default);
+        SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront,
+            samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
         base.Draw(gameTime);
         SpriteBatch.End();

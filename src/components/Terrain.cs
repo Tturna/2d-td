@@ -11,7 +11,7 @@ public class Terrain : DrawableGameComponent
     private Tileset tileset;
 
     private Dictionary<Vector2, int> tiles = new();
-    private Vector2 levelOffset = new Vector2(0, 32 * Grid.TileLength);
+    private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
 
     public Terrain(Game game) : base(game)
     {
@@ -21,7 +21,7 @@ public class Terrain : DrawableGameComponent
     public override void Initialize()
     {
         string levelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
-                "data", "levels", "testlevel", "testlevel.csv");
+                "data", "levels", "purptest", "purptest1.csv");
 
         // "using" makes it so Dispose() is automatically called on StreamReader when
         // it's not needed anymore.
@@ -57,9 +57,9 @@ public class Terrain : DrawableGameComponent
             }
         }
 
-        tileset = new Tileset(AssetManager.GetTexture("tileset"),
-                tilesetWidth: 2,
-                tilesetHeight: 1);
+        tileset = new Tileset(AssetManager.GetTexture("purptiles"),
+                tilesetWidth: 12,
+                tilesetHeight: 4);
     }
 
     // This was used to test tile collisions.

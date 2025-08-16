@@ -21,19 +21,49 @@ public static class AssetManager
         _textures.Add(name, _content.Load<Texture2D>(path));
     }
 
+    // TODO: Split asset loading once there are different levels and zones.
+    // No point in loading zone 1 assets when zone 2 levels are loaded.
     public static void LoadAllAssets()
     {
-        LoadTexture("turret", "sprites/turret");
-        LoadTexture("turretTwo", "sprites/turretTwo");
-        LoadTexture("slot", "sprites/ui/slot");
-        LoadTexture("enemy", "sprites/enemy");
-        LoadTexture("tree", "sprites/tree");
-        LoadTexture("mountain", "sprites/mountain");
-        LoadTexture("turretBase", "sprites/turretBase");
-        LoadTexture("gunTurretHead", "sprites/gunTurretHead");
-        LoadTexture("tile", "sprites/tile");
-        LoadTexture("tileTwo", "sprites/tileTwo");
-        LoadTexture("tileset", "sprites/tileset");
+        // towers
+        LoadTexture("gunTurretBase", "sprites/towers/turret_body_00");
+        LoadTexture("gunTurretHead", "sprites/towers/turret_gun_00");
+        LoadTexture("turretTwo", "sprites/turretTwo"); // temp
+
+        // tiles
+        LoadTexture("purptiles", "sprites/tiles/purptiles");
+
+        // enemies
+        LoadTexture("goon", "sprites/enemies/goon/goon_walk");
+        LoadTexture("goon_hit", "sprites/enemies/goon/goon_hurtframe");
+        LoadTexture("fridge", "sprites/enemies/fridge/fridge_walk");
+        LoadTexture("fridge_hit", "sprites/enemies/fridge/fridge_hurtframe");
+
+        // environment
+        LoadTexture("tree", "sprites/tree"); // temp
+        LoadTexture("mountain", "sprites/mountain"); // temp
+
+        // - zone1 bg moving objects
+        LoadTexture("cloud_z1_1", "sprites/background-objects/zone1/moving-objects/cloud_z1_1");
+        LoadTexture("cloud_z1_2", "sprites/background-objects/zone1/moving-objects/cloud_z1_2");
+        LoadTexture("roboship", "sprites/background-objects/zone1/moving-objects/roboship_1");
+        // - zone1 bg
+        LoadTexture("skyscraper_ruins_1", "sprites/background-objects/zone1/skyscraper_ruins_1");
+        LoadTexture("skyscraper_ruins_2", "sprites/background-objects/zone1/skyscraper_ruins_2");
+
+        // - zone1 midground moving objects
+        LoadTexture("hovercraft", "sprites/midground-objects/zone1/moving-objects/hovercraft_1");
+        // - zone1 mg
+        LoadTexture("deadtree_1", "sprites/midground-objects/zone1/deadtree_1");
+        LoadTexture("deadtree_2", "sprites/midground-objects/zone1/deadtree_2");
+        LoadTexture("ruins_1", "sprites/midground-objects/zone1/ruins_1");
+
+        // - zone1 fg
+        LoadTexture("smog_1", "sprites/foreground-objects/smog_1");
+        LoadTexture("smog_2", "sprites/foreground-objects/smog_2");
+
+        // ui
+        LoadTexture("slot", "sprites/ui/slot"); // temp
     }
 
     public static Texture2D GetTexture(string name)
