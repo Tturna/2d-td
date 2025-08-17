@@ -110,7 +110,6 @@ public class Parallax : DrawableGameComponent
     public override void Draw(GameTime gameTime)
     {
         foreach (var obj in _objects) {
-            // var col = Color.FromNonPremultiplied(new Vector4(Tint, 1));
             var col = new Color(new Color(Tint), (int)((obj.ParallaxLayer / 2 + 0.5f)*255));
 
             // this is very hacky/hardcoded, just the original spawn location of the camera
