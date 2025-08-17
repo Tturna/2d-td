@@ -39,6 +39,7 @@ public static class AssetManager
         // environment
         LoadTexture("tree", "sprites/tree"); // temp
         LoadTexture("mountain", "sprites/mountain"); // temp
+        LoadTexture("big_gradient", "sprites/big_gradient"); // temp
 
         // - zone1 bg moving objects
         LoadTexture("cloud_z1_1", "sprites/background-objects/zone1/moving-objects/cloud_z1_1");

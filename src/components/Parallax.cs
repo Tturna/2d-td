@@ -66,6 +66,12 @@ public class Parallax : DrawableGameComponent
             _objects.Add(obj1);
         }
 
+        var bigGradient = new ParallaxObject(
+            new Vector2(-1000, -500),
+            0f,
+            "big_gradient", Vector2.Zero);
+        _objects.Add(bigGradient);
+
         base.Initialize();
     }
 
@@ -104,7 +110,9 @@ public class Parallax : DrawableGameComponent
     public override void Draw(GameTime gameTime)
     {
         foreach (var obj in _objects) {
-            var col = Color.FromNonPremultiplied(new Vector4(Tint, obj.ParallaxLayer/2 + 0.5f));
+            // var col = Color.FromNonPremultiplied(new Vector4(Tint, 1));
+            var col = new Color(new Color(Tint), (int)((obj.ParallaxLayer / 2 + 0.5f)*255));
+
             // this is very hacky/hardcoded, just the original spawn location of the camera
             var offset = 400;
             var cx = (obj.Position.X+offset) - Camera.Position.X;
