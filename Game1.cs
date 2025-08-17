@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,10 +9,13 @@ public class Game1 : Game
 {
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
-
     public Terrain Terrain;
 
     private UIComponent ui;
+    private RenderTarget2D renderTarget;
+    private Rectangle renderDestination;
+    private int nativeScreenWidth = 800;
+    private int nativeScreenHeight = 480;
 
     public Game1()
     {
@@ -19,13 +23,20 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        Graphics.PreferredBackBufferWidth = 800;
-        Graphics.PreferredBackBufferHeight = 480;
+        Graphics.PreferredBackBufferWidth = nativeScreenWidth;
+        Graphics.PreferredBackBufferHeight = nativeScreenHeight;
+        Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+        CalculateRenderDestination();
     }
 
     protected override void Initialize()
     {
+        renderTarget = new(GraphicsDevice, nativeScreenWidth, nativeScreenHeight);
+
         AssetManager.Initialize(Content);
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
@@ -73,8 +84,13 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        // GraphicsDevice.Clear(Color.CornflowerBlue);
+
+        // Render to custom render target that can be scaled based on display size
+        GraphicsDevice.SetRenderTarget(renderTarget);
+
         Matrix translation = Camera.CalculateTranslation();
+
         SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront,
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
@@ -85,5 +101,33 @@ public class Game1 : Game
         SpriteBatch.Begin();
         ui.Draw(gameTime);
         SpriteBatch.End();
+
+        // Render to the back buffer so the custom render target is visible
+        GraphicsDevice.SetRenderTarget(null);
+        // GraphicsDevice.Clear(Color.DarkGray);
+
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        SpriteBatch.Draw(renderTarget, renderDestination, Color.White);
+        SpriteBatch.End();
+    }
+
+    private void CalculateRenderDestination()
+    {
+        Point screenSize = GraphicsDevice.Viewport.Bounds.Size;
+        var xScale = (float)screenSize.X / nativeScreenWidth;
+        var yScale = (float)screenSize.Y / nativeScreenHeight;
+        var scale = Math.Min(xScale, yScale);
+
+        var xSize = nativeScreenWidth * scale;
+        var ySize = nativeScreenHeight * scale;
+        var xPos = (screenSize.X - xSize) / 2;
+        var yPos = (screenSize.Y - ySize) / 2;
+
+        renderDestination = new Rectangle((int)xPos, (int)yPos, (int)xSize, (int)ySize);
+    }
+
+    private void OnClientSizeChanged(object sender, EventArgs e)
+    {
+        CalculateRenderDestination();
     }
 }
