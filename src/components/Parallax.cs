@@ -11,6 +11,7 @@ public class Parallax : DrawableGameComponent
     // layer 0 - farthest from the screen
     // layer 1 - closest to the screen
     private List<ParallaxObject> _objects = new List<ParallaxObject>();
+    public Vector3 Tint = new(1, 1, 1);
 
     public Parallax(Game game) : base(game)
     {
@@ -74,7 +75,7 @@ public class Parallax : DrawableGameComponent
         {
             if (obj.Movement != Vector2.Zero)
             {
-                var speed = 100;
+                var speed = 10;
                 var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 obj.Position = new Vector2(
                     obj.Position.X + obj.Movement.X * dt * speed * obj.ParallaxLayer,
@@ -103,6 +104,7 @@ public class Parallax : DrawableGameComponent
     public override void Draw(GameTime gameTime)
     {
         foreach (var obj in _objects) {
+            var col = Color.FromNonPremultiplied(new Vector4(Tint, obj.ParallaxLayer/2 + 0.5f));
             // this is very hacky/hardcoded, just the original spawn location of the camera
             var offset = 400;
             var cx = (obj.Position.X+offset) - Camera.Position.X;
@@ -113,7 +115,7 @@ public class Parallax : DrawableGameComponent
             game.SpriteBatch.Draw(obj.Sprite,
                 position,
                 sourceRectangle: null,
-                Color.White,
+                col,
                 rotation: 0f,
                 origin: Vector2.Zero,
                 scale: Vector2.One,
