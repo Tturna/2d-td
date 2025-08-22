@@ -22,17 +22,27 @@ namespace _2d_td
             public int currentLvl;
         }
 
+        //these are for testing
         private static Formation mockForm1;
         private static Formation mockForm2;
         private static Formation mockForm3;
         private static Zone zone1;
         private static Wave wave1;
+        private static Wave wave2;
 
         private static float formCooldown;
         private static float formCooldownRemaining;
         private static int currentWaveIndex;
+        private static int maxWaveIndex;
         private static int currentFormationIndex;
         private static bool waveStarted;
+        private static float waveCd;
+        private static float waveCdLeft;
+
+        //these variables are for the long term malliable script
+        private static Zone currentZone;
+
+
 
         private static Game1 game;
 
@@ -45,8 +55,12 @@ namespace _2d_td
             formCooldown = 5f;
             formCooldownRemaining = 0f;
 
+            waveCd = 10f;
+            waveCdLeft = 0f;
+
             currentFormationIndex = 0;
             currentWaveIndex = 0;
+            
 
             waveStarted = true;
 
@@ -58,7 +72,13 @@ namespace _2d_td
 
             wave1 = new Wave { formations = new List<Formation> { mockForm1, mockForm2, mockForm3 } };
 
-            zone1 = new Zone { waves = new List<Wave> { wave1 }, currentLvl = 1 };
+            wave2 = new Wave { formations = new List<Formation> {mockForm3, mockForm1,mockForm2,mockForm1,mockForm1} };
+
+            zone1 = new Zone { waves = new List<Wave> { wave1,wave2 }, currentLvl = 1 };
+
+            currentZone = zone1;
+
+            maxWaveIndex = 5 + (currentZone.currentLvl-1) * 2;
 
             //StartWave(zone1);
         }
@@ -72,6 +92,17 @@ namespace _2d_td
                 formCooldownRemaining -= elapsedSeconds;
             }
 
+            if (waveCdLeft > 0f)
+            {
+                waveCdLeft -= elapsedSeconds;
+            }
+
+
+            if (waveCdLeft <= 0f && !waveStarted)
+            {
+                NextWave();
+            }
+
             if (formCooldownRemaining <= 0f && waveStarted)
             {
                 SpawnNextFormation();
@@ -80,9 +111,9 @@ namespace _2d_td
 
         private static void SpawnNextFormation()
         {
-            //if (zone1 == null || zone1.waves.Count <= currentWaveIndex) return;
+            if (currentZone.waves.Count <= currentWaveIndex) return;
 
-            Wave wave = zone1.waves[currentWaveIndex];
+            Wave wave = currentZone.waves[currentWaveIndex];
 
             if (currentFormationIndex < wave.formations.Count)
             {
@@ -95,6 +126,13 @@ namespace _2d_td
 
                 currentFormationIndex++; 
                 formCooldownRemaining = formCooldown; 
+            }else if(EnemySystem.Enemies.Count == 0)
+            {
+                EndWave();
+            }
+            else
+            {
+                Console.WriteLine("Cannot Spawn Formation");
             }
             // handle next wave if all formations are spawned
         }
@@ -108,24 +146,22 @@ namespace _2d_td
             }
         }
 
-        /*private static void StartWave(Zone zone)
+        public static void EndWave()
         {
-            foreach (Wave wave in zone.waves)
-            {
-                foreach (Formation formation in wave.formations)
-                {
-                    if (formCooldownRemaining <= 0f)
-                    {
-                        SpawnFormation(formation);
-                    }
-                }
-            }
-        }*/
+            Console.WriteLine("Wave "+currentWaveIndex+" Has Ended");
+            waveStarted = false;
+            waveCdLeft = waveCd;
+            currentFormationIndex = 0;
+            //called when the wave ends and will give the player time to build or wtv
+        }
 
-        static void NextWave()
-        {
+        private static void NextWave()
+        { 
+            currentWaveIndex++;
+            Console.WriteLine("Wave " + currentWaveIndex+" Has Started");
+            waveStarted = true;
+
             //starts next wave
-            // zone1.waveNumber++; // waveNumber does not exist in your Zone struct
         }
     }
 }
