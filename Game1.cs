@@ -31,6 +31,7 @@ public class Game1 : Game
         AssetManager.LoadAllAssets();
         Camera.Initialize(GraphicsDevice);
         BuildingSystem.Initialize(this);
+        WaveSystem.Initialize(this);
 
         Terrain = new Terrain(this);
         Components.Add(Terrain);
@@ -44,13 +45,13 @@ public class Game1 : Game
         var parallax = new Parallax(this);
         Components.Add(parallax);
 
-        EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
+        /*EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
         EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));
+        EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));*/
 
         base.Initialize();
     }
@@ -64,7 +65,8 @@ public class Game1 : Game
     {
         InputSystem.Update();
         BuildingSystem.Update();
-        
+        WaveSystem.Update(gameTime);
+
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
