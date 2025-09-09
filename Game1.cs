@@ -10,12 +10,14 @@ public class Game1 : Game
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
     public Terrain Terrain;
+    public Vector2 RenderTargetSize;
+    public Vector2 RenderedBlackBoxSize;
+    public int NativeScreenWidth = 800;
+    public int NativeScreenHeight = 480;
 
     private UIComponent ui;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
-    private int nativeScreenWidth = 800;
-    private int nativeScreenHeight = 480;
 
     public Game1()
     {
@@ -23,8 +25,8 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        Graphics.PreferredBackBufferWidth = nativeScreenWidth;
-        Graphics.PreferredBackBufferHeight = nativeScreenHeight;
+        Graphics.PreferredBackBufferWidth = NativeScreenWidth;
+        Graphics.PreferredBackBufferHeight = NativeScreenHeight;
         Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
 
@@ -35,12 +37,13 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        renderTarget = new(GraphicsDevice, nativeScreenWidth, nativeScreenHeight);
+        renderTarget = new(GraphicsDevice, NativeScreenWidth, NativeScreenHeight);
 
         AssetManager.Initialize(Content);
+        InputSystem.Initialize(this);
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
-        Camera.Initialize(GraphicsDevice);
+        Camera.Initialize(this);
         BuildingSystem.Initialize(this);
 
         Terrain = new Terrain(this);
@@ -114,14 +117,16 @@ public class Game1 : Game
     private void CalculateRenderDestination()
     {
         Point screenSize = GraphicsDevice.Viewport.Bounds.Size;
-        var xScale = (float)screenSize.X / nativeScreenWidth;
-        var yScale = (float)screenSize.Y / nativeScreenHeight;
+        var xScale = (float)screenSize.X / NativeScreenWidth;
+        var yScale = (float)screenSize.Y / NativeScreenHeight;
         var scale = Math.Min(xScale, yScale);
 
-        var xSize = nativeScreenWidth * scale;
-        var ySize = nativeScreenHeight * scale;
-        var xPos = (screenSize.X - xSize) / 2;
-        var yPos = (screenSize.Y - ySize) / 2;
+        var xSize = NativeScreenWidth * scale;
+        var ySize = NativeScreenHeight * scale;
+        RenderTargetSize = new Vector2(xSize, ySize);
+        RenderedBlackBoxSize = new Vector2(screenSize.X - xSize, screenSize.Y - ySize);
+        var xPos = RenderedBlackBoxSize.X / 2;
+        var yPos = RenderedBlackBoxSize.Y / 2;
 
         renderDestination = new Rectangle((int)xPos, (int)yPos, (int)xSize, (int)ySize);
     }
