@@ -19,14 +19,21 @@ public class MainMenuUIComponent : DrawableGameComponent
         var halfScreenWidth = game.NativeScreenWidth / 2;
         var halfScreenHeight = game.NativeScreenHeight / 2;
 
-        var halfButtonWidth = buttonSprite.Bounds.Width / 2;
-        var halfButtonHeight = buttonSprite.Bounds.Height / 2;
+        var playBtnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
-        var playButton = new UIEntity(game, buttonSprite);
-        playButton.Position = new Vector2(halfScreenWidth - halfButtonWidth, halfScreenHeight - halfButtonHeight);
+        var playBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: buttonSprite,
+            frameCount: 2,
+            frameSize: playBtnFrameSize,
+            delaySeconds: 0.5f
+        );
 
-        var exitButton = new UIEntity(game, buttonSprite);
-        exitButton.Position = new Vector2(halfScreenWidth - halfButtonWidth, halfScreenHeight + halfButtonHeight + 10);
+        var playButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight - playBtnFrameSize.Y / 2);
+        var playButton = new UIEntity(game, playButtonPos, playBtnAnimationData);
+
+        var exitButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight + playBtnFrameSize.Y / 2 + 10);
+        var exitButton = new UIEntity(game, exitButtonPos, playBtnAnimationData);
 
         playButton.ButtonPressed += () => SceneManager.LoadGame();
         exitButton.ButtonPressed += () => game.Exit();
@@ -49,7 +56,7 @@ public class MainMenuUIComponent : DrawableGameComponent
     {
         foreach (var uiEntity in uiEntities)
         {
-            uiEntity.DrawCustom();
+            uiEntity.DrawCustom(gameTime);
         }
 
         base.Draw(gameTime);

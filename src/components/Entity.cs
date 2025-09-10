@@ -46,8 +46,8 @@ public class Entity : DrawableGameComponent
         Position = position;
     }
 
-    public Entity(Game game, Vector2 position, AnimationSystem.AnimationData animationData, Texture2D? sprite = null, Vector2 size = default)
-        : this(game, sprite, size)
+    public Entity(Game game, Vector2 position, AnimationSystem.AnimationData animationData, Texture2D? sprite = null)
+        : this(game, sprite, animationData.FrameSize)
     {
         Position = position;
         AnimationSystem = new AnimationSystem(animationData);

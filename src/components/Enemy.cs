@@ -14,7 +14,7 @@ public class Enemy : Entity
     public MovementSystem MovementSystem;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
-        AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health) : base(game, position, animationData, size: size)
+        AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health) : base(game, position, animationData)
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: health);
         HealthSystem.Died += OnDeath;

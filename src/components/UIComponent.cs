@@ -87,7 +87,7 @@ public class UIComponent : DrawableGameComponent
         // Game1 already creates a new sprite batch for this function call.
         foreach (UIEntity uiElement in uiElements)
         {
-            uiElement.DrawCustom();
+            uiElement.DrawCustom(gameTime);
         }
 
         base.Draw(gameTime);
