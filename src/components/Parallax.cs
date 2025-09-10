@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,12 +8,10 @@ namespace _2d_td;
 public class Parallax : DrawableGameComponent
 {
     Game1 game;
+    // layer 0 - farthest from the screen
     // layer 1 - closest to the screen
-    // layer 2 - farther away from the screen
-    private Vector2 _layer1position = new(0, 300);
-    private Vector2 _layer2position = new(0, 300);
-    private Texture2D mockSprite = AssetManager.GetTexture("tree");
-    private Texture2D mockSprite2 = AssetManager.GetTexture("mountain");
+    private List<ParallaxObject> _objects = new List<ParallaxObject>();
+    public Vector3 Tint = new(1, 1, 1);
 
     public Parallax(Game game) : base(game)
     {
@@ -20,50 +20,114 @@ public class Parallax : DrawableGameComponent
 
     public override void Initialize()
     {
+        var minX = -1000;
+        var maxX = 1000;
+        var minY = -20;
+        var maxY = 20;
+        var rnd = new Random();
+        var bigObjects = new List<string> {"skyscraper_ruins_1", "skyscraper_ruins_2"};
+        for (var i = 1; i < 30; i++)
+        {
+            int index = rnd.Next(bigObjects.Count);
+            var obj1 = new ParallaxObject(
+                new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY)),
+                rnd.Next(8,13)/100f,
+                bigObjects[index], Vector2.Zero);
+            _objects.Add(obj1);
+        }
+        var bigSkyObjects = new List<string> {"cloud_z1_1", "cloud_z1_2", "roboship"};
+        for (var i = 1; i < 20; i++)
+        {
+            int index = rnd.Next(bigSkyObjects.Count);
+            var obj1 = new ParallaxObject(
+                new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) * 2 - 100),
+                rnd.Next(7,18)/100f,
+                bigSkyObjects[index], Vector2.UnitX);
+            _objects.Add(obj1);
+        }
+        var midObjects = new List<string> {"deadtree_1", "deadtree_2", "ruins_1"};
+        for (var i = 1; i < 30; i++)
+        {
+            int index = rnd.Next(midObjects.Count);
+            var obj1 = new ParallaxObject(
+                new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY)+40),
+                rnd.Next(65,75)/100f,
+                midObjects[index], Vector2.Zero);
+            _objects.Add(obj1);
+        }
+        var foreground = new List<string> {"smog_1", "smog_2"};
+        for (var i = 1; i < 60; i++)
+        {
+            int index = rnd.Next(foreground.Count);
+            var obj1 = new ParallaxObject(
+                new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) + 40),
+                rnd.Next(75,85)/100f,
+                foreground[index], Vector2.UnitX);
+            _objects.Add(obj1);
+        }
+
+        var bigGradient = new ParallaxObject(
+            new Vector2(-1000, -500),
+            0f,
+            "big_gradient", Vector2.Zero);
+        _objects.Add(bigGradient);
+
         base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
     {
-        var cam = Camera.Position;
-        var layer1rate = 0.05f;
-        _layer1position.X = cam.X * layer1rate;
-        var layer2rate = 0.90f;
-        _layer2position.X = cam.X * layer2rate;
+        foreach (var obj in _objects)
+        {
+            if (obj.Movement != Vector2.Zero)
+            {
+                var speed = 10;
+                var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                obj.Position = new Vector2(
+                    obj.Position.X + obj.Movement.X * dt * speed * obj.ParallaxLayer,
+                    obj.Position.Y + obj.Movement.Y * dt * speed * obj.ParallaxLayer);
+
+                var fixedPos = obj.Position;
+                if (obj.Position.X > 1000)
+                {
+                    fixedPos.X = -1000;
+                } else if (obj.Position.X < -1000) {
+                    fixedPos.X = 1000;
+                }
+                if (obj.Position.Y > 1000)
+                {
+                    fixedPos.Y = -1000;
+                } else if (obj.Position.Y < -1000) {
+                    fixedPos.Y = 1000;
+                }
+                obj.Position = fixedPos;
+            }
+        }
 
         base.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
-        for (var i = 1; i < 100; i++)
-        {
-            var dx = (i - 50) * 100;
-            var newPos = new Vector2(_layer1position.X + dx, _layer1position.Y);
-            game.SpriteBatch.Draw(mockSprite,
-                newPos,
-                sourceRectangle: null,
-                Color.White,
-                rotation: 0f,
-                origin: Vector2.Zero,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: 0.99f);
-        }
+        foreach (var obj in _objects) {
+            var col = new Color(new Color(Tint), (int)((obj.ParallaxLayer / 2 + 0.5f)*255));
 
-        for (var i = 1; i < 50; i++)
-        {
-            var dx = (i - 25) * 200;
-            var newPos = new Vector2(_layer2position.X + dx, _layer2position.Y);
-            game.SpriteBatch.Draw(mockSprite2,
-                newPos,
+            // this is very hacky/hardcoded, just the original spawn location of the camera
+            var offset = 400;
+            var cx = (obj.Position.X+offset) - Camera.Position.X;
+            var cy = (obj.Position.Y+offset) - Camera.Position.Y;
+            var position = new Vector2(
+                obj.Position.X + cx * obj.ParallaxLayer + Camera.Position.X,
+                obj.Position.Y + cy * obj.ParallaxLayer + Camera.Position.Y);
+            game.SpriteBatch.Draw(obj.Sprite,
+                position,
                 sourceRectangle: null,
-                Color.White,
+                col,
                 rotation: 0f,
                 origin: Vector2.Zero,
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
-                layerDepth: 1.0f);
+                layerDepth: 0.99f-obj.ParallaxLayer/100f);
         }
 
         base.Draw(gameTime);
