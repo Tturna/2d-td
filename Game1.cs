@@ -16,6 +16,7 @@ public class Game1 : Game
     public int NativeScreenHeight = 480;
 
     private UIComponent ui;
+    private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
 
@@ -33,6 +34,8 @@ public class Game1 : Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
         CalculateRenderDestination();
+
+        SceneManager.SceneLoaded += InitializeScene;
     }
 
     protected override void Initialize()
@@ -44,28 +47,8 @@ public class Game1 : Game
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
         Camera.Initialize(this);
-        BuildingSystem.Initialize(this);
-        WaveSystem.Initialize(this);
 
-        Terrain = new Terrain(this);
-        Components.Add(Terrain);
-
-        ui = new UIComponent(this);
-        Components.Add(ui);
-
-        var cameraManger = new CameraManager(this);
-        Components.Add(cameraManger);
-
-        var parallax = new Parallax(this);
-        Components.Add(parallax);
-
-        /*EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
-        EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));*/
+        SceneManager.LoadMainMenu();
 
         base.Initialize();
     }
@@ -82,7 +65,9 @@ public class Game1 : Game
         WaveSystem.Update(gameTime);
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        {
+            SceneManager.LoadMainMenu();
+        }
 
         base.Update(gameTime);
     }
@@ -102,9 +87,19 @@ public class Game1 : Game
         SpriteBatch.End();
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
-        SpriteBatch.Begin();
-        ui.Draw(gameTime);
-        SpriteBatch.End();
+        if (ui is not null)
+        {
+            SpriteBatch.Begin();
+            ui.Draw(gameTime);
+            SpriteBatch.End();
+        }
+
+        if (mainMenu is not null)
+        {
+            SpriteBatch.Begin();
+            mainMenu.Draw(gameTime);
+            SpriteBatch.End();
+        }
 
         // Render to the back buffer so the custom render target is visible
         GraphicsDevice.SetRenderTarget(null);
@@ -135,5 +130,47 @@ public class Game1 : Game
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
         CalculateRenderDestination();
+    }
+
+    private void InitializeScene(SceneManager.Scene loadedScene)
+    {
+        Components.Clear();
+        ui = null;
+        mainMenu = null;
+        Terrain = null;
+
+        switch (loadedScene)
+        {
+            case SceneManager.Scene.Game:
+                BuildingSystem.Initialize(this);
+                WaveSystem.Initialize(this);
+
+                Terrain = new Terrain(this);
+                Components.Add(Terrain);
+
+                ui = new UIComponent(this);
+                Components.Add(ui);
+
+                var cameraManger = new CameraManager(this);
+                Components.Add(cameraManger);
+
+                var parallax = new Parallax(this);
+                Components.Add(parallax);
+
+                /*EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
+                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));*/
+                break;
+            case SceneManager.Scene.Menu:
+                mainMenu = new MainMenuUIComponent(this);
+                Components.Add(mainMenu);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"Loaded scene '{loadedScene}' did not match any scene in SceneManager.Scene.");
+        }
     }
 }

@@ -16,6 +16,7 @@ public class Entity : DrawableGameComponent
     // 1 = back, 0 = front
     public float DrawLayerDepth { get; set; } = 0.9f;
     public Texture2D? Sprite { get; set; }
+    public AnimationSystem? AnimationSystem;
 
     public Entity(Game game, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
@@ -45,8 +46,21 @@ public class Entity : DrawableGameComponent
         Position = position;
     }
 
+    public Entity(Game game, Vector2 position, AnimationSystem.AnimationData animationData, Texture2D? sprite = null)
+        : this(game, sprite, animationData.FrameSize)
+    {
+        Position = position;
+        AnimationSystem = new AnimationSystem(animationData);
+    }
+
     public override void Update(GameTime gameTime)
     {
+        if (AnimationSystem is not null)
+        {
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            AnimationSystem.UpdateAnimation(deltaTime);
+        }
+
         base.Update(gameTime);
     }
 
@@ -62,17 +76,25 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-        if (Sprite is null) return;
 
-        Game.SpriteBatch.Draw(Sprite,
-                Position,
-                sourceRectangle: null,
-                Color.White,
-                rotation: RotationRadians,
-                origin: DrawOrigin,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: DrawLayerDepth);
+        if (AnimationSystem is not null)
+        {
+            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawLayerDepth);
+        }
+        else if (Sprite is null) return;
+        else
+        {
+            Game.SpriteBatch.Draw(Sprite,
+                    Position,
+                    sourceRectangle: null,
+                    Color.White,
+                    rotation: RotationRadians,
+                    origin: DrawOrigin,
+                    scale: Vector2.One,
+                    effects: SpriteEffects.None,
+                    layerDepth: DrawLayerDepth);
+
+        }
 
         base.Draw(gameTime);
     }

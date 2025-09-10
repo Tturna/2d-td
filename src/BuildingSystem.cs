@@ -25,6 +25,8 @@ public static class BuildingSystem
 
     public static void Update()
     {
+        if (game is null) return;
+
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
         // TODO: Make a system that doesn't require collision checks against every entity.
