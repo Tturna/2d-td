@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -58,6 +59,11 @@ public class MainMenuUIComponent : DrawableGameComponent
         {
             uiEntity.DrawCustom(gameTime);
         }
+
+        var defaultFont = AssetManager.GetFont("default");
+        var stringSize = defaultFont.MeasureString("Play");
+        game.SpriteBatch.DrawString(defaultFont, "Play", new Vector2(400, 240) - stringSize / 2, Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "Exit", new Vector2(400, 270) - stringSize / 2, Color.White);
 
         base.Draw(gameTime);
     }

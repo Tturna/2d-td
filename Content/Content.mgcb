@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin default_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:default_font.spritefont
+
 #begin sprites/background-objects/zone1/moving-objects/cloud_z1_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
