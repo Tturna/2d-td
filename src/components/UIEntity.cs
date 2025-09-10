@@ -53,7 +53,7 @@ public class UIEntity : Entity
                     Color.White,
                     rotation: 0f,
                     origin: DrawOrigin,
-                    scale: Vector2.One,
+                    scale: Scale,
                     effects: SpriteEffects.None,
                     layerDepth: DrawLayerDepth);
         }

@@ -13,6 +13,7 @@ public class Entity : DrawableGameComponent
     public float RotationRadians { get; set; }
     public Vector2 Size { get; set; }
     public Vector2 DrawOrigin { get; set; } = Vector2.Zero;
+    public Vector2 Scale { get; set; } = Vector2.One;
     // 1 = back, 0 = front
     public float DrawLayerDepth { get; set; } = 0.9f;
     public Texture2D? Sprite { get; set; }
@@ -90,7 +91,7 @@ public class Entity : DrawableGameComponent
                     Color.White,
                     rotation: RotationRadians,
                     origin: DrawOrigin,
-                    scale: Vector2.One,
+                    scale: Scale,
                     effects: SpriteEffects.None,
                     layerDepth: DrawLayerDepth);
 

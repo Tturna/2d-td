@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -73,6 +74,8 @@ public class UIComponent : DrawableGameComponent
             var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
 
             turretHologram.Position = mouseSnappedScreenPos;
+            var size = Camera.Scale;
+            turretHologram.Scale = new Vector2(size, size);
         }
 
         base.Update(gameTime);
