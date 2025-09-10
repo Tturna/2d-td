@@ -65,6 +65,14 @@ public static class AssetManager
 
         // ui
         LoadTexture("slot", "sprites/ui/slot"); // temp
+        LoadTexture("btn_square", "sprites/ui/button_square");
+        LoadTexture("btn_square_small", "sprites/ui/button_smallsquare");
+        LoadTexture("btn_info", "sprites/ui/infobutton");
+        LoadTexture("btn_pause", "sprites/ui/pausebutton");
+        LoadTexture("icon_scrap", "sprites/ui/scrapicon");
+        LoadTexture("icon_scrap_small", "sprites/ui/scrapicon_small");
+        LoadTexture("upgradebg", "sprites/ui/upgradebg");
+        LoadTexture("upgrade_indicator", "sprites/ui/upgradeindicator");
     }
 
     public static Texture2D GetTexture(string name)
