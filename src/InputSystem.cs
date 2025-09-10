@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 public static class InputSystem
 {
+    private static Game1 game;
     private static MouseState mouseState;
 
     private static bool isMouseLeftDown;
@@ -13,6 +14,11 @@ public static class InputSystem
 
     private static int totalScrollAmount;
     private static int justScrolledAmount;
+
+    public static void Initialize(Game1 game)
+    {
+        InputSystem.game = game;
+    }
 
     public static void Update()
     {
@@ -59,6 +65,14 @@ public static class InputSystem
     {
         Point mousePoint = mouseState.Position;
         var mousePos = new Vector2(mousePoint.X, mousePoint.Y);
+        mousePos -= game.RenderedBlackBoxSize / 2;
+        float renderTargetScaleFactor = game.RenderTargetSize.X / game.NativeScreenWidth;
+
+        // Turn real mouse screen position (scaled & stretched) into native screen position.
+        // The mouse position is affected by window scaling but nothing should use that value(?).
+        // That's why we can turn the mouse position into native space immediately and not
+        // need to consider the real, scaled screen space when translating coordinates.
+        mousePos /= renderTargetScaleFactor;
 
         return mousePos;
     }

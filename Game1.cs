@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,10 +9,15 @@ public class Game1 : Game
 {
     public GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
-
     public Terrain Terrain;
+    public Vector2 RenderTargetSize;
+    public Vector2 RenderedBlackBoxSize;
+    public int NativeScreenWidth = 800;
+    public int NativeScreenHeight = 480;
 
     private UIComponent ui;
+    private RenderTarget2D renderTarget;
+    private Rectangle renderDestination;
 
     public Game1()
     {
@@ -19,17 +25,25 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        Graphics.PreferredBackBufferWidth = 800;
-        Graphics.PreferredBackBufferHeight = 480;
+        Graphics.PreferredBackBufferWidth = NativeScreenWidth;
+        Graphics.PreferredBackBufferHeight = NativeScreenHeight;
+        Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+        CalculateRenderDestination();
     }
 
     protected override void Initialize()
     {
+        renderTarget = new(GraphicsDevice, NativeScreenWidth, NativeScreenHeight);
+
         AssetManager.Initialize(Content);
+        InputSystem.Initialize(this);
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
-        Camera.Initialize(GraphicsDevice);
+        Camera.Initialize(this);
         BuildingSystem.Initialize(this);
         WaveSystem.Initialize(this);
 
@@ -75,8 +89,12 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        // Render to custom render target that can be scaled based on display size
+        GraphicsDevice.SetRenderTarget(renderTarget);
         GraphicsDevice.Clear(Color.FromNonPremultiplied(new Vector4(115/255f, 55/255f, 57/255f, 1)));
+
         Matrix translation = Camera.CalculateTranslation();
+
         SpriteBatch.Begin(transformMatrix: translation, sortMode: SpriteSortMode.BackToFront,
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
@@ -87,5 +105,35 @@ public class Game1 : Game
         SpriteBatch.Begin();
         ui.Draw(gameTime);
         SpriteBatch.End();
+
+        // Render to the back buffer so the custom render target is visible
+        GraphicsDevice.SetRenderTarget(null);
+        // GraphicsDevice.Clear(Color.DarkGray);
+
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        SpriteBatch.Draw(renderTarget, renderDestination, Color.White);
+        SpriteBatch.End();
+    }
+
+    private void CalculateRenderDestination()
+    {
+        Point screenSize = GraphicsDevice.Viewport.Bounds.Size;
+        var xScale = (float)screenSize.X / NativeScreenWidth;
+        var yScale = (float)screenSize.Y / NativeScreenHeight;
+        var scale = Math.Min(xScale, yScale);
+
+        var xSize = NativeScreenWidth * scale;
+        var ySize = NativeScreenHeight * scale;
+        RenderTargetSize = new Vector2(xSize, ySize);
+        RenderedBlackBoxSize = new Vector2(screenSize.X - xSize, screenSize.Y - ySize);
+        var xPos = RenderedBlackBoxSize.X / 2;
+        var yPos = RenderedBlackBoxSize.Y / 2;
+
+        renderDestination = new Rectangle((int)xPos, (int)yPos, (int)xSize, (int)ySize);
+    }
+
+    private void OnClientSizeChanged(object sender, EventArgs e)
+    {
+        CalculateRenderDestination();
     }
 }
