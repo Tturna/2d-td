@@ -21,6 +21,12 @@ public static class AssetManager
         _textures.Add(name, _content.Load<Texture2D>(path));
     }
 
+    public static void LoadFont(string name, string contentPath = null)
+    {
+        var path = contentPath is not null ? contentPath : name;
+        _fonts.Add(name, _content.Load<SpriteFont>(path));
+    }
+
     // TODO: Split asset loading once there are different levels and zones.
     // No point in loading zone 1 assets when zone 2 levels are loaded.
     public static void LoadAllAssets()
@@ -65,6 +71,17 @@ public static class AssetManager
 
         // ui
         LoadTexture("slot", "sprites/ui/slot"); // temp
+        LoadTexture("btn_square", "sprites/ui/button_square");
+        LoadTexture("btn_square_small", "sprites/ui/button_smallsquare");
+        LoadTexture("btn_info", "sprites/ui/infobutton");
+        LoadTexture("btn_pause", "sprites/ui/pausebutton");
+        LoadTexture("icon_scrap", "sprites/ui/scrapicon");
+        LoadTexture("icon_scrap_small", "sprites/ui/scrapicon_small");
+        LoadTexture("upgradebg", "sprites/ui/upgradebg");
+        LoadTexture("upgrade_indicator", "sprites/ui/upgradeindicator");
+
+        // fonts
+        LoadFont("default", "default_font");
     }
 
     public static Texture2D GetTexture(string name)
@@ -76,6 +93,18 @@ public static class AssetManager
         else
         {
             throw new KeyNotFoundException($"texture '{name}' not found");
+        }
+    }
+
+    public static SpriteFont GetFont(string name)
+    {
+        if (_fonts.TryGetValue(name, out var font))
+        {
+            return font;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Font '{name}' not found");
         }
     }
 }

@@ -85,6 +85,8 @@ namespace _2d_td
 
         public static void Update(GameTime gameTime)
         {
+            if (game is null) return;
+
             float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (formCooldownRemaining > 0f)
