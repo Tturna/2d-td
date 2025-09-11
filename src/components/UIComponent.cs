@@ -80,6 +80,12 @@ public class UIComponent : DrawableGameComponent
             turretHologram.Scale = new Vector2(size, size);
         }
 
+        if (InputSystem.IsRightMouseButtonClicked())
+        {
+            RemoveTurretHologram();
+            BuildingSystem.SelectTurret(BuildingSystem.TurretType.None);
+        }
+
         base.Update(gameTime);
     }
 
@@ -103,12 +109,18 @@ public class UIComponent : DrawableGameComponent
         base.Draw(gameTime);
     }
 
-    private void CreateTurretHologram(Texture2D sprite)
+    private void RemoveTurretHologram()
     {
         if (turretHologram is not null)
         {
             uiElements.Remove(turretHologram);
+            turretHologram = null;
         }
+    }
+
+    private void CreateTurretHologram(Texture2D sprite)
+    {
+        RemoveTurretHologram();
 
         turretHologram = new UIEntity(game, sprite);
         uiElements.Add(turretHologram);
