@@ -29,7 +29,8 @@ public static class EnemySystem
             delaySeconds: 0.1f
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture, 100);
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+            health: 100, scrapValue: 1);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 
@@ -58,7 +59,8 @@ public static class EnemySystem
             delaySeconds: 0.1f
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture, 300);
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+            health: 300, scrapValue: 5);
         Enemies.Add(enemy);
         game.Components.Add(enemy);
 
