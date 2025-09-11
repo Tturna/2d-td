@@ -20,7 +20,7 @@ public static class CurrencyManager
             return price;
         }
 
-        throw new ArgumentOutOfRangeException($"Given type {towerType.ToString()} does not have a price.");
+        throw new ArgumentOutOfRangeException(nameof(towerType), $"Given type {towerType} does not have a price.");
     }
 
     public static bool TryBuyTower(BuildingSystem.TurretType towerType)
