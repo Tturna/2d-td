@@ -47,7 +47,6 @@ public class Game1 : Game
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
         Camera.Initialize(this);
-        ClickManager.Initialize(this);
 
         SceneManager.LoadMainMenu();
 
@@ -62,7 +61,6 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         InputSystem.Update();
-        ClickManager.Update();
 
         switch (SceneManager.CurrentScene)
         {

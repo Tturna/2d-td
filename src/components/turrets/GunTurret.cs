@@ -58,7 +58,7 @@ class GunTurret : Entity, IClickable
 
         Game.Components.Add(turretHead);
 
-        ClickManager.Clicked += (mouseScreenPosition, _) =>
+        InputSystem.Clicked += (mouseScreenPosition, _) =>
         {
             if (detailsPrompt is not null && detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition))
             {
@@ -236,7 +236,7 @@ class GunTurret : Entity, IClickable
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {
-        return ClickManager.DefaultCollisionCheck(this, mouseWorldPosition);
+        return Collision.IsPointInEntity(mouseWorldPosition, this);
     }
 
     public override void Destroy()

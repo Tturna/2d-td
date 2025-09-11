@@ -70,8 +70,8 @@ public class Enemy : Entity
 
     private void OnDeath(Entity diedEntity)
     {
-        Game.Components.Remove(this);
         EnemySystem.Enemies.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
+        Destroy();
     }
 }
