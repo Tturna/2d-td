@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
 #nullable enable
-class GunTurret : Entity
+class GunTurret : Entity, IClickable
 {
     private struct Bullet
     {
@@ -18,6 +19,9 @@ class GunTurret : Entity
     private Vector2 turretHeadAxisCenter;
     private List<Bullet> bullets = new();
     List<Enemy> hitEnemies = new();
+
+    private TurretDetailsPrompt? detailsPrompt;
+    private bool detailsClosed;
 
     private int tileRange = 12;
     private int damage = 10;
@@ -53,6 +57,19 @@ class GunTurret : Entity
         turretHead.DrawLayerDepth = 0.8f;
 
         Game.Components.Add(turretHead);
+
+        ClickManager.Clicked += (mouseScreenPosition, _) =>
+        {
+            if (detailsPrompt is not null && detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition))
+            {
+                CloseDetailsView();
+                detailsClosed = true;
+            }
+            else
+            {
+                detailsClosed = false;
+            }
+        };
     }
 
     public override void Update(GameTime gameTime)
@@ -198,5 +215,35 @@ class GunTurret : Entity
             var enemy = hitEnemies[i];
             enemy.HealthSystem.TakeDamage(damage);
         }
+    }
+
+    private void CloseDetailsView()
+    {
+        UIComponent.Instance.RemoveUIEntity(detailsPrompt);
+        detailsPrompt = null;
+    }
+
+    public void OnClick()
+    {
+        if (!detailsClosed && detailsPrompt is null)
+        {
+            detailsPrompt = new TurretDetailsPrompt(Game, this);
+            UIComponent.Instance.AddUIEntity(detailsPrompt);
+        }
+
+        detailsClosed = false;
+    }
+
+    public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    {
+        return ClickManager.DefaultCollisionCheck(this, mouseWorldPosition);
+    }
+
+    public override void Destroy()
+    {
+        CloseDetailsView();
+        Game.Components.Remove(turretHead);
+
+        base.Destroy();
     }
 }

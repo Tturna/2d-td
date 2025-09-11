@@ -47,6 +47,7 @@ public class Game1 : Game
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
         Camera.Initialize(this);
+        ClickManager.Initialize(this);
 
         SceneManager.LoadMainMenu();
 
@@ -63,6 +64,7 @@ public class Game1 : Game
         InputSystem.Update();
         BuildingSystem.Update();
         WaveSystem.Update(gameTime);
+        ClickManager.Update();
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         {
