@@ -86,4 +86,14 @@ public static class BuildingSystem
             _ => null
         };
     }
+
+    public static TurretType GetTurretTypeFromEntity(Entity turretEntity)
+    {
+        return turretEntity switch
+        {
+            GunTurret => TurretType.GunTurret,
+            Railgun => TurretType.Railgun,
+            _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
+        };
+    }
 }

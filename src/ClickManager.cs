@@ -3,10 +3,14 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
+// TODO: Consider combining with InputSystem
 public static class ClickManager
 {
     private static Game1 game;
     private static bool collectionModified;
+
+    public delegate void ClickedHandler(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition);
+    public static event ClickedHandler Clicked;
 
     public static void Initialize(Game1 game)
     {
@@ -18,15 +22,22 @@ public static class ClickManager
     {
         if (InputSystem.IsLeftMouseButtonClicked())
         {
+            var mouseScreenPos = InputSystem.GetMouseScreenPosition();
+            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+            OnClicked(mouseScreenPos, mouseWorldPos);
+
             collectionModified = false;
 
-            foreach (var component in game.Components)
+            for (int i = game.Components.Count - 1; i >= 0; i--)
             {
+                // If a clickable destroys multiple components, i might go out of bounds.
+                // Iterate until we find the next available one.
+                if (game.Components.Count < i + 1) continue;
+
+                var component = game.Components[i];
                 if (component is not IClickable) continue;
 
                 var clickable = (IClickable)component;
-                var mouseScreenPos = InputSystem.GetMouseScreenPosition();
-                var mouseWorldPos = InputSystem.GetMouseWorldPosition();
 
                 if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
                 {
@@ -43,5 +54,10 @@ public static class ClickManager
     public static bool DefaultCollisionCheck(Entity entity, Vector2 mouseWorldPos)
     {
         return Collision.IsPointInEntity(mouseWorldPos, entity);
+    }
+
+    private static void OnClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    {
+        Clicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
     }
 }

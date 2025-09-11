@@ -99,4 +99,14 @@ public class Entity : DrawableGameComponent
 
         base.Draw(gameTime);
     }
+
+    public virtual void Destroy()
+    {
+        var index = Game.Components.IndexOf(this);
+
+        if (index >= 0)
+        {
+            Game.Components.RemoveAt(index);
+        }
+    }
 }

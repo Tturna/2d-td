@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +11,12 @@ public class UIComponent : DrawableGameComponent
     private List<UIEntity> uiElements = new();
     private UIEntity turretHologram;
 
+    public static UIComponent Instance;
+
     public UIComponent(Game game) : base(game)
     {
         this.game = (Game1)game;
+        Instance = this;
     }
 
     public override void Initialize()
@@ -132,5 +134,17 @@ public class UIComponent : DrawableGameComponent
     {
         var turretSprite = BuildingSystem.SelectTurret(turretType);
         CreateTurretHologram(turretSprite);
+    }
+
+    public void AddUIEntity(UIEntity entity)
+    {
+        uiElements.Add(entity);
+        game.Components.Add(entity);
+    }
+
+    public void RemoveUIEntity(UIEntity entity)
+    {
+        uiElements.Remove(entity);
+        entity.Destroy();
     }
 }

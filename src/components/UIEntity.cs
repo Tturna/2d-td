@@ -24,7 +24,7 @@ public class UIEntity : Entity, IClickable
     // would be simple.
     public override void Draw(GameTime gameTime) { }
 
-    public void DrawCustom(GameTime gameTime)
+    public virtual void DrawCustom(GameTime gameTime)
     {
         if (AnimationSystem is not null)
         {
@@ -58,10 +58,8 @@ public class UIEntity : Entity, IClickable
     {
         if (ButtonPressed is null) return false;
 
-        var mousePos = InputSystem.GetMouseScreenPosition();
-
         // TODO: Consider implementing a system that prevents buttons from being clicked if
         // another UI element is on top of it.
-        return Collision.IsPointInEntity(mousePos, this);
+        return Collision.IsPointInEntity(mouseScreenPosition, this);
     }
 }
