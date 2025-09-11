@@ -49,11 +49,14 @@ public static class BuildingSystem
 
         CanPlaceTurret = !isColliding;
 
-        if (CanPlaceTurret && InputSystem.IsLeftMouseButtonClicked() && selectedTurretType != TurretType.None)
+        if (InputSystem.IsLeftMouseButtonClicked())
         {
-            if (TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
+            if (CanPlaceTurret && selectedTurretType != TurretType.None)
             {
-                game.Components.Add(turret);
+                if (TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
+                {
+                    game.Components.Add(turret);
+                }
             }
         }
     }
