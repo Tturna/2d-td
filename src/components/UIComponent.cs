@@ -20,6 +20,8 @@ public class UIComponent : DrawableGameComponent
     public override void Initialize()
     {
         var slotSprite = AssetManager.GetTexture("slot");
+
+        // Turret buttons
         var turretOneSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
@@ -92,6 +94,11 @@ public class UIComponent : DrawableGameComponent
         {
             uiElement.DrawCustom(gameTime);
         }
+
+        var defaultFont = AssetManager.GetFont("default");
+        game.SpriteBatch.DrawString(defaultFont, $"Scrap: {CurrencyManager.Balance}", Vector2.Zero, Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "10", new Vector2(24, 460), Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "25", new Vector2(68, 460), Color.White);
 
         base.Draw(gameTime);
     }

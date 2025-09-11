@@ -51,21 +51,26 @@ public static class BuildingSystem
 
         if (CanPlaceTurret && InputSystem.IsLeftMouseButtonClicked() && selectedTurretType != TurretType.None)
         {
-            var turret = SpawnTurret(selectedTurretType, gridMousePosition);
-            game.Components.Add(turret);
+            if (TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
+            {
+                game.Components.Add(turret);
+            }
         }
     }
 
-    private static Entity SpawnTurret(TurretType turretType, Vector2 position)
+    private static bool TrySpawnTurret(TurretType turretType, Vector2 position, out Entity spawnedTurret)
     {
-        Entity turret = turretType switch {
+        spawnedTurret = null;
+        if (!CurrencyManager.TryBuyTower(turretType)) return false;
+
+        spawnedTurret = turretType switch {
             TurretType.GunTurret => new GunTurret(game),
             TurretType.Railgun => new Railgun(game),
             _ => throw new ArgumentOutOfRangeException(nameof(selectedTurretType), $"Unhandled entity type: {selectedTurretType}")
         };
 
-        turret.Position = position;
-        return turret;
+        spawnedTurret.Position = position;
+        return true;
     }
 
     public static Texture2D SelectTurret(TurretType turretType)
