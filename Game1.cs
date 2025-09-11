@@ -62,9 +62,15 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         InputSystem.Update();
-        BuildingSystem.Update();
-        WaveSystem.Update(gameTime);
         ClickManager.Update();
+
+        switch (SceneManager.CurrentScene)
+        {
+            case SceneManager.Scene.Game:
+                BuildingSystem.Update();
+                WaveSystem.Update(gameTime);
+                break;
+        }
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         {
