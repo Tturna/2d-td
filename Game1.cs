@@ -95,14 +95,14 @@ public class Game1 : Game
         // Draw UI separately after everything else to avoid it from being moved by the camera.
         if (ui is not null)
         {
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
             ui.Draw(gameTime);
             SpriteBatch.End();
         }
 
         if (mainMenu is not null)
         {
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
             mainMenu.Draw(gameTime);
             SpriteBatch.End();
         }

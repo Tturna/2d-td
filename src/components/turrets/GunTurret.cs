@@ -18,14 +18,14 @@ class GunTurret : Entity, IClickable
     private Entity? turretHead;
     private Vector2 turretHeadAxisCenter;
     private List<Bullet> bullets = new();
-    List<Enemy> hitEnemies = new();
+    private List<Enemy> hitEnemies = new();
+    private float photonCannonTargetDistance;
 
     private TurretDetailsPrompt? detailsPrompt;
     private bool detailsClosed;
 
-    private int tileRange = 12;
-    private int damage = 10;
-    private float actionsPerSecond = 4f;
+    private int baseRange = 12;
+    private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bulletLifetime = 1f;
     private float bulletLength = 16f;
@@ -33,9 +33,42 @@ class GunTurret : Entity, IClickable
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase")) { }
+    public enum Upgrade
+    {
+        NoUpgrade,
+        DoubleGun,
+        PhotonCannon,
+        BotShot,
+        ImprovedBarrel,
+        RocketShots
+    }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("gunTurretBase")) { }
+    public TowerUpgradeNode CurrentUpgrade { get; private set; }
+
+    public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase"))
+    {
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString());
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString());
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), leftChild: photonCannon, rightChild: botShot);
+        photonCannon.SetParent(doubleGun);
+        botShot.SetParent(doubleGun);
+
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString());
+        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), leftChild: rocketShots);
+        rocketShots.SetParent(improvedBarrel);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), parent: null,
+            leftChild: doubleGun, rightChild: improvedBarrel);
+
+        doubleGun.SetParent(defaultNode);
+        improvedBarrel.SetParent(defaultNode);
+        CurrentUpgrade = defaultNode;
+    }
+
+    public GunTurret(Game game, Vector2 position) : this(game)
+    {
+        Position = position;
+    }
 
     public override void Initialize()
     {
@@ -75,11 +108,79 @@ class GunTurret : Entity, IClickable
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage: 10, tileRange: baseRange);
+        }
+        else if (CurrentUpgrade.Name == Upgrade.DoubleGun.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond + 1, damage: 10, tileRange: baseRange);
+        }
+        else if (CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        {
+            HandlePhotonCannon(deltaTime);
+        }
+        else if (CurrentUpgrade.Name == Upgrade.BotShot.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond * 0.25f, damage: 18, tileRange: baseRange - 2);
+            // TODO: multiply projectiles by 5 and add knockback
+        }
+        else if (CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage: 13, tileRange: baseRange + 4);
+        }
+        else if (CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
+        {
+            // TODO: +20 damage, +4 range, 2 tile radius explosion on impact
+        }
+
+        base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        base.Draw(gameTime);
+
+        if (CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        {
+            if (photonCannonTargetDistance > 0)
+            {
+                var rad = -turretHead!.RotationRadians - MathHelper.PiOver2;
+                var dirX = Math.Sin(rad);
+                var dirY = Math.Cos(rad);
+                var dir = new Vector2((float)dirX, (float)dirY);
+                var target = turretHead!.Position + dir * photonCannonTargetDistance;
+                LineUtility.DrawLine(Game.SpriteBatch, turretHead!.Position + dir * 16, target, Color.Red, thickness: 2f);
+            }
+        }
+        else
+        {
+            foreach (Bullet bullet in bullets)
+            {
+                var positionDiff = bullet.Target - turretHeadAxisCenter;
+                var direction = positionDiff;
+                direction.Normalize();
+
+                var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
+                var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
+
+                var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
+                var bulletStart = position - direction * bulletLength / 2f;
+                var bulletEnd = position + direction * bulletLength / 2f;
+
+                LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
+            }
+        }
+    }
+
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
+    {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy();
+        var closestEnemy = GetClosestEnemy(tileRange);
 
         actionTimer += deltaTime;
-        UpdateBullets(deltaTime);
+        UpdateBullets(deltaTime, damage);
 
         if (closestEnemy is null) return;
 
@@ -90,32 +191,36 @@ class GunTurret : Entity, IClickable
             Shoot(closestEnemy);
             actionTimer = 0f;
         }
-
-        base.Update(gameTime);
     }
 
-    public override void Draw(GameTime gameTime)
+    private void HandlePhotonCannon(float deltaTime)
     {
-        base.Draw(gameTime);
+        // Deal damage 8 times per second
+        var actionInterval = 1f / 8f;
+        var closestEnemy = GetClosestEnemy(baseRange);
 
-        foreach (Bullet bullet in bullets)
+        actionTimer += deltaTime;
+        photonCannonTargetDistance = 0f;
+
+        if (closestEnemy is null) return;
+
+        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position, deltaTime);
+
+        if (aimAccuracy < 0.05f)
         {
-            var positionDiff = bullet.Target - turretHeadAxisCenter;
-            var direction = positionDiff;
-            direction.Normalize();
+            photonCannonTargetDistance = (turretHead!.Position - closestEnemy.Position).Length();
 
-            var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
-            var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
-
-            var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
-            var bulletStart = position - direction * bulletLength / 2f;
-            var bulletEnd = position + direction * bulletLength / 2f;
-
-            LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
+            if (actionTimer >= actionInterval)
+            {
+                // 60 DPS
+                var damage = (int)(60 * actionInterval);
+                closestEnemy.HealthSystem.TakeDamage(damage);
+                actionTimer = 0f;
+            }
         }
     }
 
-    private Enemy? GetClosestEnemy()
+    private Enemy? GetClosestEnemy(int tileRange)
     {
         Enemy? closestEnemy = null;
         float closestDistance = float.PositiveInfinity;
@@ -138,7 +243,11 @@ class GunTurret : Entity, IClickable
         return closestEnemy;
     }
 
-    private void AimAtClosestEnemy(Vector2 enemyPosition, float deltaTime)
+    /// <summary>
+    /// Aims the turret head smoothly towards given position. Returns similarity between turret head direction
+    /// and target direction (0 = same, 1 = opposite).
+    /// </summary>
+    private float AimAtClosestEnemy(Vector2 enemyPosition, float deltaTime)
     {
         var enemyTurretDiff = enemyPosition - turretHead!.Position;
         // Add MathHelper.Pi to rotate by 180 degrees because the turret sprite's forward direction is opposite to the mathematical zero angle.
@@ -154,6 +263,8 @@ class GunTurret : Entity, IClickable
         var targetRadians = turretHead.RotationRadians + radiansDiff;
         var smoothRadians = MathHelper.Lerp(turretHead.RotationRadians, targetRadians, deltaTime * turretSmoothSpeed);
         turretHead.RotationRadians = smoothRadians;
+
+        return radiansDiff / MathHelper.Pi;
     }
 
     private void Shoot(Enemy enemy)
@@ -169,7 +280,7 @@ class GunTurret : Entity, IClickable
         bullets.Add(bullet);
     }
 
-    private void UpdateBullets(float deltaTime)
+    private void UpdateBullets(float deltaTime, int damage)
     {
         hitEnemies.Clear();
 
@@ -227,7 +338,7 @@ class GunTurret : Entity, IClickable
     {
         if (!detailsClosed && detailsPrompt is null)
         {
-            detailsPrompt = new TurretDetailsPrompt(Game, this);
+            detailsPrompt = new TurretDetailsPrompt(Game, this, UpgradeLeft, UpgradeRight);
             UIComponent.Instance.AddUIEntity(detailsPrompt);
         }
 
@@ -245,5 +356,29 @@ class GunTurret : Entity, IClickable
         Game.Components.Remove(turretHead);
 
         base.Destroy();
+    }
+
+    public void UpgradeLeft()
+    {
+        if (CurrentUpgrade.LeftChild is null)
+        {
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
+        }
+
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return;
+
+        CurrentUpgrade = CurrentUpgrade.LeftChild;
+    }
+
+    public void UpgradeRight()
+    {
+        if (CurrentUpgrade.RightChild is null)
+        {
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
+        }
+
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return;
+
+        CurrentUpgrade = CurrentUpgrade.RightChild;
     }
 }

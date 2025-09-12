@@ -6,34 +6,48 @@ namespace _2d_td;
 public class TurretDetailsPrompt : UIEntity
 {
     private UIEntity sellBtn;
+    private UIEntity leftUpgradeBtn;
+    private UIEntity rightUpgradeBtn;
     private Entity targetTurret;
-    private Vector2 upgradeBgSpriteSize, sellBtnSpriteSize;
+    private Vector2 upgradeBgSpriteSize, buttonSpriteSize;
 
-    public TurretDetailsPrompt(Game game, Entity turret) : base(game, AssetManager.GetTexture("upgradebg"))
+    public TurretDetailsPrompt(Game game, Entity turret, Action upgradeLeftCallback,
+        Action upgradeRightCallback) : base(game, AssetManager.GetTexture("upgradebg"))
     {
         targetTurret = turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
-        var sellButtonSprite = AssetManager.GetTexture("btn_square");
+        var buttonSprite = AssetManager.GetTexture("btn_square");
 
         upgradeBgSpriteSize = new Vector2(upgradeBgSprite.Bounds.Width, upgradeBgSprite.Bounds.Height);
-        sellBtnSpriteSize = new Vector2(sellButtonSprite.Bounds.Width, sellButtonSprite.Bounds.Height);
+        buttonSpriteSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
 
-        var sellBtnAnimationData = new AnimationSystem.AnimationData
+        var buttonAnimationData = new AnimationSystem.AnimationData
         (
-            texture: sellButtonSprite,
+            texture: buttonSprite,
             frameCount: 2,
-            frameSize: new Vector2(sellBtnSpriteSize.X / 2, sellBtnSpriteSize.Y),
+            frameSize: new Vector2(buttonSpriteSize.X / 2, buttonSpriteSize.Y),
             delaySeconds: 0.5f
         );
 
-        sellBtn = new UIEntity(game, Vector2.Zero, sellBtnAnimationData);
+        sellBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+        leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+        rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+
+        leftUpgradeBtn.DrawLayerDepth = 0.8f;
+        rightUpgradeBtn.DrawLayerDepth = 0.8f;
+
         sellBtn.ButtonPressed += () =>
         {
             CurrencyManager.SellTower(BuildingSystem.GetTurretTypeFromEntity(targetTurret));
             targetTurret.Destroy();
         };
 
+        leftUpgradeBtn.ButtonPressed += () => upgradeLeftCallback();
+        rightUpgradeBtn.ButtonPressed += () => upgradeRightCallback();
+
         game.Components.Add(sellBtn);
+        game.Components.Add(leftUpgradeBtn);
+        game.Components.Add(rightUpgradeBtn);
     }
 
     public override void Update(GameTime gameTime)
@@ -46,8 +60,16 @@ public class TurretDetailsPrompt : UIEntity
         var detailsScreenPosition = Camera.WorldToScreenPosition(detailsOffsetPosition);
         var sellBtnScreenPosition = Camera.WorldToScreenPosition(sellBtnOffsetPosition);
 
+        var baseButtonPosition = detailsOffsetPosition + upgradeBgSpriteSize / 2 - Vector2.UnitY * 26;
+        var upgradeLeftBtnPosition = baseButtonPosition - Vector2.UnitX * (buttonSpriteSize.X / 2 + 3);
+        var upgradeRightBtnPosition = baseButtonPosition + Vector2.UnitX * 3;
+        var upgradeLeftBtnScreenPosition = Camera.WorldToScreenPosition(upgradeLeftBtnPosition);
+        var upgradeRightBtnScreenPosition = Camera.WorldToScreenPosition(upgradeRightBtnPosition);
+
         Position = detailsScreenPosition;
         sellBtn.Position = sellBtnScreenPosition;
+        leftUpgradeBtn.Position = upgradeLeftBtnScreenPosition;
+        rightUpgradeBtn.Position = upgradeRightBtnScreenPosition;
 
         base.Update(gameTime);
     }
@@ -55,6 +77,8 @@ public class TurretDetailsPrompt : UIEntity
     public override void DrawCustom(GameTime gameTime)
     {
         sellBtn.DrawCustom(gameTime);
+        leftUpgradeBtn.DrawCustom(gameTime);
+        rightUpgradeBtn.DrawCustom(gameTime);
 
         base.DrawCustom(gameTime);
     }

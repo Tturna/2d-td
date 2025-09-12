@@ -7,15 +7,24 @@ public static class CurrencyManager
 {
     private static Dictionary<BuildingSystem.TurretType, int> towerPriceMap = new()
     {
-        { BuildingSystem.TurretType.GunTurret, 10 },
+        { BuildingSystem.TurretType.GunTurret, 20 },
         { BuildingSystem.TurretType.Railgun, 25 }
+    };
+
+    private static Dictionary<string, int> towerUpgradePriceMap = new()
+    {
+        { GunTurret.Upgrade.DoubleGun.ToString(), 20 },
+        { GunTurret.Upgrade.ImprovedBarrel.ToString(), 15 },
+        { GunTurret.Upgrade.PhotonCannon.ToString(), 75 },
+        { GunTurret.Upgrade.BotShot.ToString(), 50 },
+        { GunTurret.Upgrade.RocketShots.ToString(), 70 },
     };
 
     public static int Balance { get; private set; }
 
     public static void Initialize()
     {
-        Balance = 50;
+        Balance = 200;
     }
 
     public static int GetTowerPrice(BuildingSystem.TurretType towerType)
@@ -45,6 +54,22 @@ public static class CurrencyManager
     public static void SellTower(BuildingSystem.TurretType towerType)
     {
         Balance += (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+    }
+
+    public static bool TryBuyUpgrade(string upgradeName)
+    {
+        if (towerUpgradePriceMap.TryGetValue(upgradeName, out var price))
+        {
+            if (Balance < price)
+            {
+                return false;
+            }
+
+            Balance -= price;
+            return true;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(upgradeName), $"{upgradeName} is not a valid upgrade.");
     }
 
     public static void AddBalance(int amount)
