@@ -33,6 +33,8 @@ class GunTurret : Entity, IClickable
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
+    private Random random = new();
+
     public enum Upgrade
     {
         NoUpgrade,
@@ -123,8 +125,8 @@ class GunTurret : Entity, IClickable
         }
         else if (CurrentUpgrade.Name == Upgrade.BotShot.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond * 0.25f, damage: 18, tileRange: baseRange - 2);
-            // TODO: multiply projectiles by 5 and add knockback
+            HandleBotShot(deltaTime);
+            // TODO: add knockback
         }
         else if (CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
@@ -188,7 +190,39 @@ class GunTurret : Entity, IClickable
 
         if (actionTimer >= actionInterval)
         {
-            Shoot(closestEnemy);
+            Shoot(closestEnemy.Position + closestEnemy.Size / 2);
+            actionTimer = 0f;
+        }
+    }
+
+    private void HandleBotShot(float deltaTime)
+    {
+        var actionInterval = 1f / (actionsPerSecond * 0.25f);
+        var closestEnemy = GetClosestEnemy(baseRange - 2);
+
+        actionTimer += deltaTime;
+        UpdateBullets(deltaTime, 18);
+
+        if (closestEnemy is null) return;
+
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+
+        if (actionTimer >= actionInterval)
+        {
+            var enemyPosition = closestEnemy.Position + closestEnemy.Size / 2;
+            var normalizedTarget = enemyPosition - turretHead!.Position;
+            normalizedTarget.Normalize();
+            normalizedTarget *= 20;
+            normalizedTarget += turretHead.Position;
+
+            for (int i = 0; i < 5; i++)
+            {
+                var randomX = random.Next(-12, 12);
+                var randomY = random.Next(-12, 12);
+                var targetPosition = normalizedTarget + new Vector2(randomX, randomY);
+                Shoot(targetPosition);
+            }
+
             actionTimer = 0f;
         }
     }
@@ -267,12 +301,11 @@ class GunTurret : Entity, IClickable
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Enemy enemy)
+    private void Shoot(Vector2 targetPosition)
     {
-        var target = enemy.Position + enemy.Size / 2;
         var bullet = new Bullet
         {
-            Target = target,
+            Target = targetPosition,
             InitialLifetime = bulletLifetime,
             Lifetime = bulletLifetime
         };
