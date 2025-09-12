@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -10,13 +11,16 @@ public class TurretDetailsPrompt : UIEntity
     private UIEntity rightUpgradeBtn;
     private Entity targetTurret;
     private Vector2 upgradeBgSpriteSize, buttonSpriteSize;
+    private int leftUpgradePrice, rightUpgradePrice;
+    private SpriteFont defaultFont;
 
-    public TurretDetailsPrompt(Game game, Entity turret, Action upgradeLeftCallback,
-        Action upgradeRightCallback) : base(game, AssetManager.GetTexture("upgradebg"))
+    public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode> upgradeLeftCallback,
+        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) : base(game, AssetManager.GetTexture("upgradebg"))
     {
         targetTurret = turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
         var buttonSprite = AssetManager.GetTexture("btn_square");
+        defaultFont = AssetManager.GetFont("default");
 
         upgradeBgSpriteSize = new Vector2(upgradeBgSprite.Bounds.Width, upgradeBgSprite.Bounds.Height);
         buttonSpriteSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
@@ -36,14 +40,19 @@ public class TurretDetailsPrompt : UIEntity
         leftUpgradeBtn.DrawLayerDepth = 0.8f;
         rightUpgradeBtn.DrawLayerDepth = 0.8f;
 
+        var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTurret);
+
         sellBtn.ButtonPressed += () =>
         {
-            CurrencyManager.SellTower(BuildingSystem.GetTurretTypeFromEntity(targetTurret));
+            CurrencyManager.SellTower(turretType);
             targetTurret.Destroy();
         };
 
-        leftUpgradeBtn.ButtonPressed += () => upgradeLeftCallback();
-        rightUpgradeBtn.ButtonPressed += () => upgradeRightCallback();
+        leftUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeLeftCallback);
+        rightUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeRightCallback);
+
+        leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
+        rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
 
         game.Components.Add(sellBtn);
         game.Components.Add(leftUpgradeBtn);
@@ -68,8 +77,16 @@ public class TurretDetailsPrompt : UIEntity
 
         Position = detailsScreenPosition;
         sellBtn.Position = sellBtnScreenPosition;
-        leftUpgradeBtn.Position = upgradeLeftBtnScreenPosition;
-        rightUpgradeBtn.Position = upgradeRightBtnScreenPosition;
+
+        if (leftUpgradeBtn is not null)
+        {
+            leftUpgradeBtn.Position = upgradeLeftBtnScreenPosition;
+        }
+
+        if (rightUpgradeBtn is not null)
+        {
+            rightUpgradeBtn.Position = upgradeRightBtnScreenPosition;
+        }
 
         base.Update(gameTime);
     }
@@ -77,8 +94,18 @@ public class TurretDetailsPrompt : UIEntity
     public override void DrawCustom(GameTime gameTime)
     {
         sellBtn.DrawCustom(gameTime);
-        leftUpgradeBtn.DrawCustom(gameTime);
-        rightUpgradeBtn.DrawCustom(gameTime);
+
+        if (leftUpgradeBtn is not null)
+        {
+            leftUpgradeBtn.DrawCustom(gameTime);
+            Game.SpriteBatch.DrawString(defaultFont, leftUpgradePrice.ToString(), leftUpgradeBtn.Position, Color.White);
+        }
+
+        if (rightUpgradeBtn is not null)
+        {
+            rightUpgradeBtn.DrawCustom(gameTime);
+            Game.SpriteBatch.DrawString(defaultFont, rightUpgradePrice.ToString(), rightUpgradeBtn.Position, Color.White);
+        }
 
         base.DrawCustom(gameTime);
     }
@@ -104,5 +131,28 @@ public class TurretDetailsPrompt : UIEntity
         // clicked.
 
         return true;
+    }
+
+    private void Upgrade(TowerUpgradeNode currentUpgrade, Func<TowerUpgradeNode> callback)
+    {
+        currentUpgrade = callback();
+
+        if (currentUpgrade.LeftChild is not null)
+        {
+            leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
+        }
+        else
+        {
+            leftUpgradeBtn = null;
+        }
+
+        if (currentUpgrade.RightChild is not null)
+        {
+            rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
+        }
+        else
+        {
+            rightUpgradeBtn = null;
+        }
     }
 }
