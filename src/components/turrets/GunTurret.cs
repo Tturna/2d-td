@@ -177,7 +177,7 @@ class GunTurret : Entity, IClickable
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy(tileRange);
+        var closestEnemy = TurretHelper.GetClosestEnemy(this, baseRange);
 
         actionTimer += deltaTime;
         UpdateBullets(deltaTime, damage);
@@ -197,7 +197,7 @@ class GunTurret : Entity, IClickable
     {
         // Deal damage 8 times per second
         var actionInterval = 1f / 8f;
-        var closestEnemy = GetClosestEnemy(baseRange);
+        var closestEnemy = TurretHelper.GetClosestEnemy(this, baseRange);
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
@@ -220,28 +220,6 @@ class GunTurret : Entity, IClickable
         }
     }
 
-    private Enemy? GetClosestEnemy(int tileRange)
-    {
-        Enemy? closestEnemy = null;
-        float closestDistance = float.PositiveInfinity;
-
-        // TODO: Don't loop over all enemies. Just the ones in range.
-        foreach (Enemy enemy in EnemySystem.Enemies)
-        {
-            var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
-
-            if (distanceToEnemy > tileRange * Grid.TileLength)
-                continue;
-
-            if (distanceToEnemy < closestDistance)
-            {
-                closestDistance = distanceToEnemy;
-                closestEnemy = enemy;
-            }
-        }
-
-        return closestEnemy;
-    }
 
     /// <summary>
     /// Aims the turret head smoothly towards given position. Returns similarity between turret head direction

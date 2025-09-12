@@ -36,23 +36,7 @@ class Railgun : Entity
 
     private void ShootAtClosestEnemy()
     {
-        Enemy closestEnemy = null;
-        float closestDistance = float.PositiveInfinity;
-
-        // TODO: Don't loop over all enemies. Just the ones in range.
-        foreach (Enemy enemy in EnemySystem.Enemies)
-        {
-            var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
-
-            if (distanceToEnemy > tileRange * Grid.TileLength)
-                continue;
-
-            if (distanceToEnemy < closestDistance)
-            {
-                closestDistance = distanceToEnemy;
-                closestEnemy = enemy;
-            }
-        }
+        var closestEnemy = TurretHelper.GetClosestEnemy(this, tileRange);
 
         if (closestEnemy is null) return;
 
