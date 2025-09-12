@@ -184,7 +184,7 @@ class GunTurret : Entity, IClickable
 
         if (closestEnemy is null) return;
 
-        AimAtClosestEnemy(closestEnemy.Position, deltaTime);
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (actionTimer >= actionInterval)
         {
@@ -204,7 +204,7 @@ class GunTurret : Entity, IClickable
 
         if (closestEnemy is null) return;
 
-        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position, deltaTime);
+        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (aimAccuracy < 0.05f)
         {
