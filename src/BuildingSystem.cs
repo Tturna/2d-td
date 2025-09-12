@@ -14,7 +14,9 @@ public static class BuildingSystem
     }
 
     private static Game1 game;
+    private static TimeSpan lastGameTime;
     private static TurretType selectedTurretType;
+    private static TimeSpan allowedTurretPlacementTime;
 
     public static bool CanPlaceTurret { get; private set; }
 
@@ -23,8 +25,9 @@ public static class BuildingSystem
         BuildingSystem.game = (Game1)game;
     }
 
-    public static void Update()
+    public static void Update(GameTime gameTime)
     {
+        lastGameTime = gameTime.TotalGameTime;
         if (game is null) return;
 
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
@@ -47,17 +50,15 @@ public static class BuildingSystem
             }
         }
 
-        CanPlaceTurret = !isColliding;
+        CanPlaceTurret = !isColliding &&
+            gameTime.TotalGameTime > allowedTurretPlacementTime &&
+            selectedTurretType != TurretType.None;
 
-        if (InputSystem.IsLeftMouseButtonClicked())
+        if (InputSystem.IsLeftMouseButtonClicked() &&
+            CanPlaceTurret &&
+            TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
         {
-            if (CanPlaceTurret && selectedTurretType != TurretType.None)
-            {
-                if (TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
-                {
-                    game.Components.Add(turret);
-                }
-            }
+            game.Components.Add(turret);
         }
     }
 
@@ -79,6 +80,7 @@ public static class BuildingSystem
     public static Texture2D SelectTurret(TurretType turretType)
     {
         selectedTurretType = turretType;
+        allowedTurretPlacementTime = lastGameTime.Add(TimeSpan.FromMilliseconds(200));
 
         return turretType switch {
             TurretType.GunTurret => AssetManager.GetTexture("gunTurretBase"),
