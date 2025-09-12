@@ -65,7 +65,7 @@ public class Game1 : Game
         switch (SceneManager.CurrentScene)
         {
             case SceneManager.Scene.Game:
-                BuildingSystem.Update();
+                BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
                 break;
         }
