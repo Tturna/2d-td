@@ -33,7 +33,7 @@ class GunTurret : Entity, IClickable
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
-    private enum Upgrade
+    public enum Upgrade
     {
         NoUpgrade,
         DoubleGun,
@@ -365,6 +365,8 @@ class GunTurret : Entity, IClickable
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return;
+
         CurrentUpgrade = CurrentUpgrade.LeftChild;
     }
 
@@ -374,6 +376,8 @@ class GunTurret : Entity, IClickable
         {
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
         }
+
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return;
 
         CurrentUpgrade = CurrentUpgrade.RightChild;
     }
