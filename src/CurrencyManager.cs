@@ -11,7 +11,12 @@ public static class CurrencyManager
         { BuildingSystem.TurretType.Railgun, 25 }
     };
 
-    public static int Balance { get; private set; } = 50;
+    public static int Balance { get; private set; }
+
+    public static void Initialize()
+    {
+        Balance = 50;
+    }
 
     public static int GetTowerPrice(BuildingSystem.TurretType towerType)
     {

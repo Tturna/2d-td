@@ -150,6 +150,7 @@ public class Game1 : Game
             case SceneManager.Scene.Game:
                 BuildingSystem.Initialize(this);
                 WaveSystem.Initialize(this);
+                CurrencyManager.Initialize();
 
                 Terrain = new Terrain(this);
                 Components.Add(Terrain);
@@ -163,13 +164,6 @@ public class Game1 : Game
                 var parallax = new Parallax(this);
                 Components.Add(parallax);
 
-                /*EnemySystem.SpawnFridgeEnemy(this, new Vector2(10, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(30, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(50, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(70, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(90, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(110, 400));
-                  EnemySystem.SpawnWalkerEnemy(this, new Vector2(130, 400));*/
                 break;
             case SceneManager.Scene.Menu:
                 mainMenu = new MainMenuUIComponent(this);
