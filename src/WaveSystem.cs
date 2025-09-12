@@ -39,10 +39,8 @@ namespace _2d_td
         private static float waveCd;
         private static float waveCdLeft;
 
-        //these variables are for the long term malliable script
+        // these variables are for the long term malliable script
         private static Zone currentZone;
-
-
 
         private static Game1 game;
 
@@ -72,15 +70,13 @@ namespace _2d_td
 
             wave1 = new Wave { formations = new List<Formation> { mockForm1, mockForm2, mockForm3 } };
 
-            wave2 = new Wave { formations = new List<Formation> {mockForm3, mockForm1,mockForm2,mockForm1,mockForm1} };
+            wave2 = new Wave { formations = new List<Formation> { mockForm3, mockForm1, mockForm2, mockForm1, mockForm1 } };
 
             zone1 = new Zone { waves = new List<Wave> { wave1,wave2 }, currentLvl = 1 };
 
             currentZone = zone1;
 
-            maxWaveIndex = 5 + (currentZone.currentLvl-1) * 2;
-
-            //StartWave(zone1);
+            maxWaveIndex = 5 + (currentZone.currentLvl - 1) * 2;
         }
 
         public static void Update(GameTime gameTime)
@@ -119,16 +115,12 @@ namespace _2d_td
 
             if (currentFormationIndex < wave.formations.Count)
             {
-
                 Formation formation = wave.formations[currentFormationIndex];
-
-                
-
                 SpawnFormation(formation);
 
                 currentFormationIndex++; 
                 formCooldownRemaining = formCooldown; 
-            }else if(EnemySystem.Enemies.Count == 0)
+            } else if (EnemySystem.Enemies.Count == 0)
             {
                 EndWave();
             }
@@ -144,26 +136,26 @@ namespace _2d_td
             Console.WriteLine(formation.enemies);
             for (int i = 0; i < formation.enemies; i++)
             {
-                EnemySystem.SpawnWalkerEnemy(game, new Vector2(i*10, 400));
+                EnemySystem.SpawnWalkerEnemy(game, new Vector2(i * 10, 400));
             }
         }
 
         public static void EndWave()
         {
-            Console.WriteLine("Wave "+currentWaveIndex+" Has Ended");
+            Console.WriteLine("Wave " + currentWaveIndex + " Has Ended");
             waveStarted = false;
             waveCdLeft = waveCd;
             currentFormationIndex = 0;
-            //called when the wave ends and will give the player time to build or wtv
+            // called when the wave ends and will give the player time to build or wtv
         }
 
         private static void NextWave()
         { 
             currentWaveIndex++;
-            Console.WriteLine("Wave " + currentWaveIndex+" Has Started");
+            Console.WriteLine("Wave " + currentWaveIndex + " Has Started");
             waveStarted = true;
 
-            //starts next wave
+            // starts next wave
         }
     }
 }

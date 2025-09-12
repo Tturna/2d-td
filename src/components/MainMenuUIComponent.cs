@@ -8,6 +8,8 @@ public class MainMenuUIComponent : DrawableGameComponent
 {
     private Game1 game;
     private List<UIEntity> uiEntities = new();
+    private SpriteFont defaultFont;
+    private Vector2 playButtonStringSize;
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -16,6 +18,9 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
+        defaultFont = AssetManager.GetFont("default");
+        playButtonStringSize = defaultFont.MeasureString("Play");
+
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var halfScreenWidth = game.NativeScreenWidth / 2;
         var halfScreenHeight = game.NativeScreenHeight / 2;
@@ -60,10 +65,8 @@ public class MainMenuUIComponent : DrawableGameComponent
             uiEntity.DrawCustom(gameTime);
         }
 
-        var defaultFont = AssetManager.GetFont("default");
-        var stringSize = defaultFont.MeasureString("Play");
-        game.SpriteBatch.DrawString(defaultFont, "Play", new Vector2(400, 240) - stringSize / 2, Color.White);
-        game.SpriteBatch.DrawString(defaultFont, "Exit", new Vector2(400, 270) - stringSize / 2, Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "Play", new Vector2(400, 240) - playButtonStringSize / 2, Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "Exit", new Vector2(400, 270) - playButtonStringSize / 2, Color.White);
 
         base.Draw(gameTime);
     }

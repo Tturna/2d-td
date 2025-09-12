@@ -54,15 +54,11 @@ public static class BuildingSystem
             gameTime.TotalGameTime > allowedTurretPlacementTime &&
             selectedTurretType != TurretType.None;
 
-        if (InputSystem.IsLeftMouseButtonClicked())
+        if (InputSystem.IsLeftMouseButtonClicked() &&
+            CanPlaceTurret &&
+            TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
         {
-            if (CanPlaceTurret)
-            {
-                if (TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
-                {
-                    game.Components.Add(turret);
-                }
-            }
+            game.Components.Add(turret);
         }
     }
 
