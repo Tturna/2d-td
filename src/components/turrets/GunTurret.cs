@@ -174,7 +174,7 @@ class GunTurret : AbstractTurret, IClickable
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = TurretHelper.GetClosestEnemy(this, baseRange);
+        var closestEnemy = GetClosestEnemy(baseRange);
 
         actionTimer += deltaTime;
         UpdateBullets(deltaTime, damage);
@@ -194,7 +194,7 @@ class GunTurret : AbstractTurret, IClickable
     {
         // Deal damage 8 times per second
         var actionInterval = 1f / 8f;
-        var closestEnemy = TurretHelper.GetClosestEnemy(this, baseRange);
+        var closestEnemy = GetClosestEnemy(baseRange);
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;

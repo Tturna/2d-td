@@ -4,7 +4,7 @@ namespace _2d_td;
 
 // TODO: Abstract some of this functionality so that methods don't repeat a million times
 // across different turret implementations.
-class Railgun : Entity
+class Railgun : AbstractTurret
 {
     int tileRange = 18;
     int damage = 30;
@@ -15,7 +15,7 @@ class Railgun : Entity
     {
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("turretTwo"))
+    public Railgun(Game game, Vector2 position) : base(game, AssetManager.GetTexture("turretTwo"))
     {
     }
 
@@ -36,7 +36,7 @@ class Railgun : Entity
 
     private void ShootAtClosestEnemy()
     {
-        var closestEnemy = TurretHelper.GetClosestEnemy(this, tileRange);
+        var closestEnemy = GetClosestEnemy(tileRange);
 
         if (closestEnemy is null) return;
 

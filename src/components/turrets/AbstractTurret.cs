@@ -21,6 +21,29 @@ class AbstractTurret : Entity, IClickable
             leftChild: null, rightChild: null);
     }
 
+    public Enemy? GetClosestEnemy(int tileRange)
+    {
+        Enemy? closestEnemy = null;
+        float closestDistance = float.PositiveInfinity;
+
+        // TODO: Don't loop over all enemies. Just the ones in range.
+        foreach (Enemy enemy in EnemySystem.Enemies)
+        {
+            var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
+
+            if (distanceToEnemy > tileRange * Grid.TileLength)
+                continue;
+
+            if (distanceToEnemy < closestDistance)
+            {
+                closestDistance = distanceToEnemy;
+                closestEnemy = enemy;
+            }
+        }
+
+        return closestEnemy;
+    }
+
     public void CloseDetailsView()
     {
         UIComponent.Instance.RemoveUIEntity(detailsPrompt);
