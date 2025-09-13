@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -8,7 +6,6 @@ namespace _2d_td;
 #nullable enable
 class Projectile : Entity
 {
-    // public Vector2 Target;
     public Vector2 Direction;
     public float InitialLifetime = 1f;
     public float Lifetime;
@@ -16,6 +13,7 @@ class Projectile : Entity
     public float bulletLength = 16f;
     private List<Enemy> hitEnemies = new();
     private int damage = 0;
+
     public Projectile(Game game, Vector2 startLocation, Vector2 _direction, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
     {
         Position = startLocation;
