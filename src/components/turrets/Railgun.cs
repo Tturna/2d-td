@@ -4,8 +4,9 @@ namespace _2d_td;
 
 // TODO: Abstract some of this functionality so that methods don't repeat a million times
 // across different turret implementations.
-class Railgun : AbstractTurret
+class Railgun : Entity
 {
+    private TowerCore towerCore;
     int tileRange = 18;
     int damage = 30;
     float actionsPerSecond = 0.5f;
@@ -13,10 +14,12 @@ class Railgun : AbstractTurret
 
     public Railgun(Game game) : base(game, AssetManager.GetTexture("turretTwo"))
     {
+        towerCore = new TowerCore(this);
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, AssetManager.GetTexture("turretTwo"))
+    public Railgun(Game game, Vector2 position) : this(game)
     {
+        Position = position;
     }
 
     public override void Update(GameTime gameTime)
@@ -36,10 +39,19 @@ class Railgun : AbstractTurret
 
     private void ShootAtClosestEnemy()
     {
-        var closestEnemy = GetClosestEnemy(tileRange);
+        var closestEnemy = towerCore.GetClosestEnemy(tileRange);
 
         if (closestEnemy is null) return;
 
         closestEnemy.HealthSystem.TakeDamage(damage);
+    }
+
+    public override void Destroy()
+    {
+        towerCore.CloseDetailsView();
+        // Game.Components.Remove(turretHead);
+        Game.Components.Remove(towerCore);
+
+        base.Destroy();
     }
 }

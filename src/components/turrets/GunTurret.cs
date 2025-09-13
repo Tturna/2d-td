@@ -1,12 +1,12 @@
 using System;
-using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
 #nullable enable
-class GunTurret : AbstractTurret, IClickable
+class GunTurret : Entity
 {
+    private TowerCore towerCore;
     private Entity? turretHead;
     private Vector2 turretHeadAxisCenter;
     private float photonCannonTargetDistance;
@@ -32,6 +32,8 @@ class GunTurret : AbstractTurret, IClickable
 
     public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase"))
     {
+        towerCore = new TowerCore(this);
+
         var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString());
         var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString());
         var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), leftChild: photonCannon, rightChild: botShot);
@@ -47,7 +49,7 @@ class GunTurret : AbstractTurret, IClickable
 
         doubleGun.SetParent(defaultNode);
         improvedBarrel.SetParent(defaultNode);
-        CurrentUpgrade = defaultNode;
+        towerCore.CurrentUpgrade = defaultNode;
     }
 
     public GunTurret(Game game, Vector2 position) : this(game)
@@ -76,46 +78,35 @@ class GunTurret : AbstractTurret, IClickable
 
         Game.Components.Add(turretHead);
 
-        InputSystem.Clicked += (mouseScreenPosition, _) =>
-        {
-            if (detailsPrompt is not null && detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition))
-            {
-                CloseDetailsView();
-                detailsClosed = true;
-            }
-            else
-            {
-                detailsClosed = false;
-            }
-        };
+        InputSystem.Clicked += (mouseScreenPosition, _) => towerCore.HandleCloseDetails(mouseScreenPosition);
     }
 
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage: 10, tileRange: baseRange);
         }
-        else if (CurrentUpgrade.Name == Upgrade.DoubleGun.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.DoubleGun.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond + 1, damage: 10, tileRange: baseRange);
         }
-        else if (CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
             HandlePhotonCannon(deltaTime);
         }
-        else if (CurrentUpgrade.Name == Upgrade.BotShot.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.BotShot.ToString())
         {
             HandleBotShot(deltaTime);
             // TODO: add knockback
         }
-        else if (CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage: 13, tileRange: baseRange + 4);
         }
-        else if (CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
         {
             HandleRocketShots(deltaTime);
         }
@@ -127,7 +118,7 @@ class GunTurret : AbstractTurret, IClickable
     {
         base.Draw(gameTime);
 
-        if (CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        if (towerCore.CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
             if (photonCannonTargetDistance > 0)
             {
@@ -144,7 +135,7 @@ class GunTurret : AbstractTurret, IClickable
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy(tileRange);
+        var closestEnemy = towerCore.GetClosestEnemy(tileRange);
 
         actionTimer += deltaTime;
 
@@ -165,7 +156,7 @@ class GunTurret : AbstractTurret, IClickable
     private void HandleBotShot(float deltaTime)
     {
         var actionInterval = 1f / (actionsPerSecond * 0.25f);
-        var closestEnemy = GetClosestEnemy(baseRange - 2);
+        var closestEnemy = towerCore.GetClosestEnemy(baseRange - 2);
 
         actionTimer += deltaTime;
 
@@ -195,7 +186,7 @@ class GunTurret : AbstractTurret, IClickable
     {
         // Deal damage 8 times per second
         var actionInterval = 1f / 8f;
-        var closestEnemy = GetClosestEnemy(baseRange);
+        var closestEnemy = towerCore.GetClosestEnemy(baseRange);
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
@@ -226,7 +217,7 @@ class GunTurret : AbstractTurret, IClickable
 
         // TODO: 2 tile explosion on bullet impact
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy(baseRange + 8);
+        var closestEnemy = towerCore.GetClosestEnemy(baseRange + 8);
 
         actionTimer += deltaTime;
 
@@ -280,8 +271,9 @@ class GunTurret : AbstractTurret, IClickable
 
     public override void Destroy()
     {
-        CloseDetailsView();
+        towerCore.CloseDetailsView();
         Game.Components.Remove(turretHead);
+        Game.Components.Remove(towerCore);
 
         base.Destroy();
     }
