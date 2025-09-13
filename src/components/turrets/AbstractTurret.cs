@@ -1,0 +1,69 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using _2d_td.interfaces;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace _2d_td;
+
+#nullable enable
+class AbstractTurret : Entity, IClickable
+{
+    public TowerUpgradeNode CurrentUpgrade { get; set; }
+
+    public TurretDetailsPrompt? detailsPrompt;
+    public bool detailsClosed;
+
+    public AbstractTurret(Game game, Texture2D texture) : base(game, texture)
+    {
+        CurrentUpgrade = new TowerUpgradeNode("Default", parent: null,
+            leftChild: null, rightChild: null);
+    }
+
+    public void CloseDetailsView()
+    {
+        UIComponent.Instance.RemoveUIEntity(detailsPrompt);
+        detailsPrompt = null;
+    }
+
+    public void OnClick()
+    {
+        if (!detailsClosed && detailsPrompt is null)
+        {
+            detailsPrompt = new TurretDetailsPrompt(Game, this, UpgradeLeft, UpgradeRight);
+            UIComponent.Instance.AddUIEntity(detailsPrompt);
+        }
+
+        detailsClosed = false;
+    }
+
+    public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    {
+        return Collision.IsPointInEntity(mouseWorldPosition, this);
+    }
+
+    public void UpgradeLeft()
+    {
+        if (CurrentUpgrade.LeftChild is null)
+        {
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
+        }
+
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return;
+
+        CurrentUpgrade = CurrentUpgrade.LeftChild;
+    }
+
+    public void UpgradeRight()
+    {
+        if (CurrentUpgrade.RightChild is null)
+        {
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
+        }
+
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return;
+
+        CurrentUpgrade = CurrentUpgrade.RightChild;
+    }
+}

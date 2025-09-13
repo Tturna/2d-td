@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace _2d_td;
 
 #nullable enable
-class GunTurret : Entity, IClickable
+class GunTurret : AbstractTurret, IClickable
 {
     private struct Bullet
     {
@@ -20,9 +20,6 @@ class GunTurret : Entity, IClickable
     private List<Bullet> bullets = new();
     private List<Enemy> hitEnemies = new();
     private float photonCannonTargetDistance;
-
-    private TurretDetailsPrompt? detailsPrompt;
-    private bool detailsClosed;
 
     private int baseRange = 12;
     private float actionsPerSecond = 1f;
@@ -43,7 +40,7 @@ class GunTurret : Entity, IClickable
         RocketShots
     }
 
-    public TowerUpgradeNode CurrentUpgrade { get; private set; }
+    // public TowerUpgradeNode CurrentUpgrade { get; private set; }
 
     public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase"))
     {
@@ -306,57 +303,11 @@ class GunTurret : Entity, IClickable
         }
     }
 
-    private void CloseDetailsView()
-    {
-        UIComponent.Instance.RemoveUIEntity(detailsPrompt);
-        detailsPrompt = null;
-    }
-
-    public void OnClick()
-    {
-        if (!detailsClosed && detailsPrompt is null)
-        {
-            detailsPrompt = new TurretDetailsPrompt(Game, this, UpgradeLeft, UpgradeRight);
-            UIComponent.Instance.AddUIEntity(detailsPrompt);
-        }
-
-        detailsClosed = false;
-    }
-
-    public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
-    {
-        return Collision.IsPointInEntity(mouseWorldPosition, this);
-    }
-
     public override void Destroy()
     {
         CloseDetailsView();
         Game.Components.Remove(turretHead);
 
         base.Destroy();
-    }
-
-    public void UpgradeLeft()
-    {
-        if (CurrentUpgrade.LeftChild is null)
-        {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
-        }
-
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return;
-
-        CurrentUpgrade = CurrentUpgrade.LeftChild;
-    }
-
-    public void UpgradeRight()
-    {
-        if (CurrentUpgrade.RightChild is null)
-        {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
-        }
-
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return;
-
-        CurrentUpgrade = CurrentUpgrade.RightChild;
     }
 }
