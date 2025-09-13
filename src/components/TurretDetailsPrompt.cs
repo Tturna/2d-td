@@ -34,11 +34,6 @@ public class TurretDetailsPrompt : UIEntity
         );
 
         sellBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
-        leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
-        rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
-
-        leftUpgradeBtn.DrawLayerDepth = 0.8f;
-        rightUpgradeBtn.DrawLayerDepth = 0.8f;
 
         var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTurret);
 
@@ -48,15 +43,33 @@ public class TurretDetailsPrompt : UIEntity
             targetTurret.Destroy();
         };
 
-        leftUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeLeftCallback);
-        rightUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeRightCallback);
+        if (currentUpgrade.LeftChild is not null)
+        {
+            leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            leftUpgradeBtn.DrawLayerDepth = 0.8f;
+            leftUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeLeftCallback);
+            leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
+            game.Components.Add(leftUpgradeBtn);
+        }
+        else
+        {
+            leftUpgradeBtn = null;
+        }
 
-        leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
-        rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
+        if (currentUpgrade.RightChild is not null)
+        {
+            rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            rightUpgradeBtn.DrawLayerDepth = 0.8f;
+            rightUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeRightCallback);
+            rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
+            game.Components.Add(rightUpgradeBtn);
+        }
+        else
+        {
+            rightUpgradeBtn = null;
+        }
 
         game.Components.Add(sellBtn);
-        game.Components.Add(leftUpgradeBtn);
-        game.Components.Add(rightUpgradeBtn);
     }
 
     public override void Update(GameTime gameTime)
@@ -112,12 +125,9 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void Destroy()
     {
-        var index = Game.Components.IndexOf(sellBtn);
-
-        if (index >= 0)
-        {
-            Game.Components.RemoveAt(index);
-        }
+        Game.Components.Remove(sellBtn);
+        Game.Components.Remove(leftUpgradeBtn);
+        Game.Components.Remove(rightUpgradeBtn);
 
         base.Destroy();
     }
@@ -127,8 +137,8 @@ public class TurretDetailsPrompt : UIEntity
         if (Collision.IsPointInEntity(mouseScreenPosition, this)) return false;
         if (Collision.IsPointInEntity(mouseScreenPosition, sellBtn)) return false;
 
-        // TODO: When there are upgrade buttons, don't close the details view when they're
-        // clicked.
+        // The details view won't close when upgrade buttons are clicked because the
+        // click also hits the background (this), which prevents closing.
 
         return true;
     }
@@ -143,6 +153,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
+            Game.Components.Remove(leftUpgradeBtn);
             leftUpgradeBtn = null;
         }
 
@@ -152,6 +163,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
+            Game.Components.Remove(rightUpgradeBtn);
             rightUpgradeBtn = null;
         }
     }
