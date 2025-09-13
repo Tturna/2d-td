@@ -15,7 +15,6 @@ class Projectile : Entity
     public float bulletLength = 16f;
     private List<Enemy> hitEnemies = new();
     private int damage = 0;
-    // public Direction
     public Projectile(Game game, Vector2 startLocation, Vector2 _target, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
     {
         Position = startLocation;
@@ -72,11 +71,10 @@ class Projectile : Entity
         var direction = diff;
         direction.Normalize();
 
-        // var position = Position - direction * (BulletPixelsPerSecond * deltaTime);
         var bulletStart = Position - direction * bulletLength / 2f;
-        var bulletEnd = Position + direction * bulletLength / 2f;
+        // var bulletEnd = Position + direction * bulletLength / 2f;
 
-        LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
+        LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: 2f);
 
         base.Draw(gameTime);
     }

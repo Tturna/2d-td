@@ -253,7 +253,7 @@ class GunTurret : AbstractTurret, IClickable
         // };
 
         // bullets.Add(bullet);
-        var bullet = new Projectile(Game, Position, target, damage, bulletPixelsPerSecond, 10f);
+        var bullet = new Projectile(Game, turretHeadAxisCenter, target, damage, bulletPixelsPerSecond, 1f);
         Game.Components.Add(bullet);
     }
 
