@@ -8,26 +8,26 @@ namespace _2d_td;
 #nullable enable
 class GunTurret : AbstractTurret, IClickable
 {
-    private struct Bullet
-    {
-        public Vector2 Target;
-        public float InitialLifetime;
-        public float Lifetime;
-    }
+    // private struct Bullet
+    // {
+    //     public Vector2 Target;
+    //     public float InitialLifetime;
+    //     public float Lifetime;
+    // }
 
     private Entity? turretHead;
     private Vector2 turretHeadAxisCenter;
-    private List<Bullet> bullets = new();
-    private List<Enemy> hitEnemies = new();
+    // private List<Bullet> bullets = new();
+    // private List<Enemy> hitEnemies = new();
     private float photonCannonTargetDistance;
 
     private int baseRange = 12;
     private float actionsPerSecond = 1f;
     private float actionTimer;
-    private float bulletLifetime = 1f;
-    private float bulletLength = 16f;
+    // private float bulletLifetime = 1f;
+    // private float bulletLength = 16f;
     private float bulletPixelsPerSecond = 360f;
-    private float muzzleOffsetFactor = 20f;
+    // private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
     public enum Upgrade
@@ -153,21 +153,21 @@ class GunTurret : AbstractTurret, IClickable
         }
         else
         {
-            foreach (Bullet bullet in bullets)
-            {
-                var positionDiff = bullet.Target - turretHeadAxisCenter;
-                var direction = positionDiff;
-                direction.Normalize();
+            // foreach (Bullet bullet in bullets)
+            // {
+            //     var positionDiff = bullet.Target - turretHeadAxisCenter;
+            //     var direction = positionDiff;
+            //     direction.Normalize();
 
-                var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
-                var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
+            //     var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
+            //     var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
 
-                var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
-                var bulletStart = position - direction * bulletLength / 2f;
-                var bulletEnd = position + direction * bulletLength / 2f;
+            //     var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
+            //     var bulletStart = position - direction * bulletLength / 2f;
+            //     var bulletEnd = position + direction * bulletLength / 2f;
 
-                LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
-            }
+            //     LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
+            // }
         }
     }
 
@@ -177,7 +177,7 @@ class GunTurret : AbstractTurret, IClickable
         var closestEnemy = GetClosestEnemy(baseRange);
 
         actionTimer += deltaTime;
-        UpdateBullets(deltaTime, damage);
+        // UpdateBullets(deltaTime, damage);
 
         if (closestEnemy is null) return;
 
@@ -185,7 +185,7 @@ class GunTurret : AbstractTurret, IClickable
 
         if (actionTimer >= actionInterval)
         {
-            Shoot(closestEnemy);
+            Shoot(closestEnemy, damage);
             actionTimer = 0f;
         }
     }
@@ -242,66 +242,68 @@ class GunTurret : AbstractTurret, IClickable
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Enemy enemy)
+    private void Shoot(Enemy enemy, int damage)
     {
         var target = enemy.Position + enemy.Size / 2;
-        var bullet = new Bullet
-        {
-            Target = target,
-            InitialLifetime = bulletLifetime,
-            Lifetime = bulletLifetime
-        };
+        // var bullet = new Bullet
+        // {
+        //     Target = target,
+        //     InitialLifetime = bulletLifetime,
+        //     Lifetime = bulletLifetime
+        // };
 
-        bullets.Add(bullet);
+        // bullets.Add(bullet);
+        var bullet = new Projectile(Game, Position, target, damage, bulletPixelsPerSecond, 10f);
+        Game.Components.Add(bullet);
     }
 
-    private void UpdateBullets(float deltaTime, int damage)
-    {
-        hitEnemies.Clear();
+    // private void UpdateBullets(float deltaTime, int damage)
+    // {
+    //     hitEnemies.Clear();
 
-        for (int i = bullets.Count - 1; i >= 0; i--)
-        {
-            var bullet = bullets[i];
+    //     for (int i = bullets.Count - 1; i >= 0; i--)
+    //     {
+    //         var bullet = bullets[i];
 
-            var positionDiff = bullet.Target - turretHeadAxisCenter;
-            var direction = positionDiff;
-            direction.Normalize();
+    //         var positionDiff = bullet.Target - turretHeadAxisCenter;
+    //         var direction = positionDiff;
+    //         direction.Normalize();
 
-            var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
-            var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
+    //         var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
+    //         var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
 
-            var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
-            var oldPosition = muzzleCenter + direction * (bulletPixelsPerSecond * (reverseLifetime - deltaTime));
+    //         var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
+    //         var oldPosition = muzzleCenter + direction * (bulletPixelsPerSecond * (reverseLifetime - deltaTime));
 
-            var bulletHit = false;
+    //         var bulletHit = false;
 
-            foreach (Enemy enemy in EnemySystem.Enemies)
-            {
-                if (Collision.IsLineInEntity(oldPosition, position, enemy,
-                    out Vector2 entryPoint, out Vector2 exitPoint))
-                {
-                    hitEnemies.Add(enemy);
-                    bulletHit = true;
-                }
-            }
+    //         foreach (Enemy enemy in EnemySystem.Enemies)
+    //         {
+    //             if (Collision.IsLineInEntity(oldPosition, position, enemy,
+    //                 out Vector2 entryPoint, out Vector2 exitPoint))
+    //             {
+    //                 hitEnemies.Add(enemy);
+    //                 bulletHit = true;
+    //             }
+    //         }
 
-            bullet.Lifetime -= deltaTime;
+    //         bullet.Lifetime -= deltaTime;
 
-            if (bulletHit || bullet.Lifetime <= 0f)
-            {
-                bullets.RemoveAt(i);
-                continue;
-            }
+    //         if (bulletHit || bullet.Lifetime <= 0f)
+    //         {
+    //             bullets.RemoveAt(i);
+    //             continue;
+    //         }
 
-            bullets[i] = bullet;
-        }
+    //         bullets[i] = bullet;
+    //     }
 
-        for (int i = 0; i < hitEnemies.Count; i++)
-        {
-            var enemy = hitEnemies[i];
-            enemy.HealthSystem.TakeDamage(damage);
-        }
-    }
+    //     for (int i = 0; i < hitEnemies.Count; i++)
+    //     {
+    //         var enemy = hitEnemies[i];
+    //         enemy.HealthSystem.TakeDamage(damage);
+    //     }
+    // }
 
     public override void Destroy()
     {
