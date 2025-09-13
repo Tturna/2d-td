@@ -29,6 +29,7 @@ public static class BuildingSystem
     {
         lastGameTime = gameTime.TotalGameTime;
         if (game is null) return;
+        if (selectedTurretType == TurretType.None) return;
 
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
@@ -39,6 +40,8 @@ public static class BuildingSystem
 
         foreach (var component in game.Components)
         {
+            if (isColliding) break;
+
             if (component is not Entity) continue;
 
             var entity = (Entity)component;
@@ -46,11 +49,13 @@ public static class BuildingSystem
             if (entity.Position == gridMousePosition)
             {
                 isColliding = true;
-                break;
             }
         }
 
+        var turretAllowsPlacement = TowerCore.CanPlaceTower(selectedTurretType, gridMousePosition);
+
         CanPlaceTurret = !isColliding &&
+            turretAllowsPlacement &&
             gameTime.TotalGameTime > allowedTurretPlacementTime &&
             selectedTurretType != TurretType.None;
 

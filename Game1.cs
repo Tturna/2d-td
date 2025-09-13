@@ -20,8 +20,11 @@ public class Game1 : Game
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
 
+    public static Game1 Instance { get; private set; }
+
     public Game1()
     {
+        Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;

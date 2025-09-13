@@ -2,8 +2,6 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
-// TODO: Abstract some of this functionality so that methods don't repeat a million times
-// across different turret implementations.
 class Railgun : Entity
 {
     private TowerCore towerCore;

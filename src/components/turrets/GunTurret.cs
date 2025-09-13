@@ -18,6 +18,8 @@ class GunTurret : Entity
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
+    public static Vector2 DefaultGridSize { get; private set; } = new Vector2(2, 2);
+
     private Random random = new();
 
     public enum Upgrade
