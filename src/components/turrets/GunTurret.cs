@@ -134,7 +134,7 @@ class GunTurret : Entity, IClickable
         }
         else if (CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
         {
-            // TODO: +20 damage, +4 range, 2 tile radius explosion on impact
+            HandleRocketShots(deltaTime);
         }
 
         base.Update(gameTime);
@@ -252,6 +252,31 @@ class GunTurret : Entity, IClickable
                 actionTimer = 0f;
             }
         }
+    }
+
+    private void HandleRocketShots(float deltaTime)
+    {
+        // TODO: Centralize upgrade specific data like damage and range definitions.
+        // Either have them all defined in Update(), define them in the handler functions
+        // or come up with a better structure.
+
+        // TODO: 2 tile explosion on bullet impact
+        var actionInterval = 1f / actionsPerSecond;
+        var closestEnemy = GetClosestEnemy(baseRange + 8);
+
+        actionTimer += deltaTime;
+        UpdateBullets(deltaTime, 33);
+
+        if (closestEnemy is null) return;
+
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+
+        if (actionTimer >= actionInterval)
+        {
+            Shoot(closestEnemy.Position + closestEnemy.Size / 2);
+            actionTimer = 0f;
+        }
+
     }
 
     private Enemy? GetClosestEnemy(int tileRange)
