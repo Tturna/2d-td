@@ -37,6 +37,16 @@ public static class CurrencyManager
         throw new ArgumentOutOfRangeException(nameof(towerType), $"Given type {towerType} does not have a price.");
     }
 
+    public static int GetUpgradePrice(string upgradeName)
+    {
+        if (towerUpgradePriceMap.TryGetValue(upgradeName, out int price))
+        {
+            return price;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(upgradeName), $"{upgradeName} is not a valid upgrade.");
+    }
+
     public static bool TryBuyTower(BuildingSystem.TurretType towerType)
     {
         var price = GetTowerPrice(towerType);
