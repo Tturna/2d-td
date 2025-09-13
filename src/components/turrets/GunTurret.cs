@@ -216,12 +216,12 @@ class GunTurret : AbstractTurret, IClickable
     {
         var target = enemy.Position + enemy.Size / 2;
 
-        var muzzleOffset = target - turretHeadAxisCenter;
-        muzzleOffset.Normalize();
-        muzzleOffset *= muzzleOffsetFactor;
+        var direction = target - turretHeadAxisCenter;
+        direction.Normalize();
+        var muzzleOffset = direction * muzzleOffsetFactor;
         var startLocation = turretHeadAxisCenter+muzzleOffset;
 
-        var bullet = new Projectile(Game, startLocation, target, damage, bulletPixelsPerSecond, 1f);
+        var bullet = new Projectile(Game, startLocation, direction, damage, bulletPixelsPerSecond, 1f);
         Game.Components.Add(bullet);
     }
 

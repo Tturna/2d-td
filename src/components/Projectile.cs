@@ -16,11 +16,10 @@ class Projectile : Entity
     public float bulletLength = 16f;
     private List<Enemy> hitEnemies = new();
     private int damage = 0;
-    public Projectile(Game game, Vector2 startLocation, Vector2 _target, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
+    public Projectile(Game game, Vector2 startLocation, Vector2 _direction, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
     {
         Position = startLocation;
-        Direction = _target - Position;
-        Direction.Normalize();
+        Direction = _direction;
         damage = _damage;
         Lifetime = _lifetime;
         BulletPixelsPerSecond = speedInPixel;
