@@ -8,7 +8,8 @@ namespace _2d_td;
 #nullable enable
 class Projectile : Entity
 {
-    public Vector2 Target;
+    // public Vector2 Target;
+    public Vector2 Direction;
     public float InitialLifetime = 1f;
     public float Lifetime;
     public float BulletPixelsPerSecond = 0f;
@@ -18,7 +19,8 @@ class Projectile : Entity
     public Projectile(Game game, Vector2 startLocation, Vector2 _target, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
     {
         Position = startLocation;
-        Target = _target;
+        Direction = _target - Position;
+        Direction.Normalize();
         damage = _damage;
         Lifetime = _lifetime;
         BulletPixelsPerSecond = speedInPixel;
@@ -29,12 +31,9 @@ class Projectile : Entity
         hitEnemies.Clear();
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        var diff = Target - Position;
-        var direction = diff;
-        direction.Normalize();
 
         var oldPosition = Position;
-        Position += direction * (BulletPixelsPerSecond * deltaTime);
+        Position += Direction * (BulletPixelsPerSecond * deltaTime);
 
         var bulletHit = false;
 
@@ -66,13 +65,7 @@ class Projectile : Entity
 
     public override void Draw(GameTime gameTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        var diff = Target - Position;
-        var direction = diff;
-        direction.Normalize();
-
-        var bulletStart = Position - direction * bulletLength / 2f;
-        // var bulletEnd = Position + direction * bulletLength / 2f;
+        var bulletStart = Position - Direction * bulletLength / 2f;
 
         LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: 2f);
 

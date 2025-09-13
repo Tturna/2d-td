@@ -8,26 +8,15 @@ namespace _2d_td;
 #nullable enable
 class GunTurret : AbstractTurret, IClickable
 {
-    // private struct Bullet
-    // {
-    //     public Vector2 Target;
-    //     public float InitialLifetime;
-    //     public float Lifetime;
-    // }
-
     private Entity? turretHead;
     private Vector2 turretHeadAxisCenter;
-    // private List<Bullet> bullets = new();
-    // private List<Enemy> hitEnemies = new();
     private float photonCannonTargetDistance;
 
     private int baseRange = 12;
     private float actionsPerSecond = 1f;
     private float actionTimer;
-    // private float bulletLifetime = 1f;
-    // private float bulletLength = 16f;
     private float bulletPixelsPerSecond = 360f;
-    // private float muzzleOffsetFactor = 20f;
+    private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
     public enum Upgrade
@@ -151,33 +140,14 @@ class GunTurret : AbstractTurret, IClickable
                 LineUtility.DrawLine(Game.SpriteBatch, turretHead!.Position + dir * 16, target, Color.Red, thickness: 2f);
             }
         }
-        else
-        {
-            // foreach (Bullet bullet in bullets)
-            // {
-            //     var positionDiff = bullet.Target - turretHeadAxisCenter;
-            //     var direction = positionDiff;
-            //     direction.Normalize();
-
-            //     var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
-            //     var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
-
-            //     var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
-            //     var bulletStart = position - direction * bulletLength / 2f;
-            //     var bulletEnd = position + direction * bulletLength / 2f;
-
-            //     LineUtility.DrawLine(Game.SpriteBatch, bulletStart, bulletEnd, Color.Red, thickness: 2f);
-            // }
-        }
     }
 
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy(baseRange);
+        var closestEnemy = GetClosestEnemy(baseRange+tileRange);
 
         actionTimer += deltaTime;
-        // UpdateBullets(deltaTime, damage);
 
         if (closestEnemy is null) return;
 
@@ -245,65 +215,15 @@ class GunTurret : AbstractTurret, IClickable
     private void Shoot(Enemy enemy, int damage)
     {
         var target = enemy.Position + enemy.Size / 2;
-        // var bullet = new Bullet
-        // {
-        //     Target = target,
-        //     InitialLifetime = bulletLifetime,
-        //     Lifetime = bulletLifetime
-        // };
 
-        // bullets.Add(bullet);
-        var bullet = new Projectile(Game, turretHeadAxisCenter, target, damage, bulletPixelsPerSecond, 1f);
+        var muzzleOffset = target - turretHeadAxisCenter;
+        muzzleOffset.Normalize();
+        muzzleOffset *= muzzleOffsetFactor;
+        var startLocation = turretHeadAxisCenter+muzzleOffset;
+
+        var bullet = new Projectile(Game, startLocation, target, damage, bulletPixelsPerSecond, 1f);
         Game.Components.Add(bullet);
     }
-
-    // private void UpdateBullets(float deltaTime, int damage)
-    // {
-    //     hitEnemies.Clear();
-
-    //     for (int i = bullets.Count - 1; i >= 0; i--)
-    //     {
-    //         var bullet = bullets[i];
-
-    //         var positionDiff = bullet.Target - turretHeadAxisCenter;
-    //         var direction = positionDiff;
-    //         direction.Normalize();
-
-    //         var muzzleCenter = turretHeadAxisCenter + direction * muzzleOffsetFactor;
-    //         var reverseLifetime = bullet.InitialLifetime - bullet.Lifetime;
-
-    //         var position = muzzleCenter + direction * (bulletPixelsPerSecond * reverseLifetime);
-    //         var oldPosition = muzzleCenter + direction * (bulletPixelsPerSecond * (reverseLifetime - deltaTime));
-
-    //         var bulletHit = false;
-
-    //         foreach (Enemy enemy in EnemySystem.Enemies)
-    //         {
-    //             if (Collision.IsLineInEntity(oldPosition, position, enemy,
-    //                 out Vector2 entryPoint, out Vector2 exitPoint))
-    //             {
-    //                 hitEnemies.Add(enemy);
-    //                 bulletHit = true;
-    //             }
-    //         }
-
-    //         bullet.Lifetime -= deltaTime;
-
-    //         if (bulletHit || bullet.Lifetime <= 0f)
-    //         {
-    //             bullets.RemoveAt(i);
-    //             continue;
-    //         }
-
-    //         bullets[i] = bullet;
-    //     }
-
-    //     for (int i = 0; i < hitEnemies.Count; i++)
-    //     {
-    //         var enemy = hitEnemies[i];
-    //         enemy.HealthSystem.TakeDamage(damage);
-    //     }
-    // }
 
     public override void Destroy()
     {
