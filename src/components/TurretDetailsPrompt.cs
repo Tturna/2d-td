@@ -47,7 +47,7 @@ public class TurretDetailsPrompt : UIEntity
         {
             leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
-            leftUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeLeftCallback);
+            leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
             leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
             game.Components.Add(leftUpgradeBtn);
         }
@@ -60,7 +60,7 @@ public class TurretDetailsPrompt : UIEntity
         {
             rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
-            rightUpgradeBtn.ButtonPressed += () => Upgrade(currentUpgrade, upgradeRightCallback);
+            rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
             rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
             game.Components.Add(rightUpgradeBtn);
         }
@@ -143,13 +143,13 @@ public class TurretDetailsPrompt : UIEntity
         return true;
     }
 
-    private void Upgrade(TowerUpgradeNode currentUpgrade, Func<TowerUpgradeNode> callback)
+    private void Upgrade(Func<TowerUpgradeNode> upgradeCallback)
     {
-        currentUpgrade = callback();
+        var newUpgrade = upgradeCallback();
 
-        if (currentUpgrade.LeftChild is not null)
+        if (newUpgrade.LeftChild is not null)
         {
-            leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
+            leftUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.LeftChild.Name);
         }
         else
         {
@@ -157,9 +157,9 @@ public class TurretDetailsPrompt : UIEntity
             leftUpgradeBtn = null;
         }
 
-        if (currentUpgrade.RightChild is not null)
+        if (newUpgrade.RightChild is not null)
         {
-            rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
+            rightUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.RightChild.Name);
         }
         else
         {
