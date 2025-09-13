@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace _2d_td;
 
 #nullable enable
-class TowerCore : GameComponent, IClickable
+public class TowerCore : GameComponent, IClickable
 {
     public Entity Turret { get; private set; }
     public TowerUpgradeNode CurrentUpgrade { get; set; }
