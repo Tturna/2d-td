@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -28,8 +27,6 @@ class GunTurret : AbstractTurret, IClickable
         ImprovedBarrel,
         RocketShots
     }
-
-    // public TowerUpgradeNode CurrentUpgrade { get; private set; }
 
     public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase"))
     {
@@ -145,7 +142,7 @@ class GunTurret : AbstractTurret, IClickable
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = GetClosestEnemy(baseRange+tileRange);
+        var closestEnemy = GetClosestEnemy(tileRange);
 
         actionTimer += deltaTime;
 
