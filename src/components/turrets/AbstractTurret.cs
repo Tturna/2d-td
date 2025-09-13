@@ -52,7 +52,7 @@ class AbstractTurret : Entity, IClickable
     {
         if (!detailsClosed && detailsPrompt is null)
         {
-            detailsPrompt = new TurretDetailsPrompt(Game, this, UpgradeLeft, UpgradeRight);
+            detailsPrompt = new TurretDetailsPrompt(Game, this, UpgradeLeft, UpgradeRight, CurrentUpgrade);
             UIComponent.Instance.AddUIEntity(detailsPrompt);
         }
 
@@ -64,27 +64,29 @@ class AbstractTurret : Entity, IClickable
         return Collision.IsPointInEntity(mouseWorldPosition, this);
     }
 
-    public void UpgradeLeft()
+    public TowerUpgradeNode UpgradeLeft()
     {
         if (CurrentUpgrade.LeftChild is null)
         {
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.LeftChild;
+        return CurrentUpgrade;
     }
 
-    public void UpgradeRight()
+    public TowerUpgradeNode UpgradeRight()
     {
         if (CurrentUpgrade.RightChild is null)
         {
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.RightChild;
+        return CurrentUpgrade;
     }
 }

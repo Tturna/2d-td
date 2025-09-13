@@ -18,6 +18,8 @@ class GunTurret : AbstractTurret, IClickable
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
 
+    private Random random = new();
+
     public enum Upgrade
     {
         NoUpgrade,
@@ -106,8 +108,8 @@ class GunTurret : AbstractTurret, IClickable
         }
         else if (CurrentUpgrade.Name == Upgrade.BotShot.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond * 0.25f, damage: 18, tileRange: baseRange - 2);
-            // TODO: multiply projectiles by 5 and add knockback
+            HandleBotShot(deltaTime);
+            // TODO: add knockback
         }
         else if (CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
@@ -115,7 +117,7 @@ class GunTurret : AbstractTurret, IClickable
         }
         else if (CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
         {
-            // TODO: +20 damage, +4 range, 2 tile radius explosion on impact
+            HandleRocketShots(deltaTime);
         }
 
         base.Update(gameTime);
@@ -148,11 +150,43 @@ class GunTurret : AbstractTurret, IClickable
 
         if (closestEnemy is null) return;
 
-        AimAtClosestEnemy(closestEnemy.Position, deltaTime);
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (actionTimer >= actionInterval)
         {
-            Shoot(closestEnemy, damage);
+            var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
+            var direction = enemyCenter - turretHeadAxisCenter;
+            direction.Normalize();
+            Shoot(direction, damage: 10);
+            actionTimer = 0f;
+        }
+    }
+
+    private void HandleBotShot(float deltaTime)
+    {
+        var actionInterval = 1f / (actionsPerSecond * 0.25f);
+        var closestEnemy = GetClosestEnemy(baseRange - 2);
+
+        actionTimer += deltaTime;
+
+        if (closestEnemy is null) return;
+
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+
+        if (actionTimer >= actionInterval)
+        {
+            var enemyPosition = closestEnemy.Position + closestEnemy.Size / 2;
+            var enemyDirection = enemyPosition - turretHeadAxisCenter;
+            enemyDirection.Normalize();
+
+            for (int i = 0; i < 5; i++)
+            {
+                var randomX = random.Next(-12, 12);
+                var randomY = random.Next(-12, 12);
+                var targetDirection = enemyDirection + new Vector2(randomX, randomY);
+                Shoot(targetDirection, damage: 18);
+            }
+
             actionTimer = 0f;
         }
     }
@@ -168,7 +202,7 @@ class GunTurret : AbstractTurret, IClickable
 
         if (closestEnemy is null) return;
 
-        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position, deltaTime);
+        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (aimAccuracy < 0.05f)
         {
@@ -184,6 +218,31 @@ class GunTurret : AbstractTurret, IClickable
         }
     }
 
+    private void HandleRocketShots(float deltaTime)
+    {
+        // TODO: Centralize upgrade specific data like damage and range definitions.
+        // Either have them all defined in Update(), define them in the handler functions
+        // or come up with a better structure.
+
+        // TODO: 2 tile explosion on bullet impact
+        var actionInterval = 1f / actionsPerSecond;
+        var closestEnemy = GetClosestEnemy(baseRange + 8);
+
+        actionTimer += deltaTime;
+
+        if (closestEnemy is null) return;
+
+        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+
+        if (actionTimer >= actionInterval)
+        {
+            var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
+            var direction = enemyCenter - turretHeadAxisCenter;
+            direction.Normalize();
+            Shoot(direction, 33);
+            actionTimer = 0f;
+        }
+    }
 
     /// <summary>
     /// Aims the turret head smoothly towards given position. Returns similarity between turret head direction
@@ -209,11 +268,8 @@ class GunTurret : AbstractTurret, IClickable
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Enemy enemy, int damage)
+    private void Shoot(Vector2 direction, int damage)
     {
-        var target = enemy.Position + enemy.Size / 2;
-
-        var direction = target - turretHeadAxisCenter;
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
         var startLocation = turretHeadAxisCenter+muzzleOffset;
