@@ -267,7 +267,10 @@ class GunTurret : Entity, ITower
         var muzzleOffset = direction * muzzleOffsetFactor;
         var startLocation = turretHeadAxisCenter+muzzleOffset;
 
-        var bullet = new Projectile(Game, startLocation, direction, damage, bulletPixelsPerSecond, 1f);
+        var bullet = new Projectile(Game, startLocation, direction, bulletPixelsPerSecond);
+        bullet.Damage = damage;
+        bullet.Lifetime = 1f;
+        bullet.Pierce = 3;
         Game.Components.Add(bullet);
     }
 

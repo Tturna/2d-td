@@ -10,16 +10,17 @@ class Projectile : Entity
     public float InitialLifetime = 1f;
     public float Lifetime;
     public float BulletPixelsPerSecond = 0f;
-    public float bulletLength = 16f;
+    public float BulletLength = 16f;
+    public int Damage = 0;
+    public int Pierce = 1;
     private List<Enemy> hitEnemies = new();
-    private int damage = 0;
 
-    public Projectile(Game game, Vector2 startLocation, Vector2 _direction, int _damage, float speedInPixel, float _lifetime) : base(game, null, Vector2.One)
+    // this constructor is simple so that the turrets can edit the property
+    // of bullet themself
+    public Projectile(Game game, Vector2 startLocation, Vector2 _direction, float speedInPixel) : base(game, null, Vector2.One)
     {
         Position = startLocation;
         Direction = _direction;
-        damage = _damage;
-        Lifetime = _lifetime;
         BulletPixelsPerSecond = speedInPixel;
     }
 
@@ -32,7 +33,7 @@ class Projectile : Entity
         var oldPosition = Position;
         Position += Direction * (BulletPixelsPerSecond * deltaTime);
 
-        var bulletHit = false;
+        var bulletToDelete = false;
 
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
@@ -40,7 +41,6 @@ class Projectile : Entity
                 out Vector2 entryPoint, out Vector2 exitPoint))
             {
                 hitEnemies.Add(enemy);
-                bulletHit = true;
             }
         }
 
@@ -48,11 +48,20 @@ class Projectile : Entity
 
         for (int i = 0; i < hitEnemies.Count; i++)
         {
-            var enemy = hitEnemies[i];
-            enemy.HealthSystem.TakeDamage(damage);
+            if (Pierce > 0)
+            {
+                var enemy = hitEnemies[i];
+                enemy.HealthSystem.TakeDamage(Damage);
+                Pierce -= 1;
+            }
+            else
+            {
+                bulletToDelete = true;
+                break;
+            }
         }
 
-        if (bulletHit || Lifetime <= 0f)
+        if (bulletToDelete || Lifetime <= 0f)
         {
             Destroy();
         }
@@ -62,7 +71,7 @@ class Projectile : Entity
 
     public override void Draw(GameTime gameTime)
     {
-        var bulletStart = Position - Direction * bulletLength / 2f;
+        var bulletStart = Position - Direction * BulletLength / 2f;
 
         LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: 2f);
 
