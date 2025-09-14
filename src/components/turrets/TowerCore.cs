@@ -105,4 +105,39 @@ public class TowerCore : GameComponent, IClickable
         CurrentUpgrade = CurrentUpgrade.RightChild;
         return CurrentUpgrade;
     }
+
+    public static bool DefaultCanPlaceTower(Vector2 towerGridSize, Vector2 targetWorldPosition)
+    {
+        var targetGridPosition = Grid.SnapPositionToGrid(targetWorldPosition);
+
+        for (int y = 0; y < towerGridSize.Y; y++)
+        {
+            for (int x = 0; x < towerGridSize.X; x++)
+            {
+                var position = targetGridPosition + new Vector2(x, y) * Grid.TileLength;
+
+                if (Collision.IsPointInTerrain(position, Game1.Instance.Terrain))
+                {
+                    return false;
+                }
+            }
+       }
+
+        var turretGridHeight = towerGridSize.Y;
+
+        var belowTilePosition = targetGridPosition + Vector2.UnitY * turretGridHeight * Grid.TileLength;
+        var aboveTilePosition = targetGridPosition - Vector2.UnitY * Grid.TileLength;
+
+        if (!Collision.IsPointInTerrain(belowTilePosition, Game1.Instance.Terrain))
+        {
+            return false;
+        }
+
+        if (Collision.IsPointInTerrain(aboveTilePosition, Game1.Instance.Terrain))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

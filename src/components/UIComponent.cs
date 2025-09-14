@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,8 +33,8 @@ public class UIComponent : DrawableGameComponent
         var gunTurretButton = new UIEntity(game, slotSprite);
         var railgunButton = new UIEntity(game, slotSprite);
 
-        gunTurretButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.GunTurret);
-        railgunButton.ButtonPressed += () => SelectTurret(BuildingSystem.TurretType.Railgun);
+        gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
+        railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -85,7 +86,7 @@ public class UIComponent : DrawableGameComponent
         if (InputSystem.IsRightMouseButtonClicked())
         {
             RemoveTurretHologram();
-            BuildingSystem.SelectTurret(BuildingSystem.TurretType.None);
+            BuildingSystem.DeselectTower();
         }
 
         base.Update(gameTime);
@@ -130,9 +131,10 @@ public class UIComponent : DrawableGameComponent
         // No need to add this to game components because it shouldn't collide with anything ever.
     }
 
-    private void SelectTurret(BuildingSystem.TurretType turretType)
+    private void SelectTurret<T>() where T : ITower
     {
-        var turretSprite = BuildingSystem.SelectTurret(turretType);
+        BuildingSystem.SelectTurret<T>();
+        var turretSprite = T.GetTowerBaseSprite();
         CreateTurretHologram(turretSprite);
     }
 

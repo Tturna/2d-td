@@ -1,10 +1,12 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
 #nullable enable
-class GunTurret : Entity
+class GunTurret : Entity, ITower
 {
     private TowerCore towerCore;
     private Entity? turretHead;
@@ -30,7 +32,7 @@ class GunTurret : Entity
         RocketShots
     }
 
-    public GunTurret(Game game) : base(game, AssetManager.GetTexture("gunTurretBase"))
+    public GunTurret(Game game) : base(game, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
@@ -276,5 +278,30 @@ class GunTurret : Entity
         Game.Components.Remove(towerCore);
 
         base.Destroy();
+    }
+
+    public static Texture2D GetTowerBaseSprite()
+    {
+        return AssetManager.GetTexture("gunTurretBase");
+    }
+
+    public static Vector2 GetDefaultGridSize()
+    {
+        return new Vector2(2, 2);
+    }
+
+    public static BuildingSystem.TowerType GetTowerType()
+    {
+        return BuildingSystem.TowerType.GunTurret;
+    }
+
+    public static bool CanPlaceTower(Vector2 targetWorldPosition)
+    {
+        return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
+    }
+
+    public static Entity CreateNewInstance(Game game)
+    {
+        return new GunTurret(game);
     }
 }
