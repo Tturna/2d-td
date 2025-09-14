@@ -6,7 +6,7 @@ namespace _2d_td;
 #nullable enable
 class Projectile : Entity
 {
-    public Vector2 Direction;
+    public Vector2 Direction = Vector2.Zero;
     public float Lifetime = 1f;
     public float BulletPixelsPerSecond = 0f;
     public float BulletLength = 16f;
