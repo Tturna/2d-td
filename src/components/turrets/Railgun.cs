@@ -15,7 +15,7 @@ class Railgun : Entity, ITower
     float actionsPerSecond = 0.5f;
     float actionTimer;
 
-    public Railgun(Game game) : base(game, AssetManager.GetTexture("turretTwo"))
+    public Railgun(Game game) : base(game, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
     }
