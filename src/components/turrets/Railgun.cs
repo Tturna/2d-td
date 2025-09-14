@@ -52,11 +52,12 @@ class Railgun : Entity, ITower
 
     public bool IsEnemyInLine(int tileRange)
     {
-        // TODO: Don't loop over all enemies. Just the ones in range.
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
             if (enemy.Position.Y < Position.Y + Size.Y &&
-                enemy.Position.Y > Position.Y)
+                enemy.Position.Y > Position.Y &&
+                enemy.Position.X < Position.X &&
+                enemy.Position.X+tileRange > Position.X)
             {
                 return true;
             }
