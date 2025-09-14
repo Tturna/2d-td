@@ -43,7 +43,9 @@ class Railgun : Entity, ITower
     private void Shoot()
     {
         var direction = new Vector2(-1, 0);
-        var bullet = new Projectile(Game, Position+spawnOffset, direction, bulletSpeed);
+        var bullet = new Projectile(Game, Position+spawnOffset);
+        bullet.Direction = direction;
+        bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;
         bullet.Lifetime = 1f;
         bullet.BulletLength = 30f;

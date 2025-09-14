@@ -16,11 +16,9 @@ class Projectile : Entity
 
     // this constructor is simple so that the turrets can edit the property
     // of bullet themself
-    public Projectile(Game game, Vector2 startLocation, Vector2 _direction, float speedInPixel) : base(game, null, Vector2.One)
+    public Projectile(Game game, Vector2 startLocation) : base(game, null, Vector2.One)
     {
         Position = startLocation;
-        Direction = _direction;
-        BulletPixelsPerSecond = speedInPixel;
     }
 
     public override void Update(GameTime gameTime)
