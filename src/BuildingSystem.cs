@@ -58,7 +58,7 @@ public static class BuildingSystem
 
         if (canPlaceTowerCallback is not null)
         {
-            canPlaceTowerCallback(gridMousePosition);
+            turretAllowsPlacement = canPlaceTowerCallback(gridMousePosition);
         }
 
         CanPlaceTurret = !isColliding &&
