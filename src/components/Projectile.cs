@@ -7,8 +7,7 @@ namespace _2d_td;
 class Projectile : Entity
 {
     public Vector2 Direction;
-    public float InitialLifetime = 1f;
-    public float Lifetime;
+    public float Lifetime = 1f;
     public float BulletPixelsPerSecond = 0f;
     public float BulletLength = 16f;
     public int Damage = 0;
