@@ -1,11 +1,11 @@
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
-// TODO: Abstract some of this functionality so that methods don't repeat a million times
-// across different turret implementations.
 #nullable enable
-class Railgun : Entity
+class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 3);
@@ -69,5 +69,30 @@ class Railgun : Entity
         Game.Components.Remove(towerCore);
 
         base.Destroy();
+    }
+
+    public static Texture2D GetTowerBaseSprite()
+    {
+        return AssetManager.GetTexture("turretTwo");
+    }
+
+    public static Vector2 GetDefaultGridSize()
+    {
+        return new Vector2(2, 2);
+    }
+
+    public static BuildingSystem.TowerType GetTowerType()
+    {
+        return BuildingSystem.TowerType.Railgun;
+    }
+
+    public static bool CanPlaceTower(Vector2 targetWorldPosition)
+    {
+        return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
+    }
+
+    public static Entity CreateNewInstance(Game game)
+    {
+        return new Railgun(game);
     }
 }
