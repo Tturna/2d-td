@@ -5,10 +5,10 @@ namespace _2d_td;
 
 public static class CurrencyManager
 {
-    private static Dictionary<BuildingSystem.TurretType, int> towerPriceMap = new()
+    private static Dictionary<BuildingSystem.TowerType, int> towerPriceMap = new()
     {
-        { BuildingSystem.TurretType.GunTurret, 20 },
-        { BuildingSystem.TurretType.Railgun, 25 }
+        { BuildingSystem.TowerType.GunTurret, 20 },
+        { BuildingSystem.TowerType.Railgun, 25 }
     };
 
     private static Dictionary<string, int> towerUpgradePriceMap = new()
@@ -27,7 +27,7 @@ public static class CurrencyManager
         Balance = 200;
     }
 
-    public static int GetTowerPrice(BuildingSystem.TurretType towerType)
+    public static int GetTowerPrice(BuildingSystem.TowerType towerType)
     {
         if (towerPriceMap.TryGetValue(towerType, out int price))
         {
@@ -47,7 +47,7 @@ public static class CurrencyManager
         throw new ArgumentOutOfRangeException(nameof(upgradeName), $"{upgradeName} is not a valid upgrade.");
     }
 
-    public static bool TryBuyTower(BuildingSystem.TurretType towerType)
+    public static bool TryBuyTower(BuildingSystem.TowerType towerType)
     {
         var price = GetTowerPrice(towerType);
 
@@ -61,7 +61,7 @@ public static class CurrencyManager
         return true;
     }
 
-    public static void SellTower(BuildingSystem.TurretType towerType)
+    public static void SellTower(BuildingSystem.TowerType towerType)
     {
         Balance += (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
     }

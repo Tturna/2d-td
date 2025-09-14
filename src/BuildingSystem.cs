@@ -1,12 +1,12 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
 public static class BuildingSystem
 {
-    public enum TurretType
+    public enum TowerType
     {
         None,
         GunTurret,
@@ -15,8 +15,10 @@ public static class BuildingSystem
 
     private static Game1 game;
     private static TimeSpan lastGameTime;
-    private static TurretType selectedTurretType;
+    private static TowerType selectedTowerType;
     private static TimeSpan allowedTurretPlacementTime;
+    private static Func<Vector2, bool> canPlaceTowerCallback;
+    private static Func<Game, Entity> createTowerInstanceCallback;
 
     public static bool CanPlaceTurret { get; private set; }
 
@@ -29,7 +31,7 @@ public static class BuildingSystem
     {
         lastGameTime = gameTime.TotalGameTime;
         if (game is null) return;
-        if (selectedTurretType == TurretType.None) return;
+        if (selectedTowerType == TowerType.None) return;
 
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
@@ -52,54 +54,59 @@ public static class BuildingSystem
             }
         }
 
-        var turretAllowsPlacement = TowerCore.CanPlaceTower(selectedTurretType, gridMousePosition);
+        var turretAllowsPlacement = true;
+
+        if (canPlaceTowerCallback is not null)
+        {
+            canPlaceTowerCallback(gridMousePosition);
+        }
 
         CanPlaceTurret = !isColliding &&
             turretAllowsPlacement &&
             gameTime.TotalGameTime > allowedTurretPlacementTime &&
-            selectedTurretType != TurretType.None;
+            selectedTowerType != TowerType.None;
 
         if (InputSystem.IsLeftMouseButtonClicked() &&
             CanPlaceTurret &&
-            TrySpawnTurret(selectedTurretType, gridMousePosition, out var turret))
+            TrySpawnTurret(gridMousePosition, out var turret))
         {
             game.Components.Add(turret);
         }
     }
 
-    private static bool TrySpawnTurret(TurretType turretType, Vector2 position, out Entity spawnedTurret)
+    private static bool TrySpawnTurret(Vector2 position, out Entity spawnedTurret)
     {
         spawnedTurret = null;
-        if (!CurrencyManager.TryBuyTower(turretType)) return false;
+        if (!CurrencyManager.TryBuyTower(selectedTowerType)) return false;
 
-        spawnedTurret = turretType switch {
-            TurretType.GunTurret => new GunTurret(game),
-            TurretType.Railgun => new Railgun(game),
-            _ => throw new ArgumentOutOfRangeException(nameof(selectedTurretType), $"Unhandled entity type: {selectedTurretType}")
-        };
-
+        spawnedTurret = createTowerInstanceCallback(game);
         spawnedTurret.Position = position;
         return true;
     }
 
-    public static Texture2D SelectTurret(TurretType turretType)
+    public static void SelectTurret<T>() where T : ITower
     {
-        selectedTurretType = turretType;
         allowedTurretPlacementTime = lastGameTime.Add(TimeSpan.FromMilliseconds(200));
-
-        return turretType switch {
-            TurretType.GunTurret => AssetManager.GetTexture("gunTurretBase"),
-            TurretType.Railgun => AssetManager.GetTexture("turretTwo"),
-            _ => null
-        };
+        selectedTowerType = T.GetTowerType();
+        canPlaceTowerCallback = T.CanPlaceTower;
+        createTowerInstanceCallback = T.CreateNewInstance;
     }
 
-    public static TurretType GetTurretTypeFromEntity(Entity turretEntity)
+    public static void DeselectTower()
+    {
+        selectedTowerType = TowerType.None;
+        canPlaceTowerCallback = null;
+        createTowerInstanceCallback = null;
+    }
+
+    // TODO: Consider taking this out and adding the ability to get the type of a tower
+    // in ITower.
+    public static TowerType GetTurretTypeFromEntity(Entity turretEntity)
     {
         return turretEntity switch
         {
-            GunTurret => TurretType.GunTurret,
-            Railgun => TurretType.Railgun,
+            GunTurret => TowerType.GunTurret,
+            Railgun => TowerType.Railgun,
             _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
         };
     }

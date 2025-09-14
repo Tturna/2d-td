@@ -1,8 +1,10 @@
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
-class Railgun : Entity
+class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
     int tileRange = 18;
@@ -51,5 +53,30 @@ class Railgun : Entity
         Game.Components.Remove(towerCore);
 
         base.Destroy();
+    }
+
+    public static Texture2D GetTowerBaseSprite()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public static Vector2 GetDefaultGridSize()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public static BuildingSystem.TowerType GetTowerType()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public static bool CanPlaceTower(Vector2 targetWorldPosition)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public static Entity CreateNewInstance(Game game)
+    {
+        throw new System.NotImplementedException();
     }
 }

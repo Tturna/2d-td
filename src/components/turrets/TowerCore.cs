@@ -1,7 +1,6 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using static _2d_td.BuildingSystem;
 
 namespace _2d_td;
 
@@ -107,19 +106,13 @@ public class TowerCore : GameComponent, IClickable
         return CurrentUpgrade;
     }
 
-    public static bool CanPlaceTower(TurretType towerType, Vector2 targetWorldPosition)
+    public static bool DefaultCanPlaceTower(Vector2 towerGridSize, Vector2 targetWorldPosition)
     {
         var targetGridPosition = Grid.SnapPositionToGrid(targetWorldPosition);
 
-        var turretGridSize = towerType switch
+        for (int y = 0; y < towerGridSize.Y; y++)
         {
-            TurretType.GunTurret => GunTurret.DefaultGridSize,
-            _ => Vector2.One
-        };
-
-        for (int y = 0; y < turretGridSize.Y; y++)
-        {
-            for (int x = 0; x < turretGridSize.X; x++)
+            for (int x = 0; x < towerGridSize.X; x++)
             {
                 var position = targetGridPosition + new Vector2(x, y) * Grid.TileLength;
 
@@ -130,7 +123,7 @@ public class TowerCore : GameComponent, IClickable
             }
        }
 
-        var turretGridHeight = turretGridSize.Y;
+        var turretGridHeight = towerGridSize.Y;
 
         var belowTilePosition = targetGridPosition + Vector2.UnitY * turretGridHeight * Grid.TileLength;
         var aboveTilePosition = targetGridPosition - Vector2.UnitY * Grid.TileLength;
