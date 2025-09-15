@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
+#nullable enable
 public static class ScrapSystem
 {
     private static Dictionary<Vector2, ScrapTile> scrapTileMap = new();
@@ -10,15 +11,54 @@ public static class ScrapSystem
     public static void AddScrap(Game1 game, Vector2 worldPosition)
     {
         var gridPosition = Grid.SnapPositionToGrid(worldPosition);
-        ScrapTile tile = null;
+        ScrapTile? tile = null;
 
-        if (!scrapTileMap.TryGetValue(gridPosition, out tile))
+        var targetPosition = gridPosition;
+
+        while (true)
         {
-            tile = new ScrapTile(game, gridPosition);
-            scrapTileMap.Add(gridPosition, tile);
+            var belowTile = ScrapSystem.GetScrapFromPosition(targetPosition);
+
+            if (belowTile is not null && belowTile.ScrapLevel > 0)
+            {
+                if (belowTile.ScrapLevel < ScrapTile.MaxScrapLevel)
+                {
+                    belowTile.AddToPile();
+                    return;
+                }
+
+                break;
+            }
+
+            if (Collision.IsPointInTerrain(targetPosition, game.Terrain))
+            {
+                break;
+            }
+
+            targetPosition += Vector2.UnitY * Grid.TileLength;
+        }
+
+        targetPosition -= Vector2.UnitY * Grid.TileLength;
+
+        if (!scrapTileMap.TryGetValue(targetPosition, out tile))
+        {
+            tile = new ScrapTile(game, targetPosition);
+            scrapTileMap.Add(targetPosition, tile);
             return;
         }
 
-        var shouldOverflow = tile.AddToPile();
+        tile.AddToPile();
+    }
+
+    public static ScrapTile? GetScrapFromPosition(Vector2 worldPosition)
+    {
+        var gridPosition = Grid.SnapPositionToGrid(worldPosition);
+
+        if (scrapTileMap.TryGetValue(gridPosition, out var tile))
+        {
+            return tile;
+        }
+
+        return null;
     }
 }

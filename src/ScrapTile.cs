@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -5,46 +6,72 @@ namespace _2d_td;
 
 public class ScrapTile : Entity
 {
-    private const int MaxScrapLevel = 8;
-    private int scrapLevel = 1;
+    public static int MaxScrapLevel { get; private set; } = 8;
+    public static int MaxFreefloatLevel { get; private set; } = 3;
+    private Random random = new();
 
-    public ScrapTile(Game1 game, Vector2 worldPosition) : base(game, GetBaseScrapTileSprite(game.SpriteBatch))
+    public int ScrapLevel { get; private set; } = 1;
+
+    public ScrapTile(Game1 game, Vector2 worldGridPosition) : base(game, GetBaseScrapTileSprite(game.SpriteBatch))
     {
         game.Components.Add(this);
-        Position = worldPosition;
+        Position = Grid.SnapPositionToGrid(worldGridPosition);
 
-        while (!Collision.IsPointInTerrain(Position, game.Terrain))
-        {
-            Position += Vector2.UnitY * Grid.TileLength;
-        }
-
-        var yScale = (float)scrapLevel / MaxScrapLevel;
+        var yScale = (float)ScrapLevel / MaxScrapLevel;
         Scale = new Vector2(1f, yScale);
-        Position -= Vector2.UnitY * (Grid.TileLength * yScale);
+        Position += Vector2.UnitY * (Grid.TileLength * (1f - yScale));
     }
 
-    public override void Draw(GameTime gameTime)
+    public void AddToPile(int amount = 1)
     {
-        base.Draw(gameTime);
-    }
-
-    /// <summary>
-    /// Add given amount (defaults to 1) to the scrap pile. Returns whether or not the pile is full.
-    /// </summary>
-    public bool AddToPile(int amount = 1)
-    {
-        if (scrapLevel < MaxScrapLevel)
+        if (ScrapLevel < MaxScrapLevel)
         {
-            scrapLevel++;
-            var yScale = (float)scrapLevel / MaxScrapLevel;
+            if (ScrapLevel + amount > MaxFreefloatLevel)
+            {
+                var leftTilePosition = Position - Vector2.UnitX * Grid.TileLength;
+                var rightTilePosition = Position + Vector2.UnitX * Grid.TileLength;
+                var leftTile = ScrapSystem.GetScrapFromPosition(leftTilePosition);
+                var rightTile = ScrapSystem.GetScrapFromPosition(rightTilePosition);
+                var leftInTerrain = Collision.IsPointInTerrain(leftTilePosition, Game.Terrain);
+                var rightInTerrain = Collision.IsPointInTerrain(rightTilePosition, Game.Terrain);
+                var leftAvailable = !leftInTerrain && (leftTile is null || leftTile.ScrapLevel < ScrapLevel + amount - 1);
+                var rightAvailable = !rightInTerrain && (rightTile is null || rightTile.ScrapLevel < ScrapLevel + amount - 1);
+
+                if (leftAvailable && rightAvailable)
+                {
+                    if (random.Next(0, 2) > 0.5f)
+                    {
+                        ScrapSystem.AddScrap(Game, leftTilePosition);
+                        return;
+                    }
+                    else
+                    {
+                        ScrapSystem.AddScrap(Game, rightTilePosition);
+                        return;
+                    }
+                }
+                else if (leftAvailable && !rightAvailable)
+                {
+                    ScrapSystem.AddScrap(Game, leftTilePosition);
+                    return;
+                }
+                else if (rightAvailable && !leftAvailable)
+                {
+                    ScrapSystem.AddScrap(Game, rightTilePosition);
+                    return;
+                }
+
+                // No available neighboring scrap tiles. Fall through and grow pile.
+            }
+
+            ScrapLevel = Math.Min(ScrapLevel + amount, MaxScrapLevel);
+            var yScale = (float)ScrapLevel / MaxScrapLevel;
             Scale = new Vector2(1f, yScale);
             Position -= Vector2.UnitY * (Grid.TileLength * (1f / MaxScrapLevel));
-
-            return false;
         }
         else
         {
-            return true;
+
         }
     }
 
