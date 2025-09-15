@@ -45,6 +45,7 @@ class Projectile : Entity
 
         for (int i = 0; i < hitEnemies.Count; i++)
         {
+            // todo: make it so a projectile with pierce doesn't hit the same enemy multiple time
             if (Pierce > 0)
             {
                 var enemy = hitEnemies[i];

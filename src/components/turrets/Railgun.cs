@@ -8,8 +8,8 @@ namespace _2d_td;
 class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 3);
-    int tileRange = 18;
+    private Vector2 spawnOffset = new (0, 10);
+    int tileRange = 30;
     int damage = 30;
     float bulletSpeed = 900f;
     float actionsPerSecond = 0.5f;
@@ -54,12 +54,13 @@ class Railgun : Entity, ITower
 
     public bool IsEnemyInLine(int tileRange)
     {
+        var range = tileRange * Grid.TileLength;
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
             if (enemy.Position.Y < Position.Y + Size.Y &&
                 enemy.Position.Y > Position.Y &&
                 enemy.Position.X < Position.X &&
-                enemy.Position.X+tileRange > Position.X)
+                enemy.Position.X + range > Position.X)
             {
                 return true;
             }
@@ -78,12 +79,12 @@ class Railgun : Entity, ITower
 
     public static Texture2D GetTowerBaseSprite()
     {
-        return AssetManager.GetTexture("turretTwo");
+        return AssetManager.GetTexture("railgun");
     }
 
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(2, 2);
+        return new Vector2(3, 2);
     }
 
     public static BuildingSystem.TowerType GetTowerType()
