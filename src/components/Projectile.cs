@@ -10,6 +10,7 @@ class Projectile : Entity
     public float Lifetime = 1f;
     public float BulletPixelsPerSecond = 0f;
     public float BulletLength = 16f;
+    public float BulletWidth = 2f;
     public int Damage = 0;
     public int Pierce = 1;
     private List<Enemy> hitEnemies = new();
@@ -71,7 +72,7 @@ class Projectile : Entity
     {
         var bulletStart = Position - Direction * BulletLength / 2f;
 
-        LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: 2f);
+        LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: BulletWidth);
 
         base.Draw(gameTime);
     }

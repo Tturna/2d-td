@@ -39,18 +39,13 @@ class GunTurret : Entity, ITower
         var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString());
         var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString());
         var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), leftChild: photonCannon, rightChild: botShot);
-        photonCannon.SetParent(doubleGun);
-        botShot.SetParent(doubleGun);
 
         var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString());
         var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), leftChild: rocketShots);
-        rocketShots.SetParent(improvedBarrel);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
 
-        doubleGun.SetParent(defaultNode);
-        improvedBarrel.SetParent(defaultNode);
         towerCore.CurrentUpgrade = defaultNode;
     }
 
@@ -79,8 +74,6 @@ class GunTurret : Entity, ITower
         turretHead.DrawLayerDepth = 0.8f;
 
         Game.Components.Add(turretHead);
-
-        InputSystem.Clicked += (mouseScreenPosition, _) => towerCore.HandleCloseDetails(mouseScreenPosition);
     }
 
     public override void Update(GameTime gameTime)
@@ -282,7 +275,7 @@ class GunTurret : Entity, ITower
         Game.Components.Remove(turretHead);
         Game.Components.Remove(towerCore);
 
-        base.Destroy();
+        Destroy();
     }
 
     public static Texture2D GetTowerBaseSprite()

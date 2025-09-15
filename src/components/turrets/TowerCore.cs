@@ -22,6 +22,11 @@ public class TowerCore : GameComponent, IClickable
         Turret.Game.Components.Add(this);
     }
 
+    public override void Update(GameTime gameTime)
+    {
+        InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
+    }
+
     public Enemy? GetClosestEnemy(int tileRange)
     {
         Enemy? closestEnemy = null;
