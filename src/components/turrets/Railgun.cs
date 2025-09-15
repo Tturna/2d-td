@@ -9,8 +9,9 @@ class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 10);
-    int tileRange = 30;
+    int tileRange = 18;
     int damage = 30;
+    int pierce = 3;
     float bulletSpeed = 900f;
     float actionsPerSecond = 0.5f;
     float actionTimer;
@@ -53,28 +54,28 @@ class Railgun : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            // HandleBasicShots(deltaTime, actionsPerSecond, );
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Momentum.ToString())
         {
-
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce+3);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AntimatterLaser.ToString())
         {
-
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+20, tileRange+6, pierce+12);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.PolishedRound.ToString())
         {
-
-            
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+25, tileRange, pierce);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Cannonball.ToString())
         {
-
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, tileRange, pierce-2);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.GoldenGatling.ToString())
         {
-
+            // todo: inflict burn
+            HandleBasicShots(deltaTime, actionsPerSecond+5, 15, tileRange, pierce);
         }
 
         base.Update(gameTime);
@@ -88,12 +89,12 @@ class Railgun : Entity, ITower
 
         if (actionTimer >= actionInterval && IsEnemyInLine(tileRange))
         {
-            Shoot();
+            Shoot(damage, pierce);
             actionTimer = 0f;
         }
     }
 
-    private void Shoot()
+    private void Shoot(int damage, int pierce)
     {
         var direction = new Vector2(-1, 0);
         var bullet = new Projectile(Game, Position + spawnOffset);
@@ -102,6 +103,7 @@ class Railgun : Entity, ITower
         bullet.Damage = damage;
         bullet.Lifetime = 1f;
         bullet.BulletLength = 30f;
+        bullet.Pierce = pierce;
         Game.Components.Add(bullet);
     }
 

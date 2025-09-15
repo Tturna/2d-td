@@ -18,6 +18,12 @@ public static class CurrencyManager
         { GunTurret.Upgrade.PhotonCannon.ToString(), 75 },
         { GunTurret.Upgrade.BotShot.ToString(), 50 },
         { GunTurret.Upgrade.RocketShots.ToString(), 70 },
+
+        { Railgun.Upgrade.Momentum.ToString(), 25 },
+        { Railgun.Upgrade.AntimatterLaser.ToString(), 85 },
+        { Railgun.Upgrade.PolishedRound.ToString(), 20 },
+        { Railgun.Upgrade.Cannonball.ToString(), 70 },
+        { Railgun.Upgrade.GoldenGatling.ToString(), 80 },
     };
 
     public static int Balance { get; private set; }
