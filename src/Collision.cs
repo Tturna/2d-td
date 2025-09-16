@@ -127,6 +127,64 @@ public static class Collision
         return terrain.TileExistsAtPosition(pointTilePosition);
     }
 
+    public static bool IsEntityInScrap(Entity ent, out ScrapTile[] collidedScraps)
+    {
+        var entityTileSize = Vector2.Floor(ent.Size / Grid.TileLength) + Vector2.One;
+        HashSet<ScrapTile> collided = new();
+        ScrapTile scrap;
+
+        for (int y = 0; y < entityTileSize.Y; y++)
+        {
+            for (int x = 0; x < entityTileSize.X; x++)
+            {
+                var comparedWorldPosition = ent.Position + new Vector2(x, y) * Grid.TileLength;
+                scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
+
+                if (scrap is not null)
+                {
+                    collided.Add(scrap);
+                }
+            }
+
+            var farEnd = ent.Position + Vector2.UnitX * ent.Size.X;
+            var feGridPos = Grid.SnapPositionToGrid(farEnd);
+            scrap = ScrapSystem.GetScrapFromPosition(feGridPos);
+
+            if (scrap is not null)
+            {
+                collided.Add(scrap);
+            }
+        }
+
+        var bottomEnd = ent.Position + Vector2.UnitY * ent.Size.Y;
+        var beGridPos = Grid.SnapPositionToGrid(bottomEnd);
+
+        for (int x = 0; x < entityTileSize.X; x++)
+        {
+            var comparedWorldPosition = beGridPos + new Vector2(x * Grid.TileLength, 0f);
+            scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
+
+            if (scrap is not null)
+            {
+                collided.Add(scrap);
+            }
+        }
+
+        var bottomRightCorner = ent.Position + ent.Size;
+        var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
+        scrap = ScrapSystem.GetScrapFromPosition(brcGridPos);
+
+        if (scrap is not null)
+        {
+            collided.Add(scrap);
+        }
+
+        collidedScraps = new ScrapTile[collided.Count];
+        collided.CopyTo(collidedScraps);
+
+        return collidedScraps.Length > 0;
+    }
+
     public static bool IsLineInEntity(Vector2 linePointA, Vector2 linePointB, Entity entity, out Vector2 entryPoint, out Vector2 exitPoint)
     {
         entryPoint = Vector2.Zero;

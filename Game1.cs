@@ -154,6 +154,7 @@ public class Game1 : Game
                 BuildingSystem.Initialize(this);
                 WaveSystem.Initialize(this);
                 CurrencyManager.Initialize();
+                ScrapSystem.Initialize();
 
                 Terrain = new Terrain(this);
                 Components.Add(Terrain);
