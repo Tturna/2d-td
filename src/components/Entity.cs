@@ -77,7 +77,6 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-
         if (AnimationSystem is not null)
         {
             AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawLayerDepth);
