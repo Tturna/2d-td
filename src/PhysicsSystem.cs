@@ -23,30 +23,20 @@ public class PhysicsSystem
 
         entity.Position += Velocity;
 
-        if (Collision.IsEntityInScrap(entity, out var collidedTileWorldPositions))
+        if (Collision.IsEntityInScrap(entity, out var collidedScraps))
         {
-            ResolveEntityWorldTileCollision(entity, collidedTileWorldPositions);
+            ResolveEntityScrapCollision(entity, collidedScraps);
         }
 
         if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
-            ResolveEntityGridTileCollision(entity, collidedTilePositions);
+            ResolveEntityTerrainCollision(entity, collidedTilePositions);
         }
     }
 
-    private void ResolveEntityWorldTileCollision(Entity entity, Vector2[] collidedTileWorldPositions)
+    private void ResolveEntityCollision(Entity entity, float x1, float x2, float y1, float y2,
+        float w1, float w2, float h1, float h2)
     {
-        foreach (var tileWorldPosition in collidedTileWorldPositions)
-        {
-            var x1 = entity.Position.X;
-            var x2 = tileWorldPosition.X;
-            var y1 = entity.Position.Y;
-            var y2 = tileWorldPosition.Y;
-            var w1 = x1 + entity.Size.X;
-            var w2 = x2 + Grid.TileLength;
-            var h1 = y1 + entity.Size.Y;
-            var h2 = y2 + Grid.TileLength;
-
             var rightOverlap = w1 - x2;
             var leftOverlap = w2 - x1;
             var bottomOverlap = h1 - y2;
@@ -68,17 +58,42 @@ public class PhysicsSystem
             }
 
             entity.Position += correction;
+    }
+
+    private void ResolveEntityTerrainCollision(Entity entity, Vector2[] collidedTilePositions)
+    {
+        foreach (var tilePosition in collidedTilePositions)
+        {
+            var tileWorldPosition = Grid.TileToWorldPosition(tilePosition);
+
+            var x1 = entity.Position.X;
+            var x2 = tileWorldPosition.X;
+            var y1 = entity.Position.Y;
+            var y2 = tileWorldPosition.Y;
+            var w1 = x1 + entity.Size.X;
+            var w2 = x2 + Grid.TileLength;
+            var h1 = y1 + entity.Size.Y;
+            var h2 = y2 + Grid.TileLength;
+
+            ResolveEntityCollision(entity, x1, x2, y1, y2, w1, w2, h1, h2);
         }
     }
 
-    private void ResolveEntityGridTileCollision(Entity entity, Vector2[] collidedTilePositions)
+    private void ResolveEntityScrapCollision(Entity entity, ScrapTile[] collidedScraps)
     {
-        for (int i = 0; i < collidedTilePositions.Length; i++)
+        foreach (var scrapTile in collidedScraps)
         {
-            collidedTilePositions[i] = Grid.TileToWorldPosition(collidedTilePositions[i]);
-        }
+            var x1 = entity.Position.X;
+            var x2 = scrapTile.Position.X;
+            var y1 = entity.Position.Y;
+            var y2 = scrapTile.Position.Y;
+            var w1 = x1 + entity.Size.X;
+            var w2 = x2 + scrapTile.Size.X * scrapTile.Scale.X;
+            var h1 = y1 + entity.Size.Y;
+            var h2 = y2 + scrapTile.Size.Y * scrapTile.Scale.Y;
 
-        ResolveEntityWorldTileCollision(entity, collidedTilePositions);
+            ResolveEntityCollision(entity, x1, x2, y1, y2, w1, w2, h1, h2);
+        }
     }
 
     public void AddForce(Vector2 force)
