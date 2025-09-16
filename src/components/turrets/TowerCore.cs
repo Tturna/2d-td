@@ -20,6 +20,8 @@ public class TowerCore : GameComponent, IClickable
             leftChild: null, rightChild: null);
 
         Turret.Game.Components.Add(this);
+
+        InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
     }
 
     public Enemy? GetClosestEnemy(int tileRange)

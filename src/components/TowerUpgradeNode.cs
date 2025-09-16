@@ -15,10 +15,15 @@ public class TowerUpgradeNode
         Parent = parent;
         LeftChild = leftChild;
         RightChild = rightChild;
-    }
 
-    public void SetParent(TowerUpgradeNode parent)
-    {
-        Parent = parent;
+        if (leftChild != null)
+        {
+            leftChild.Parent = this;
+        }
+
+        if (rightChild != null)
+        {
+            rightChild.Parent = this;
+        }
     }
 }
