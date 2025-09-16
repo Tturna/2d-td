@@ -16,7 +16,7 @@ public class TowerCore : GameComponent, IClickable
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
-        CurrentUpgrade = new TowerUpgradeNode("Default", parent: null,
+        CurrentUpgrade = new TowerUpgradeNode("Default", 0, parent: null,
             leftChild: null, rightChild: null);
 
         Turret.Game.Components.Add(this);
@@ -89,7 +89,7 @@ public class TowerCore : GameComponent, IClickable
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return CurrentUpgrade;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.LeftChild;
         return CurrentUpgrade;
@@ -102,7 +102,7 @@ public class TowerCore : GameComponent, IClickable
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return CurrentUpgrade;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.RightChild;
         return CurrentUpgrade;
@@ -123,7 +123,7 @@ public class TowerCore : GameComponent, IClickable
                     return false;
                 }
             }
-       }
+        }
 
         var turretGridHeight = towerGridSize.Y;
 

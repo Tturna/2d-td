@@ -30,14 +30,14 @@ class Railgun : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString());
-        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), leftChild: AntimatterLaser);
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), price: 85);
+        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), price: 25, leftChild: AntimatterLaser);
 
-        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString());
-        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString());
-        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), leftChild: Cannonball, rightChild: GoldenGatling);
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), price: 70);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), price: 80);
+        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), parent: null,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
             leftChild: Momentum, rightChild: PolishedRound);
 
         towerCore.CurrentUpgrade = defaultNode;

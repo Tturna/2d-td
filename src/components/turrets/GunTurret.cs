@@ -36,14 +36,14 @@ class GunTurret : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString());
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString());
-        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), leftChild: photonCannon, rightChild: botShot);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), price: 75);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), price: 50);
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), price: 20, leftChild: photonCannon, rightChild: botShot);
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString());
-        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), leftChild: rocketShots);
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), price: 70);
+        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), price: 15, leftChild: rocketShots);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), parent: null,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
 
         towerCore.CurrentUpgrade = defaultNode;
