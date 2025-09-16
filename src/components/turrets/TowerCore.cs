@@ -20,10 +20,7 @@ public class TowerCore : GameComponent, IClickable
             leftChild: null, rightChild: null);
 
         Turret.Game.Components.Add(this);
-    }
 
-    public override void Update(GameTime gameTime)
-    {
         InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
     }
 
