@@ -275,7 +275,7 @@ class GunTurret : Entity, ITower
         Game.Components.Remove(turretHead);
         Game.Components.Remove(towerCore);
 
-        Destroy();
+        base.Destroy();
     }
 
     public static Texture2D GetTowerBaseSprite()
