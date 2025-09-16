@@ -8,7 +8,7 @@ namespace _2d_td;
 class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 10);
+    private Vector2 spawnOffset = new (0, 17);
     int tileRange = 18;
     int damage = 30;
     int pierce = 3;
@@ -102,8 +102,10 @@ class Railgun : Entity, ITower
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;
         bullet.Lifetime = 1f;
-        bullet.BulletLength = 30f;
+        bullet.BulletLength = 20f;
+        bullet.BulletWidth = 8f;
         bullet.Pierce = pierce;
+        bullet.Sprite = AssetManager.GetTexture("tempprojectile");
         Game.Components.Add(bullet);
     }
 
