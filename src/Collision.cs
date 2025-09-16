@@ -127,6 +127,63 @@ public static class Collision
         return terrain.TileExistsAtPosition(pointTilePosition);
     }
 
+    public static bool IsEntityInScrap(Entity ent, out Vector2[] collidedTileWorldPositions)
+    {
+        var entityTileSize = Vector2.Floor(ent.Size / Grid.TileLength) + Vector2.One;
+        HashSet<Vector2> collided = new();
+
+        for (int y = 0; y < entityTileSize.Y; y++)
+        {
+            for (int x = 0; x < entityTileSize.X; x++)
+            {
+                var comparedWorldPosition = ent.Position + new Vector2(x, y) * Grid.TileLength;
+
+                // Check collision by checking if a tile exists within the grid space
+                // taken by the entity.
+                if (ScrapSystem.GetScrapFromPosition(comparedWorldPosition) is not null)
+                {
+                    collided.Add(comparedWorldPosition);
+                }
+            }
+
+            var farEnd = ent.Position + Vector2.UnitX * ent.Size.X;
+            var feGridPos = Grid.SnapPositionToGrid(farEnd);
+
+            if (ScrapSystem.GetScrapFromPosition(feGridPos) is not null)
+            {
+                collided.Add(feGridPos);
+            }
+        }
+
+        var bottomEnd = ent.Position + Vector2.UnitY * ent.Size.Y;
+        var beGridPos = Grid.SnapPositionToGrid(bottomEnd);
+
+        for (int x = 0; x < entityTileSize.X; x++)
+        {
+            var comparedWorldPosition = beGridPos + new Vector2(x * Grid.TileLength, 0f);
+
+            // Check collision by checking if a tile exists within the grid space
+            // taken by the entity.
+            if (ScrapSystem.GetScrapFromPosition(comparedWorldPosition) is not null)
+            {
+                collided.Add(comparedWorldPosition);
+            }
+        }
+
+        var bottomRightCorner = ent.Position + ent.Size;
+        var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
+
+        if (ScrapSystem.GetScrapFromPosition(brcGridPos) is not null)
+        {
+            collided.Add(brcGridPos);
+        }
+
+        collidedTileWorldPositions = new Vector2[collided.Count];
+        collided.CopyTo(collidedTileWorldPositions);
+
+        return collidedTileWorldPositions.Length > 0;
+    }
+
     public static bool IsLineInEntity(Vector2 linePointA, Vector2 linePointB, Entity entity, out Vector2 entryPoint, out Vector2 exitPoint)
     {
         entryPoint = Vector2.Zero;
