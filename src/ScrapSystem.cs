@@ -6,7 +6,20 @@ namespace _2d_td;
 #nullable enable
 public static class ScrapSystem
 {
-    private static Dictionary<Vector2, ScrapTile> scrapTileMap = new();
+    private static Dictionary<Vector2, ScrapTile>? scrapTileMap;
+
+    public static void Initialize()
+    {
+        if (scrapTileMap is not null)
+        {
+            foreach (var item in scrapTileMap)
+            {
+                item.Value.Destroy();
+            }
+        }
+
+        scrapTileMap = new();
+    }
 
     public static void AddScrap(Game1 game, Vector2 worldPosition)
     {
@@ -40,7 +53,8 @@ public static class ScrapSystem
 
         targetPosition -= Vector2.UnitY * Grid.TileLength;
 
-        if (!scrapTileMap.TryGetValue(targetPosition, out tile))
+        // Assume Initialize has been called. Throw if not.
+        if (!scrapTileMap!.TryGetValue(targetPosition, out tile))
         {
             tile = new ScrapTile(game, targetPosition);
             scrapTileMap.Add(targetPosition, tile);
@@ -54,7 +68,7 @@ public static class ScrapSystem
     {
         var gridPosition = Grid.SnapPositionToGrid(worldPosition);
 
-        if (scrapTileMap.TryGetValue(gridPosition, out var tile))
+        if (scrapTileMap!.TryGetValue(gridPosition, out var tile))
         {
             return tile;
         }
