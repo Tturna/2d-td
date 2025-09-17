@@ -95,11 +95,15 @@ public class Game1 : Game
 
         base.Draw(gameTime);
 
-        foreach (var debugLine in DebugUtility.lineMap)
+        foreach (var lineTuple in DebugUtility.LineSet)
         {
-            LineUtility.DrawLine(SpriteBatch, debugLine.Key.PointA, debugLine.Key.PointB, debugLine.Value);
+            Vector2 startPoint = lineTuple.Item1;
+            Vector2 endPoint = lineTuple.Item2;
+            Color color = lineTuple.Item3;
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
         }
-        DebugUtility.lineMap.Clear();
+
+        DebugUtility.ResetLines();
 
         SpriteBatch.End();
 
