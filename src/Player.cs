@@ -1,12 +1,17 @@
-namespace _2d_td;
+/*namespace _2d_td;
 
-public class Player
+public class Player : Entity
 {
     HealthSystem healthSystem;
-    private int health = 100;
+    private int startingHealth = 100;
 
     public Player()
     {
-        HealthSystem = new HealthSystem(owner: this, initialHealth: health);
+        healthSystem = new HealthSystem(owner: this, initialHealth: startingHealth);
+
+        healthSystem.Died += (Entity player) =>
+        {
+            Console.WriteLine("Player lost");
+        };
     }
-}
+}*/

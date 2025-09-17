@@ -155,8 +155,10 @@ public class Game1 : Game
                 WaveSystem.Initialize(this);
                 CurrencyManager.Initialize();
 
+
                 Terrain = new Terrain(this);
                 Components.Add(Terrain);
+                EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);
                 Components.Add(ui);
