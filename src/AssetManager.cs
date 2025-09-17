@@ -37,6 +37,9 @@ public static class AssetManager
         LoadTexture("railgun", "sprites/towers/railgun_00");
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp
 
+        // projectiles
+        LoadTexture("tempprojectile", "sprites/projectiles/railguntemp"); // temp
+
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
 

@@ -48,7 +48,7 @@ public class TurretDetailsPrompt : UIEntity
             leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
             leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
-            leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
+            leftUpgradePrice = currentUpgrade.LeftChild.Price;
             game.Components.Add(leftUpgradeBtn);
         }
         else
@@ -61,7 +61,7 @@ public class TurretDetailsPrompt : UIEntity
             rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
             rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
-            rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
+            rightUpgradePrice = currentUpgrade.RightChild.Price;
             game.Components.Add(rightUpgradeBtn);
         }
         else
@@ -149,7 +149,7 @@ public class TurretDetailsPrompt : UIEntity
 
         if (newUpgrade.LeftChild is not null)
         {
-            leftUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.LeftChild.Name);
+            leftUpgradePrice = newUpgrade.LeftChild.Price;
         }
         else
         {
@@ -159,7 +159,7 @@ public class TurretDetailsPrompt : UIEntity
 
         if (newUpgrade.RightChild is not null)
         {
-            rightUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.RightChild.Name);
+            rightUpgradePrice = newUpgrade.RightChild.Price;
         }
         else
         {

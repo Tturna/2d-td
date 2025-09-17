@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -27,6 +28,8 @@ class Projectile : Entity
         hitEnemies.Clear();
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
         var oldPosition = Position;
         Position += Direction * (BulletPixelsPerSecond * deltaTime);
@@ -72,7 +75,10 @@ class Projectile : Entity
     {
         var bulletStart = Position - Direction * BulletLength / 2f;
 
-        LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: BulletWidth);
+        if (Sprite == null)
+        {
+            LineUtility.DrawLine(Game.SpriteBatch, bulletStart, Position, Color.Red, thickness: BulletWidth);
+        }
 
         base.Draw(gameTime);
     }
