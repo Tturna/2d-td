@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -22,8 +21,6 @@ class Projectile : Entity
     public Projectile(Game game, Vector2 startLocation) : base(game, null, Vector2.One)
     {
         Position = startLocation;
-
-        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
     }
 
     public override void Update(GameTime gameTime)
