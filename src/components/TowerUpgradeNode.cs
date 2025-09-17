@@ -4,7 +4,7 @@ namespace _2d_td;
 public class TowerUpgradeNode
 {
     public string Name { get; private set; }
-    public int Price;
+    public int Price { get; private set; }
     public TowerUpgradeNode? Parent { get; private set; }
     public TowerUpgradeNode? LeftChild { get; private set; }
     public TowerUpgradeNode? RightChild { get; private set; }
