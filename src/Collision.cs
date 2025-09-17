@@ -351,34 +351,14 @@ public static class Collision
                         return true;
                     }
                 }
-            }
-        }
 
-        return false;
-    }
-
-    public static bool IsLineInScrap(Vector2 linePointA, Vector2 linePointB)
-    {
-        var xGap = Math.Abs(linePointA.X - linePointB.X);
-        var yGap = Math.Abs(linePointA.Y - linePointB.Y);
-        var xTiles = (int)Math.Floor(xGap / Grid.TileLength) + 2;
-        var yTiles = (int)Math.Floor(yGap / Grid.TileLength) + 2;
-        var minX = Math.Min(linePointA.X, linePointB.X);
-        var minY = Math.Min(linePointA.Y, linePointB.Y);
-
-        for (int y = 0; y < yTiles; y++)
-        {
-            for (int x = 0; x < xTiles; x++)
-            {
-                var testPointX = minX + x * Grid.TileLength;
-                var testPointY = minY + y * Grid.TileLength;
-                var testPoint = Grid.SnapPositionToGrid(new Vector2(testPointX, testPointY));
-                var scrap = ScrapSystem.GetScrapFromPosition(testPoint);
+                var scrap = ScrapSystem.GetScrapFromPosition(testTilePosition);
 
                 if (scrap is not null)
                 {
-                    if (IsLineInRectangle(linePointA, linePointB, testPoint.X,
-                        testPoint.Y, Grid.TileLength, Grid.TileLength, out var _, out var _))
+                    if (IsLineInRectangle(linePointA, linePointB, scrap.Position.X,
+                        scrap.Position.Y + (1f - scrap.Scale.Y) * Grid.TileLength, Grid.TileLength,
+                        Grid.TileLength * scrap.Scale.Y, out var _, out var _))
                     {
                         return true;
                     }

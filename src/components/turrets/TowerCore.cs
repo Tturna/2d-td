@@ -39,8 +39,9 @@ public class TowerCore : GameComponent, IClickable
 
             if (distanceToEnemy < closestDistance)
             {
-                if (Collision.IsLineInTerrain(Turret.Position, enemy.Position)) continue;
-                if (Collision.IsLineInScrap(Turret.Position, enemy.Position)) continue;
+                var towerCenter = Turret.Position + Turret.Size / 2;
+                var enemyCenter = enemy.Position + enemy.Size / 2;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
 
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
