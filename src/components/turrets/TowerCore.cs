@@ -24,7 +24,7 @@ public class TowerCore : GameComponent, IClickable
         InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
     }
 
-    public Enemy? GetClosestEnemy(int tileRange)
+    public Enemy? GetClosestValidEnemy(int tileRange)
     {
         Enemy? closestEnemy = null;
         float closestDistance = float.PositiveInfinity;
@@ -39,6 +39,10 @@ public class TowerCore : GameComponent, IClickable
 
             if (distanceToEnemy < closestDistance)
             {
+                var towerCenter = Turret.Position + Turret.Size / 2;
+                var enemyCenter = enemy.Position + enemy.Size / 2;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
+
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
             }

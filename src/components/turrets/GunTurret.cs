@@ -130,7 +130,7 @@ class GunTurret : Entity, ITower
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = towerCore.GetClosestEnemy(tileRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(tileRange);
 
         actionTimer += deltaTime;
 
@@ -151,7 +151,7 @@ class GunTurret : Entity, ITower
     private void HandleBotShot(float deltaTime)
     {
         var actionInterval = 1f / (actionsPerSecond * 0.25f);
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange - 2);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange - 2);
 
         actionTimer += deltaTime;
 
@@ -181,7 +181,7 @@ class GunTurret : Entity, ITower
     {
         // Deal damage 8 times per second
         var actionInterval = 1f / 8f;
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange);
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
@@ -212,7 +212,7 @@ class GunTurret : Entity, ITower
 
         // TODO: 2 tile explosion on bullet impact
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange + 8);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange + 8);
 
         actionTimer += deltaTime;
 
