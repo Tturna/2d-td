@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -185,7 +186,8 @@ public static class Collision
         return collidedScraps.Length > 0;
     }
 
-    public static bool IsLineInEntity(Vector2 linePointA, Vector2 linePointB, Entity entity, out Vector2 entryPoint, out Vector2 exitPoint)
+    public static bool IsLineInRectangle(Vector2 linePointA, Vector2 linePointB,
+        float x, float y, float w, float h, out Vector2 entryPoint, out Vector2 exitPoint)
     {
         entryPoint = Vector2.Zero;
         exitPoint = Vector2.Zero;
@@ -205,10 +207,10 @@ public static class Collision
         var lineDirection = linePointB - linePointA;
         float horizontalEnterFactor, horizontalExitFactor, verticalEnterFactor, verticalExitFactor;
 
-        if (lineDirection.X < float.Epsilon)
+        if (Math.Abs(lineDirection.X) < float.Epsilon)
         {
             // Line is vertical
-            if (linePointA.X < entity.Position.X || linePointA.X > entity.Position.X + entity.Size.X)
+            if (linePointA.X < x || linePointA.X > x + w)
             {
                 return false;
             }
@@ -219,16 +221,16 @@ public static class Collision
         else
         {
             // Get enter and exit factors regardless of line direction
-            var leftIntersectFactor = (entity.Position.X - linePointA.X) / lineDirection.X;
-            var rightIntersectFactor = (entity.Position.X + entity.Size.X - linePointA.X) / lineDirection.X;
+            var leftIntersectFactor = (x - linePointA.X) / lineDirection.X;
+            var rightIntersectFactor = (x + w - linePointA.X) / lineDirection.X;
             horizontalEnterFactor = MathHelper.Min(leftIntersectFactor, rightIntersectFactor);
             horizontalExitFactor = MathHelper.Max(leftIntersectFactor, rightIntersectFactor);
         }
 
-        if (lineDirection.Y < float.Epsilon)
+        if (Math.Abs(lineDirection.Y) < float.Epsilon)
         {
             // Line is horizontal
-            if (linePointA.Y < entity.Position.Y || linePointA.Y > entity.Position.Y + entity.Size.Y)
+            if (linePointA.Y < y || linePointA.Y > y + h)
             {
                 return false;
             }
@@ -238,8 +240,8 @@ public static class Collision
         }
         else
         {
-            var topIntersectFactor = (entity.Position.Y - linePointA.Y) / lineDirection.Y;
-            var bottomIntersectFactor = (entity.Position.Y + entity.Size.Y - linePointA.Y) / lineDirection.Y;
+            var topIntersectFactor = (y - linePointA.Y) / lineDirection.Y;
+            var bottomIntersectFactor = (y + h - linePointA.Y) / lineDirection.Y;
             verticalEnterFactor = MathHelper.Min(topIntersectFactor, bottomIntersectFactor);
             verticalExitFactor = MathHelper.Max(topIntersectFactor, bottomIntersectFactor);
         }
@@ -313,5 +315,57 @@ public static class Collision
          * nearest exit factor. Effectively, if the second exit point is closer than the first
          * enter point, both lines of an axis have been crossed and the AABB is has been missed.
         */
+    }
+
+    public static bool IsLineInEntity(Vector2 linePointA, Vector2 linePointB, Entity entity, out Vector2 entryPoint, out Vector2 exitPoint)
+    {
+        return IsLineInRectangle(linePointA, linePointB, entity.Position.X, entity.Position.Y,
+            entity.Size.X, entity.Size.Y, out entryPoint, out exitPoint);
+    }
+
+    public static bool IsLineInTerrain(Vector2 linePointA, Vector2 linePointB)
+    {
+        // Create an axis-aligned rectangle where the line points are opposite corners.
+        // Check all tiles in the rectangle for whether they're in terrain.
+        // Return true if the given line passes through any terrain tile.
+        var xGap = Math.Abs(linePointA.X - linePointB.X);
+        var yGap = Math.Abs(linePointA.Y - linePointB.Y);
+        var xTiles = (int)Math.Floor(xGap / Grid.TileLength) + 2;
+        var yTiles = (int)Math.Floor(yGap / Grid.TileLength) + 2;
+        var minX = Math.Min(linePointA.X, linePointB.X);
+        var minY = Math.Min(linePointA.Y, linePointB.Y);
+
+        for (int y = 0; y < yTiles; y++)
+        {
+            for (int x = 0; x < xTiles; x++)
+            {
+                var testPointX = minX + x * Grid.TileLength;
+                var testPointY = minY + y * Grid.TileLength;
+                var testTilePosition = Grid.SnapPositionToGrid(new Vector2(testPointX, testPointY));
+
+                if (IsPointInTerrain(testTilePosition, Game1.Instance.Terrain))
+                {
+                    if (IsLineInRectangle(linePointA, linePointB, testTilePosition.X,
+                        testTilePosition.Y, Grid.TileLength, Grid.TileLength, out var _, out var _))
+                    {
+                        return true;
+                    }
+                }
+
+                var scrap = ScrapSystem.GetScrapFromPosition(testTilePosition);
+
+                if (scrap is not null)
+                {
+                    if (IsLineInRectangle(linePointA, linePointB, scrap.Position.X,
+                        scrap.Position.Y + (1f - scrap.Scale.Y) * Grid.TileLength, Grid.TileLength,
+                        Grid.TileLength * scrap.Scale.Y, out var _, out var _))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -70,6 +70,7 @@ public class Game1 : Game
             case SceneManager.Scene.Game:
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
+
                 break;
         }
 
@@ -93,6 +94,17 @@ public class Game1 : Game
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
         base.Draw(gameTime);
+
+        foreach (var lineTuple in DebugUtility.LineSet)
+        {
+            Vector2 startPoint = lineTuple.Item1;
+            Vector2 endPoint = lineTuple.Item2;
+            Color color = lineTuple.Item3;
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+        }
+
+        DebugUtility.ResetLines();
+
         SpriteBatch.End();
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
