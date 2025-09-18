@@ -34,12 +34,29 @@ class Projectile : Entity
 
         RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
+        // checks 3 times, once on the center of the bullet
+        // and on the sides of the bullet 
+        var rad = (float)Math.PI / 2;
+        var perpendicularDirection = Direction;
+        perpendicularDirection.Rotate(rad);
+
+        var sideOneOffset = perpendicularDirection * BulletWidth;
+        var sideTwoOffset = -perpendicularDirection * BulletWidth;
+
         var bulletToDelete = false;
 
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
             if (Collision.IsLineInEntity(oldPosition, Position, enemy,
                 out Vector2 entryPoint, out Vector2 exitPoint))
+            {
+                hitEnemies.Add(enemy);
+            } else if (Collision.IsLineInEntity(oldPosition+sideOneOffset,
+                Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
+            {
+                hitEnemies.Add(enemy);
+            } else if (Collision.IsLineInEntity(oldPosition+sideTwoOffset,
+            Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
             {
                 hitEnemies.Add(enemy);
             }
