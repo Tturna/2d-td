@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,13 +13,18 @@ class Drone : Entity, ITower
     private Vector2 spawnOffset = new (0, 11);
     int baseRange = 10;
     int damage = 10;
-    float bulletSpeed = 900f;
+    float bulletSpeed = 400f;
     float actionsPerSecond = 2f;
     float actionTimer;
 
     public enum Upgrade
     {
-        NoUpgrade
+        NoUpgrade,
+        AdvancedWeaponry,
+        FlyingArsenal,
+        ImprovedRadar,
+        AssasinDrone,
+        UAV,
     }
 
     public Drone(Game game) : base(game, GetTowerBaseSprite())
@@ -36,18 +43,20 @@ class Drone : Entity, ITower
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange);
+        HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 15f);
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range)
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, float attackAngle)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        var closestEnemy = towerCore.GetClosestValidEnemy(range);
+        var degree = (float)(attackAngle * Math.PI / 180);
+
+        var closestEnemy = GetValidEnemy(range, degree);
 
         if (closestEnemy is null) return;
 
@@ -72,6 +81,40 @@ class Drone : Entity, ITower
         bullet.BulletWidth = 8f;
         bullet.Sprite = AssetManager.GetTexture("tempprojectile");
         Game.Components.Add(bullet);
+    }
+
+    private Enemy? GetValidEnemy(int tileRange, float attackAngle)
+    {
+        Enemy? closestEnemy = null;
+        float closestDistance = float.PositiveInfinity;
+
+        // TODO: Don't loop over all enemies. Just the ones in range.
+        foreach (Enemy enemy in EnemySystem.Enemies)
+        {
+            var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
+
+            if (distanceToEnemy > tileRange * Grid.TileLength)
+                continue;
+
+            var enemyCenter = enemy.Position + enemy.Size / 2;
+            var direction = Math.Atan2(enemyCenter.Y - Position.Y, enemyCenter.X - Position.X);
+
+            if (Math.Abs(direction) < (Math.PI)-(attackAngle/2))
+            {
+                continue;
+            }
+
+            if (distanceToEnemy < closestDistance)
+            {
+                var towerCenter = Position + Size / 2;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
+
+                closestDistance = distanceToEnemy;
+                closestEnemy = enemy;
+            }
+        }
+
+        return closestEnemy;
     }
 
     public override void Destroy()
@@ -100,6 +143,7 @@ class Drone : Entity, ITower
 
     public static bool CanPlaceTower(Vector2 targetWorldPosition)
     {
+        // todo: improve
         var towerGridSize = GetDefaultGridSize();
         var targetGridPosition = Grid.SnapPositionToGrid(targetWorldPosition);
 
