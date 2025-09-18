@@ -12,11 +12,15 @@ public class Crane : Entity, ITower
     private Entity? ballThing;
 
     private const float TriggerMargin = 3f;
-
     private float activeBallTime = 3f;
-    private float cooldownTime = 1f;
-    private float actionTimer, cooldownTimer;
+    private float cooldownTime = 2f;
+    private float ballSpeed;
+    private float ballFallAcceleration = 12f;
+    private float ballReelSpeed = 30f;
     private Vector2 defaultBallOffset = new Vector2(-8, 0);
+
+    private float actionTimer, cooldownTimer;
+    private Vector2 targetBallPosition;
 
     public Crane(Game game) : base(game, GetTowerBaseSprite())
     {
@@ -38,6 +42,8 @@ public class Crane : Entity, ITower
         {
             cooldownTimer -= deltaTime;
 
+            HandleReelBack(deltaTime);
+
             if (cooldownTimer <= 0)
             {
                 cooldownTimer = 0;
@@ -52,10 +58,11 @@ public class Crane : Entity, ITower
         {
             actionTimer -= deltaTime;
 
+            HandleBallDescent(deltaTime);
+
             if (actionTimer <= 0)
             {
                 actionTimer = 0;
-                ballThing!.Position = Position + defaultBallOffset;
                 cooldownTimer = cooldownTime;
             }
 
@@ -66,6 +73,44 @@ public class Crane : Entity, ITower
         {
             Trigger();
         }
+    }
+
+    private void HandleBallDescent(float deltaTime)
+    {
+        if (ballThing!.Position == targetBallPosition) return;
+
+        ballSpeed += ballFallAcceleration;
+        ballThing.Position += Vector2.UnitY * ballSpeed * deltaTime;
+
+        if (ballThing.Position.Y <= Position.Y + defaultBallOffset.Y)
+        {
+            ballThing.Position = Position + defaultBallOffset;
+        }
+
+        if (ballThing.Position.Y >= targetBallPosition.Y)
+        {
+            ballThing.Position = targetBallPosition;
+
+            for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
+            {
+                if (i >= EnemySystem.Enemies.Count) continue;
+
+                var enemy = EnemySystem.Enemies[i];
+                var diff = (ballThing!.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
+                var distance = diff.Length();
+
+                if (distance > Grid.TileLength) continue;
+
+                enemy.HealthSystem.TakeDamage(30);
+            }
+        }
+    }
+
+    private void HandleReelBack(float deltaTime)
+    {
+        if (ballThing!.Position == Position + defaultBallOffset) return;
+
+        ballThing.Position -= Vector2.UnitY * ballReelSpeed * deltaTime;
     }
 
     private bool IsEnemyBelow()
@@ -97,20 +142,7 @@ public class Crane : Entity, ITower
         }
 
         groundCheckPosition -= Vector2.UnitY * Grid.TileLength;
-        ballThing.Position = groundCheckPosition;
-
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-            var diff = (ballThing.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
-            var distance = diff.Length();
-
-            if (distance > Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(30);
-        }
+        targetBallPosition = groundCheckPosition;
     }
 
     private static Texture2D GetBallSprite(SpriteBatch spriteBatch)
