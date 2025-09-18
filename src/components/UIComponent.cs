@@ -30,11 +30,14 @@ public class UIComponent : DrawableGameComponent
 
         var gunTurretIcon = new UIEntity(game, turretOneSprite);
         var railgunIcon = new UIEntity(game, turretTwoSprite);
+        var droneIcon = new UIEntity(game, turretTwoSprite);
         var gunTurretButton = new UIEntity(game, slotSprite);
         var railgunButton = new UIEntity(game, slotSprite);
+        var droneButton = new UIEntity(game, slotSprite);
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
+        droneButton.ButtonPressed += () => SelectTurret<Drone>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -46,21 +49,27 @@ public class UIComponent : DrawableGameComponent
 
         gunTurretButton.Position = pos;
         railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
+        droneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin)*3;
 
         gunTurretIcon.Position = iconPosition;
         railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
+        droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin)*3;
 
         // Add UI entities to components so they update
         game.Components.Add(gunTurretButton);
         game.Components.Add(railgunButton);
+        game.Components.Add(droneButton);
         game.Components.Add(gunTurretIcon);
         game.Components.Add(railgunIcon);
+        game.Components.Add(droneIcon);
 
         // Add UI entities to separate UI elements list so they can be drawn separately
         uiElements.Add(gunTurretButton);
         uiElements.Add(railgunButton);
+        uiElements.Add(droneButton);
         uiElements.Add(gunTurretIcon);
         uiElements.Add(railgunIcon);
+        uiElements.Add(droneIcon);
 
         base.Initialize();
     }
@@ -108,6 +117,7 @@ public class UIComponent : DrawableGameComponent
         game.SpriteBatch.DrawString(defaultFont, $"Scrap: {CurrencyManager.Balance}", Vector2.Zero, Color.White);
         game.SpriteBatch.DrawString(defaultFont, "10", new Vector2(24, 460), Color.White);
         game.SpriteBatch.DrawString(defaultFont, "25", new Vector2(68, 460), Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "20", new Vector2(156, 460), Color.White);
 
         base.Draw(gameTime);
     }

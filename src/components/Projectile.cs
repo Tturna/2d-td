@@ -29,10 +29,10 @@ class Projectile : Entity
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
-
         var oldPosition = Position;
         Position += Direction * (BulletPixelsPerSecond * deltaTime);
+
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
         var bulletToDelete = false;
 
@@ -73,6 +73,8 @@ class Projectile : Entity
 
     public override void Draw(GameTime gameTime)
     {
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+
         var bulletStart = Position - Direction * BulletLength / 2f;
 
         if (Sprite == null)

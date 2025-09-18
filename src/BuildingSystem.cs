@@ -10,7 +10,8 @@ public static class BuildingSystem
     {
         None,
         GunTurret,
-        Railgun
+        Railgun,
+        Drone
     }
 
     private static Game1 game;
@@ -107,6 +108,7 @@ public static class BuildingSystem
         {
             GunTurret => TowerType.GunTurret,
             Railgun => TowerType.Railgun,
+            Drone => TowerType.Drone,
             _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
         };
     }
