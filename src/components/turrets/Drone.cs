@@ -8,7 +8,7 @@ namespace _2d_td;
 class Drone : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 15);
+    private Vector2 spawnOffset = new (0, 11);
     int baseRange = 10;
     int damage = 10;
     float bulletSpeed = 900f;

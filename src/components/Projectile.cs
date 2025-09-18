@@ -91,6 +91,7 @@ class Projectile : Entity
     public override void Draw(GameTime gameTime)
     {
         RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+        DrawOrigin = new Vector2(BulletLength/2, BulletWidth/2);
 
         var bulletStart = Position - Direction * BulletLength / 2f;
 
