@@ -36,10 +36,10 @@ public class Crane : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var explosivePaylod = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
         var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), price: 70);
         var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), price: 25,
-            leftChild: explosivePaylod, rightChild: crusher);
+            leftChild: explosivePayload, rightChild: crusher);
 
         var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), price: 50);
         var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), price: 15,
