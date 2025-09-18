@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,6 +22,7 @@ public class Crane : Entity, ITower
 
     private float actionTimer, cooldownTimer;
     private Vector2 targetBallPosition;
+    private HashSet<Enemy> hitEnemies = new();
 
     public Crane(Game game) : base(game, GetTowerBaseSprite())
     {
@@ -82,27 +84,26 @@ public class Crane : Entity, ITower
         ballSpeed += ballFallAcceleration;
         ballThing.Position += Vector2.UnitY * ballSpeed * deltaTime;
 
-        if (ballThing.Position.Y <= Position.Y + defaultBallOffset.Y)
+        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
         {
-            ballThing.Position = Position + defaultBallOffset;
+            if (i >= EnemySystem.Enemies.Count) continue;
+
+            var enemy = EnemySystem.Enemies[i];
+
+            if (hitEnemies.Contains(enemy)) continue;
+
+            var diff = (ballThing!.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
+            var distance = diff.Length();
+
+            if (distance > ballThing.Size.X / 2 + enemy.Size.X / 2) continue;
+
+            hitEnemies.Add(enemy);
+            enemy.HealthSystem.TakeDamage(30);
         }
 
         if (ballThing.Position.Y >= targetBallPosition.Y)
         {
             ballThing.Position = targetBallPosition;
-
-            for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-            {
-                if (i >= EnemySystem.Enemies.Count) continue;
-
-                var enemy = EnemySystem.Enemies[i];
-                var diff = (ballThing!.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
-                var distance = diff.Length();
-
-                if (distance > Grid.TileLength) continue;
-
-                enemy.HealthSystem.TakeDamage(30);
-            }
         }
     }
 
@@ -111,6 +112,11 @@ public class Crane : Entity, ITower
         if (ballThing!.Position == Position + defaultBallOffset) return;
 
         ballThing.Position -= Vector2.UnitY * ballReelSpeed * deltaTime;
+
+        if (ballThing.Position.Y <= Position.Y + defaultBallOffset.Y)
+        {
+            ballThing.Position = Position + defaultBallOffset;
+        }
     }
 
     private bool IsEnemyBelow()
@@ -143,6 +149,7 @@ public class Crane : Entity, ITower
 
         groundCheckPosition -= Vector2.UnitY * Grid.TileLength;
         targetBallPosition = groundCheckPosition;
+        hitEnemies = new();
     }
 
     private static Texture2D GetBallSprite(SpriteBatch spriteBatch)
