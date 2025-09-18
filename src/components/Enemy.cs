@@ -30,8 +30,9 @@ public class Enemy : Entity
 
     public override void Update(GameTime gameTime)
     {
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
-        PhysicsSystem.UpdatePhysics(this, gameTime);
+        PhysicsSystem.UpdatePhysics(this, deltaTime);
 
         base.Update(gameTime);
     }
