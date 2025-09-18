@@ -15,9 +15,8 @@ public class PhysicsSystem
         this.game = game;
     }
 
-    public void UpdatePhysics(Entity entity, GameTime gameTime)
+    public void UpdatePhysics(Entity entity, float deltaTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         Velocity += Vector2.UnitY * LocalGravity * deltaTime;
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 

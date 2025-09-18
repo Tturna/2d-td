@@ -8,7 +8,8 @@ public static class CurrencyManager
     private static Dictionary<BuildingSystem.TowerType, int> towerPriceMap = new()
     {
         { BuildingSystem.TowerType.GunTurret, 20 },
-        { BuildingSystem.TowerType.Railgun, 25 }
+        { BuildingSystem.TowerType.Railgun, 25 },
+        { BuildingSystem.TowerType.Crane, 30 }
     };
 
     public static int Balance { get; private set; }
