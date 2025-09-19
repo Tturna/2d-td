@@ -13,7 +13,7 @@ class Projectile : Entity
     public float BulletLength = 16f;
     public float BulletWidth = 2f;
     public int Damage = 0;
-    public int Pierce = 1;
+    public int Pierce = 0;
     private List<Enemy> hitEnemies = new();
 
     // this constructor is simple so that the turrets can edit the property

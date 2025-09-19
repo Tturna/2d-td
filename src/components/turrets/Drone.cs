@@ -16,6 +16,7 @@ class Drone : Entity, ITower
     float bulletSpeed = 400f;
     float actionsPerSecond = 2f;
     float actionTimer;
+    float sightAngle = 20f;
 
     public enum Upgrade
     {
@@ -31,7 +32,17 @@ class Drone : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        // towerCore.CurrentUpgrade = defaultNode;
+        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
+        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+
+        var AssasinDrone = new TowerUpgradeNode(Upgrade.AssasinDrone.ToString(), price: 70);
+        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
+        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssasinDrone, rightChild: UAV);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+            leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
+
+        towerCore.CurrentUpgrade = defaultNode;
     }
 
     public Drone(Game game, Vector2 position) : this(game)
@@ -42,8 +53,32 @@ class Drone : Entity, ITower
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 15f);
+        
+        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, sightAngle);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, baseRange, sightAngle);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, baseRange, sightAngle);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.AssasinDrone.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
+        {
+            // todo: add the effects
+            HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage, baseRange + 8, sightAngle);
+        } 
 
         base.Update(gameTime);
     }
