@@ -323,8 +323,11 @@ public static class Collision
             entity.Size.X, entity.Size.Y, out entryPoint, out exitPoint);
     }
 
-    public static bool IsLineInTerrain(Vector2 linePointA, Vector2 linePointB)
+    public static bool IsLineInTerrain(Vector2 linePointA, Vector2 linePointB, out Vector2 entryPoint, out Vector2 exitPoint)
     {
+        entryPoint = Vector2.Zero;
+        exitPoint = Vector2.Zero;
+
         // Create an axis-aligned rectangle where the line points are opposite corners.
         // Check all tiles in the rectangle for whether they're in terrain.
         // Return true if the given line passes through any terrain tile.
@@ -343,22 +346,22 @@ public static class Collision
                 var testPointY = minY + y * Grid.TileLength;
                 var testTilePosition = Grid.SnapPositionToGrid(new Vector2(testPointX, testPointY));
 
-                if (IsPointInTerrain(testTilePosition, Game1.Instance.Terrain))
-                {
-                    if (IsLineInRectangle(linePointA, linePointB, testTilePosition.X,
-                        testTilePosition.Y, Grid.TileLength, Grid.TileLength, out var _, out var _))
-                    {
-                        return true;
-                    }
-                }
-
                 var scrap = ScrapSystem.GetScrapFromPosition(testTilePosition);
 
                 if (scrap is not null)
                 {
                     if (IsLineInRectangle(linePointA, linePointB, scrap.Position.X,
                         scrap.Position.Y + (1f - scrap.Scale.Y) * Grid.TileLength, Grid.TileLength,
-                        Grid.TileLength * scrap.Scale.Y, out var _, out var _))
+                        Grid.TileLength * scrap.Scale.Y, out entryPoint, out exitPoint))
+                    {
+                        return true;
+                    }
+                }
+
+                if (IsPointInTerrain(testTilePosition, Game1.Instance.Terrain))
+                {
+                    if (IsLineInRectangle(linePointA, linePointB, testTilePosition.X,
+                        testTilePosition.Y, Grid.TileLength, Grid.TileLength, out entryPoint, out exitPoint))
                     {
                         return true;
                     }
