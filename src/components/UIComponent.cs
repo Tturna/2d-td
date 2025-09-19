@@ -31,13 +31,17 @@ public class UIComponent : DrawableGameComponent
         var gunTurretIcon = new UIEntity(game, gunTurretSprite);
         var railgunIcon = new UIEntity(game, turretTwoSprite);
         var craneIcon = new UIEntity(game, turretTwoSprite);
+        var mortarIcon = new UIEntity(game, gunTurretSprite);
+
         var gunTurretButton = new UIEntity(game, slotSprite);
         var railgunButton = new UIEntity(game, slotSprite);
         var craneButton = new UIEntity(game, slotSprite);
+        var mortarButton = new UIEntity(game, slotSprite);
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
         craneButton.ButtonPressed += () => SelectTurret<Crane>();
+        mortarButton.ButtonPressed += () => SelectTurret<Mortar>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -50,26 +54,34 @@ public class UIComponent : DrawableGameComponent
         gunTurretButton.Position = pos;
         railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
         craneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        mortarButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
 
         gunTurretIcon.Position = iconPosition;
         railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
         craneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        mortarIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
 
         // Add UI entities to components so they update
         game.Components.Add(gunTurretButton);
         game.Components.Add(railgunButton);
         game.Components.Add(craneButton);
+        game.Components.Add(mortarButton);
+
         game.Components.Add(gunTurretIcon);
         game.Components.Add(railgunIcon);
         game.Components.Add(craneIcon);
+        game.Components.Add(mortarIcon);
 
         // Add UI entities to separate UI elements list so they can be drawn separately
         uiElements.Add(gunTurretButton);
         uiElements.Add(railgunButton);
         uiElements.Add(craneButton);
+        uiElements.Add(mortarButton);
+
         uiElements.Add(gunTurretIcon);
         uiElements.Add(railgunIcon);
         uiElements.Add(craneIcon);
+        uiElements.Add(mortarIcon);
 
         base.Initialize();
     }

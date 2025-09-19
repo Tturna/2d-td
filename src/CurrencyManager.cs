@@ -9,7 +9,8 @@ public static class CurrencyManager
     {
         { BuildingSystem.TowerType.GunTurret, 20 },
         { BuildingSystem.TowerType.Railgun, 25 },
-        { BuildingSystem.TowerType.Crane, 30 }
+        { BuildingSystem.TowerType.Crane, 30 },
+        { BuildingSystem.TowerType.Mortar, 30 }
     };
 
     public static int Balance { get; private set; }
