@@ -11,12 +11,13 @@ class Drone : Entity, ITower
 {
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 11);
+    private Vector2 turretSpawnAxisCenter;
     int baseRange = 10;
     int damage = 10;
     float bulletSpeed = 400f;
     float actionsPerSecond = 2f;
     float actionTimer;
-    float sightAngle = 20f;
+    float sightAngle = 30f;
 
     public enum Upgrade
     {
@@ -52,6 +53,7 @@ class Drone : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        turretSpawnAxisCenter = Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
@@ -96,7 +98,7 @@ class Drone : Entity, ITower
         if (actionTimer >= actionInterval)
         {
             var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
-            var direction = enemyCenter - Position;
+            var direction = enemyCenter - turretSpawnAxisCenter;
             direction.Normalize();
             Shoot(damage, direction);
             actionTimer = 0f;
@@ -105,7 +107,7 @@ class Drone : Entity, ITower
 
     private void Shoot(int damage, Vector2 direction)
     {
-        var bullet = new Projectile(Game, Position + spawnOffset);
+        var bullet = new Projectile(Game, turretSpawnAxisCenter);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;
@@ -127,12 +129,12 @@ class Drone : Entity, ITower
         var towerDirectionAngle = (float)Math.PI; // in radians, assuming it faces left.
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
-            var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
+            var distanceToEnemy = Vector2.Distance(turretSpawnAxisCenter, enemy.Position);
             if (distanceToEnemy > tileRange * Grid.TileLength)
                 continue;
             var enemyCenter = enemy.Position + enemy.Size / 2;
-            var deltaX = enemyCenter.X - Position.X;
-            var deltaY = enemyCenter.Y - Position.Y;
+            var deltaX = enemyCenter.X - turretSpawnAxisCenter.X;
+            var deltaY = enemyCenter.Y - turretSpawnAxisCenter.Y;
             var enemyAngle = (float)Math.Atan2(deltaY, deltaX);
 
             var angleDifference = Math.Abs(enemyAngle - towerDirectionAngle);
@@ -148,7 +150,7 @@ class Drone : Entity, ITower
             }
             if (distanceToEnemy < closestDistance)
             {
-                var towerCenter = Position + Size / 2;
+                var towerCenter = turretSpawnAxisCenter + Size / 2;
                 if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
