@@ -24,7 +24,7 @@ class Drone : Entity, ITower
         AdvancedWeaponry,
         FlyingArsenal,
         ImprovedRadar,
-        AssasinDrone,
+        AssassinDrone,
         UAV,
     }
 
@@ -35,9 +35,9 @@ class Drone : Entity, ITower
         var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
         var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
 
-        var AssasinDrone = new TowerUpgradeNode(Upgrade.AssasinDrone.ToString(), price: 70);
+        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), price: 70);
         var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssasinDrone, rightChild: UAV);
+        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinDrone, rightChild: UAV);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
@@ -70,7 +70,7 @@ class Drone : Entity, ITower
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
         }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.AssasinDrone.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinDrone.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
         }
@@ -89,9 +89,7 @@ class Drone : Entity, ITower
 
         actionTimer += deltaTime;
 
-        var degree = (float)(attackAngle * Math.PI / 180);
-
-        var closestEnemy = GetValidEnemy(range, degree);
+        var closestEnemy = GetValidEnemy(range, attackAngle);
 
         if (closestEnemy is null) return;
 
@@ -118,37 +116,44 @@ class Drone : Entity, ITower
         Game.Components.Add(bullet);
     }
 
-    private Enemy? GetValidEnemy(int tileRange, float attackAngle)
+    private Enemy? GetValidEnemy(int tileRange, float attackAngleInDegrees)
     {
         Enemy? closestEnemy = null;
         float closestDistance = float.PositiveInfinity;
+        var attackAngleInRadians = (float)(attackAngleInDegrees * Math.PI / 180.0);
+        var halfAttackAngle = attackAngleInRadians / 2.0f;
 
-        // TODO: Don't loop over all enemies. Just the ones in range.
+        // Define the direction the tower is facing
+        var towerDirectionAngle = (float)Math.PI; // in radians, assuming it faces left.
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
             var distanceToEnemy = Vector2.Distance(Position, enemy.Position);
-
             if (distanceToEnemy > tileRange * Grid.TileLength)
                 continue;
-
             var enemyCenter = enemy.Position + enemy.Size / 2;
-            var direction = Math.Atan2(enemyCenter.Y - Position.Y, enemyCenter.X - Position.X);
+            var deltaX = enemyCenter.X - Position.X;
+            var deltaY = enemyCenter.Y - Position.Y;
+            var enemyAngle = (float)Math.Atan2(deltaY, deltaX);
 
-            if (Math.Abs(direction) < (Math.PI)-(attackAngle/2))
+            var angleDifference = Math.Abs(enemyAngle - towerDirectionAngle);
+            // Normalize the angle difference to be within -PI and PI.
+            if (angleDifference > Math.PI)
+            {
+                angleDifference = (float)(2 * Math.PI - angleDifference);
+            }
+
+            if (angleDifference > halfAttackAngle)
             {
                 continue;
             }
-
             if (distanceToEnemy < closestDistance)
             {
                 var towerCenter = Position + Size / 2;
                 if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
-
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
             }
         }
-
         return closestEnemy;
     }
 

@@ -76,6 +76,8 @@ class Projectile : Entity
             else
             {
                 bulletToDelete = true;
+                var enemy = hitEnemies[i];
+                enemy.HealthSystem.TakeDamage(Damage);
                 break;
             }
         }
