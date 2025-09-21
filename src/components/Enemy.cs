@@ -12,6 +12,7 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
+    private int attackDamage = 3;
     public int ScrapValue;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
@@ -51,6 +52,12 @@ public class Enemy : Entity
         // {
         //     PhysicsSystem.AddForce(-Vector2.UnitY);
         // }
+        
+        if (Collision.AreEntitiesColliding(this, HQ.Instance))
+        {
+            HQ.Instance.HealthSystem.TakeDamage(attackDamage);
+            Destroy();
+        }
 
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, gameTime);
@@ -74,4 +81,6 @@ public class Enemy : Entity
         CurrencyManager.AddBalance(ScrapValue);
         Destroy();
     }
+
+
 }

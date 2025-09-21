@@ -70,6 +70,7 @@ public class Game1 : Game
             case SceneManager.Scene.Game:
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
+                EnemySystem.Update(gameTime);
                 break;
         }
 
@@ -157,7 +158,11 @@ public class Game1 : Game
 
 
                 Terrain = new Terrain(this);
+
                 Components.Add(Terrain);
+                var hqPosition = Terrain.GetLastTilePosition();
+                var hq = new HQ(this,hqPosition);
+                Components.Add(hq);
                 EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);

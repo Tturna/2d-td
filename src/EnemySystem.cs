@@ -9,26 +9,28 @@ public static class EnemySystem
     public static List<Enemy> Enemies { get; private set; } = new();
     static Game1 Game;
 
+
     public static void Initialize(Game1 game)
     {
         Game = game;
-        
     }
 
-    public static void Update()
+    public static void Update(GameTime gameTime)
     {
-    CheckIfEnemyPastLevel();
+        CheckIfEnemyPastLevel();
     }
 
     public static void CheckIfEnemyPastLevel()
     {
         float levelEndX = Game.Terrain.GetLastTilePosition().X;
+        
         foreach (Enemy enemy in Enemies)
         {
             float enemyX = enemy.Position.X;
             if (enemyX > levelEndX)
             {
-                Console.WriteLine("Enemy has passed level");
+
+                //Console.WriteLine("Enemy has passed level");
             }
         }
     }

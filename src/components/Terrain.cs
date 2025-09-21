@@ -91,7 +91,7 @@ public class Terrain : DrawableGameComponent
 
     public Vector2 GetLastTilePosition()
     {
-        return tiles.Keys.Last();
+        return tiles.Keys.Last() * Grid.TileLength + levelOffset;
     }
 
     public bool TileExistsAtPosition(Vector2 worldPosition)
