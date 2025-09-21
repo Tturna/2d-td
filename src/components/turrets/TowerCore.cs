@@ -14,7 +14,7 @@ public class TowerCore : GameComponent, IClickable
     public bool detailsClosed;
 
     public delegate void ClickedHandler();
-    public event ClickedHandler Clicked;
+    public event ClickedHandler? Clicked;
 
     public TowerCore(Entity turret) : base(turret.Game)
     {

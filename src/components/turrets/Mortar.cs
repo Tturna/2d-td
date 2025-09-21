@@ -125,6 +125,10 @@ public class Mortar : Entity, ITower
         {
             HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f);
         }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
+        {
+            HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f);
+        }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
         {
             HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f);
@@ -159,6 +163,27 @@ public class Mortar : Entity, ITower
         shell.physics.AddForce(projectileVelocity);
 
         HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3);
+
+        actionTimer = 1f / actionsPerSecond;
+    }
+
+    private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond)
+    {
+        if (projectileVelocity == default) return;
+
+        for (int i = 0; i < 3; i++)
+        {
+            var shell = new MortarShell(Game);
+            var xOffset = i * Grid.TileLength;
+            shell.Position = Position + Vector2.UnitX * xOffset;
+            shell.physics.LocalGravity = 0f;
+            shell.Homing = true;
+
+            var randomX = (float)random.NextDouble() * 2f - 1f;
+            shell.physics.AddForce(-Vector2.UnitY * 4f + Vector2.UnitX * randomX);
+
+            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+        }
 
         actionTimer = 1f / actionsPerSecond;
     }
