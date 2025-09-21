@@ -17,6 +17,7 @@ public class Mortar : Entity, ITower
     private float projectileGravity = 10f;
 
     private const float FiringAngle = MathHelper.PiOver4;
+    private Random random = new();
 
     public enum Upgrade
     {
@@ -106,19 +107,27 @@ public class Mortar : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShot(explosionTileRadius: 3, damage: 25, actionsPerSecond);
+            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
         {
-            HandleBasicShot(explosionTileRadius: 5, damage: 35, actionsPerSecond);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
-        {
-            HandleBasicShot(explosionTileRadius: 3, damage: 25, actionsPerSecond + 0.3f);
+            HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
         {
-            HandleBouncingBomb(explosionTileRadius: 5, damage: 50, actionsPerSecond);
+            HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
+        {
+            HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
+        {
+            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
+        {
+            HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f);
         }
 
         base.Update(gameTime);
@@ -154,6 +163,28 @@ public class Mortar : Entity, ITower
         actionTimer = 1f / actionsPerSecond;
     }
 
+    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond)
+    {
+        if (projectileVelocity == default) return;
+
+        for (int i = 0; i < 6; i++)
+        {
+            var shell = new MortarShell(Game);
+            shell.Position = Position;
+            shell.physics.LocalGravity = projectileGravity;
+            shell.physics.DragFactor = 0f;
+
+            var randomX = (float)random.NextDouble() * 2f - 1f;
+            var randomY = (float)random.NextDouble() * 1f - 0.5f;
+            var randomAddition = new Vector2(randomX, randomY);
+            shell.physics.AddForce(projectileVelocity + randomAddition);
+
+            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+        }
+
+        actionTimer = 1f / actionsPerSecond;
+    }
+
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius)
     {
         for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
@@ -162,7 +193,7 @@ public class Mortar : Entity, ITower
 
             var enemy = EnemySystem.Enemies[i];
 
-            var diff = shell.Position - enemy.Position + enemy.Size / 2;
+            var diff = shell.Position + shell.Size / 2 - enemy.Position + enemy.Size / 2;
             var distance = diff.Length();
 
             if (distance > explosionTileRadius * Grid.TileLength) continue;
