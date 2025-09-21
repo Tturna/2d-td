@@ -160,7 +160,8 @@ public class Game1 : Game
                 Terrain = new Terrain(this);
 
                 Components.Add(Terrain);
-                var hqPosition = Terrain.GetLastTilePosition();
+                //hqPosition will need to be flexible for each level
+                var hqPosition = Terrain.GetLastTilePosition() - new Vector2(0,23*Grid.TileLength);
                 var hq = new HQ(this,hqPosition);
                 Components.Add(hq);
                 EnemySystem.Initialize(this);
