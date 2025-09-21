@@ -24,16 +24,15 @@ public class PhysicsSystem
         Velocity += Vector2.UnitY * LocalGravity * deltaTime;
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 
-        // TODO: Consider checking line collision more accurately. Entity size can affect it.
-        var oldPosition = entity.Position;
+        var oldPosition = entity.Position + entity.Size / 2;
         entity.Position += Velocity;
 
-        if (Collision.IsLineInTerrain(oldPosition, entity.Position, out var entryPoint, out var _))
+        if (Collision.IsLineInTerrain(oldPosition, entity.Position + entity.Size / 2, out var entryPoint, out var _))
         {
             // Set entity position to first collision point and then resolve.
-            // This ensures that fast moving entities don't go far into the terrain or scrap
-            // and resolve incorrectly.
-            entity.Position = entryPoint;
+            // This helps prevent fast moving objects moving far into terrain or scrap and
+            // resolving incorrectly.
+            entity.Position = entryPoint - entity.Size / 2;
         }
 
         if (Collision.IsEntityInScrap(entity, out var collidedScraps))

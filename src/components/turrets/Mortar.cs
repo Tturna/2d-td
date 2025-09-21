@@ -18,10 +18,37 @@ public class Mortar : Entity, ITower
 
     private const float FiringAngle = MathHelper.PiOver4;
 
+    public enum Upgrade
+    {
+        NoUpgrade,
+        BigBomb,
+        EfficientReload,
+        BouncingBomb,
+        Nuke,
+        MissileSilo,
+        Hellrain
+    }
+
     public Mortar(Game game) : base(game, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
         towerCore.Clicked += OnClickTower;
+
+        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), price: 80);
+        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), price: 200);
+
+        var bigBomb = new TowerUpgradeNode(Upgrade.BigBomb.ToString(), price: 35,
+            leftChild: bouncingBomb, rightChild: nuke);
+
+        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), price: 90);
+        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), price: 110);
+        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), price: 20,
+            leftChild: missileSilo, rightChild: hellrain);
+
+        var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+            leftChild: bigBomb, rightChild: efficientReload);
+
+        towerCore.CurrentUpgrade = defaultUpgrade;
     }
 
     public override void Initialize()
@@ -77,12 +104,27 @@ public class Mortar : Entity, ITower
             return;
         }
 
-        Shoot();
+        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        {
+            HandleBasicShot(explosionTileRadius: 3, damage: 25, actionsPerSecond);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
+        {
+            HandleBasicShot(explosionTileRadius: 5, damage: 35, actionsPerSecond);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
+        {
+            HandleBasicShot(explosionTileRadius: 3, damage: 25, actionsPerSecond + 0.3f);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
+        {
+            HandleBouncingBomb(explosionTileRadius: 5, damage: 50, actionsPerSecond);
+        }
 
         base.Update(gameTime);
     }
 
-    private void Shoot()
+    private void HandleBasicShot(int explosionTileRadius, int damage, float shotsPerSecond)
     {
         if (projectileVelocity == default) return;
 
@@ -92,12 +134,27 @@ public class Mortar : Entity, ITower
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
 
-        shell.Destroyed += () => HandleBasicProjectileHit(shell, damage: 25);
+        shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
 
         actionTimer = 1f / actionsPerSecond;
     }
 
-    private void HandleBasicProjectileHit(MortarShell shell, int damage)
+    private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond)
+    {
+        if (projectileVelocity == default) return;
+
+        var shell = new MortarShell(Game);
+        shell.Position = Position;
+        shell.physics.LocalGravity = projectileGravity;
+        shell.physics.DragFactor = 0f;
+        shell.physics.AddForce(projectileVelocity);
+
+        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3);
+
+        actionTimer = 1f / actionsPerSecond;
+    }
+
+    private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius)
     {
         for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
         {
@@ -108,10 +165,34 @@ public class Mortar : Entity, ITower
             var diff = shell.Position - enemy.Position + enemy.Size / 2;
             var distance = diff.Length();
 
-            if (distance > 3 * Grid.TileLength) continue;
+            if (distance > explosionTileRadius * Grid.TileLength) continue;
 
             enemy.HealthSystem.TakeDamage(damage);
         }
+    }
+
+    private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount)
+    {
+        if (bounceCount <= 0) return;
+
+        shell.Destroyed += previousVelocity =>
+        {
+            // TODO: Make shells bounce backwards from walls
+            float xVelocity = -1;
+            var yVelocity = previousVelocity.Y > 0 ? -1 : 1;
+            var newVelocityDirection = new Vector2(xVelocity, yVelocity);
+            newVelocityDirection.Normalize();
+            var newVelocity = newVelocityDirection * previousVelocity.Length();
+            var newShell = new MortarShell(Game);
+
+            newShell.Position = shell.Position;
+            newShell.physics.LocalGravity = projectileGravity;
+            newShell.physics.DragFactor = 0f;
+            newShell.physics.AddForce(newVelocity);
+
+            HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+            HandleBouncingHit(newShell, damage, explosionTileRadius, bounceCount - 1);
+        };
     }
 
     private Vector2 CalculateProjectileVelocity(Vector2 targetStrikePosition, float deltaTime)

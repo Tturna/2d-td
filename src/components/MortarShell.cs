@@ -5,7 +5,7 @@ namespace _2d_td;
 
 public class MortarShell : Entity
 {
-    public delegate void DestroyedHandler();
+    public delegate void DestroyedHandler(Vector2 previousVelocity);
     public event DestroyedHandler Destroyed;
 
     public PhysicsSystem physics;
@@ -19,17 +19,18 @@ public class MortarShell : Entity
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var oldVelocity = physics.Velocity;
         var collided = physics.UpdatePhysics(this, deltaTime);
 
-        if (collided) Destroy();
+        if (collided) DestroyShell(oldVelocity);
 
         base.Update(gameTime);
     }
 
-    public override void Destroy()
+    public void DestroyShell(Vector2 previousVelocity)
     {
-        Destroyed?.Invoke();
-        base.Destroy();
+        Destroyed?.Invoke(previousVelocity);
+        Destroy();
     }
 
     private static Texture2D GetShellTexture(SpriteBatch spriteBatch)
