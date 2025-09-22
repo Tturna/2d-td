@@ -25,19 +25,23 @@ public class UIComponent : DrawableGameComponent
         var slotSprite = AssetManager.GetTexture("slot");
 
         // Turret buttons
-        var turretOneSprite = AssetManager.GetTexture("gunTurretBase");
+        var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
-        var gunTurretIcon = new UIEntity(game, turretOneSprite);
+        var gunTurretIcon = new UIEntity(game, gunTurretSprite);
         var railgunIcon = new UIEntity(game, turretTwoSprite);
         var droneIcon = new UIEntity(game, turretTwoSprite);
+        var craneIcon = new UIEntity(game, turretTwoSprite);
+
         var gunTurretButton = new UIEntity(game, slotSprite);
         var railgunButton = new UIEntity(game, slotSprite);
         var droneButton = new UIEntity(game, slotSprite);
+        var craneButton = new UIEntity(game, slotSprite);
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
         droneButton.ButtonPressed += () => SelectTurret<Drone>();
+        craneButton.ButtonPressed += () => SelectTurret<Crane>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -49,27 +53,35 @@ public class UIComponent : DrawableGameComponent
 
         gunTurretButton.Position = pos;
         railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
-        droneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin)*3;
+        droneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        craneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
 
         gunTurretIcon.Position = iconPosition;
         railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
-        droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin)*3;
+        droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        craneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
 
         // Add UI entities to components so they update
         game.Components.Add(gunTurretButton);
         game.Components.Add(railgunButton);
         game.Components.Add(droneButton);
+        game.Components.Add(craneButton);
+
         game.Components.Add(gunTurretIcon);
         game.Components.Add(railgunIcon);
         game.Components.Add(droneIcon);
+        game.Components.Add(craneIcon);
 
         // Add UI entities to separate UI elements list so they can be drawn separately
         uiElements.Add(gunTurretButton);
         uiElements.Add(railgunButton);
         uiElements.Add(droneButton);
+        uiElements.Add(craneButton);
+
         uiElements.Add(gunTurretIcon);
         uiElements.Add(railgunIcon);
         uiElements.Add(droneIcon);
+        uiElements.Add(craneIcon);
 
         base.Initialize();
     }

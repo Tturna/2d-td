@@ -49,11 +49,6 @@ class GunTurret : Entity, ITower
         towerCore.CurrentUpgrade = defaultNode;
     }
 
-    public GunTurret(Game game, Vector2 position) : this(game)
-    {
-        Position = position;
-    }
-
     public override void Initialize()
     {
         // Position turret head to match where turret base expects it.
