@@ -8,7 +8,7 @@ namespace _2d_td;
 class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 15);
+    private Vector2 spawnOffset = new (0, 11);
     int tileRange = 18;
     int damage = 30;
     int pierce = 3;
