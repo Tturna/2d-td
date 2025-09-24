@@ -4,21 +4,28 @@ namespace _2d_td;
 public class TowerUpgradeNode
 {
     public string Name { get; private set; }
+    public int Price { get; private set; }
     public TowerUpgradeNode? Parent { get; private set; }
     public TowerUpgradeNode? LeftChild { get; private set; }
     public TowerUpgradeNode? RightChild { get; private set; }
 
-    public TowerUpgradeNode(string name, TowerUpgradeNode? parent = null,
+    public TowerUpgradeNode(string name, int price, TowerUpgradeNode? parent = null,
         TowerUpgradeNode? leftChild = null, TowerUpgradeNode? rightChild = null)
     {
         Name = name;
+        Price = price;
         Parent = parent;
         LeftChild = leftChild;
         RightChild = rightChild;
-    }
 
-    public void SetParent(TowerUpgradeNode parent)
-    {
-        Parent = parent;
+        if (leftChild != null)
+        {
+            leftChild.Parent = this;
+        }
+
+        if (rightChild != null)
+        {
+            rightChild.Parent = this;
+        }
     }
 }

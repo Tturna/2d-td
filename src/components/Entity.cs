@@ -19,7 +19,7 @@ public class Entity : DrawableGameComponent
     public Texture2D? Sprite { get; set; }
     public AnimationSystem? AnimationSystem;
 
-    public Entity(Game game, Texture2D? sprite = null, Vector2 size = default) : base(game)
+    public Entity(Game game, Vector2? position = null, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
         this.Game = (Game1)game;
         Sprite = sprite;
@@ -39,16 +39,17 @@ public class Entity : DrawableGameComponent
         {
             Size = new Vector2(Sprite.Width, Sprite.Height);
         }
-    }
 
-    public Entity(Game game, Vector2 position, Texture2D? sprite = null, Vector2 size = default)
-        : this(game, sprite, size)
-    {
-        Position = position;
+        if (position is not null)
+        {
+            Position = (Vector2)position;
+        }
+
+        Game.Components.Add(this);
     }
 
     public Entity(Game game, Vector2 position, AnimationSystem.AnimationData animationData, Texture2D? sprite = null)
-        : this(game, sprite, animationData.FrameSize)
+        : this(game, position, sprite, animationData.FrameSize)
     {
         Position = position;
         AnimationSystem = new AnimationSystem(animationData);
@@ -77,7 +78,6 @@ public class Entity : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
-
         if (AnimationSystem is not null)
         {
             AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawLayerDepth);

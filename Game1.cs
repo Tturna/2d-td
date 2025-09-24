@@ -65,6 +65,12 @@ public class Game1 : Game
     {
         InputSystem.Update();
 
+        // Console.WriteLine("Components ===============================");
+        // foreach (var component in Components)
+        // {
+        //     Console.WriteLine(component.ToString());
+        // }
+
         switch (SceneManager.CurrentScene)
         {
             case SceneManager.Scene.Game:
@@ -94,6 +100,17 @@ public class Game1 : Game
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
         base.Draw(gameTime);
+
+        foreach (var lineTuple in DebugUtility.LineSet)
+        {
+            Vector2 startPoint = lineTuple.Item1;
+            Vector2 endPoint = lineTuple.Item2;
+            Color color = lineTuple.Item3;
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+        }
+
+        DebugUtility.ResetLines();
+
         SpriteBatch.End();
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
@@ -155,6 +172,7 @@ public class Game1 : Game
                 BuildingSystem.Initialize(this);
                 WaveSystem.Initialize(this);
                 CurrencyManager.Initialize();
+                ScrapSystem.Initialize();
 
 
                 Terrain = new Terrain(this);

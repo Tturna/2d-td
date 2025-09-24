@@ -25,16 +25,26 @@ public class UIComponent : DrawableGameComponent
         var slotSprite = AssetManager.GetTexture("slot");
 
         // Turret buttons
-        var turretOneSprite = AssetManager.GetTexture("gunTurretBase");
+        var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
-        var gunTurretIcon = new UIEntity(game, turretOneSprite);
-        var railgunIcon = new UIEntity(game, turretTwoSprite);
-        var gunTurretButton = new UIEntity(game, slotSprite);
-        var railgunButton = new UIEntity(game, slotSprite);
+        var gunTurretIcon = new UIEntity(game, uiElements, gunTurretSprite);
+        var railgunIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var droneIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
+
+        var gunTurretButton = new UIEntity(game, uiElements, slotSprite);
+        var railgunButton = new UIEntity(game, uiElements, slotSprite);
+        var droneButton = new UIEntity(game, uiElements, slotSprite);
+        var craneButton = new UIEntity(game, uiElements, slotSprite);
+        var mortarButton = new UIEntity(game, uiElements, slotSprite);
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
+        droneButton.ButtonPressed += () => SelectTurret<Drone>();
+        craneButton.ButtonPressed += () => SelectTurret<Crane>();
+        mortarButton.ButtonPressed += () => SelectTurret<Mortar>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -46,21 +56,15 @@ public class UIComponent : DrawableGameComponent
 
         gunTurretButton.Position = pos;
         railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
+        droneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        craneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
+        mortarButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 4;
 
         gunTurretIcon.Position = iconPosition;
         railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
-
-        // Add UI entities to components so they update
-        game.Components.Add(gunTurretButton);
-        game.Components.Add(railgunButton);
-        game.Components.Add(gunTurretIcon);
-        game.Components.Add(railgunIcon);
-
-        // Add UI entities to separate UI elements list so they can be drawn separately
-        uiElements.Add(gunTurretButton);
-        uiElements.Add(railgunButton);
-        uiElements.Add(gunTurretIcon);
-        uiElements.Add(railgunIcon);
+        droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
+        craneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
+        mortarIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 4;
 
         base.Initialize();
     }
@@ -108,6 +112,7 @@ public class UIComponent : DrawableGameComponent
         game.SpriteBatch.DrawString(defaultFont, $"Scrap: {CurrencyManager.Balance}", Vector2.Zero, Color.White);
         game.SpriteBatch.DrawString(defaultFont, "10", new Vector2(24, 460), Color.White);
         game.SpriteBatch.DrawString(defaultFont, "25", new Vector2(68, 460), Color.White);
+        game.SpriteBatch.DrawString(defaultFont, "20", new Vector2(156, 460), Color.White);
 
         base.Draw(gameTime);
     }
@@ -116,7 +121,7 @@ public class UIComponent : DrawableGameComponent
     {
         if (turretHologram is not null)
         {
-            uiElements.Remove(turretHologram);
+            turretHologram.Destroy();
             turretHologram = null;
         }
     }
@@ -125,10 +130,7 @@ public class UIComponent : DrawableGameComponent
     {
         RemoveTurretHologram();
 
-        turretHologram = new UIEntity(game, sprite);
-        uiElements.Add(turretHologram);
-
-        // No need to add this to game components because it shouldn't collide with anything ever.
+        turretHologram = new UIEntity(game, uiElements, sprite);
     }
 
     private void SelectTurret<T>() where T : ITower
@@ -141,12 +143,10 @@ public class UIComponent : DrawableGameComponent
     public void AddUIEntity(UIEntity entity)
     {
         uiElements.Add(entity);
-        game.Components.Add(entity);
     }
 
-    public void RemoveUIEntity(UIEntity entity)
+    public bool RemoveUIEntity(UIEntity entity)
     {
-        uiElements.Remove(entity);
-        entity.Destroy();
+        return uiElements.Remove(entity);
     }
 }

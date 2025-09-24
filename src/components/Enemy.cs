@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-// using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -32,35 +31,14 @@ public class Enemy : Entity
 
     public override void Update(GameTime gameTime)
     {
-        // Used to test enemy physics
-        // if (Keyboard.GetState().IsKeyDown(Keys.H))
-        // {
-        //     PhysicsSystem.AddForce(-Vector2.UnitX * 0.5f);
-        // }
-        //
-        // if (Keyboard.GetState().IsKeyDown(Keys.L))
-        // {
-        //     PhysicsSystem.AddForce(Vector2.UnitX * 0.5f);
-        // }
-        //
-        // if (Keyboard.GetState().IsKeyDown(Keys.J))
-        // {
-        //     PhysicsSystem.AddForce(Vector2.UnitY);
-        // }
-        //
-        // if (Keyboard.GetState().IsKeyDown(Keys.K))
-        // {
-        //     PhysicsSystem.AddForce(-Vector2.UnitY);
-        // }
-        
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
             Destroy();
         }
-
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
-        PhysicsSystem.UpdatePhysics(this, gameTime);
+        PhysicsSystem.UpdatePhysics(this, deltaTime);
 
         base.Update(gameTime);
     }
@@ -79,6 +57,7 @@ public class Enemy : Entity
     {
         EnemySystem.Enemies.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
+        ScrapSystem.AddScrap(Game, Position);
         Destroy();
     }
 

@@ -10,7 +10,10 @@ public static class BuildingSystem
     {
         None,
         GunTurret,
-        Railgun
+        Railgun,
+        Drone,
+        Crane,
+        Mortar
     }
 
     private static Game1 game;
@@ -18,7 +21,7 @@ public static class BuildingSystem
     private static TowerType selectedTowerType;
     private static TimeSpan allowedTurretPlacementTime;
     private static Func<Vector2, bool> canPlaceTowerCallback;
-    private static Func<Game, Entity> createTowerInstanceCallback;
+    private static Func<Game, Vector2, Entity> createTowerInstanceCallback;
 
     public static bool CanPlaceTurret { get; private set; }
 
@@ -66,21 +69,17 @@ public static class BuildingSystem
             gameTime.TotalGameTime > allowedTurretPlacementTime &&
             selectedTowerType != TowerType.None;
 
-        if (InputSystem.IsLeftMouseButtonClicked() &&
-            CanPlaceTurret &&
-            TrySpawnTurret(gridMousePosition, out var turret))
+        if (InputSystem.IsLeftMouseButtonClicked() && CanPlaceTurret)
         {
-            game.Components.Add(turret);
+            TrySpawnTurret(gridMousePosition);
         }
     }
 
-    private static bool TrySpawnTurret(Vector2 position, out Entity spawnedTurret)
+    private static bool TrySpawnTurret(Vector2 position)
     {
-        spawnedTurret = null;
         if (!CurrencyManager.TryBuyTower(selectedTowerType)) return false;
 
-        spawnedTurret = createTowerInstanceCallback(game);
-        spawnedTurret.Position = position;
+        var spawnedTurret = createTowerInstanceCallback(game, position);
         return true;
     }
 
@@ -107,6 +106,9 @@ public static class BuildingSystem
         {
             GunTurret => TowerType.GunTurret,
             Railgun => TowerType.Railgun,
+            Drone => TowerType.Drone,
+            Crane => TowerType.Crane,
+            Mortar => TowerType.Mortar,
             _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
         };
     }

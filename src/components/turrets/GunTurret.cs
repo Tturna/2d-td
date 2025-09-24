@@ -32,31 +32,21 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game) : base(game, GetTowerBaseSprite())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString());
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString());
-        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), leftChild: photonCannon, rightChild: botShot);
-        photonCannon.SetParent(doubleGun);
-        botShot.SetParent(doubleGun);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), price: 75);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), price: 50);
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), price: 20, leftChild: photonCannon, rightChild: botShot);
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString());
-        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), leftChild: rocketShots);
-        rocketShots.SetParent(improvedBarrel);
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), price: 70);
+        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), price: 15, leftChild: rocketShots);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), parent: null,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
 
-        doubleGun.SetParent(defaultNode);
-        improvedBarrel.SetParent(defaultNode);
         towerCore.CurrentUpgrade = defaultNode;
-    }
-
-    public GunTurret(Game game, Vector2 position) : this(game)
-    {
-        Position = position;
     }
 
     public override void Initialize()
@@ -77,10 +67,6 @@ class GunTurret : Entity, ITower
 
         turretHead.DrawOrigin = drawOrigin;
         turretHead.DrawLayerDepth = 0.8f;
-
-        Game.Components.Add(turretHead);
-
-        InputSystem.Clicked += (mouseScreenPosition, _) => towerCore.HandleCloseDetails(mouseScreenPosition);
     }
 
     public override void Update(GameTime gameTime)
@@ -137,7 +123,7 @@ class GunTurret : Entity, ITower
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = towerCore.GetClosestEnemy(tileRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(tileRange);
 
         actionTimer += deltaTime;
 
@@ -158,7 +144,7 @@ class GunTurret : Entity, ITower
     private void HandleBotShot(float deltaTime)
     {
         var actionInterval = 1f / (actionsPerSecond * 0.25f);
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange - 2);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange - 2);
 
         actionTimer += deltaTime;
 
@@ -188,7 +174,7 @@ class GunTurret : Entity, ITower
     {
         // Deal damage 8 times per second
         var actionInterval = 1f / 8f;
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange);
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
@@ -219,7 +205,7 @@ class GunTurret : Entity, ITower
 
         // TODO: 2 tile explosion on bullet impact
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = towerCore.GetClosestEnemy(baseRange + 8);
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange + 8);
 
         actionTimer += deltaTime;
 
@@ -267,14 +253,18 @@ class GunTurret : Entity, ITower
         var muzzleOffset = direction * muzzleOffsetFactor;
         var startLocation = turretHeadAxisCenter+muzzleOffset;
 
-        var bullet = new Projectile(Game, startLocation, direction, damage, bulletPixelsPerSecond, 1f);
-        Game.Components.Add(bullet);
+        var bullet = new Projectile(Game, startLocation);
+        bullet.Direction = direction;
+        bullet.BulletPixelsPerSecond = bulletPixelsPerSecond;
+        bullet.Damage = damage;
+        bullet.Lifetime = 1f;
+        bullet.Pierce = 3;
     }
 
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
-        Game.Components.Remove(turretHead);
+        turretHead?.Destroy();
         Game.Components.Remove(towerCore);
 
         base.Destroy();
@@ -300,8 +290,8 @@ class GunTurret : Entity, ITower
         return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new GunTurret(game);
+        return new GunTurret(game, worldPosition);
     }
 }
