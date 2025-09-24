@@ -33,15 +33,15 @@ public class HQ : Entity
     {
         HealthSystem = new HealthSystem(this, startingHealth);
 
-        HealthSystem.Died += (Entity HQ) =>
+        /*HealthSystem.Died += (Entity HQ) =>
         {
-            Console.WriteLine("HQ lost");
+            Console.WriteLine("Player lost 🥶");
         };
 
         HealthSystem.Damaged += (Entity HQ) =>
         {
             Console.WriteLine("HQ damaged");
-        };
+        };*/
 
         Instance = this;
     }
