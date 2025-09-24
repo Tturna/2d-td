@@ -13,7 +13,7 @@ class Projectile : Entity
     public float BulletLength = 16f;
     public float BulletWidth = 2f;
     public int Damage = 0;
-    public int Pierce = 1;
+    public int Pierce = 0;
     private List<Enemy> hitEnemies = new();
 
     // this constructor is simple so that the turrets can edit the property
@@ -29,10 +29,19 @@ class Projectile : Entity
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
-
         var oldPosition = Position;
         Position += Direction * (BulletPixelsPerSecond * deltaTime);
+
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+
+        // checks 3 times, once on the center of the bullet
+        // and on the sides of the bullet 
+        var rad = (float)Math.PI / 2;
+        var perpendicularDirection = Direction;
+        perpendicularDirection.Rotate(rad);
+
+        var sideOneOffset = perpendicularDirection * BulletWidth;
+        var sideTwoOffset = -perpendicularDirection * BulletWidth;
 
         var bulletToDelete = false;
 
@@ -40,6 +49,14 @@ class Projectile : Entity
         {
             if (Collision.IsLineInEntity(oldPosition, Position, enemy,
                 out Vector2 entryPoint, out Vector2 exitPoint))
+            {
+                hitEnemies.Add(enemy);
+            } else if (Collision.IsLineInEntity(oldPosition+sideOneOffset,
+                Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
+            {
+                hitEnemies.Add(enemy);
+            } else if (Collision.IsLineInEntity(oldPosition+sideTwoOffset,
+            Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
             {
                 hitEnemies.Add(enemy);
             }
@@ -59,6 +76,8 @@ class Projectile : Entity
             else
             {
                 bulletToDelete = true;
+                var enemy = hitEnemies[i];
+                enemy.HealthSystem.TakeDamage(Damage);
                 break;
             }
         }
@@ -73,6 +92,9 @@ class Projectile : Entity
 
     public override void Draw(GameTime gameTime)
     {
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+        DrawOrigin = new Vector2(BulletLength/2, BulletWidth/2);
+
         var bulletStart = Position - Direction * BulletLength / 2f;
 
         if (Sprite == null)
