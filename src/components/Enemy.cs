@@ -11,6 +11,8 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
+    double hurtProgress;
+    double hurtAnimThreshold;
     private int attackDamage = 3;
     public int ScrapValue;
 
@@ -25,6 +27,7 @@ public class Enemy : Entity
         PhysicsSystem = new PhysicsSystem(Game);
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
+        hurtAnimThreshold = .33*HealthSystem.MaxHealth;
 
         this.hurtTexture = hurtTexture;
     }
@@ -48,9 +51,14 @@ public class Enemy : Entity
         base.Draw(gameTime);
     }
 
-    private void OnDamaged(Entity damagedEntity)
+    private void OnDamaged(Entity damagedEntity, int amount)
     {
-        AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+        hurtProgress += amount;
+        if (hurtProgress >= hurtAnimThreshold)
+        {
+            AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+            hurtProgress = 0;
+        }
     }
 
     private void OnDeath(Entity diedEntity)
