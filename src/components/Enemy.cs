@@ -50,7 +50,11 @@ public class Enemy : Entity
 
     private void OnDamaged(Entity damagedEntity)
     {
-        AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+        double hurtAnimThreshold = .33;//percentage of health enemy must be at to play hurt animation
+        if (HealthSystem.CurrentHealth <= HealthSystem.MaxHealth * hurtAnimThreshold)
+        {
+            AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+        }
     }
 
     private void OnDeath(Entity diedEntity)
