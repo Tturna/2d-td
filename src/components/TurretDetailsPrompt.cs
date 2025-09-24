@@ -127,8 +127,8 @@ public class TurretDetailsPrompt : UIEntity
     public override void Destroy()
     {
         sellBtn.Destroy();
-        leftUpgradeBtn.Destroy();
-        rightUpgradeBtn.Destroy();
+        leftUpgradeBtn?.Destroy();
+        rightUpgradeBtn?.Destroy();
 
         base.Destroy();
     }
@@ -154,7 +154,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            leftUpgradeBtn.Destroy();
+            leftUpgradeBtn?.Destroy();
             leftUpgradeBtn = null;
         }
 
@@ -164,7 +164,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            rightUpgradeBtn.Destroy();
+            rightUpgradeBtn?.Destroy();
             rightUpgradeBtn = null;
         }
     }
