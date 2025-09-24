@@ -28,17 +28,17 @@ public class UIComponent : DrawableGameComponent
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
-        var gunTurretIcon = new UIEntity(game, gunTurretSprite);
-        var railgunIcon = new UIEntity(game, turretTwoSprite);
-        var droneIcon = new UIEntity(game, turretTwoSprite);
-        var craneIcon = new UIEntity(game, turretTwoSprite);
-        var mortarIcon = new UIEntity(game, gunTurretSprite);
+        var gunTurretIcon = new UIEntity(game, uiElements, gunTurretSprite);
+        var railgunIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var droneIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
 
-        var gunTurretButton = new UIEntity(game, slotSprite);
-        var railgunButton = new UIEntity(game, slotSprite);
-        var droneButton = new UIEntity(game, slotSprite);
-        var craneButton = new UIEntity(game, slotSprite);
-        var mortarButton = new UIEntity(game, slotSprite);
+        var gunTurretButton = new UIEntity(game, uiElements, slotSprite);
+        var railgunButton = new UIEntity(game, uiElements, slotSprite);
+        var droneButton = new UIEntity(game, uiElements, slotSprite);
+        var craneButton = new UIEntity(game, uiElements, slotSprite);
+        var mortarButton = new UIEntity(game, uiElements, slotSprite);
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
@@ -65,32 +65,6 @@ public class UIComponent : DrawableGameComponent
         droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
         craneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
         mortarIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 4;
-
-        // Add UI entities to components so they update
-        game.Components.Add(gunTurretButton);
-        game.Components.Add(railgunButton);
-        game.Components.Add(droneButton);
-        game.Components.Add(craneButton);
-        game.Components.Add(mortarButton);
-
-        game.Components.Add(gunTurretIcon);
-        game.Components.Add(railgunIcon);
-        game.Components.Add(droneIcon);
-        game.Components.Add(craneIcon);
-        game.Components.Add(mortarIcon);
-
-        // Add UI entities to separate UI elements list so they can be drawn separately
-        uiElements.Add(gunTurretButton);
-        uiElements.Add(railgunButton);
-        uiElements.Add(droneButton);
-        uiElements.Add(craneButton);
-        uiElements.Add(mortarButton);
-
-        uiElements.Add(gunTurretIcon);
-        uiElements.Add(railgunIcon);
-        uiElements.Add(droneIcon);
-        uiElements.Add(craneIcon);
-        uiElements.Add(mortarIcon);
 
         base.Initialize();
     }
@@ -147,7 +121,7 @@ public class UIComponent : DrawableGameComponent
     {
         if (turretHologram is not null)
         {
-            uiElements.Remove(turretHologram);
+            turretHologram.Destroy();
             turretHologram = null;
         }
     }
@@ -156,10 +130,7 @@ public class UIComponent : DrawableGameComponent
     {
         RemoveTurretHologram();
 
-        turretHologram = new UIEntity(game, sprite);
-        uiElements.Add(turretHologram);
-
-        // No need to add this to game components because it shouldn't collide with anything ever.
+        turretHologram = new UIEntity(game, uiElements, sprite);
     }
 
     private void SelectTurret<T>() where T : ITower
@@ -172,12 +143,10 @@ public class UIComponent : DrawableGameComponent
     public void AddUIEntity(UIEntity entity)
     {
         uiElements.Add(entity);
-        game.Components.Add(entity);
     }
 
-    public void RemoveUIEntity(UIEntity entity)
+    public bool RemoveUIEntity(UIEntity entity)
     {
-        uiElements.Remove(entity);
-        entity.Destroy();
+        return uiElements.Remove(entity);
     }
 }

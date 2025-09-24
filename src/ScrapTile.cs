@@ -12,11 +12,9 @@ public class ScrapTile : Entity
 
     public int ScrapLevel { get; private set; } = 1;
 
-    public ScrapTile(Game1 game, Vector2 worldGridPosition) : base(game, GetBaseScrapTileSprite(game.SpriteBatch))
+    public ScrapTile(Game1 game, Vector2 worldGridPosition) :
+        base(game, Grid.SnapPositionToGrid(worldGridPosition), GetBaseScrapTileSprite(game.SpriteBatch))
     {
-        game.Components.Add(this);
-        Position = Grid.SnapPositionToGrid(worldGridPosition);
-
         var yScale = (float)ScrapLevel / MaxScrapLevel;
         Scale = new Vector2(1f, yScale);
         Position += Vector2.UnitY * (Grid.TileLength * (1f - yScale));

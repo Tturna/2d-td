@@ -21,10 +21,9 @@ public class MortarShell : Entity
     private float directionCorrectionThreshold = 0.6f;
     private float directionCorrectionSpeed = 1.5f;
 
-    public MortarShell(Game1 game) : base(game, GetShellTexture(game.SpriteBatch))
+    public MortarShell(Game1 game) : base(game, position: null, GetShellTexture(game.SpriteBatch))
     {
         physics = new PhysicsSystem(Game);
-        Game.Components.Add(this);
         var rng = new Random();
         homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
     }

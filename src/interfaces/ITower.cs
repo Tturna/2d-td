@@ -9,5 +9,5 @@ public interface ITower
     public abstract static Vector2 GetDefaultGridSize();
     public abstract static BuildingSystem.TowerType GetTowerType();
     public abstract static bool CanPlaceTower(Vector2 targetWorldPosition);
-    public abstract static Entity CreateNewInstance(Game game);
+    public abstract static Entity CreateNewInstance(Game game, Vector2 worldPosition);
 }

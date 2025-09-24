@@ -32,7 +32,7 @@ public class Crane : Entity, ITower
         Razorball
     }
 
-    public Crane(Game game) : base(game, GetTowerBaseSprite())
+    public Crane(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
@@ -53,9 +53,7 @@ public class Crane : Entity, ITower
 
     public override void Initialize()
     {
-        ballThing = new Entity(Game, GetBallSprite(Game.SpriteBatch));
-        ballThing.Position = Position + defaultBallOffset;
-        Game.Components.Add(ballThing);
+        ballThing = new Entity(Game, position: Position + defaultBallOffset, GetBallSprite(Game.SpriteBatch));
     }
 
     public override void Update(GameTime gameTime)
@@ -409,7 +407,7 @@ public class Crane : Entity, ITower
 
     public override void Destroy()
     {
-        Game.Components.Remove(ballThing);
+        ballThing?.Destroy();
         base.Destroy();
     }
 
@@ -418,9 +416,9 @@ public class Crane : Entity, ITower
         return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new Crane(game);
+        return new Crane(game, worldPosition);
     }
 
     public static Vector2 GetDefaultGridSize()

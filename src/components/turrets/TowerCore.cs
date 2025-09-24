@@ -69,7 +69,7 @@ public class TowerCore : GameComponent, IClickable
 
     public void CloseDetailsView()
     {
-        UIComponent.Instance.RemoveUIEntity(detailsPrompt);
+        detailsPrompt?.Destroy();
         detailsPrompt = null;
     }
 
@@ -78,7 +78,6 @@ public class TowerCore : GameComponent, IClickable
         if (!detailsClosed && detailsPrompt is null)
         {
             detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
-            UIComponent.Instance.AddUIEntity(detailsPrompt);
         }
 
         detailsClosed = false;

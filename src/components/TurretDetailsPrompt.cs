@@ -15,7 +15,9 @@ public class TurretDetailsPrompt : UIEntity
     private SpriteFont defaultFont;
 
     public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode> upgradeLeftCallback,
-        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) : base(game, AssetManager.GetTexture("upgradebg"))
+        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
+        base(game, position: null, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
         targetTurret = turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
@@ -33,7 +35,8 @@ public class TurretDetailsPrompt : UIEntity
             delaySeconds: 0.5f
         );
 
-        sellBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+        sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
+            UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
 
         var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTurret);
 
@@ -45,11 +48,11 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.LeftChild is not null)
         {
-            leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            leftUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
             leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
             leftUpgradePrice = currentUpgrade.LeftChild.Price;
-            game.Components.Add(leftUpgradeBtn);
         }
         else
         {
@@ -58,18 +61,16 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.RightChild is not null)
         {
-            rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            rightUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
             rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
             rightUpgradePrice = currentUpgrade.RightChild.Price;
-            game.Components.Add(rightUpgradeBtn);
         }
         else
         {
             rightUpgradeBtn = null;
         }
-
-        game.Components.Add(sellBtn);
     }
 
     public override void Update(GameTime gameTime)
@@ -125,9 +126,9 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void Destroy()
     {
-        Game.Components.Remove(sellBtn);
-        Game.Components.Remove(leftUpgradeBtn);
-        Game.Components.Remove(rightUpgradeBtn);
+        sellBtn.Destroy();
+        leftUpgradeBtn.Destroy();
+        rightUpgradeBtn.Destroy();
 
         base.Destroy();
     }
@@ -153,7 +154,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            Game.Components.Remove(leftUpgradeBtn);
+            leftUpgradeBtn.Destroy();
             leftUpgradeBtn = null;
         }
 
@@ -163,7 +164,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            Game.Components.Remove(rightUpgradeBtn);
+            rightUpgradeBtn.Destroy();
             rightUpgradeBtn = null;
         }
     }
