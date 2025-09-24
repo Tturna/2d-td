@@ -1,6 +1,4 @@
-using System.Reflection;
 using Microsoft.Xna.Framework;
-using System;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;

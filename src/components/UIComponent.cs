@@ -22,7 +22,7 @@ public class UIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
-        var slotSprite = AssetManager.GetTexture("slot");
+        var slotSprite = AssetManager.GetTexture("btn_square");
 
         // Turret buttons
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
