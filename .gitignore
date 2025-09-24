@@ -98,3 +98,7 @@ vsxmake2022
 _*
 
 global.json
+
+# Aseprite files
+*.ase
+*.aseprite
