@@ -6,9 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 public class UIEntity : Entity, IClickable
 {
+    public delegate void ButtonPressedHandler();
+    public event ButtonPressedHandler? ButtonPressed;
+
     private Func<UIEntity, bool> removeUIEntityCallback;
+    private SpriteFont? font;
+    public string? Text;
 
     public UIEntity(Game game, Vector2? position, Action<UIEntity> addUIEntityCallback,
         Func<UIEntity, bool> removeUIEntityCallback, Texture2D sprite) : base(game, position, sprite)
@@ -34,8 +40,14 @@ public class UIEntity : Entity, IClickable
     public UIEntity(Game game, List<UIEntity> uiEntities, Vector2 position, AnimationSystem.AnimationData animationData) :
         this(game, uiEntities.Add, uiEntities.Remove, position, animationData) { }
 
-    public delegate void ButtonPressedHandler();
-    public event ButtonPressedHandler ButtonPressed;
+    public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
+        base(game, size: font.MeasureString(text))
+    {
+        uiEntities.Add(this);
+        this.removeUIEntityCallback = uiEntities.Remove;
+        this.font = font;
+        Text = text;
+    }
 
     public override void Update(GameTime gameTime)
     {
@@ -54,7 +66,7 @@ public class UIEntity : Entity, IClickable
         {
             base.Draw(gameTime);
         }
-        else
+        else if (Sprite is not null)
         {
             Game.SpriteBatch.Draw(Sprite,
                     Position,
@@ -65,6 +77,11 @@ public class UIEntity : Entity, IClickable
                     scale: Scale,
                     effects: SpriteEffects.None,
                     layerDepth: DrawLayerDepth);
+        }
+
+        if (font is not null && Text is not null)
+        {
+            Game.SpriteBatch.DrawString(font, Text, Position, Color.White);
         }
     }
 

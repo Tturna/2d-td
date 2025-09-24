@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -8,8 +7,6 @@ public class MainMenuUIComponent : DrawableGameComponent
 {
     private Game1 game;
     private List<UIEntity> uiEntities = new();
-    private SpriteFont defaultFont;
-    private Vector2 playButtonStringSize;
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -18,9 +15,7 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
-        defaultFont = AssetManager.GetFont("default");
-        playButtonStringSize = defaultFont.MeasureString("Play");
-
+        var defaultFont = AssetManager.GetFont("default");
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var halfScreenWidth = game.NativeScreenWidth / 2;
         var halfScreenHeight = game.NativeScreenHeight / 2;
@@ -44,6 +39,11 @@ public class MainMenuUIComponent : DrawableGameComponent
         playButton.ButtonPressed += () => SceneManager.LoadGame();
         exitButton.ButtonPressed += () => game.Exit();
 
+        var playButtonText = new UIEntity(game, uiEntities, defaultFont, "Play");
+        var exitButtonText = new UIEntity(game, uiEntities, defaultFont, "Exit");
+        playButtonText.Position = playButtonPos + playButton.Size / 2 - playButtonText.Size / 2;
+        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+
         base.Initialize();
     }
 
@@ -58,9 +58,6 @@ public class MainMenuUIComponent : DrawableGameComponent
         {
             uiEntity.DrawCustom(gameTime);
         }
-
-        game.SpriteBatch.DrawString(defaultFont, "Play", new Vector2(400, 240) - playButtonStringSize / 2, Color.White);
-        game.SpriteBatch.DrawString(defaultFont, "Exit", new Vector2(400, 270) - playButtonStringSize / 2, Color.White);
 
         base.Draw(gameTime);
     }
