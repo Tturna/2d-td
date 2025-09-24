@@ -13,6 +13,9 @@ public class TowerCore : GameComponent, IClickable
     public TurretDetailsPrompt? detailsPrompt;
     public bool detailsClosed;
 
+    public delegate void ClickedHandler();
+    public event ClickedHandler? Clicked;
+
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
@@ -41,7 +44,7 @@ public class TowerCore : GameComponent, IClickable
             {
                 var towerCenter = Turret.Position + Turret.Size / 2;
                 var enemyCenter = enemy.Position + enemy.Size / 2;
-                if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
 
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
@@ -79,6 +82,8 @@ public class TowerCore : GameComponent, IClickable
         }
 
         detailsClosed = false;
+
+        Clicked?.Invoke();
     }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)

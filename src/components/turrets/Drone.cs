@@ -151,7 +151,7 @@ class Drone : Entity, ITower
             if (distanceToEnemy < closestDistance)
             {
                 var towerCenter = turretSpawnAxisCenter + Size / 2;
-                if (Collision.IsLineInTerrain(towerCenter, enemyCenter)) continue;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
             }

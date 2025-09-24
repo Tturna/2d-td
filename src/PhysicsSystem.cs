@@ -6,7 +6,7 @@ namespace _2d_td;
 public class PhysicsSystem
 {
     private Game1 game;
-    public float LocalGravity { get; private set; } = 30f;
+    public float LocalGravity { get; set; } = 30f;
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
 
@@ -15,12 +15,25 @@ public class PhysicsSystem
         this.game = game;
     }
 
-    public void UpdatePhysics(Entity entity, float deltaTime)
+    /// <summary>
+    /// Moves the given entity based on its velocity. Returns a boolean indicating whether
+    /// the entity collided with terrain or scrap.
+    /// </summary>
+    public bool UpdatePhysics(Entity entity, float deltaTime)
     {
         Velocity += Vector2.UnitY * LocalGravity * deltaTime;
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 
+        var oldPosition = entity.Position + entity.Size / 2;
         entity.Position += Velocity;
+
+        if (Collision.IsLineInTerrain(oldPosition, entity.Position + entity.Size / 2, out var entryPoint, out var _))
+        {
+            // Set entity position to first collision point and then resolve.
+            // This helps prevent fast moving objects moving far into terrain or scrap and
+            // resolving incorrectly.
+            entity.Position = entryPoint - entity.Size / 2;
+        }
 
         if (Collision.IsEntityInScrap(entity, out var collidedScraps))
         {
@@ -31,6 +44,8 @@ public class PhysicsSystem
         {
             ResolveEntityTerrainCollision(entity, collidedTilePositions);
         }
+
+        return collidedScraps.Length + collidedTilePositions.Length > 0;
     }
 
     private void ResolveEntityCollision(Entity entity, float x1, float x2, float y1, float y2,
