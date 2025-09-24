@@ -30,7 +30,7 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game) : base(game, GetTowerBaseSprite())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
         towerCore.Clicked += OnClickTower;
@@ -71,8 +71,6 @@ public class Mortar : Entity, ITower
         turretHead.DrawOrigin = drawOrigin;
         turretHead.DrawLayerDepth = 0.8f;
         turretHead.RotationRadians = MathHelper.PiOver2 - MathHelper.PiOver4;
-
-        Game.Components.Add(turretHead);
     }
 
     public override void Update(GameTime gameTime)
@@ -281,8 +279,7 @@ public class Mortar : Entity, ITower
 
     public override void Destroy()
     {
-        Game.Components.Remove(turretHead);
-
+        turretHead?.Destroy();
         base.Destroy();
     }
 
@@ -291,9 +288,9 @@ public class Mortar : Entity, ITower
         return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new Mortar(game);
+        return new Mortar(game, worldPosition);
     }
 
     public static Vector2 GetDefaultGridSize()

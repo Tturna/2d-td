@@ -26,7 +26,7 @@ class Railgun : Entity, ITower
         GoldenGatling
     }
 
-    public Railgun(Game game) : base(game, GetTowerBaseSprite())
+    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
@@ -41,11 +41,6 @@ class Railgun : Entity, ITower
             leftChild: Momentum, rightChild: PolishedRound);
 
         towerCore.CurrentUpgrade = defaultNode;
-    }
-
-    public Railgun(Game game, Vector2 position) : this(game)
-    {
-        Position = position;
     }
 
     public override void Update(GameTime gameTime)
@@ -106,7 +101,6 @@ class Railgun : Entity, ITower
         bullet.BulletWidth = 8f;
         bullet.Pierce = pierce;
         bullet.Sprite = AssetManager.GetTexture("tempprojectile");
-        Game.Components.Add(bullet);
     }
 
     public bool IsEnemyInLine(int tileRange)
@@ -128,7 +122,6 @@ class Railgun : Entity, ITower
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
-        // Game.Components.Remove(turretHead);
         Game.Components.Remove(towerCore);
 
         base.Destroy();
@@ -154,8 +147,8 @@ class Railgun : Entity, ITower
         return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new Railgun(game);
+        return new Railgun(game, worldPosition);
     }
 }

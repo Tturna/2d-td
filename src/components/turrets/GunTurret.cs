@@ -32,7 +32,7 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game) : base(game, GetTowerBaseSprite())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
@@ -67,8 +67,6 @@ class GunTurret : Entity, ITower
 
         turretHead.DrawOrigin = drawOrigin;
         turretHead.DrawLayerDepth = 0.8f;
-
-        Game.Components.Add(turretHead);
     }
 
     public override void Update(GameTime gameTime)
@@ -261,13 +259,12 @@ class GunTurret : Entity, ITower
         bullet.Damage = damage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
-        Game.Components.Add(bullet);
     }
 
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
-        Game.Components.Remove(turretHead);
+        turretHead?.Destroy();
         Game.Components.Remove(towerCore);
 
         base.Destroy();
@@ -293,8 +290,8 @@ class GunTurret : Entity, ITower
         return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new GunTurret(game);
+        return new GunTurret(game, worldPosition);
     }
 }

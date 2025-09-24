@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,7 +28,7 @@ class Drone : Entity, ITower
         UAV,
     }
 
-    public Drone(Game game) : base(game, GetTowerBaseSprite())
+    public Drone(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
     {
         towerCore = new TowerCore(this);
 
@@ -44,11 +43,6 @@ class Drone : Entity, ITower
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
         towerCore.CurrentUpgrade = defaultNode;
-    }
-
-    public Drone(Game game, Vector2 position) : this(game)
-    {
-        Position = position;
     }
 
     public override void Update(GameTime gameTime)
@@ -115,7 +109,6 @@ class Drone : Entity, ITower
         bullet.BulletLength = 20f;
         bullet.BulletWidth = 8f;
         bullet.Sprite = AssetManager.GetTexture("tempprojectile");
-        Game.Components.Add(bullet);
     }
 
     private Enemy? GetValidEnemy(int tileRange, float attackAngleInDegrees)
@@ -162,7 +155,6 @@ class Drone : Entity, ITower
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
-        // Game.Components.Remove(turretHead);
         Game.Components.Remove(towerCore);
 
         base.Destroy();
@@ -232,8 +224,8 @@ class Drone : Entity, ITower
         return true;
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        return new Drone(game);
+        return new Drone(game, worldPosition);
     }
 }

@@ -36,19 +36,13 @@ public class MainMenuUIComponent : DrawableGameComponent
         );
 
         var playButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight - playBtnFrameSize.Y / 2);
-        var playButton = new UIEntity(game, playButtonPos, playBtnAnimationData);
+        var playButton = new UIEntity(game, uiEntities, playButtonPos, playBtnAnimationData);
 
         var exitButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight + playBtnFrameSize.Y / 2 + 10);
-        var exitButton = new UIEntity(game, exitButtonPos, playBtnAnimationData);
+        var exitButton = new UIEntity(game, uiEntities, exitButtonPos, playBtnAnimationData);
 
         playButton.ButtonPressed += () => SceneManager.LoadGame();
         exitButton.ButtonPressed += () => game.Exit();
-
-        uiEntities.Add(playButton);
-        uiEntities.Add(exitButton);
-
-        game.Components.Add(playButton);
-        game.Components.Add(exitButton);
 
         base.Initialize();
     }

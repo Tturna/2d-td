@@ -65,6 +65,12 @@ public class Game1 : Game
     {
         InputSystem.Update();
 
+        // Console.WriteLine("Components ===============================");
+        // foreach (var component in Components)
+        // {
+        //     Console.WriteLine(component.ToString());
+        // }
+
         switch (SceneManager.CurrentScene)
         {
             case SceneManager.Scene.Game:

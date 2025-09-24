@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,9 +8,31 @@ namespace _2d_td;
 
 public class UIEntity : Entity, IClickable
 {
-    public UIEntity(Game game, Texture2D sprite) : base(game, sprite) { }
-    public UIEntity(Game game, Vector2 position, Texture2D sprite) : base(game, position, sprite) { }
-    public UIEntity(Game game, Vector2 position, AnimationSystem.AnimationData animationData) : base(game, position, animationData) { }
+    private Func<UIEntity, bool> removeUIEntityCallback;
+
+    public UIEntity(Game game, Vector2? position, Action<UIEntity> addUIEntityCallback,
+        Func<UIEntity, bool> removeUIEntityCallback, Texture2D sprite) : base(game, position, sprite)
+    {
+        addUIEntityCallback(this);
+        this.removeUIEntityCallback = removeUIEntityCallback;
+    }
+
+    public UIEntity(Game game, List<UIEntity> uiEntities, Texture2D sprite) :
+        this(game, position: null, uiEntities.Add, uiEntities.Remove, sprite) { }
+
+    public UIEntity(Game game, List<UIEntity> uiEntities, Vector2 position, Texture2D sprite) :
+        this(game, position, uiEntities.Add, uiEntities.Remove, sprite) { }
+
+    public UIEntity(Game game, Action<UIEntity> addUIEntityCallback,
+        Func<UIEntity, bool> removeUIEntityCallback, Vector2 position,
+        AnimationSystem.AnimationData animationData) : base(game, position, animationData)
+    {
+        addUIEntityCallback(this);
+        this.removeUIEntityCallback = removeUIEntityCallback;
+    }
+
+    public UIEntity(Game game, List<UIEntity> uiEntities, Vector2 position, AnimationSystem.AnimationData animationData) :
+        this(game, uiEntities.Add, uiEntities.Remove, position, animationData) { }
 
     public delegate void ButtonPressedHandler();
     public event ButtonPressedHandler ButtonPressed;
@@ -42,6 +66,12 @@ public class UIEntity : Entity, IClickable
                     effects: SpriteEffects.None,
                     layerDepth: DrawLayerDepth);
         }
+    }
+
+    public override void Destroy()
+    {
+        removeUIEntityCallback(this);
+        base.Destroy();
     }
 
     private void OnButtonPressed()
