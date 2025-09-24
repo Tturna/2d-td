@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -86,6 +87,11 @@ public class Terrain : DrawableGameComponent
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
             tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
         }
+    }
+
+    public Vector2 GetLastTilePosition()
+    {
+        return tiles.Keys.Last() * Grid.TileLength + levelOffset;
     }
 
     public bool TileExistsAtPosition(Vector2 worldPosition)

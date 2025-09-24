@@ -11,6 +11,7 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
+    private int attackDamage = 3;
     public int ScrapValue;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
@@ -30,6 +31,11 @@ public class Enemy : Entity
 
     public override void Update(GameTime gameTime)
     {
+        if (Collision.AreEntitiesColliding(this, HQ.Instance))
+        {
+            HQ.Instance.HealthSystem.TakeDamage(attackDamage);
+            Destroy();
+        }
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, deltaTime);
@@ -54,4 +60,6 @@ public class Enemy : Entity
         ScrapSystem.AddScrap(Game, Position);
         Destroy();
     }
+
+
 }

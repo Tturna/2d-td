@@ -126,7 +126,7 @@ namespace _2d_td
             }
             else
             {
-                Console.WriteLine("Cannot Spawn Formation");
+                //Console.WriteLine("Cannot Spawn Formation");
             }
             // handle next wave if all formations are spawned
         }
