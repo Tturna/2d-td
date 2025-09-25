@@ -68,4 +68,6 @@ public class Enemy : Entity
         ScrapSystem.AddScrap(Game, Position);
         Destroy();
     }
+
+
 }
