@@ -47,10 +47,7 @@ public class Terrain : DrawableGameComponent
                     if (tileId == -1) continue; // The Tiled editor sets air to -1
 
                     var tilePosition = new Vector2(col, row);
-                    // var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-                    // var tile = new Entity(game, worldPosition, sprite: null, size: Vector2.One * Grid.TileLength);
                     tiles[tilePosition] = tileId;
-                    // game.Components.Add(tile);
                 }
 
                 line = levelReader.ReadLine();
@@ -62,23 +59,6 @@ public class Terrain : DrawableGameComponent
                 tilesetWidth: 12,
                 tilesetHeight: 4);
     }
-
-    // This was used to test tile collisions.
-    // public override void Update(GameTime gameTime)
-    // {
-    //     var mouseWorldPos = InputSystem.GetMouseWorldPosition();
-    //
-    //     foreach ((Vector2 tilePosition, var _) in tiles)
-    //     {
-    //         var tileWorldPosition = tilePosition * Grid.TileLength + levelOffset;
-    //
-    //         if (Collision.IsPointInTile(mouseWorldPos, tileWorldPosition))
-    //         {
-    //             Console.WriteLine($"Mouse ({mouseWorldPos.ToString()}) colliding with tile ({tilePosition.ToString()})");
-    //             break;
-    //         }
-    //     }
-    // }
 
     public override void Draw(GameTime gameTime)
     {
