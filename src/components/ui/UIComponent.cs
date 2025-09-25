@@ -34,6 +34,7 @@ public class UIComponent : DrawableGameComponent
         var droneIcon = new UIEntity(game, uiElements, turretTwoSprite);
         var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
         var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
+        var hovershipIcon = new UIEntity(game, uiElements, turretTwoSprite);
 
         var slotAnimationData = new AnimationSystem.AnimationData
         (
@@ -48,6 +49,7 @@ public class UIComponent : DrawableGameComponent
         var droneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
         var craneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
         var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
+        var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
 
         var defaultFont = AssetManager.GetFont("default");
         currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
@@ -56,12 +58,14 @@ public class UIComponent : DrawableGameComponent
         var dronePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Drone).ToString());
         var cranePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Crane).ToString());
         var mortarPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Mortar).ToString());
+        var hovershipPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Hovership).ToString());
 
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
         droneButton.ButtonPressed += () => SelectTurret<Drone>();
         craneButton.ButtonPressed += () => SelectTurret<Crane>();
         mortarButton.ButtonPressed += () => SelectTurret<Mortar>();
+        hovershipButton.ButtonPressed += () => SelectTurret<Hovership>();
 
         const float Margin = 20;
         var xPos = Margin;
@@ -76,18 +80,21 @@ public class UIComponent : DrawableGameComponent
         droneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
         craneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
         mortarButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
+        hovershipButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 5;
 
         gunTurretIcon.Position = iconPosition;
         railgunIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin);
         droneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
         craneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
         mortarIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
+        hovershipIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 5;
 
         gunTurretIcon.DrawLayerDepth = 0.7f;
         railgunIcon.DrawLayerDepth = 0.7f;
         droneIcon.DrawLayerDepth = 0.7f;
         craneIcon.DrawLayerDepth = 0.7f;
         mortarIcon.DrawLayerDepth = 0.7f;
+        hovershipIcon.DrawLayerDepth = 0.7f;
 
         currencyText.Position = Vector2.Zero;
         gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
@@ -95,6 +102,7 @@ public class UIComponent : DrawableGameComponent
         dronePriceText.Position = droneButton.Position + Vector2.UnitY * droneButton.Size.Y;
         cranePriceText.Position = craneButton.Position + Vector2.UnitY * craneButton.Size.Y;
         mortarPriceText.Position = mortarButton.Position + Vector2.UnitY * mortarButton.Size.Y;
+        hovershipPriceText.Position = hovershipButton.Position + Vector2.UnitY * hovershipButton.Size.Y;
 
         base.Initialize();
     }
