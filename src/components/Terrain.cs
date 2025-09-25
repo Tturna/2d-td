@@ -9,24 +9,38 @@ namespace _2d_td;
 public class Terrain : DrawableGameComponent
 {
     private Game1 game;
-    private Tileset tileset;
+    private readonly Tileset Tileset;
+    private readonly string LevelPath;
 
     private Dictionary<Vector2, int> tiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
 
-    public Terrain(Game game) : base(game)
+    public Terrain(Game game, int zone, int level, string tilesetName = "purptiles",
+        int tilesetWidth = 12, int tilesetHeight = 4) : base(game)
     {
         this.game = (Game1)game;
+
+        if (zone == 0)
+        {
+            throw new ArgumentException("Zone can't be less than 1", nameof(zone));
+        }
+        else if (level == 0)
+        {
+            throw new ArgumentException("Level can't be less than 1", nameof(level));
+        }
+
+        var levelName = $"zone{zone}level{level}";
+        LevelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
+            "data", "levels", levelName, $"{levelName}.csv");
+
+        Tileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
     }
 
     public override void Initialize()
     {
-        string levelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
-                "data", "levels", "purptest", "purptest1.csv");
-
         // "using" makes it so Dispose() is automatically called on StreamReader when
         // it's not needed anymore.
-        using (var levelReader = new StreamReader(levelPath))
+        using (var levelReader = new StreamReader(LevelPath))
         {
             string line = levelReader.ReadLine();
             var row = 0;
@@ -40,7 +54,7 @@ public class Terrain : DrawableGameComponent
                     if (!int.TryParse(ids[col], out int tileId))
                     {
                         throw new InvalidDataException(
-                            $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {levelPath}. Expected an integer."
+                            $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {LevelPath}. Expected an integer."
                         );
                     }
 
@@ -54,10 +68,6 @@ public class Terrain : DrawableGameComponent
                 row++;
             }
         }
-
-        tileset = new Tileset(AssetManager.GetTexture("purptiles"),
-                tilesetWidth: 12,
-                tilesetHeight: 4);
     }
 
     public override void Draw(GameTime gameTime)
@@ -65,7 +75,7 @@ public class Terrain : DrawableGameComponent
         foreach ((Vector2 tilePosition, int tileId) in tiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+            Tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
         }
     }
 
