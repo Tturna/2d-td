@@ -9,7 +9,7 @@ public class HealthSystem
     public delegate void DiedHandler(Entity diedEntity);
     public event DiedHandler Died;
 
-    public delegate void DamagedHandler(Entity damagedEntit, int amount);
+    public delegate void DamagedHandler(Entity damagedEntity, int amount);
     public event DamagedHandler Damaged;
 
     public HealthSystem(Entity owner, int initialHealth)
@@ -44,8 +44,8 @@ public class HealthSystem
         Died?.Invoke(diedEntity);
     }
 
-    private void OnDamaged(Entity damagedEntity,int amount)
+    private void OnDamaged(Entity damagedEntity, int amount)
     {
-        Damaged?.Invoke(damagedEntity,amount);
+        Damaged?.Invoke(damagedEntity, amount);
     }
 }

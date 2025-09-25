@@ -11,10 +11,10 @@ public class HQ : Entity
     
     private static Texture2D GetHQSprite(SpriteBatch spriteBatch)
     {
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: 4*Grid.TileLength, height: 4*Grid.TileLength,
-        mipmap: false, SurfaceFormat.Color);
+        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: 4 * Grid.TileLength,
+            height: 4 * Grid.TileLength, mipmap: false, SurfaceFormat.Color);
 
-        var colorData = new Color[Grid.TileLength * Grid.TileLength*16];
+        var colorData = new Color[Grid.TileLength * Grid.TileLength * 16];
 
         for (var i = 0; i < colorData.Length; i++)
         {
@@ -26,8 +26,7 @@ public class HQ : Entity
         return texture;
     }
 
-
-    public HQ(Game1 game, Vector2 position) : base(game, position: position,sprite: GetHQSprite(game.SpriteBatch))//size: new Vector2(4, 4) * Grid.TileLength
+    public HQ(Game1 game, Vector2 position) : base(game, position: position, sprite: GetHQSprite(game.SpriteBatch))
     {
         HealthSystem = new HealthSystem(this, startingHealth);
 
@@ -43,6 +42,4 @@ public class HQ : Entity
 
         Instance = this;
     }
-    
-
 }
