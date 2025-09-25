@@ -1,15 +1,12 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
 public class Mortar : Entity, ITower
 {
     private TowerCore towerCore;
-    private Entity turretHead;
-    private Vector2 turretHeadAxisCenter;
     private float actionsPerSecond = 0.5f;
     private float actionTimer;
     private bool isTargeting, canSetTarget;
@@ -30,7 +27,7 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
         towerCore.Clicked += OnClickTower;
@@ -54,23 +51,9 @@ public class Mortar : Entity, ITower
 
     public override void Initialize()
     {
-        // Position turret head to match where turret base expects it.
-        float TurretHeadXOffset = Sprite!.Width * 0.7f;
-        float TurretHeadYOffset = 9f;
-        turretHeadAxisCenter = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
+        Position -= Vector2.UnitY * 4;
 
-        // Offset turret base pos by 2 pixels;
-        Position += Vector2.UnitX * 2;
-
-        turretHead = new Entity(Game, turretHeadAxisCenter, AssetManager.GetTexture("gunTurretHead"));
-
-        // Draw turret head with the origin in its axis of rotation
-        const float TurretHeadDrawXOffset = 0.85f;
-        var drawOrigin = new Vector2(turretHead!.Sprite!.Width * TurretHeadDrawXOffset, turretHead.Sprite.Height / 2);
-
-        turretHead.DrawOrigin = drawOrigin;
-        turretHead.DrawLayerDepth = 0.8f;
-        turretHead.RotationRadians = MathHelper.PiOver2 - MathHelper.PiOver4;
+        base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
@@ -279,7 +262,6 @@ public class Mortar : Entity, ITower
 
     public override void Destroy()
     {
-        turretHead?.Destroy();
         base.Destroy();
     }
 
@@ -298,9 +280,17 @@ public class Mortar : Entity, ITower
         return new Vector2(2, 2);
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        return AssetManager.GetTexture("gunTurretBase");
+        var sprite = AssetManager.GetTexture("mortar");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static BuildingSystem.TowerType GetTowerType()

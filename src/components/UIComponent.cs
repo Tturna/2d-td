@@ -141,18 +141,18 @@ public class UIComponent : DrawableGameComponent
         }
     }
 
-    private void CreateTurretHologram(Texture2D sprite)
+    private void CreateTurretHologram(AnimationSystem.AnimationData animationData)
     {
         RemoveTurretHologram();
 
-        turretHologram = new UIEntity(game, uiElements, sprite);
+        turretHologram = new UIEntity(game, uiElements, Vector2.Zero, animationData);
     }
 
     private void SelectTurret<T>() where T : ITower
     {
         BuildingSystem.SelectTurret<T>();
-        var turretSprite = T.GetTowerBaseSprite();
-        CreateTurretHologram(turretSprite);
+        var turretAnimationData = T.GetTowerAnimationData();
+        CreateTurretHologram(turretAnimationData);
     }
 
     public void AddUIEntity(UIEntity entity)

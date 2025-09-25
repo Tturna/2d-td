@@ -1,7 +1,6 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -32,7 +31,7 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -52,7 +51,7 @@ class GunTurret : Entity, ITower
     public override void Initialize()
     {
         // Position turret head to match where turret base expects it.
-        float TurretHeadXOffset = Sprite!.Width * 0.7f;
+        float TurretHeadXOffset = AnimationSystem!.Data.FrameSize.X * 0.7f;
         float TurretHeadYOffset = 9f;
         turretHeadAxisCenter = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
 
@@ -270,9 +269,17 @@ class GunTurret : Entity, ITower
         base.Destroy();
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        return AssetManager.GetTexture("gunTurretBase");
+        var sprite = AssetManager.GetTexture("gunTurretBase");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static Vector2 GetDefaultGridSize()

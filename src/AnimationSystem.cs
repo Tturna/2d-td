@@ -28,7 +28,7 @@ public class AnimationSystem
         }
     }
 
-    private AnimationData data;
+    public AnimationData Data { get; private set; }
     private float frameTimer;
     private int currentFrame;
 
@@ -37,8 +37,8 @@ public class AnimationSystem
 
     public AnimationSystem(AnimationData animationData)
     {
-        data = animationData;
-        this.frameTimer = data.DelaySeconds;
+        Data = animationData;
+        this.frameTimer = Data.DelaySeconds;
     }
 
     public void UpdateAnimation(float deltaTime)
@@ -60,8 +60,8 @@ public class AnimationSystem
 
         if (frameTimer <= 0f)
         {
-            frameTimer = data.DelaySeconds;
-            currentFrame = (currentFrame + 1) % data.FrameCount;
+            frameTimer = Data.DelaySeconds;
+            currentFrame = (currentFrame + 1) % Data.FrameCount;
         }
     }
 
@@ -75,7 +75,7 @@ public class AnimationSystem
         Vector2 drawOrigin = default, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
-        Texture2D texture = data.Texture;
+        Texture2D texture = Data.Texture;
 
         if (overrideTimer > 0f && overrideTexture is not null)
         {
@@ -83,10 +83,10 @@ public class AnimationSystem
         }
         else
         {
-            var xPosHorizontal = data.FrameSize.X * currentFrame;
-            var x = (int)Math.Floor(xPosHorizontal % data.Texture.Width);
-            var y = (int)(Math.Floor(xPosHorizontal / data.Texture.Width) * data.FrameSize.Y);
-            sourceRect = new Rectangle(x, y, (int)data.FrameSize.X, (int)data.FrameSize.Y);
+            var xPosHorizontal = Data.FrameSize.X * currentFrame;
+            var x = (int)Math.Floor(xPosHorizontal % Data.Texture.Width);
+            var y = (int)(Math.Floor(xPosHorizontal / Data.Texture.Width) * Data.FrameSize.Y);
+            sourceRect = new Rectangle(x, y, (int)Data.FrameSize.X, (int)Data.FrameSize.Y);
         }
 
         spriteBatch.Draw(texture,
