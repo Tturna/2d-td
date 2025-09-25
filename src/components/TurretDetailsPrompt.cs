@@ -75,8 +75,9 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void Update(GameTime gameTime)
     {
-        var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - targetTurret.Sprite.Bounds.Width / 2, 50);
-        var sellBtnOffset = new Vector2(targetTurret.Sprite.Bounds.Width / 2 - 48, 40);
+        var halfTurretWidth = targetTurret.AnimationSystem.Data.FrameSize.X / 2;
+        var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
+        var sellBtnOffset = new Vector2(halfTurretWidth - 48, 40);
 
         var detailsOffsetPosition = targetTurret.Position - detailsPromptOffset;
         var sellBtnOffsetPosition = targetTurret.Position - sellBtnOffset;
@@ -127,8 +128,8 @@ public class TurretDetailsPrompt : UIEntity
     public override void Destroy()
     {
         sellBtn.Destroy();
-        leftUpgradeBtn.Destroy();
-        rightUpgradeBtn.Destroy();
+        leftUpgradeBtn?.Destroy();
+        rightUpgradeBtn?.Destroy();
 
         base.Destroy();
     }
@@ -154,7 +155,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            leftUpgradeBtn.Destroy();
+            leftUpgradeBtn?.Destroy();
             leftUpgradeBtn = null;
         }
 
@@ -164,7 +165,7 @@ public class TurretDetailsPrompt : UIEntity
         }
         else
         {
-            rightUpgradeBtn.Destroy();
+            rightUpgradeBtn?.Destroy();
             rightUpgradeBtn = null;
         }
     }

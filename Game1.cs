@@ -76,7 +76,7 @@ public class Game1 : Game
             case SceneManager.Scene.Game:
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
-
+                EnemySystem.Update(gameTime);
                 break;
         }
 
@@ -175,7 +175,12 @@ public class Game1 : Game
                 ScrapSystem.Initialize();
 
                 Terrain = new Terrain(this);
+
                 Components.Add(Terrain);
+                //hqPosition will need to be flexible for each level
+                var hqPosition = Terrain.GetLastTilePosition() - new Vector2(0,23*Grid.TileLength);
+                var hq = new HQ(this,hqPosition);
+                EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);
                 Components.Add(ui);

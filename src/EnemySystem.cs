@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -6,6 +7,34 @@ namespace _2d_td;
 public static class EnemySystem
 {
     public static List<Enemy> Enemies { get; private set; } = new();
+    static Game1 Game;
+
+
+    public static void Initialize(Game1 game)
+    {
+        Game = game;
+    }
+
+    public static void Update(GameTime gameTime)
+    {
+        CheckIfEnemyPastLevel();
+    }
+
+    public static void CheckIfEnemyPastLevel()
+    {
+        float levelEndX = Game.Terrain.GetLastTilePosition().X;
+        
+        foreach (Enemy enemy in Enemies)
+        {
+            float enemyX = enemy.Position.X;
+            if (enemyX > levelEndX)
+            {
+
+                //Console.WriteLine("Enemy has passed level");
+            }
+        }
+    }
+
 
     public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
     {

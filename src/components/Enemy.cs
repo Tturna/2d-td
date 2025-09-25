@@ -11,6 +11,9 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
+    double hurtProgress;
+    double hurtAnimThreshold;
+    private int attackDamage = 3;
     public int ScrapValue;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
@@ -24,12 +27,18 @@ public class Enemy : Entity
         PhysicsSystem = new PhysicsSystem(Game);
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
+        hurtAnimThreshold = .33*HealthSystem.MaxHealth;
 
         this.hurtTexture = hurtTexture;
     }
 
     public override void Update(GameTime gameTime)
     {
+        if (Collision.AreEntitiesColliding(this, HQ.Instance))
+        {
+            HQ.Instance.HealthSystem.TakeDamage(attackDamage);
+            Destroy();
+        }
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, deltaTime);
@@ -42,9 +51,14 @@ public class Enemy : Entity
         base.Draw(gameTime);
     }
 
-    private void OnDamaged(Entity damagedEntity)
+    private void OnDamaged(Entity damagedEntity, int amount)
     {
-        AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+        hurtProgress += amount;
+        if (hurtProgress >= hurtAnimThreshold)
+        {
+            AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
+            hurtProgress = 0;
+        }
     }
 
     private void OnDeath(Entity diedEntity)
@@ -54,4 +68,6 @@ public class Enemy : Entity
         ScrapSystem.AddScrap(Game, Position);
         Destroy();
     }
+
+
 }

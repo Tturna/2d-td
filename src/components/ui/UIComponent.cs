@@ -23,7 +23,8 @@ public class UIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
-        var slotSprite = AssetManager.GetTexture("slot");
+        var slotSprite = AssetManager.GetTexture("btn_square");
+        var slotFrameSize = new Vector2(slotSprite.Bounds.Width / 2, slotSprite.Bounds.Height);
 
         // Turret buttons
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
@@ -35,11 +36,19 @@ public class UIComponent : DrawableGameComponent
         var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
         var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
 
-        var gunTurretButton = new UIEntity(game, uiElements, slotSprite);
-        var railgunButton = new UIEntity(game, uiElements, slotSprite);
-        var droneButton = new UIEntity(game, uiElements, slotSprite);
-        var craneButton = new UIEntity(game, uiElements, slotSprite);
-        var mortarButton = new UIEntity(game, uiElements, slotSprite);
+        var slotAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: slotSprite,
+            frameCount: 2,
+            frameSize: slotFrameSize,
+            delaySeconds: 0.5f
+        );
+
+        var gunTurretButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
+        var railgunButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
+        var droneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
+        var craneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
+        var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
 
         var defaultFont = AssetManager.GetFont("default");
         currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
@@ -57,23 +66,29 @@ public class UIComponent : DrawableGameComponent
 
         const float Margin = 20;
         var xPos = Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - slotSprite.Height - Margin;
+        var yPos = game.Graphics.PreferredBackBufferHeight - slotFrameSize.Y - Margin;
         var pos = new Vector2(xPos, yPos);
 
-        var buttonCenter = pos + new Vector2(slotSprite.Width / 2, slotSprite.Height / 2);
+        var buttonCenter = pos + new Vector2(slotFrameSize.X / 2, slotFrameSize.Y / 2);
         var iconPosition = buttonCenter - new Vector2(gunTurretIcon.Size.X / 2, gunTurretIcon.Size.Y / 2);
 
         gunTurretButton.Position = pos;
-        railgunButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin);
-        droneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
-        craneButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
-        mortarButton.Position = pos + Vector2.UnitX * (slotSprite.Width + Margin) * 4;
+        railgunButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin);
+        droneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
+        craneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
+        mortarButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
 
         gunTurretIcon.Position = iconPosition;
-        railgunIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin);
-        droneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 2;
-        craneIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 3;
-        mortarIcon.Position = iconPosition + Vector2.UnitX * (slotSprite.Width + Margin) * 4;
+        railgunIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin);
+        droneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
+        craneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
+        mortarIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
+
+        gunTurretIcon.DrawLayerDepth = 0.7f;
+        railgunIcon.DrawLayerDepth = 0.7f;
+        droneIcon.DrawLayerDepth = 0.7f;
+        craneIcon.DrawLayerDepth = 0.7f;
+        mortarIcon.DrawLayerDepth = 0.7f;
 
         currencyText.Position = Vector2.Zero;
         gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
@@ -138,18 +153,18 @@ public class UIComponent : DrawableGameComponent
         }
     }
 
-    private void CreateTurretHologram(Texture2D sprite)
+    private void CreateTurretHologram(AnimationSystem.AnimationData animationData)
     {
         RemoveTurretHologram();
 
-        turretHologram = new UIEntity(game, uiElements, sprite);
+        turretHologram = new UIEntity(game, uiElements, Vector2.Zero, animationData);
     }
 
     private void SelectTurret<T>() where T : ITower
     {
         BuildingSystem.SelectTurret<T>();
-        var turretSprite = T.GetTowerBaseSprite();
-        CreateTurretHologram(turretSprite);
+        var turretAnimationData = T.GetTowerAnimationData();
+        CreateTurretHologram(turretAnimationData);
     }
 
     public void AddUIEntity(UIEntity entity)
