@@ -19,6 +19,7 @@ public class Game1 : Game
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
+    private int currentZone, currentLevel;
 
     public static Game1 Instance { get; private set; }
 
@@ -174,7 +175,7 @@ public class Game1 : Game
                 CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
-                Terrain = new Terrain(this);
+                Terrain = new Terrain(this, currentZone, currentLevel);
 
                 Components.Add(Terrain);
                 //hqPosition will need to be flexible for each level
@@ -199,5 +200,11 @@ public class Game1 : Game
             default:
                 throw new ArgumentOutOfRangeException($"Loaded scene '{loadedScene}' did not match any scene in SceneManager.Scene.");
         }
+    }
+
+    public void SetCurrentZoneAndLevel(int zone, int level)
+    {
+        currentZone = zone;
+        currentLevel = level;
     }
 }

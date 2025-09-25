@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -11,6 +10,7 @@ public class UIComponent : DrawableGameComponent
 
     private List<UIEntity> uiElements = new();
     private UIEntity turretHologram;
+    private UIEntity currencyText;
 
     public static UIComponent Instance;
 
@@ -49,6 +49,14 @@ public class UIComponent : DrawableGameComponent
         var craneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
         var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
 
+        var defaultFont = AssetManager.GetFont("default");
+        currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
+        var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
+        var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
+        var dronePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Drone).ToString());
+        var cranePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Crane).ToString());
+        var mortarPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Mortar).ToString());
+
         gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
         railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
         droneButton.ButtonPressed += () => SelectTurret<Drone>();
@@ -81,6 +89,13 @@ public class UIComponent : DrawableGameComponent
         craneIcon.DrawLayerDepth = 0.7f;
         mortarIcon.DrawLayerDepth = 0.7f;
 
+        currencyText.Position = Vector2.Zero;
+        gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
+        railgunPriceText.Position = railgunButton.Position + Vector2.UnitY * railgunButton.Size.Y;
+        dronePriceText.Position = droneButton.Position + Vector2.UnitY * droneButton.Size.Y;
+        cranePriceText.Position = craneButton.Position + Vector2.UnitY * craneButton.Size.Y;
+        mortarPriceText.Position = mortarButton.Position + Vector2.UnitY * mortarButton.Size.Y;
+
         base.Initialize();
     }
 
@@ -108,6 +123,8 @@ public class UIComponent : DrawableGameComponent
             BuildingSystem.DeselectTower();
         }
 
+        currencyText.Text = $"Scrap: {CurrencyManager.Balance}";
+
         base.Update(gameTime);
     }
 
@@ -122,12 +139,6 @@ public class UIComponent : DrawableGameComponent
         {
             uiElement.DrawCustom(gameTime);
         }
-
-        var defaultFont = AssetManager.GetFont("default");
-        game.SpriteBatch.DrawString(defaultFont, $"Scrap: {CurrencyManager.Balance}", Vector2.Zero, Color.White);
-        game.SpriteBatch.DrawString(defaultFont, "10", new Vector2(24, 460), Color.White);
-        game.SpriteBatch.DrawString(defaultFont, "25", new Vector2(68, 460), Color.White);
-        game.SpriteBatch.DrawString(defaultFont, "20", new Vector2(156, 460), Color.White);
 
         base.Draw(gameTime);
     }
