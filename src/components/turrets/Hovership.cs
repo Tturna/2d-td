@@ -10,38 +10,40 @@ class Hovership : Entity, ITower
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (7, 20);
     private Vector2 turretSpawnAxisCenter;
-    int baseRange = 10;
-    int damage = 10;
+    int baseRange = 25;
+    int damage = 15;
     float bulletSpeed = 400f;
-    float actionsPerSecond = 2f;
+    float actionsPerSecond = 1f;
     float actionTimer;
     float sightAngle = 30f;
+
+    private Random random = new();
 
     public enum Upgrade
     {
         NoUpgrade,
-        AdvancedWeaponry,
-        FlyingArsenal,
-        ImprovedRadar,
-        AssassinHovership,
-        UAV,
+        // AdvancedWeaponry,
+        // FlyingArsenal,
+        // ImprovedRadar,
+        // AssassinHovership,
+        // UAV,
     }
 
     public Hovership(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
-        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+        // var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
+        // var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
 
-        var AssassinHovership = new TowerUpgradeNode(Upgrade.AssassinHovership.ToString(), price: 70);
-        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinHovership, rightChild: UAV);
+        // var AssassinHovership = new TowerUpgradeNode(Upgrade.AssassinHovership.ToString(), price: 70);
+        // var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
+        // var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinHovership, rightChild: UAV);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
-            leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
+        // var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        //     leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
-        towerCore.CurrentUpgrade = defaultNode;
+        // towerCore.CurrentUpgrade = defaultNode;
     }
 
     public override void Update(GameTime gameTime)
@@ -49,52 +51,59 @@ class Hovership : Entity, ITower
         turretSpawnAxisCenter = Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         
-        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
-        {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, sightAngle);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
-        {
-            HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, baseRange, sightAngle);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
-        {
-            HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, baseRange, sightAngle);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
-        {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinHovership.ToString())
-        {
-            HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
-        {
-            // todo: add the effects
-            HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage, baseRange + 8, sightAngle);
-        } 
+        // if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        // {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 3);
+        // }
+        // else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
+        // {
+        //     HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, baseRange, sightAngle);
+        // }
+        // else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
+        // {
+        //     HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, baseRange, sightAngle);
+        // }
+        // else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
+        // {
+        //     HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
+        // }
+        // else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinHovership.ToString())
+        // {
+        //     HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
+        // }
+        // else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
+        // {
+        //     // todo: add the effects
+        //     HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage, baseRange + 8, sightAngle);
+        // } 
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, float attackAngle)
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, int projectileAmount)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        var closestEnemy = GetValidEnemy(range, attackAngle);
+        var closestEnemy = GetValidEnemy(range, sightAngle);
 
         if (closestEnemy is null) return;
 
+
         if (actionTimer >= actionInterval)
         {
-            var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
-            var direction = enemyCenter - turretSpawnAxisCenter;
-            direction.Normalize();
-            Shoot(damage, direction);
-            actionTimer = 0f;
+            for (int i = 0; i < projectileAmount; i++)
+            {
+                var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
+                var enemyDirection = enemyCenter - turretSpawnAxisCenter;
+                var randomX = random.Next(-3, 3);
+                var randomY = random.Next(-3, 3);
+                var targetDirection = enemyDirection + new Vector2(randomX, randomY);
+                targetDirection.Normalize();
+                Shoot(damage, targetDirection);
+                actionTimer = 0f;
+            }
         }
     }
 
@@ -107,6 +116,7 @@ class Hovership : Entity, ITower
         bullet.Lifetime = 1f;
         bullet.BulletLength = 20f;
         bullet.BulletWidth = 8f;
+        bullet.ExplosionTileRadius = 4;
         bullet.Sprite = AssetManager.GetTexture("tempprojectile");
     }
 
