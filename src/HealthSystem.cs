@@ -28,6 +28,8 @@ public class HealthSystem
 
     public void TakeDamage(int amount)
     {
+        if (CurrentHealth == 0) return;
+
         CurrentHealth -= amount;
         OnDamaged(Owner, amount);
 
