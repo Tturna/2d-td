@@ -8,10 +8,12 @@ namespace _2d_td;
 class Hovership : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (7, 20);
+    private Vector2 spawnOffset = new (0, 0);
+    private Entity turretHovership;
     private Vector2 turretSpawnAxisCenter;
     int baseRange = 25;
     int damage = 15;
+    float hovershipSpeed = 50f;
     float bulletSpeed = 400f;
     float actionsPerSecond = 1f;
     float actionTimer;
@@ -44,16 +46,21 @@ class Hovership : Entity, ITower
         //     leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
         // towerCore.CurrentUpgrade = defaultNode;
+
+        turretHovership = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));
+        turretHovership.DrawLayerDepth = 0.8f;
     }
 
     public override void Update(GameTime gameTime)
     {
-        turretSpawnAxisCenter = Position + spawnOffset;
+        turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        
         
         // if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         // {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 3);
+        HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 3);
+        HandleHovershipPosition(deltaTime, 25);
         // }
         // else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
         // {
@@ -78,6 +85,20 @@ class Hovership : Entity, ITower
         // } 
 
         base.Update(gameTime);
+    }
+
+    private void HandleHovershipPosition(float deltaTime, int tileRange)
+    {
+        var closestEnemy = towerCore.GetClosestValidEnemy(tileRange);
+
+        if (closestEnemy is null) return;
+
+        var target = closestEnemy.Position - Vector2.UnitY * 10 * Grid.TileLength;
+        var difference = target - turretHovership.Position;
+        difference.Normalize();
+
+        turretHovership.Position += difference * hovershipSpeed * deltaTime;
+        turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
     }
 
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, int projectileAmount)
@@ -164,6 +185,7 @@ class Hovership : Entity, ITower
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
+        turretHovership?.Destroy();
         Game.Components.Remove(towerCore);
 
         base.Destroy();
@@ -171,20 +193,20 @@ class Hovership : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("drone");
+        var sprite = AssetManager.GetTexture("gunTurretBase");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 4, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }
 
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(2, 3);
+        return new Vector2(2, 2);
     }
 
     public static BuildingSystem.TowerType GetTowerType()
@@ -194,51 +216,7 @@ class Hovership : Entity, ITower
 
     public static bool CanPlaceTower(Vector2 targetWorldPosition)
     {
-        // todo: improve
-        var towerGridSize = GetDefaultGridSize();
-        var targetGridPosition = Grid.SnapPositionToGrid(targetWorldPosition);
-
-        for (int y = 0; y < towerGridSize.Y; y++)
-        {
-            for (int x = 0; x < towerGridSize.X; x++)
-            {
-                var position = targetGridPosition + new Vector2(x, y) * Grid.TileLength;
-
-                if (Collision.IsPointInTerrain(position, Game1.Instance.Terrain))
-                {
-                    return false;
-                }
-            }
-        }
-
-        var turretGridHeight = towerGridSize.Y;
-
-        var belowTilePosition = targetGridPosition + Vector2.UnitY * turretGridHeight * Grid.TileLength;
-        var aboveTilePosition = targetGridPosition - Vector2.UnitY * Grid.TileLength;
-        var leftTilePosition = targetGridPosition - Vector2.UnitX * Grid.TileLength;
-        var rightTilePosition = targetGridPosition + Vector2.UnitX * Grid.TileLength;
-
-        if (Collision.IsPointInTerrain(belowTilePosition, Game1.Instance.Terrain))
-        {
-            return false;
-        }
-
-        if (Collision.IsPointInTerrain(aboveTilePosition, Game1.Instance.Terrain))
-        {
-            return false;
-        }
-
-        if (Collision.IsPointInTerrain(leftTilePosition, Game1.Instance.Terrain))
-        {
-            return false;
-        }
-
-        if (Collision.IsPointInTerrain(rightTilePosition, Game1.Instance.Terrain))
-        {
-            return false;
-        }
-
-        return true;
+        return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
