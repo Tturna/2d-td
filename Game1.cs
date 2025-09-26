@@ -20,6 +20,7 @@ public class Game1 : Game
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
     private int currentZone, currentLevel;
+    private bool isPaused;
 
     public static Game1 Instance { get; private set; }
 
@@ -66,6 +67,13 @@ public class Game1 : Game
     {
         InputSystem.Update();
 
+        if (isPaused)
+        {
+            if (ui is not null) ui.Update(gameTime);
+            if (mainMenu is not null) mainMenu.Update(gameTime);
+            return;
+        }
+
         // Console.WriteLine("Components ===============================");
         // foreach (var component in Components)
         // {
@@ -79,11 +87,6 @@ public class Game1 : Game
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
                 break;
-        }
-
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        {
-            SceneManager.LoadMainMenu();
         }
 
         base.Update(gameTime);
@@ -163,6 +166,7 @@ public class Game1 : Game
     private void InitializeScene(SceneManager.Scene loadedScene)
     {
         Components.Clear();
+        SetPauseState(false);
         ui = null;
         mainMenu = null;
         Terrain = null;
@@ -206,5 +210,10 @@ public class Game1 : Game
     {
         currentZone = zone;
         currentLevel = level;
+    }
+
+    public void SetPauseState(bool isPaused)
+    {
+        this.isPaused = isPaused;
     }
 }

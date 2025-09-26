@@ -13,7 +13,7 @@ public class Enemy : Entity
     public MovementSystem MovementSystem;
     double hurtProgress;
     double hurtAnimThreshold;
-    private int attackDamage = 3;
+    private int attackDamage = 10;
     public int ScrapValue;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
