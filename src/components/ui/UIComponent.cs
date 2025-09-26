@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -9,8 +11,12 @@ public class UIComponent : DrawableGameComponent
     Game1 game;
 
     private List<UIEntity> uiElements = new();
+    private List<UIEntity> pauseMenuElements = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
+    private bool isPauseMenuVisible;
+    private bool escHeld;
+    private SpriteFont defaultFont = AssetManager.GetFont("default");
 
     public static UIComponent Instance;
 
@@ -25,7 +31,6 @@ public class UIComponent : DrawableGameComponent
         var slotSprite = AssetManager.GetTexture("btn_square");
         var slotFrameSize = new Vector2(slotSprite.Bounds.Width / 2, slotSprite.Bounds.Height);
 
-        // Turret buttons
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
@@ -49,7 +54,6 @@ public class UIComponent : DrawableGameComponent
         var craneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
         var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
 
-        var defaultFont = AssetManager.GetFont("default");
         currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
         var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
         var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
@@ -125,6 +129,15 @@ public class UIComponent : DrawableGameComponent
 
         currencyText.Text = $"Scrap: {CurrencyManager.Balance}";
 
+        var kbdState = Keyboard.GetState();
+        if (!escHeld && kbdState.IsKeyDown(Keys.Escape))
+        {
+            escHeld = true;
+            TogglePauseMenu(!isPauseMenuVisible);
+        }
+
+        if (kbdState.IsKeyUp(Keys.Escape)) escHeld = false;
+
         base.Update(gameTime);
     }
 
@@ -164,6 +177,55 @@ public class UIComponent : DrawableGameComponent
         BuildingSystem.SelectTurret<T>();
         var turretAnimationData = T.GetTowerAnimationData();
         CreateTurretHologram(turretAnimationData);
+    }
+
+    private void TogglePauseMenu(bool isPauseMenuVisible)
+    {
+        game.SetPauseState(isPauseMenuVisible);
+        this.isPauseMenuVisible = isPauseMenuVisible;
+
+        if (!isPauseMenuVisible)
+        {
+            foreach (var element in pauseMenuElements)
+            {
+                element.Destroy();
+            }
+
+            pauseMenuElements.Clear();
+            return;
+        }
+
+        var buttonSprite = AssetManager.GetTexture("btn_square");
+        var halfScreenWidth = game.NativeScreenWidth / 2;
+        var halfScreenHeight = game.NativeScreenHeight / 2;
+        var playBtnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+
+        var playBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: buttonSprite,
+            frameCount: 2,
+            frameSize: playBtnFrameSize,
+            delaySeconds: 0.5f
+        );
+
+        var playButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight - playBtnFrameSize.Y / 2);
+        var resumeButton = new UIEntity(game, uiElements, playButtonPos, playBtnAnimationData);
+
+        var exitButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight + playBtnFrameSize.Y / 2 + 10);
+        var exitButton = new UIEntity(game, uiElements, exitButtonPos, playBtnAnimationData);
+
+        resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
+        exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
+
+        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Resume");
+        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        resumeButtonText.Position = playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2;
+        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+
+        pauseMenuElements.Add(resumeButton);
+        pauseMenuElements.Add(exitButton);
+        pauseMenuElements.Add(resumeButtonText);
+        pauseMenuElements.Add(exitButtonText);
     }
 
     public void AddUIEntity(UIEntity entity)
