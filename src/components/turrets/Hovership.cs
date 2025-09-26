@@ -11,8 +11,10 @@ class Hovership : Entity, ITower
     private Vector2 spawnOffset = new (0, 0);
     private Entity turretHovership;
     private Vector2 turretSpawnAxisCenter;
-    int baseRange = 25;
+    int baseHovershipHangarRange = 25;
+    int hoverHeight = 10;
     int damage = 15;
+    int baseProjectileAmount = 3;
     float hovershipSpeed = 50f;
     float bulletSpeed = 400f;
     float actionsPerSecond = 1f;
@@ -24,28 +26,30 @@ class Hovership : Entity, ITower
     public enum Upgrade
     {
         NoUpgrade,
-        // AdvancedWeaponry,
-        // FlyingArsenal,
-        // ImprovedRadar,
-        // AssassinHovership,
-        // UAV,
+        BombierBay,
+        OrbitalLaser,
+        CarpetofFire,
+        EfficientEngines,
+        EMPShip,
+        FloatingFactory
     }
 
     public Hovership(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        // var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
-        // var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), price: 160);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), price: 120);
+        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        // var AssassinHovership = new TowerUpgradeNode(Upgrade.AssassinHovership.ToString(), price: 70);
-        // var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        // var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinHovership, rightChild: UAV);
+        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), price: 110);
+        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), price: 150);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
 
-        // var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
-        //     leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+            leftChild: BombierBay, rightChild: EfficientEngines);
 
-        // towerCore.CurrentUpgrade = defaultNode;
+        towerCore.CurrentUpgrade = defaultNode;
 
         turretHovership = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));
         turretHovership.DrawLayerDepth = 0.8f;
@@ -55,45 +59,52 @@ class Hovership : Entity, ITower
     {
         turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        
-        
-        // if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
-        // {
-        HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, 3);
-        HandleHovershipPosition(deltaTime, 25);
-        // }
-        // else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
-        // {
-        //     HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, baseRange, sightAngle);
-        // }
-        // else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
-        // {
-        //     HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, baseRange, sightAngle);
-        // }
-        // else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
-        // {
-        //     HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
-        // }
-        // else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinHovership.ToString())
-        // {
-        //     HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
-        // }
-        // else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
-        // {
-        //     // todo: add the effects
-        //     HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage, baseRange + 8, sightAngle);
-        // } 
+
+        // todo: add the effects for a lot of these upgrades
+        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
+            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.BombierBay.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 2);
+            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.OrbitalLaser.ToString())
+        {
+
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.CarpetofFire.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 5);
+            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientEngines.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
+            HandleHovershipPosition(deltaTime, baseHovershipHangarRange + 10, hoverHeight);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.EMPShip.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount - 2);
+            HandleHovershipPosition(deltaTime, baseHovershipHangarRange + 15, hoverHeight + 10);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.FloatingFactory.ToString())
+        {
+
+        } 
 
         base.Update(gameTime);
     }
 
-    private void HandleHovershipPosition(float deltaTime, int tileRange)
+    private void HandleHovershipPosition(float deltaTime, int tileRange, int hoverHeight)
     {
         var closestEnemy = towerCore.GetClosestValidEnemy(tileRange);
 
         if (closestEnemy is null) return;
 
-        var target = closestEnemy.Position - Vector2.UnitY * 10 * Grid.TileLength;
+        var target = closestEnemy.Position - Vector2.UnitY * (hoverHeight-2) * Grid.TileLength;
         var difference = target - turretHovership.Position;
         difference.Normalize();
 
@@ -118,19 +129,22 @@ class Hovership : Entity, ITower
             {
                 var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
                 var enemyDirection = enemyCenter - turretSpawnAxisCenter;
-                var randomX = random.Next(-3, 3);
-                var randomY = random.Next(-3, 3);
-                var targetDirection = enemyDirection + new Vector2(randomX, randomY);
+                var randomXDirection = random.Next(-12, 12);
+                var randomY = random.Next(-12, 12);
+                var targetDirection = enemyDirection + new Vector2(randomXDirection, randomY);
                 targetDirection.Normalize();
-                Shoot(damage, targetDirection);
+
+                var randomXPosition = random.Next(-8, 8);
+                var newPosition = turretSpawnAxisCenter + Vector2.UnitX * randomXPosition;
+                Shoot(damage, targetDirection, newPosition);
                 actionTimer = 0f;
             }
         }
     }
 
-    private void Shoot(int damage, Vector2 direction)
+    private void Shoot(int damage, Vector2 direction, Vector2 position)
     {
-        var bullet = new Projectile(Game, turretSpawnAxisCenter);
+        var bullet = new Projectile(Game, position);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;
