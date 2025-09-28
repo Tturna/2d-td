@@ -36,15 +36,15 @@ public static class EnemySystem
     }
 
 
-    public static void SpawnEnemy(Game game, Vector2 vector2, int enemyNum)
+    public static void SpawnEnemy(Game game, Vector2 position, int enemyNum)
     {
         switch (enemyNum)
         {
             case 0:
-                SpawnWalkerEnemy(game, vector2);
+                SpawnWalkerEnemy(game, position);
                 break;
             case 1:
-                SpawnFridgeEnemy(game, vector2);
+                SpawnFridgeEnemy(game, position);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(enemyNum), "");
