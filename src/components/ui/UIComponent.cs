@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -9,8 +11,25 @@ public class UIComponent : DrawableGameComponent
     Game1 game;
 
     private List<UIEntity> uiElements = new();
+    private List<UIEntity> pauseMenuElements = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
+    private bool isPauseMenuVisible;
+    private bool escHeld;
+
+    private static SpriteFont defaultFont = AssetManager.GetFont("default");
+    private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
+    private float halfScreenWidth = Game1.Instance.NativeScreenWidth / 2;
+    private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
+    private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+
+    private AnimationSystem.AnimationData buttonAnimationData = new
+    (
+        texture: buttonSprite,
+        frameCount: 2,
+        frameSize: buttonFrameSize,
+        delaySeconds: 0.5f
+    );
 
     public static UIComponent Instance;
 
@@ -22,10 +41,8 @@ public class UIComponent : DrawableGameComponent
 
     public override void Initialize()
     {
-        var slotSprite = AssetManager.GetTexture("btn_square");
-        var slotFrameSize = new Vector2(slotSprite.Bounds.Width / 2, slotSprite.Bounds.Height);
+        HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
 
-        // Turret buttons
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
@@ -36,22 +53,13 @@ public class UIComponent : DrawableGameComponent
         var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
         var hovershipIcon = new UIEntity(game, uiElements, turretTwoSprite);
 
-        var slotAnimationData = new AnimationSystem.AnimationData
-        (
-            texture: slotSprite,
-            frameCount: 2,
-            frameSize: slotFrameSize,
-            delaySeconds: 0.5f
-        );
-
-        var gunTurretButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-        var railgunButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-        var droneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-        var craneButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-        var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-        var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, slotAnimationData);
-
-        var defaultFont = AssetManager.GetFont("default");
+        var gunTurretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var railgunButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var droneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var craneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        
         currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
         var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
         var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
@@ -69,26 +77,26 @@ public class UIComponent : DrawableGameComponent
 
         const float Margin = 20;
         var xPos = Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - slotFrameSize.Y - Margin;
+        var yPos = game.Graphics.PreferredBackBufferHeight - buttonFrameSize.Y - Margin;
         var pos = new Vector2(xPos, yPos);
 
-        var buttonCenter = pos + new Vector2(slotFrameSize.X / 2, slotFrameSize.Y / 2);
+        var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
         var iconPosition = buttonCenter - new Vector2(gunTurretIcon.Size.X / 2, gunTurretIcon.Size.Y / 2);
 
         gunTurretButton.Position = pos;
-        railgunButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin);
-        droneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
-        craneButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
-        mortarButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
-        hovershipButton.Position = pos + Vector2.UnitX * (slotFrameSize.X + Margin) * 5;
+        railgunButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin);
+        droneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
+        craneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
+        mortarButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
+        hovershipButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
 
         gunTurretIcon.Position = iconPosition;
-        railgunIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin);
-        droneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 2;
-        craneIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 3;
-        mortarIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 4;
-        hovershipIcon.Position = iconPosition + Vector2.UnitX * (slotFrameSize.X + Margin) * 5;
-
+        railgunIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin);
+        droneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
+        craneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
+        mortarIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
+        hovershipIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
+        
         gunTurretIcon.DrawLayerDepth = 0.7f;
         railgunIcon.DrawLayerDepth = 0.7f;
         droneIcon.DrawLayerDepth = 0.7f;
@@ -133,6 +141,15 @@ public class UIComponent : DrawableGameComponent
 
         currencyText.Text = $"Scrap: {CurrencyManager.Balance}";
 
+        var kbdState = Keyboard.GetState();
+        if (!escHeld && kbdState.IsKeyDown(Keys.Escape))
+        {
+            escHeld = true;
+            TogglePauseMenu(!isPauseMenuVisible);
+        }
+
+        if (kbdState.IsKeyUp(Keys.Escape)) escHeld = false;
+
         base.Update(gameTime);
     }
 
@@ -172,6 +189,59 @@ public class UIComponent : DrawableGameComponent
         BuildingSystem.SelectTurret<T>();
         var turretAnimationData = T.GetTowerAnimationData();
         CreateTurretHologram(turretAnimationData);
+    }
+
+    private void TogglePauseMenu(bool isPauseMenuVisible)
+    {
+        game.SetPauseState(isPauseMenuVisible);
+        this.isPauseMenuVisible = isPauseMenuVisible;
+
+        if (!isPauseMenuVisible)
+        {
+            foreach (var element in pauseMenuElements)
+            {
+                element.Destroy();
+            }
+
+            pauseMenuElements.Clear();
+            return;
+        }
+
+        var playButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
+        var resumeButton = new UIEntity(game, uiElements, playButtonPos, buttonAnimationData);
+
+        var exitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
+        var exitButton = new UIEntity(game, uiElements, exitButtonPos, buttonAnimationData);
+
+        resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
+        exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
+
+        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Resume");
+        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        resumeButtonText.Position = playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2;
+        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+
+        pauseMenuElements.Add(resumeButton);
+        pauseMenuElements.Add(exitButton);
+        pauseMenuElements.Add(resumeButtonText);
+        pauseMenuElements.Add(exitButtonText);
+    }
+
+    private void ShowGameOverScreen(Entity diedEntity)
+    {
+        var retryButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
+        var retryButton = new UIEntity(game, uiElements, retryButtonPos, buttonAnimationData);
+
+        var quitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
+        var quitButton = new UIEntity(game, uiElements, quitButtonPos, buttonAnimationData);
+
+        retryButton.ButtonPressed += () => SceneManager.LoadGame();
+        quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
+
+        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
+        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        resumeButtonText.Position = retryButtonPos + retryButton.Size / 2 - resumeButtonText.Size / 2;
+        exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
     }
 
     public void AddUIEntity(UIEntity entity)

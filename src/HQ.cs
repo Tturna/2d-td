@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,7 +7,7 @@ namespace _2d_td;
 public class HQ : Entity
 {
     public HealthSystem HealthSystem;
-    private int startingHealth = 100;
+    private int startingHealth = 50;
     public static HQ Instance;
     
     private static Texture2D GetHQSprite(SpriteBatch spriteBatch)
@@ -30,15 +31,15 @@ public class HQ : Entity
     {
         HealthSystem = new HealthSystem(this, startingHealth);
 
-        /*HealthSystem.Died += (Entity HQ) =>
-        {
-            Console.WriteLine("Player lost 🥶");
-        };
-
-        HealthSystem.Damaged += (Entity HQ) =>
-        {
-            Console.WriteLine("HQ damaged");
-        };*/
+        // HealthSystem.Died += (hq) =>
+        // {
+        //     Console.WriteLine("Player lost 🥶");
+        // };
+        //
+        // HealthSystem.Damaged += (hq, amount) =>
+        // {
+        //     Console.WriteLine("HQ damaged");
+        // };
 
         Instance = this;
     }
