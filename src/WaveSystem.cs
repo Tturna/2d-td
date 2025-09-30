@@ -6,15 +6,9 @@ namespace _2d_td
 {
     public static class WaveSystem
     {
-        public enum enemy
-        {
-            Walker,
-            Fridge
-        }
-
         public struct Formation
         {
-            public List<enemy> enemies; // or enemyWeights or whatever you wanna do
+            public List<EnemySystem.EnemySpawner> enemies; // or enemyWeights or whatever you wanna do
             public float cooldown;//time waited to spawn new formation
             public float weight; // if we want weighted randomization of formations. could just be fully random too
             public int spawnCooldown; // how many formations have to spawn before this one can spawn again (unless none left or smn)
@@ -41,6 +35,7 @@ namespace _2d_td
         private static Formation mockForm1;
         private static Formation mockForm2;
         private static Formation mockForm3;
+        private static Formation mockForm4;
         private static Zone zone1;
         private static Wave wave1;
         private static Wave wave2;
@@ -69,10 +64,11 @@ namespace _2d_td
             waveCdLeft = 0f;
             currentWaveIndex = 0;
             waveStarted = true;
-            mockForm1 = new Formation { enemies = new List<enemy> {enemy.Walker,enemy.Fridge,enemy.Walker,enemy.Walker},cooldown =3,weight = 1,spawnCooldown=2};
-            mockForm2 = new Formation { enemies = new List<enemy> {enemy.Walker,enemy.Walker,enemy.Walker,enemy.Walker,enemy.Walker,enemy.Walker},cooldown =2,weight = 3,spawnCooldown=1};
-            mockForm3 = new Formation { enemies = new List<enemy> {enemy.Fridge,enemy.Fridge},cooldown =3,weight = 2,spawnCooldown=3 };
-            wave1 = new Wave { formations = new List<Formation> { mockForm1,mockForm2,mockForm3},maxFormations=5};
+            mockForm1 = new Formation { enemies = new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnFridgeEnemy},cooldown =3,weight = 1,spawnCooldown=2};
+            mockForm2 = new Formation { enemies = new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy},cooldown =2,weight = 3,spawnCooldown=1};
+            mockForm3 = new Formation { enemies =new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnFridgeEnemy,EnemySystem.SpawnFridgeEnemy},cooldown =3,weight = 2,spawnCooldown=3 };
+            mockForm4 = new Formation { enemies =new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy},cooldown =.5f,weight = 2.7f,spawnCooldown=0 };
+            wave1 = new Wave { formations = new List<Formation> { mockForm1,mockForm2,mockForm3,mockForm4},maxFormations=5};
             wave2 = new Wave { formations = new List<Formation> { mockForm1 },maxFormations=5};
             zone1 = new Zone { waves = new List<Wave> { wave1, wave2 }, currentLvl = 1 };
             currentZone = zone1;
@@ -89,25 +85,17 @@ namespace _2d_td
             float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (currentWave.formCooldownRemaining > 0f)
-            {
                 //Console.WriteLine(currentWave.formCooldownRemaining);
                 currentWave.formCooldownRemaining -= elapsedSeconds;
-            }
 
             if (waveCdLeft > 0f)
-            {
                 waveCdLeft -= elapsedSeconds;
-            }
 
             if (waveCdLeft <= 0f && !waveStarted)
-            {
                 NextWave();
-            }
 
             if (currentWave.formCooldownRemaining <= 0f && waveStarted)
-            {
                 SpawnNextFormation();
-            }
         }
 
         private static void SpawnNextFormation()
@@ -126,33 +114,30 @@ namespace _2d_td
                 {
                     totalWeight += currentWave.formations[i].weight;
                 }
-                double randomVal = random.NextDouble() * totalWeight;
 
-                double cumulative = 0;
-                for (int i = 0; i < currentWave.formations.Count; i++)
+                do
                 {
-                    cumulative += currentWave.formations[i].weight;
-                    if (randomVal < cumulative && currentWave.formations[i].spawnCDRemaining == 0)
+                    double randomVal = random.NextDouble() * totalWeight;
+                    double cumulative = 0;
+                    for (int i = 0; i < currentWave.formations.Count; i++)
                     {
-                        formation = currentWave.formations[i];
-                        formation.spawnCDRemaining=formation.spawnCooldown;
-                        currentWave.formations[i] = formation;
-                        break;
-                    }
-                }
-                //Formation formation = wave.formations[currentFormationIndex];
-                if (formation.spawnCooldown != -1)
-                {
-                    currentWave.spawnedFormations++;
-                    //Console.WriteLine(wave.formCooldownRemaining);
-                    currentWave.formCooldownRemaining = formation.cooldown;
-                    //Console.WriteLine(wave.formCooldownRemaining);
-                    SpawnFormation(formation);
-                }
-                else
-                    UpdateFormationCooldowns();
+                        cumulative += currentWave.formations[i].weight;
 
-                //currentFormationIndex++; 
+                        Console.WriteLine("Cumulative: " + cumulative + " Random Val: " + randomVal + " Formation cooldown: " + formation.spawnCDRemaining);
+                        if (randomVal < cumulative && currentWave.formations[i].spawnCDRemaining == 0)
+                        {
+                            Console.WriteLine("Formation" + (i+1)+ " Spawned!");
+                            formation = currentWave.formations[i];
+                            formation.spawnCDRemaining = formation.spawnCooldown;
+                            currentWave.formations[i] = formation;
+                            break;
+                        }
+                        currentWave.formations[i] = UpdateFormationCooldown(currentWave.formations[i]);
+                    }
+                } while (formation.spawnCooldown == -1);
+                currentWave.spawnedFormations++;
+                currentWave.formCooldownRemaining = formation.cooldown;
+                SpawnFormation(formation);
                      
             } else if (EnemySystem.Enemies.Count == 0)
             {
@@ -167,23 +152,21 @@ namespace _2d_td
 
         private static void SpawnFormation(Formation formation)
         {
-            UpdateFormationCooldowns();
-            for (int i = 0; i < formation.enemies.Count; i++)
+            Console.WriteLine("-------enemy spawned-------");
+            int positionIndex = 1;
+            foreach (var spawner in formation.enemies)
             {
-                EnemySystem.SpawnEnemy(game, new Vector2(i * 10, 400), (int)formation.enemies[i]);
+                spawner?.Invoke(game, new Vector2(positionIndex * 10, 400));
+                positionIndex++;
             }
             
         }
 
-        private static void UpdateFormationCooldowns()
+        private static Formation UpdateFormationCooldown(Formation f)
         {
-            for (int i = 0; i < currentWave.formations.Count; i++)
-            {
-                Formation f = currentWave.formations[i];
-                if (f.spawnCDRemaining != 0)
-                    f.spawnCDRemaining -= 1;
-                currentWave.formations[i] = f;
-            }
+            if (f.spawnCDRemaining != 0)
+                f.spawnCDRemaining -= 1;
+            return f;
         }
 
         public static void EndWave()

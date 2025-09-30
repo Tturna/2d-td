@@ -36,20 +36,7 @@ public static class EnemySystem
     }
 
 
-    public static void SpawnEnemy(Game game, Vector2 position, int enemyNum)
-    {
-        switch (enemyNum)
-        {
-            case 0:
-                SpawnWalkerEnemy(game, position);
-                break;
-            case 1:
-                SpawnFridgeEnemy(game, position);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(enemyNum), "");
-        }
-    }
+    public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
     public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
     {
