@@ -1,6 +1,5 @@
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -26,7 +25,7 @@ class Railgun : Entity, ITower
         GoldenGatling
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
+    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -41,6 +40,14 @@ class Railgun : Entity, ITower
             leftChild: Momentum, rightChild: PolishedRound);
 
         towerCore.CurrentUpgrade = defaultNode;
+    }
+
+    public override void Initialize()
+    {
+        // Offset so the tower is flat on the ground
+        Position += Vector2.UnitY * 3;
+
+        base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
@@ -127,9 +134,17 @@ class Railgun : Entity, ITower
         base.Destroy();
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        return AssetManager.GetTexture("railgun");
+        var sprite = AssetManager.GetTexture("railgun");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static Vector2 GetDefaultGridSize()

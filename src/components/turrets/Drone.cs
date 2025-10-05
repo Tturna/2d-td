@@ -1,7 +1,6 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -28,7 +27,7 @@ class Drone : Entity, ITower
         UAV,
     }
 
-    public Drone(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
+    public Drone(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -160,14 +159,22 @@ class Drone : Entity, ITower
         base.Destroy();
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        return AssetManager.GetTexture("railgun");
+        var sprite = AssetManager.GetTexture("drone");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width / 4, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(3, 2);
+        return new Vector2(2, 3);
     }
 
     public static BuildingSystem.TowerType GetTowerType()
