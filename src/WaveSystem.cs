@@ -31,14 +31,6 @@ namespace _2d_td
             public int currentLvl;
         }
 
-        //these are for testing
-        private static Formation mockForm1;
-        private static Formation mockForm2;
-        private static Formation mockForm3;
-        private static Formation mockForm4;
-        private static Zone zone1;
-        private static Wave wave1;
-        private static Wave wave2;
 
         //private static float formCooldown;
         private static int currentWaveIndex;
@@ -63,18 +55,10 @@ namespace _2d_td
             waveCd = 10f;
             waveCdLeft = 0f;
             currentWaveIndex = 0;
-            waveStarted = true;
-            mockForm1 = new Formation { enemies = new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnFridgeEnemy},cooldown =3,weight = 1,spawnCooldown=2};
-            mockForm2 = new Formation { enemies = new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy,EnemySystem.SpawnWalkerEnemy},cooldown =2,weight = 3,spawnCooldown=1};
-            mockForm3 = new Formation { enemies =new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnFridgeEnemy,EnemySystem.SpawnFridgeEnemy},cooldown =3,weight = 2,spawnCooldown=3 };
-            mockForm4 = new Formation { enemies =new List<EnemySystem.EnemySpawner> {EnemySystem.SpawnWalkerEnemy},cooldown =.5f,weight = 2.7f,spawnCooldown=0 };
-            wave1 = new Wave { formations = new List<Formation> { mockForm1,mockForm2,mockForm3,mockForm4},maxFormations=5};
-            wave2 = new Wave { formations = new List<Formation> { mockForm1 },maxFormations=5};
-            zone1 = new Zone { waves = new List<Wave> { wave1, wave2 }, currentLvl = 1 };
-            currentZone = zone1;
+            currentZone = ZoneData.Zones[0];
             currentWave = currentZone.waves[currentWaveIndex];
             int startingMax = 5;
-            int maxIncrease = 2;
+            int maxIncrease = 5;
             maxWaveIndex = startingMax + (currentZone.currentLvl - 1) * maxIncrease;
         }
 
