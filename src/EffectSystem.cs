@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
@@ -8,28 +7,48 @@ namespace _2d_td;
 public class EffectSystem
 {
     private Entity entity;
-    private List<Action<Entity>> effects = [];
+    private Dictionary<Action<Entity, float>, float> LifetimeOfEffects = new();
 
     public EffectSystem(Entity _parent)
     {
         entity = _parent;
+
+        LifetimeOfEffects.Add(DeathEffect, 0);
     }
 
     public void Update(float deltaTime)
     {
-        foreach (var effect in effects)
+        foreach (var pair in LifetimeOfEffects)
         {
-            effect(entity);
+            var effect = pair.Key;
+            var lifetime = pair.Value;
+
+            if (lifetime <= 0)
+            {
+                continue;
+            }
+
+            lifetime -= deltaTime;
+
+            effect(entity, deltaTime);
         }
     }
 
-    public void AddEffects(Action<Entity> effectFunction)
-    {
-        effects.Add(effectFunction);
+    public void AddEffects(Action<Entity, float> effectFunction, float lifetime)
+    {  
+        LifetimeOfEffects[effectFunction] = Math.Max(LifetimeOfEffects[effectFunction], lifetime);
     }
 
-    public void RemoveEffects(Action<Entity> effectFunction)
+    public void RemoveEffects(Action<Entity, float> effectFunction)
     {
-        effects.Remove(effectFunction);
+        LifetimeOfEffects[effectFunction] = 0f;
+    }
+
+    public void DeathEffect(Entity entity, float deltaTime)
+    {
+        if (entity is Enemy enemy)
+        {
+            enemy.HealthSystem.TakeDamage(1000);
+        }
     }
 }

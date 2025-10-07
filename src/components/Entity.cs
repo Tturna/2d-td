@@ -18,6 +18,7 @@ public class Entity : DrawableGameComponent
     public float DrawLayerDepth { get; set; } = 0.9f;
     public Texture2D? Sprite { get; set; }
     public AnimationSystem? AnimationSystem;
+    public EffectSystem EffectSystem;
 
     public Entity(Game game, Vector2? position = null, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
@@ -45,6 +46,8 @@ public class Entity : DrawableGameComponent
             Position = (Vector2)position;
         }
 
+        EffectSystem = new EffectSystem(this);
+
         Game.Components.Add(this);
     }
 
@@ -55,16 +58,19 @@ public class Entity : DrawableGameComponent
         Position = position;
         AnimationSystem = new AnimationSystem(animationData);
         Size = animationData.FrameSize;
+        EffectSystem = new EffectSystem(this);
         Game.Components.Add(this);
     }
 
     public override void Update(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         if (AnimationSystem is not null)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             AnimationSystem.UpdateAnimation(deltaTime);
         }
+
+        EffectSystem.Update(deltaTime);
 
         base.Update(gameTime);
     }
