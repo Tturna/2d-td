@@ -142,6 +142,11 @@ class Hovership : Entity, ITower
         }
     }
 
+    private void ApplyEffects(Enemy enemy)
+    {
+        enemy.EffectSystem.AddEffects(enemy.EffectSystem.FireEffect, 2f);
+    }
+
     private void Shoot(int damage, Vector2 direction, Vector2 position)
     {
         var bullet = new Projectile(Game, position);
@@ -152,6 +157,8 @@ class Hovership : Entity, ITower
         bullet.BulletLength = 20f;
         bullet.BulletWidth = 8f;
         bullet.ExplosionTileRadius = 4;
+        bullet.onHit.Add(ApplyEffects);
+
         bullet.Sprite = AssetManager.GetTexture("tempprojectile");
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -15,6 +16,7 @@ class Projectile : Entity
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
+    public List<Action<Enemy>> onHit = [];
     private List<Enemy> hitEnemies = new();
 
     // this constructor is simple so that the turrets can edit the property
@@ -95,6 +97,10 @@ class Projectile : Entity
                 {
                     var enemy = hitEnemies[i];
                     enemy.HealthSystem.TakeDamage(Damage);
+                    foreach (var onHitFunction in onHit)
+                    {
+                        onHitFunction(enemy);
+                    }
                     Pierce -= 1;
                 }
                 else
@@ -102,6 +108,10 @@ class Projectile : Entity
                     bulletToDelete = true;
                     var enemy = hitEnemies[i];
                     enemy.HealthSystem.TakeDamage(Damage);
+                    foreach (var onHitFunction in onHit)
+                    {
+                        onHitFunction(enemy);
+                    }
                     break;
                 }
             }
@@ -157,6 +167,10 @@ class Projectile : Entity
             if (distance > ExplosionTileRadius * Grid.TileLength) continue;
 
             enemy.HealthSystem.TakeDamage(Damage);
+            foreach (var onHitFunction in onHit)
+            {
+                onHitFunction(enemy);
+            }
         }
     }
 }

@@ -44,11 +44,11 @@ public class EffectSystem
         LifetimeOfEffects[effectFunction] = 0f;
     }
 
-    public void DeathEffect(Entity entity, float deltaTime)
+    public void FireEffect(Entity entity, float deltaTime)
     {
         if (entity is Enemy enemy)
         {
-            enemy.HealthSystem.TakeDamage(1000);
+            enemy.HealthSystem.TakeDamage((int)Math.Floor(5*deltaTime+0.5));
         }
     }
 }
