@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -14,12 +13,13 @@ public class Game1 : Game
     public Vector2 RenderedBlackBoxSize;
     public int NativeScreenWidth = 800;
     public int NativeScreenHeight = 480;
+    public int CurrentZone { get; private set; }
+    public int CurrentLevel { get; private set; }
 
     private UIComponent ui;
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
-    private int currentZone, currentLevel;
     private bool isPaused;
 
     public static Game1 Instance { get; private set; }
@@ -175,11 +175,11 @@ public class Game1 : Game
         {
             case SceneManager.Scene.Game:
                 BuildingSystem.Initialize(this);
-                WaveSystem.Initialize(this, currentZone, currentLevel);
+                WaveSystem.Initialize(this, CurrentZone, CurrentLevel);
                 CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
-                Terrain = new Terrain(this, currentZone, currentLevel);
+                Terrain = new Terrain(this, CurrentZone, CurrentLevel);
 
                 Components.Add(Terrain);
                 //hqPosition will need to be flexible for each level
@@ -208,8 +208,8 @@ public class Game1 : Game
 
     public void SetCurrentZoneAndLevel(int zone, int level)
     {
-        currentZone = zone;
-        currentLevel = level;
+        CurrentZone = zone;
+        CurrentLevel = level;
     }
 
     public void SetPauseState(bool isPaused)

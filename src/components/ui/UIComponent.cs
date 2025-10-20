@@ -42,6 +42,7 @@ public class UIComponent : DrawableGameComponent
     public override void Initialize()
     {
         HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
+        WaveSystem.LevelWin += ShowLevelWinScreen;
 
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
@@ -241,6 +242,42 @@ public class UIComponent : DrawableGameComponent
         var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
         var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
         resumeButtonText.Position = retryButtonPos + retryButton.Size / 2 - resumeButtonText.Size / 2;
+        exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+    }
+
+    private void ShowLevelWinScreen()
+    {
+        var beatTheGame = game.CurrentZone == 3 && game.CurrentLevel == 5;
+
+        var quitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
+        var quitButton = new UIEntity(game, uiElements, quitButtonPos, buttonAnimationData);
+
+        if (!beatTheGame)
+        {
+            var nextLevelButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
+            var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, buttonAnimationData);
+            var nextLevelButtonText = new UIEntity(game, uiElements, defaultFont, "Next Level");
+            nextLevelButtonText.Position = nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2;
+
+            nextLevelButton.ButtonPressed += () =>
+            {
+                var nextLevel = game.CurrentLevel + 1;
+                var nextZone = game.CurrentZone;
+
+                if (game.CurrentLevel >= 5)
+                {
+                    nextLevel = 1;
+                    nextZone++;
+                }
+
+                game.SetCurrentZoneAndLevel(nextZone, nextLevel);
+                SceneManager.LoadGame();
+            };
+        }
+
+        quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
+
+        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
     }
 
