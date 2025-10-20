@@ -49,10 +49,13 @@ public class Entity : DrawableGameComponent
     }
 
     public Entity(Game game, Vector2 position, AnimationSystem.AnimationData animationData, Texture2D? sprite = null)
-        : this(game, position, sprite, animationData.FrameSize)
+        : base(game)
     {
+        this.Game = (Game1)game;
         Position = position;
         AnimationSystem = new AnimationSystem(animationData);
+        Size = animationData.FrameSize;
+        Game.Components.Add(this);
     }
 
     public override void Update(GameTime gameTime)

@@ -32,7 +32,7 @@ public class Crane : Entity, ITower
         Razorball
     }
 
-    public Crane(Game game, Vector2 position) : base(game, position, GetTowerBaseSprite())
+    public Crane(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -53,6 +53,7 @@ public class Crane : Entity, ITower
 
     public override void Initialize()
     {
+        Position -= Vector2.UnitY * 3;
         ballThing = new Entity(Game, position: Position + defaultBallOffset, GetBallSprite(Game.SpriteBatch));
     }
 
@@ -423,12 +424,20 @@ public class Crane : Entity, ITower
 
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(2, 2);
+        return new Vector2(3, 2);
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        return AssetManager.GetTexture("turretTwo");
+        var sprite = AssetManager.GetTexture("crane");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static BuildingSystem.TowerType GetTowerType()

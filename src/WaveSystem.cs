@@ -68,6 +68,7 @@ namespace _2d_td
         {
             game = gameRef;
 
+            Console.WriteLine("Loading zone 1 enemy data...");
             string formationsPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
                 "data", "enemy-data", "formations.json");
 
@@ -115,6 +116,8 @@ namespace _2d_td
                 zone1_waves.Add(newWave);
             }
 
+            Console.WriteLine($"Loaded {zone1_waves.Count} waves with {formations.Count} formations");
+
             waveCooldown = 10f;
             waveCooldownLeft = 0f;
             currentWaveIndex = 0;
@@ -124,7 +127,7 @@ namespace _2d_td
             currentWave = currentZone.waves[currentWaveIndex];
 
             int startingMax = 5;
-            int maxIncrease = 2;
+            int maxIncrease = 5;
             maxWaveIndex = startingMax + (currentZone.currentLvl - 1) * maxIncrease;
         }
 
