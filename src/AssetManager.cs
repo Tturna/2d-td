@@ -34,7 +34,8 @@ public static class AssetManager
         // towers
         LoadTexture("gunTurretBase", "sprites/Towers/Turret/turret_base/turret_body_base");
         LoadTexture("gunTurretHead", "sprites/Towers/Turret/turret_base/turret_gun_base");
-        LoadTexture("railgun", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
+        LoadTexture("railgun_base", "sprites/Towers/Railgun/railgun_base/railgun_base");
+        LoadTexture("railgun_base_fire", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
         LoadTexture("drone", "sprites/Towers/Drone/drone_base/drone_base_idle");
         LoadTexture("crane", "sprites/Towers/Crane/crane_base/crane_base_attack");
         LoadTexture("mortar", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
