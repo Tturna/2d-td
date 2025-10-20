@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -9,6 +8,11 @@ public static class EnemySystem
     public static List<Enemy> Enemies { get; private set; } = new();
     static Game1 Game;
 
+    public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
+    {
+        { "walker", SpawnWalkerEnemy },
+        { "fridge", SpawnFridgeEnemy }
+    };
 
     public static void Initialize(Game1 game)
     {
@@ -35,6 +39,8 @@ public static class EnemySystem
         }
     }
 
+
+    public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
     public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
     {
@@ -92,6 +98,5 @@ public static class EnemySystem
         Enemies.Add(enemy);
 
         return enemy;
-
     }
 }
