@@ -75,7 +75,7 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void Update(GameTime gameTime)
     {
-        var halfTurretWidth = targetTurret.AnimationSystem.Data.FrameSize.X / 2;
+        var halfTurretWidth = targetTurret.AnimationSystem.BaseAnimationData.FrameSize.X / 2;
         var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
         var sellBtnOffset = new Vector2(halfTurretWidth - 48, 40);
 

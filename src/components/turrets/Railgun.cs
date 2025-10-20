@@ -27,6 +27,19 @@ class Railgun : Entity, ITower
 
     public Railgun(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
+        var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
+
+        var fireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: fireAnimationTexture,
+            frameCount: 5,
+            frameSize: new Vector2(fireAnimationTexture.Width / 5, fireAnimationTexture.Height),
+            delaySeconds: 0.05f
+        );
+
+        // base constructor defines animation system
+        AnimationSystem!.AddAnimationState("fire", fireAnimation);
+
         towerCore = new TowerCore(this);
 
         var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), price: 85);
@@ -93,6 +106,7 @@ class Railgun : Entity, ITower
         {
             Shoot(damage, pierce);
             actionTimer = 0f;
+            AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
@@ -136,13 +150,13 @@ class Railgun : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("railgun");
+        var sprite = AssetManager.GetTexture("railgun_base");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }

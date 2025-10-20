@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,21 +29,99 @@ public class AnimationSystem
         }
     }
 
-    public AnimationData Data { get; private set; }
+    public AnimationData BaseAnimationData { get; private set; }
+    private Dictionary<string, AnimationData>? altAnimationStates;
+    private AnimationData currentAnimationData;
+    private const string BaseStateName = "base";
+    private string? currentStateName;
+    private string? oneShotPreviousState;
+
     private float frameTimer;
+    private float oneShotTimer;
     private int currentFrame;
 
     private Texture2D? overrideTexture;
     private float overrideTimer;
 
-    public AnimationSystem(AnimationData animationData)
+    public AnimationSystem(AnimationData baseAnimationData)
     {
-        Data = animationData;
-        this.frameTimer = Data.DelaySeconds;
+        BaseAnimationData = baseAnimationData;
+        this.frameTimer = BaseAnimationData.DelaySeconds;
+        currentAnimationData = BaseAnimationData;
+        currentStateName = BaseStateName;
+    }
+
+    public void AddAnimationState(string stateName, AnimationData animationData)
+    {
+        if (altAnimationStates is null) altAnimationStates = new();
+
+        altAnimationStates.Add(stateName, animationData);
+    }
+
+    /// <summary>
+    /// Switch animation state to given state. Pass null to switch to base state.
+    /// Return new animation state data.
+    /// </summary>
+    public AnimationData ToggleAnimationState(string? stateName)
+    {
+        currentFrame = 0;
+
+        if (stateName is null || stateName == BaseStateName)
+        {
+            currentAnimationData = BaseAnimationData;
+            currentStateName = BaseStateName;
+            frameTimer = currentAnimationData.DelaySeconds;
+            return currentAnimationData;
+        }
+
+        if (altAnimationStates is null)
+        {
+            throw new KeyNotFoundException($"No animation states added. Can't toggle state: {stateName}");
+        }
+
+        if (!altAnimationStates.TryGetValue(stateName, out var animationData))
+        {
+            throw new KeyNotFoundException($"Animation state {stateName} not added.");
+        }
+
+        currentAnimationData = animationData;
+        currentStateName = stateName;
+        frameTimer = currentAnimationData.DelaySeconds;
+
+        return currentAnimationData;
+    }
+
+    /// <summary>
+    /// Play given animation state and immediately switch back to the previous state.
+    /// Pass null to play base state. Will override any active oneshot animation but will
+    /// switch back to the original state, not the overridden one.
+    /// </summary>
+    public void OneShotAnimationState(string? stateName)
+    {
+        // If a one shot animation is triggered while another one is already active,
+        // override the previous animation but keep the previous state. This way the
+        // new animation state won't transition to the overridden one.
+        if (oneShotTimer <= 0f)
+        {
+            oneShotPreviousState = currentStateName;
+        }
+
+        var newAnimationData = ToggleAnimationState(stateName);
+        oneShotTimer = newAnimationData.FrameCount * newAnimationData.DelaySeconds;
     }
 
     public void UpdateAnimation(float deltaTime)
     {
+        if (oneShotTimer > 0f)
+        {
+            oneShotTimer -= deltaTime;
+
+            if (oneShotTimer <= 0f)
+            {
+                oneShotTimer = 0f;
+            }
+        }
+
         if (overrideTimer > 0f)
         {
             overrideTimer -= deltaTime;
@@ -56,12 +135,18 @@ public class AnimationSystem
             return;
         }
 
+        if (oneShotPreviousState is not null && oneShotTimer <= 0f)
+        {
+            ToggleAnimationState(oneShotPreviousState);
+            oneShotPreviousState = null;
+        }
+
         frameTimer -= deltaTime;
 
         if (frameTimer <= 0f)
         {
-            frameTimer = Data.DelaySeconds;
-            currentFrame = (currentFrame + 1) % Data.FrameCount;
+            frameTimer = currentAnimationData.DelaySeconds;
+            currentFrame = (currentFrame + 1) % currentAnimationData.FrameCount;
         }
     }
 
@@ -75,7 +160,7 @@ public class AnimationSystem
         Vector2 drawOrigin = default, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
-        Texture2D texture = Data.Texture;
+        Texture2D texture = currentAnimationData.Texture;
 
         if (overrideTimer > 0f && overrideTexture is not null)
         {
@@ -83,10 +168,10 @@ public class AnimationSystem
         }
         else
         {
-            var xPosHorizontal = Data.FrameSize.X * currentFrame;
-            var x = (int)Math.Floor(xPosHorizontal % Data.Texture.Width);
-            var y = (int)(Math.Floor(xPosHorizontal / Data.Texture.Width) * Data.FrameSize.Y);
-            sourceRect = new Rectangle(x, y, (int)Data.FrameSize.X, (int)Data.FrameSize.Y);
+            var xPosHorizontal = currentAnimationData.FrameSize.X * currentFrame;
+            var x = (int)Math.Floor(xPosHorizontal % currentAnimationData.Texture.Width);
+            var y = (int)(Math.Floor(xPosHorizontal / currentAnimationData.Texture.Width) * currentAnimationData.FrameSize.Y);
+            sourceRect = new Rectangle(x, y, (int)currentAnimationData.FrameSize.X, (int)currentAnimationData.FrameSize.Y);
         }
 
         spriteBatch.Draw(texture,
