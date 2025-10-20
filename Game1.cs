@@ -174,7 +174,6 @@ public class Game1 : Game
                 CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
-
                 Terrain = new Terrain(this);
 
                 Components.Add(Terrain);

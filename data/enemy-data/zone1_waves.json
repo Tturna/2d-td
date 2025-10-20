@@ -1,0 +1,19 @@
+[
+    {
+        "formations":
+        [
+            "ezFormation",
+            "midFormation",
+            "ezFormation"
+        ],
+        "maxFormations": 5
+    },
+    {
+        "formations":
+        [
+            "midFormation",
+            "hardFormation"
+        ],
+        "maxFormations": 3
+    }
+]

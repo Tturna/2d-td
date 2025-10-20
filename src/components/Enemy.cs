@@ -34,8 +34,10 @@ public class Enemy : Entity
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
+            EnemySystem.Enemies.Remove(this);
             Destroy();
         }
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, deltaTime);
