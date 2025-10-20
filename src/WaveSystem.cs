@@ -49,7 +49,6 @@ namespace _2d_td
         public struct Zone
         {
             public List<Wave> waves;
-            public int currentLvl;
         }
 
         private static int currentWaveIndex;
@@ -57,6 +56,8 @@ namespace _2d_td
         private static bool waveStarted;
         private static float waveCooldown;
         private static float waveCooldownLeft;
+        private const int StartingMaxWaves = 5;
+        private const int MaxWaveIncreasePerLevel = 5;
 
         // these variables are for the long term malliable script
         private static Zone currentZone;
@@ -64,11 +65,11 @@ namespace _2d_td
 
         private static Game1 game;
 
-        public static void Initialize(Game1 gameRef)
+        public static void Initialize(Game1 gameRef, int currentZoneNumber, int currentLevelNumber)
         {
             game = gameRef;
 
-            Console.WriteLine("Loading zone 1 enemy data...");
+            Console.WriteLine($"Loading zone {currentZoneNumber} enemy data...");
             string formationsPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
                 "data", "enemy-data", "formations.json");
 
@@ -96,13 +97,13 @@ namespace _2d_td
             }
 
             string wavesPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
-                "data", "enemy-data", "zone1_waves.json");
+                "data", "enemy-data", $"zone{currentZoneNumber}_waves.json");
 
             string wavesDataString = File.ReadAllText(wavesPath);
-            var zone1_wavesJson = JsonSerializer.Deserialize<WaveJsonData[]>(wavesDataString);
-            List<Wave> zone1_waves = new();
+            var wavesJson = JsonSerializer.Deserialize<WaveJsonData[]>(wavesDataString);
+            List<Wave> waves = new();
 
-            foreach (var waveData in zone1_wavesJson)
+            foreach (var waveData in wavesJson)
             {
                 var newWave = new Wave();
                 newWave.maxFormations = waveData.maxFormations;
@@ -113,22 +114,20 @@ namespace _2d_td
                     newWave.formations.Add(formations[formationName]);
                 }
 
-                zone1_waves.Add(newWave);
+                waves.Add(newWave);
             }
 
-            Console.WriteLine($"Loaded {zone1_waves.Count} waves with {formations.Count} formations");
+            Console.WriteLine($"Loaded {waves.Count} waves with {formations.Count} formations");
 
             waveCooldown = 10f;
             waveCooldownLeft = 0f;
             currentWaveIndex = 0;
             waveStarted = true;
-            var zone1 = new Zone { waves = zone1_waves, currentLvl = 1 };
+            var zone1 = new Zone { waves = waves };
             currentZone = zone1;
             currentWave = currentZone.waves[currentWaveIndex];
 
-            int startingMax = 5;
-            int maxIncrease = 5;
-            maxWaveIndex = startingMax + (currentZone.currentLvl - 1) * maxIncrease;
+            maxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
         }
 
         public static void Update(GameTime gameTime)
