@@ -63,17 +63,10 @@ public class MovementSystem
         if (jumpTimer > 0 || entity is not Enemy) return false;
 
         var entityBottom = entity.Position + Vector2.UnitY * entity.Size.Y;
-        var groundCheckStartPoint = entityBottom + Vector2.UnitY * (Grid.TileLength / 2);
+        var groundCheckStartPoint = entityBottom + Vector2.UnitY * (Grid.TileLength / 3);
 
         (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
         var entityTileWidth = Math.Floor(tileWidth);
-
-        for (int i = 0; i < entityTileWidth + 1; i++)
-        {
-            var checkPoint = groundCheckStartPoint + Vector2.UnitX * (Grid.TileLength * i + remainderWidth / 2);
-
-            if (Collision.IsPointInTerrain(checkPoint, game.Terrain)) break;
-        }
 
         var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
         var remainderHeight = entity.Size.Y % Grid.TileLength;
@@ -95,7 +88,8 @@ public class MovementSystem
             var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
             var jumpCheckPoint = horizontalEntityCenter + defaultChargeDirection * jumpCheckDistance;
             
-            if (Collision.IsPointInTerrain(jumpCheckPoint, game.Terrain))
+            if (Collision.IsPointInTerrain(jumpCheckPoint, game.Terrain) ||
+                ScrapSystem.GetScrapFromPosition(jumpCheckPoint) is not null)
             {
                 shouldJump = true;
                 break;

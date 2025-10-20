@@ -6,6 +6,41 @@ namespace _2d_td;
 public static class EnemySystem
 {
     public static List<Enemy> Enemies { get; private set; } = new();
+    static Game1 Game;
+
+    public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
+    {
+        { "walker", SpawnWalkerEnemy },
+        { "fridge", SpawnFridgeEnemy }
+    };
+
+    public static void Initialize(Game1 game)
+    {
+        Game = game;
+    }
+
+    public static void Update(GameTime gameTime)
+    {
+        CheckIfEnemyPastLevel();
+    }
+
+    public static void CheckIfEnemyPastLevel()
+    {
+        float levelEndX = Game.Terrain.GetLastTilePosition().X;
+        
+        foreach (Enemy enemy in Enemies)
+        {
+            float enemyX = enemy.Position.X;
+            if (enemyX > levelEndX)
+            {
+
+                //Console.WriteLine("Enemy has passed level");
+            }
+        }
+    }
+
+
+    public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
     public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
     {
@@ -32,7 +67,6 @@ public static class EnemySystem
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 100, scrapValue: 1);
         Enemies.Add(enemy);
-        game.Components.Add(enemy);
 
         return enemy;
     }
@@ -62,9 +96,7 @@ public static class EnemySystem
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 300, scrapValue: 5);
         Enemies.Add(enemy);
-        game.Components.Add(enemy);
 
         return enemy;
-
     }
 }

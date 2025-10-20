@@ -1,82 +1,169 @@
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
+    private Vector2 spawnOffset = new (0, 11);
     int tileRange = 18;
     int damage = 30;
+    int pierce = 3;
+    float bulletSpeed = 900f;
     float actionsPerSecond = 0.5f;
     float actionTimer;
 
-    public Railgun(Game game) : base(game, AssetManager.GetTexture("turretTwo"))
+    public enum Upgrade
     {
-        towerCore = new TowerCore(this);
+        NoUpgrade,
+        Momentum,
+        AntimatterLaser,
+        PolishedRound,
+        Cannonball,
+        GoldenGatling
     }
 
-    public Railgun(Game game, Vector2 position) : this(game)
+    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
-        Position = position;
+        towerCore = new TowerCore(this);
+
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), price: 85);
+        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), price: 25, leftChild: AntimatterLaser);
+
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), price: 70);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), price: 80);
+        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
+            leftChild: Momentum, rightChild: PolishedRound);
+
+        towerCore.CurrentUpgrade = defaultNode;
+    }
+
+    public override void Initialize()
+    {
+        // Offset so the tower is flat on the ground
+        Position += Vector2.UnitY * 3;
+
+        base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
     {
-        var actionInterval = 1f / actionsPerSecond;
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        if (actionTimer >= actionInterval)
+        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            ShootAtClosestEnemy();
-            actionTimer = 0f;
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.Momentum.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce+3);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.AntimatterLaser.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+20, tileRange+6, pierce+12);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.PolishedRound.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+25, tileRange, pierce);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.Cannonball.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, tileRange, pierce-2);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.GoldenGatling.ToString())
+        {
+            // todo: inflict burn
+            HandleBasicShots(deltaTime, actionsPerSecond+5, 15, tileRange, pierce);
         }
 
         base.Update(gameTime);
     }
 
-    private void ShootAtClosestEnemy()
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange, int pierce)
     {
-        var closestEnemy = towerCore.GetClosestEnemy(tileRange);
+        var actionInterval = 1f / actionsPerSecond;
 
-        if (closestEnemy is null) return;
+        actionTimer += deltaTime;
 
-        closestEnemy.HealthSystem.TakeDamage(damage);
+        if (actionTimer >= actionInterval && IsEnemyInLine(tileRange))
+        {
+            Shoot(damage, pierce);
+            actionTimer = 0f;
+        }
+    }
+
+    private void Shoot(int damage, int pierce)
+    {
+        var direction = new Vector2(-1, 0);
+        var bullet = new Projectile(Game, Position + spawnOffset);
+        bullet.Direction = direction;
+        bullet.BulletPixelsPerSecond = bulletSpeed;
+        bullet.Damage = damage;
+        bullet.Lifetime = 1f;
+        bullet.BulletLength = 20f;
+        bullet.BulletWidth = 8f;
+        bullet.Pierce = pierce;
+        bullet.Sprite = AssetManager.GetTexture("tempprojectile");
+    }
+
+    public bool IsEnemyInLine(int tileRange)
+    {
+        var range = tileRange * Grid.TileLength;
+        foreach (Enemy enemy in EnemySystem.Enemies)
+        {
+            if (enemy.Position.Y < Position.Y + Size.Y &&
+                enemy.Position.Y > Position.Y &&
+                enemy.Position.X < Position.X &&
+                enemy.Position.X + range > Position.X)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public override void Destroy()
     {
         towerCore.CloseDetailsView();
-        // Game.Components.Remove(turretHead);
         Game.Components.Remove(towerCore);
 
         base.Destroy();
     }
 
-    public static Texture2D GetTowerBaseSprite()
+    public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        throw new System.NotImplementedException();
+        var sprite = AssetManager.GetTexture("railgun");
+
+        return new AnimationSystem.AnimationData
+        (
+            texture: sprite,
+            frameCount: 1,
+            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            delaySeconds: 0
+        );
     }
 
     public static Vector2 GetDefaultGridSize()
     {
-        throw new System.NotImplementedException();
+        return new Vector2(3, 2);
     }
 
     public static BuildingSystem.TowerType GetTowerType()
     {
-        throw new System.NotImplementedException();
+        return BuildingSystem.TowerType.Railgun;
     }
 
     public static bool CanPlaceTower(Vector2 targetWorldPosition)
     {
-        throw new System.NotImplementedException();
+        return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
     }
 
-    public static Entity CreateNewInstance(Game game)
+    public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
-        throw new System.NotImplementedException();
+        return new Railgun(game, worldPosition);
     }
 }

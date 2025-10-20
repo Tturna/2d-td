@@ -15,7 +15,9 @@ public class TurretDetailsPrompt : UIEntity
     private SpriteFont defaultFont;
 
     public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode> upgradeLeftCallback,
-        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) : base(game, AssetManager.GetTexture("upgradebg"))
+        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
+        base(game, position: null, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
         targetTurret = turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
@@ -33,7 +35,8 @@ public class TurretDetailsPrompt : UIEntity
             delaySeconds: 0.5f
         );
 
-        sellBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+        sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
+            UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
 
         var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTurret);
 
@@ -45,11 +48,11 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.LeftChild is not null)
         {
-            leftUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            leftUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
             leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
-            leftUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.LeftChild.Name);
-            game.Components.Add(leftUpgradeBtn);
+            leftUpgradePrice = currentUpgrade.LeftChild.Price;
         }
         else
         {
@@ -58,24 +61,23 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.RightChild is not null)
         {
-            rightUpgradeBtn = new UIEntity(game, Vector2.Zero, buttonAnimationData);
+            rightUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
             rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
-            rightUpgradePrice = CurrencyManager.GetUpgradePrice(currentUpgrade.RightChild.Name);
-            game.Components.Add(rightUpgradeBtn);
+            rightUpgradePrice = currentUpgrade.RightChild.Price;
         }
         else
         {
             rightUpgradeBtn = null;
         }
-
-        game.Components.Add(sellBtn);
     }
 
     public override void Update(GameTime gameTime)
     {
-        var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - targetTurret.Sprite.Bounds.Width / 2, 50);
-        var sellBtnOffset = new Vector2(targetTurret.Sprite.Bounds.Width / 2 - 48, 40);
+        var halfTurretWidth = targetTurret.AnimationSystem.Data.FrameSize.X / 2;
+        var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
+        var sellBtnOffset = new Vector2(halfTurretWidth - 48, 40);
 
         var detailsOffsetPosition = targetTurret.Position - detailsPromptOffset;
         var sellBtnOffsetPosition = targetTurret.Position - sellBtnOffset;
@@ -125,9 +127,9 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void Destroy()
     {
-        Game.Components.Remove(sellBtn);
-        Game.Components.Remove(leftUpgradeBtn);
-        Game.Components.Remove(rightUpgradeBtn);
+        sellBtn.Destroy();
+        leftUpgradeBtn?.Destroy();
+        rightUpgradeBtn?.Destroy();
 
         base.Destroy();
     }
@@ -149,21 +151,21 @@ public class TurretDetailsPrompt : UIEntity
 
         if (newUpgrade.LeftChild is not null)
         {
-            leftUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.LeftChild.Name);
+            leftUpgradePrice = newUpgrade.LeftChild.Price;
         }
         else
         {
-            Game.Components.Remove(leftUpgradeBtn);
+            leftUpgradeBtn?.Destroy();
             leftUpgradeBtn = null;
         }
 
         if (newUpgrade.RightChild is not null)
         {
-            rightUpgradePrice = CurrencyManager.GetUpgradePrice(newUpgrade.RightChild.Name);
+            rightUpgradePrice = newUpgrade.RightChild.Price;
         }
         else
         {
-            Game.Components.Remove(rightUpgradeBtn);
+            rightUpgradeBtn?.Destroy();
             rightUpgradeBtn = null;
         }
     }

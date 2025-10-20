@@ -13,16 +13,21 @@ public class TowerCore : GameComponent, IClickable
     public TurretDetailsPrompt? detailsPrompt;
     public bool detailsClosed;
 
+    public delegate void ClickedHandler();
+    public event ClickedHandler? Clicked;
+
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
-        CurrentUpgrade = new TowerUpgradeNode("Default", parent: null,
+        CurrentUpgrade = new TowerUpgradeNode("Default", 0, parent: null,
             leftChild: null, rightChild: null);
 
         Turret.Game.Components.Add(this);
+
+        InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
     }
 
-    public Enemy? GetClosestEnemy(int tileRange)
+    public Enemy? GetClosestValidEnemy(int tileRange)
     {
         Enemy? closestEnemy = null;
         float closestDistance = float.PositiveInfinity;
@@ -37,6 +42,10 @@ public class TowerCore : GameComponent, IClickable
 
             if (distanceToEnemy < closestDistance)
             {
+                var towerCenter = Turret.Position + Turret.Size / 2;
+                var enemyCenter = enemy.Position + enemy.Size / 2;
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
+
                 closestDistance = distanceToEnemy;
                 closestEnemy = enemy;
             }
@@ -60,7 +69,7 @@ public class TowerCore : GameComponent, IClickable
 
     public void CloseDetailsView()
     {
-        UIComponent.Instance.RemoveUIEntity(detailsPrompt);
+        detailsPrompt?.Destroy();
         detailsPrompt = null;
     }
 
@@ -69,10 +78,11 @@ public class TowerCore : GameComponent, IClickable
         if (!detailsClosed && detailsPrompt is null)
         {
             detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
-            UIComponent.Instance.AddUIEntity(detailsPrompt);
         }
 
         detailsClosed = false;
+
+        Clicked?.Invoke();
     }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
@@ -87,7 +97,7 @@ public class TowerCore : GameComponent, IClickable
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Name)) return CurrentUpgrade;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.LeftChild;
         return CurrentUpgrade;
@@ -100,7 +110,7 @@ public class TowerCore : GameComponent, IClickable
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Name)) return CurrentUpgrade;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.RightChild;
         return CurrentUpgrade;
@@ -121,7 +131,7 @@ public class TowerCore : GameComponent, IClickable
                     return false;
                 }
             }
-       }
+        }
 
         var turretGridHeight = towerGridSize.Y;
 

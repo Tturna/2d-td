@@ -19,6 +19,8 @@ public class Game1 : Game
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
+    private int currentZone, currentLevel;
+    private bool isPaused;
 
     public static Game1 Instance { get; private set; }
 
@@ -65,17 +67,26 @@ public class Game1 : Game
     {
         InputSystem.Update();
 
+        if (isPaused)
+        {
+            if (ui is not null) ui.Update(gameTime);
+            if (mainMenu is not null) mainMenu.Update(gameTime);
+            return;
+        }
+
+        // Console.WriteLine("Components ===============================");
+        // foreach (var component in Components)
+        // {
+        //     Console.WriteLine(component.ToString());
+        // }
+
         switch (SceneManager.CurrentScene)
         {
             case SceneManager.Scene.Game:
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
+                EnemySystem.Update(gameTime);
                 break;
-        }
-
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        {
-            SceneManager.LoadMainMenu();
         }
 
         base.Update(gameTime);
@@ -93,6 +104,17 @@ public class Game1 : Game
             samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
 
         base.Draw(gameTime);
+
+        foreach (var lineTuple in DebugUtility.LineSet)
+        {
+            Vector2 startPoint = lineTuple.Item1;
+            Vector2 endPoint = lineTuple.Item2;
+            Color color = lineTuple.Item3;
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+        }
+
+        DebugUtility.ResetLines();
+
         SpriteBatch.End();
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
@@ -144,6 +166,7 @@ public class Game1 : Game
     private void InitializeScene(SceneManager.Scene loadedScene)
     {
         Components.Clear();
+        SetPauseState(false);
         ui = null;
         mainMenu = null;
         Terrain = null;
@@ -154,9 +177,15 @@ public class Game1 : Game
                 BuildingSystem.Initialize(this);
                 WaveSystem.Initialize(this);
                 CurrencyManager.Initialize();
+                ScrapSystem.Initialize();
 
-                Terrain = new Terrain(this);
+                Terrain = new Terrain(this, currentZone, currentLevel);
+
                 Components.Add(Terrain);
+                //hqPosition will need to be flexible for each level
+                var hqPosition = Terrain.GetLastTilePosition() - new Vector2(0,23*Grid.TileLength);
+                var hq = new HQ(this,hqPosition);
+                EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);
                 Components.Add(ui);
@@ -175,5 +204,16 @@ public class Game1 : Game
             default:
                 throw new ArgumentOutOfRangeException($"Loaded scene '{loadedScene}' did not match any scene in SceneManager.Scene.");
         }
+    }
+
+    public void SetCurrentZoneAndLevel(int zone, int level)
+    {
+        currentZone = zone;
+        currentLevel = level;
+    }
+
+    public void SetPauseState(bool isPaused)
+    {
+        this.isPaused = isPaused;
     }
 }
