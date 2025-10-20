@@ -51,7 +51,7 @@ class GunTurret : Entity, ITower
     public override void Initialize()
     {
         // Position turret head to match where turret base expects it.
-        float TurretHeadXOffset = AnimationSystem!.Data.FrameSize.X * 0.7f;
+        float TurretHeadXOffset = AnimationSystem!.BaseAnimationData.FrameSize.X * 0.7f;
         float TurretHeadYOffset = 9f;
         turretHeadAxisCenter = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
 

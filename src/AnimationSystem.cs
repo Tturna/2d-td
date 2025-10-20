@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,17 +29,46 @@ public class AnimationSystem
         }
     }
 
-    public AnimationData Data { get; private set; }
+    public AnimationData BaseAnimationData { get; private set; }
+    public Dictionary<string, AnimationData>? AltAnimationStates;
+    private AnimationData currentAnimationData { get; set; }
+
     private float frameTimer;
     private int currentFrame;
 
     private Texture2D? overrideTexture;
     private float overrideTimer;
 
-    public AnimationSystem(AnimationData animationData)
+    public AnimationSystem(AnimationData baseAnimationData)
     {
-        Data = animationData;
-        this.frameTimer = Data.DelaySeconds;
+        BaseAnimationData = baseAnimationData;
+        this.frameTimer = BaseAnimationData.DelaySeconds;
+        currentAnimationData = BaseAnimationData;
+    }
+
+    public void AddAnimationState(string stateName, AnimationData animationData)
+    {
+        if (AltAnimationStates is null) AltAnimationStates = new();
+
+        AltAnimationStates.Add(stateName, animationData);
+    }
+
+    /// <summary>
+    /// Switch animation state to given state. Pass null to switch to base state.
+    /// </summary>
+    public void ToggleAnimationState(string? stateName)
+    {
+        if (stateName is null)
+        {
+            currentAnimationData = BaseAnimationData;
+            return;
+        }
+
+        // Assume animation state exists. Let it throw otherwise.
+        if (AltAnimationStates!.TryGetValue(stateName, out var animationData))
+        {
+            currentAnimationData = animationData;
+        }
     }
 
     public void UpdateAnimation(float deltaTime)
@@ -60,8 +90,8 @@ public class AnimationSystem
 
         if (frameTimer <= 0f)
         {
-            frameTimer = Data.DelaySeconds;
-            currentFrame = (currentFrame + 1) % Data.FrameCount;
+            frameTimer = BaseAnimationData.DelaySeconds;
+            currentFrame = (currentFrame + 1) % BaseAnimationData.FrameCount;
         }
     }
 
@@ -75,7 +105,7 @@ public class AnimationSystem
         Vector2 drawOrigin = default, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
-        Texture2D texture = Data.Texture;
+        Texture2D texture = BaseAnimationData.Texture;
 
         if (overrideTimer > 0f && overrideTexture is not null)
         {
@@ -83,10 +113,10 @@ public class AnimationSystem
         }
         else
         {
-            var xPosHorizontal = Data.FrameSize.X * currentFrame;
-            var x = (int)Math.Floor(xPosHorizontal % Data.Texture.Width);
-            var y = (int)(Math.Floor(xPosHorizontal / Data.Texture.Width) * Data.FrameSize.Y);
-            sourceRect = new Rectangle(x, y, (int)Data.FrameSize.X, (int)Data.FrameSize.Y);
+            var xPosHorizontal = BaseAnimationData.FrameSize.X * currentFrame;
+            var x = (int)Math.Floor(xPosHorizontal % BaseAnimationData.Texture.Width);
+            var y = (int)(Math.Floor(xPosHorizontal / BaseAnimationData.Texture.Width) * BaseAnimationData.FrameSize.Y);
+            sourceRect = new Rectangle(x, y, (int)BaseAnimationData.FrameSize.X, (int)BaseAnimationData.FrameSize.Y);
         }
 
         spriteBatch.Draw(texture,
