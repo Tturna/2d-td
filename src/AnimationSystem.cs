@@ -30,7 +30,7 @@ public class AnimationSystem
     }
 
     public AnimationData BaseAnimationData { get; private set; }
-    public Dictionary<string, AnimationData>? AltAnimationStates;
+    private Dictionary<string, AnimationData>? altAnimationStates;
     private AnimationData currentAnimationData;
     private const string BaseStateName = "base";
     private string? currentStateName;
@@ -53,9 +53,9 @@ public class AnimationSystem
 
     public void AddAnimationState(string stateName, AnimationData animationData)
     {
-        if (AltAnimationStates is null) AltAnimationStates = new();
+        if (altAnimationStates is null) altAnimationStates = new();
 
-        AltAnimationStates.Add(stateName, animationData);
+        altAnimationStates.Add(stateName, animationData);
     }
 
     /// <summary>
@@ -70,15 +70,23 @@ public class AnimationSystem
         {
             currentAnimationData = BaseAnimationData;
             currentStateName = BaseStateName;
+            frameTimer = currentAnimationData.DelaySeconds;
             return currentAnimationData;
         }
 
-        // Assume animation state exists. Let it throw otherwise.
-        if (AltAnimationStates!.TryGetValue(stateName, out var animationData))
+        if (altAnimationStates is null)
         {
-            currentAnimationData = animationData;
-            currentStateName = stateName;
+            throw new KeyNotFoundException($"No animation states added. Can't toggle state: {stateName}");
         }
+
+        if (!altAnimationStates.TryGetValue(stateName, out var animationData))
+        {
+            throw new KeyNotFoundException($"Animation state {stateName} not added.");
+        }
+
+        currentAnimationData = animationData;
+        currentStateName = stateName;
+        frameTimer = currentAnimationData.DelaySeconds;
 
         return currentAnimationData;
     }
@@ -99,7 +107,7 @@ public class AnimationSystem
         }
 
         var newAnimationData = ToggleAnimationState(stateName);
-        oneShotTimer = (newAnimationData.FrameCount - 1) * newAnimationData.DelaySeconds;
+        oneShotTimer = newAnimationData.FrameCount * newAnimationData.DelaySeconds;
     }
 
     public void UpdateAnimation(float deltaTime)
