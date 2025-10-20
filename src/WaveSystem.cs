@@ -156,7 +156,6 @@ namespace _2d_td
 
             if (currentWave.spawnedFormations < currentWave.maxFormations)
             {
-                Random random = new Random();
                 Formation formation = new Formation { spawnCooldown = -1 };
 
                 // formation picking logic
@@ -169,7 +168,7 @@ namespace _2d_td
 
                 do
                 {
-                    double randomVal = random.NextDouble() * totalWeight;
+                    double randomVal = Random.Shared.NextDouble() * totalWeight;
                     double cumulative = 0;
 
                     for (int i = 0; i < currentWave.formations.Count; i++)
