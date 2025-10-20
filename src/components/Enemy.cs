@@ -11,10 +11,13 @@ public class Enemy : Entity
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
-    double hurtProgress;
-    double hurtAnimThreshold;
-    private int attackDamage = 10;
     public int ScrapValue;
+
+    private double hurtProgress;
+    private double hurtAnimThreshold;
+    private int attackDamage = 10;
+    private float selfDestructTime = 8;
+    private float selfDestructTimer;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -30,6 +33,8 @@ public class Enemy : Entity
         hurtAnimThreshold = .33*HealthSystem.MaxHealth;
 
         this.hurtTexture = hurtTexture;
+
+        selfDestructTimer = selfDestructTime;
     }
 
     public override void Update(GameTime gameTime)
@@ -44,6 +49,20 @@ public class Enemy : Entity
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, deltaTime);
+
+        if (PhysicsSystem.Velocity.X > 0.1f)
+        {
+            selfDestructTimer = selfDestructTime;
+        }
+        else
+        {
+            selfDestructTimer -= deltaTime;
+
+            if (selfDestructTimer <= 0)
+            {
+                OnDeath(this);
+            }
+        }
 
         base.Update(gameTime);
     }
