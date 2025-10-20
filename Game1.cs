@@ -175,7 +175,7 @@ public class Game1 : Game
         {
             case SceneManager.Scene.Game:
                 BuildingSystem.Initialize(this);
-                WaveSystem.Initialize(this);
+                WaveSystem.Initialize(this, currentZone, currentLevel);
                 CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
