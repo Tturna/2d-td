@@ -127,7 +127,7 @@ namespace _2d_td
             currentZone = zone1;
             currentWave = currentZone.waves[currentWaveIndex];
 
-            maxWaveIndex = StartingMaxWaves + currentLevelNumber * MaxWaveIncreasePerLevel;
+            maxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
         }
 
         public static void Update(GameTime gameTime)
