@@ -77,14 +77,14 @@ public static class AssetManager
         LoadTexture("smog_2", "sprites/Foreground Objects/Generic/smog_2");
 
         // ui
-        LoadTexture("btn_square", "sprites/ui/button_square");
-        LoadTexture("btn_square_small", "sprites/ui/button_smallsquare");
-        LoadTexture("btn_info", "sprites/ui/infobutton");
-        LoadTexture("btn_pause", "sprites/ui/pausebutton");
-        LoadTexture("icon_scrap", "sprites/ui/scrapicon");
-        LoadTexture("icon_scrap_small", "sprites/ui/scrapicon_small");
-        LoadTexture("upgradebg", "sprites/ui/upgradebg");
-        LoadTexture("upgrade_indicator", "sprites/ui/upgradeindicator");
+        LoadTexture("btn_square", "sprites/UI/button_square");
+        LoadTexture("btn_square_small", "sprites/UI/button_smallsquare");
+        LoadTexture("btn_info", "sprites/UI/infobutton");
+        LoadTexture("btn_pause", "sprites/UI/pausebutton");
+        LoadTexture("icon_scrap", "sprites/UI/scrapicon");
+        LoadTexture("icon_scrap_small", "sprites/UI/scrapicon_small");
+        LoadTexture("upgradebg", "sprites/UI/upgradebg");
+        LoadTexture("upgrade_indicator", "sprites/UI/upgradeindicator");
 
         // fonts
         LoadFont("default", "default_font");
