@@ -34,6 +34,19 @@ public class Crane : Entity, ITower
 
     public Crane(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
+        var attackSprite = AssetManager.GetTexture("crane_base_attack");
+
+        var attackAnimation = new AnimationSystem.AnimationData
+        (
+            texture: attackSprite,
+            frameCount: 5,
+            frameSize: new Vector2(attackSprite.Width / 5, attackSprite.Height),
+            delaySeconds: 0.1f
+        );
+
+        // base constructor defines animation system
+        AnimationSystem!.AddAnimationState("attack", attackAnimation);
+
         towerCore = new TowerCore(this);
 
         var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
@@ -91,6 +104,8 @@ public class Crane : Entity, ITower
             HandleCrusher(deltaTime, (float)gameTime.TotalGameTime.TotalSeconds, damage: 30,
                 reelSpeedFactor: 1f, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 2f);
         }
+
+        base.Update(gameTime);
     }
 
     private List<Enemy> GetEnemiesInRange(float extraRange = 0f, bool getOnlyFirst = false, bool useHashSet = false)
@@ -208,6 +223,7 @@ public class Crane : Entity, ITower
         if (IsEnemyBelow())
         {
             Trigger(actionTime);
+            AnimationSystem!.OneShotAnimationState("attack");
         }
     }
 
@@ -429,13 +445,13 @@ public class Crane : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("crane");
+        var sprite = AssetManager.GetTexture("crane_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }

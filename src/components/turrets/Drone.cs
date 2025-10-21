@@ -161,14 +161,14 @@ class Drone : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("drone");
+        var sprite = AssetManager.GetTexture("drone_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
+            frameCount: 4,
             frameSize: new Vector2(sprite.Width / 4, sprite.Height),
-            delaySeconds: 0
+            delaySeconds: 0.1f
         );
     }
 

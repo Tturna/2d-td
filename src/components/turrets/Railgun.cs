@@ -150,14 +150,14 @@ class Railgun : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("railgun_base");
+        var sprite = AssetManager.GetTexture("railgun_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
-            frameSize: new Vector2(sprite.Width, sprite.Height),
-            delaySeconds: 0
+            frameCount: 7,
+            frameSize: new Vector2(sprite.Width / 7, sprite.Height),
+            delaySeconds: 0.1f
         );
     }
 

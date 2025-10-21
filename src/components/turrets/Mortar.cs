@@ -29,6 +29,18 @@ public class Mortar : Entity, ITower
 
     public Mortar(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
+        var fireSprite = AssetManager.GetTexture("mortar_base_fire");
+
+        var fireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: fireSprite,
+            frameCount: 5,
+            frameSize: new Vector2(fireSprite.Width / 5, fireSprite.Height),
+            delaySeconds: 0.05f
+        );
+
+        AnimationSystem.AddAnimationState("fire", fireAnimation);
+
         towerCore = new TowerCore(this);
         towerCore.Clicked += OnClickTower;
 
@@ -83,6 +95,7 @@ public class Mortar : Entity, ITower
                 actionTimer = 0;
             }
 
+            base.Update(gameTime);
             return;
         }
 
@@ -131,6 +144,8 @@ public class Mortar : Entity, ITower
         shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
 
         actionTimer = 1f / actionsPerSecond;
+
+        AnimationSystem.OneShotAnimationState("fire");
     }
 
     private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond)
@@ -282,13 +297,13 @@ public class Mortar : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("mortar");
+        var sprite = AssetManager.GetTexture("mortar_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }
