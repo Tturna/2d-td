@@ -82,6 +82,12 @@ public class Enemy : Entity
         }
     }
 
+    public void Knockback(Vector2 force)
+    {
+
+        PhysicsSystem.AddForce(force);
+    }
+
     private void OnDeath(Entity diedEntity)
     {
         EnemySystem.Enemies.Remove(this);
