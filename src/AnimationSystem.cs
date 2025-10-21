@@ -30,6 +30,7 @@ public class AnimationSystem
     }
 
     public AnimationData BaseAnimationData { get; private set; }
+
     private Dictionary<string, AnimationData>? altAnimationStates;
     private AnimationData currentAnimationData;
     private const string BaseStateName = "base";
@@ -56,6 +57,38 @@ public class AnimationSystem
         if (altAnimationStates is null) altAnimationStates = new();
 
         altAnimationStates.Add(stateName, animationData);
+    }
+
+    public void ChangeAnimationState(string? stateName, AnimationData animationData)
+    {
+        if (stateName is null || stateName == BaseStateName)
+        {
+            BaseAnimationData = animationData;
+
+            if (currentStateName == BaseStateName)
+            {
+                ToggleAnimationState(stateName);
+            }
+
+            return;
+        }
+
+        if (altAnimationStates is null)
+        {
+            throw new KeyNotFoundException($"No animation states added. Can't change state: {stateName}");
+        }
+
+        if (!altAnimationStates.ContainsKey(stateName))
+        {
+            throw new KeyNotFoundException($"Animation state {stateName} can't be changed because it is not added.");
+        }
+
+        altAnimationStates[stateName] = animationData;
+
+        if (currentStateName == stateName)
+        {
+            ToggleAnimationState(stateName);
+        }
     }
 
     /// <summary>

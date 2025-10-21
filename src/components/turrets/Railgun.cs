@@ -1,5 +1,6 @@
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -25,7 +26,7 @@ class Railgun : Entity, ITower
         GoldenGatling
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
 
@@ -154,7 +155,7 @@ class Railgun : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("railgun_base_idle");
 
@@ -185,5 +186,68 @@ class Railgun : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Railgun(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        Texture2D newIdleTexture;
+        Texture2D newFireTexture;
+        var newIdleFrameCount = 1;
+        var newFireFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.AntimatterLaser.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_antimatterlaser_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_antimatterlaser_fire");
+            newIdleFrameCount = 4;
+            newFireFrameCount = 6;
+        }
+        else if (newUpgrade.Name == Upgrade.Cannonball.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_cannonball_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_cannonball_fire");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 7;
+        }
+        else if (newUpgrade.Name == Upgrade.GoldenGatling.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_goldengatling_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_goldengatling_fire");
+            newIdleFrameCount = 3;
+            newFireFrameCount = 2;
+        }
+        else if (newUpgrade.Name == Upgrade.PolishedRound.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_polishedrounds_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_polishedrounds_fire");
+            newIdleFrameCount = 8;
+            newFireFrameCount = 5;
+        }
+        else
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_tungstenshells_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_tungstenshells_fire");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 5;
+        }
+
+        var newIdleAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newIdleTexture,
+            frameCount: newIdleFrameCount,
+            frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        var newFireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newFireTexture,
+            frameCount: newFireFrameCount,
+            frameSize: new Vector2(newFireTexture.Width / newFireFrameCount, newFireTexture.Height),
+            delaySeconds: 0.05f
+        );
+
+        AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
 }

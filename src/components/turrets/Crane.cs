@@ -32,7 +32,7 @@ public class Crane : Entity, ITower
         Razorball
     }
 
-    public Crane(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Crane(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         var attackSprite = AssetManager.GetTexture("crane_base_attack");
 
@@ -447,7 +447,7 @@ public class Crane : Entity, ITower
         return new Vector2(3, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("crane_base_idle");
 
@@ -463,5 +463,9 @@ public class Crane : Entity, ITower
     public static BuildingSystem.TowerType GetTowerType()
     {
         return BuildingSystem.TowerType.Crane;
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

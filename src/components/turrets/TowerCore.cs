@@ -100,6 +100,7 @@ public class TowerCore : GameComponent, IClickable
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.LeftChild;
+        ((ITower)Turret).UpgradeTower(CurrentUpgrade);
         return CurrentUpgrade;
     }
 
@@ -113,6 +114,7 @@ public class TowerCore : GameComponent, IClickable
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
 
         CurrentUpgrade = CurrentUpgrade.RightChild;
+        ((ITower)Turret).UpgradeTower(CurrentUpgrade);
         return CurrentUpgrade;
     }
 

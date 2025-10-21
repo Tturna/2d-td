@@ -188,7 +188,7 @@ public class UIComponent : DrawableGameComponent
     private void SelectTurret<T>() where T : ITower
     {
         BuildingSystem.SelectTurret<T>();
-        var turretAnimationData = T.GetTowerAnimationData();
+        var turretAnimationData = T.GetTowerBaseAnimationData();
         CreateTurretHologram(turretAnimationData);
     }
 
