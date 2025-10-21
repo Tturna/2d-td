@@ -120,14 +120,16 @@ public class Game1 : Game
         // Draw UI separately after everything else to avoid it from being moved by the camera.
         if (ui is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
             SpriteBatch.End();
         }
 
         if (mainMenu is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
             SpriteBatch.End();
         }
