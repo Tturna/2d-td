@@ -19,7 +19,7 @@ public class TowerCore : GameComponent, IClickable
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
-        CurrentUpgrade = new TowerUpgradeNode("Default", 0, parent: null,
+        CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
 
         Turret.Game.Components.Add(this);

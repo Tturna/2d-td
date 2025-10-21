@@ -48,8 +48,8 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.LeftChild is not null)
         {
-            leftUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
-                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
+            leftUpgradeBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, currentUpgrade.LeftChild.UpgradeIcon);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
             leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
             leftUpgradePrice = currentUpgrade.LeftChild.Price;
@@ -61,8 +61,8 @@ public class TurretDetailsPrompt : UIEntity
 
         if (currentUpgrade.RightChild is not null)
         {
-            rightUpgradeBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity,
-                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
+            rightUpgradeBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
+                UIComponent.Instance.RemoveUIEntity, currentUpgrade.RightChild.UpgradeIcon);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
             rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
             rightUpgradePrice = currentUpgrade.RightChild.Price;
@@ -77,7 +77,7 @@ public class TurretDetailsPrompt : UIEntity
     {
         var halfTurretWidth = targetTurret.AnimationSystem.BaseAnimationData.FrameSize.X / 2;
         var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
-        var sellBtnOffset = new Vector2(halfTurretWidth - 48, 40);
+        var sellBtnOffset = new Vector2(halfTurretWidth - 64, 40);
 
         var detailsOffsetPosition = targetTurret.Position - detailsPromptOffset;
         var sellBtnOffsetPosition = targetTurret.Position - sellBtnOffset;
@@ -108,18 +108,17 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void DrawCustom(GameTime gameTime)
     {
-        sellBtn.DrawCustom(gameTime);
-
+        // Draw upgrade prices directly. No need for UI entity state.
         if (leftUpgradeBtn is not null)
         {
-            leftUpgradeBtn.DrawCustom(gameTime);
-            Game.SpriteBatch.DrawString(defaultFont, leftUpgradePrice.ToString(), leftUpgradeBtn.Position, Color.White);
+            var pos = leftUpgradeBtn.Position - Vector2.UnitX * 24;
+            Game.SpriteBatch.DrawString(defaultFont, leftUpgradePrice.ToString(), pos, Color.White);
         }
 
         if (rightUpgradeBtn is not null)
         {
-            rightUpgradeBtn.DrawCustom(gameTime);
-            Game.SpriteBatch.DrawString(defaultFont, rightUpgradePrice.ToString(), rightUpgradeBtn.Position, Color.White);
+            var pos = rightUpgradeBtn.Position + Vector2.UnitX * 24;
+            Game.SpriteBatch.DrawString(defaultFont, rightUpgradePrice.ToString(), pos, Color.White);
         }
 
         base.DrawCustom(gameTime);
@@ -152,6 +151,7 @@ public class TurretDetailsPrompt : UIEntity
         if (newUpgrade.LeftChild is not null)
         {
             leftUpgradePrice = newUpgrade.LeftChild.Price;
+            leftUpgradeBtn.Sprite = newUpgrade.LeftChild.UpgradeIcon;
         }
         else
         {
@@ -162,6 +162,7 @@ public class TurretDetailsPrompt : UIEntity
         if (newUpgrade.RightChild is not null)
         {
             rightUpgradePrice = newUpgrade.RightChild.Price;
+            rightUpgradeBtn.Sprite = newUpgrade.RightChild.UpgradeIcon;
         }
         else
         {

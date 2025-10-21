@@ -34,18 +34,33 @@ public class Crane : Entity, ITower
 
     public Crane(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
+        var attackSprite = AssetManager.GetTexture("crane_base_attack");
+
+        var attackAnimation = new AnimationSystem.AnimationData
+        (
+            texture: attackSprite,
+            frameCount: 5,
+            frameSize: new Vector2(attackSprite.Width / 5, attackSprite.Height),
+            delaySeconds: 0.1f
+        );
+
+        // base constructor defines animation system
+        AnimationSystem!.AddAnimationState("attack", attackAnimation);
+
         towerCore = new TowerCore(this);
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), price: 70);
-        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), price: 25,
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), tempIcon, price: 85);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), tempIcon, price: 70);
+        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), tempIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), price: 50);
-        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), price: 15,
+        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), tempIcon, price: 50);
+        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), tempIcon, price: 15,
             leftChild: razorball);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBall, rightChild: chargedLifts);
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -91,6 +106,8 @@ public class Crane : Entity, ITower
             HandleCrusher(deltaTime, (float)gameTime.TotalGameTime.TotalSeconds, damage: 30,
                 reelSpeedFactor: 1f, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 2f);
         }
+
+        base.Update(gameTime);
     }
 
     private List<Enemy> GetEnemiesInRange(float extraRange = 0f, bool getOnlyFirst = false, bool useHashSet = false)
@@ -208,6 +225,7 @@ public class Crane : Entity, ITower
         if (IsEnemyBelow())
         {
             Trigger(actionTime);
+            AnimationSystem!.OneShotAnimationState("attack");
         }
     }
 
@@ -408,6 +426,8 @@ public class Crane : Entity, ITower
 
     public override void Destroy()
     {
+        towerCore.CloseDetailsView();
+        Game.Components.Remove(towerCore);
         ballThing?.Destroy();
         base.Destroy();
     }
@@ -429,13 +449,13 @@ public class Crane : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("crane");
+        var sprite = AssetManager.GetTexture("crane_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }

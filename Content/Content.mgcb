@@ -20,6 +20,18 @@
 /processorParam:TextureFormat=Compressed
 /build:default_font.spritefont
 
+#begin sprites/2DTDplatformerconcept-export.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/2DTDplatformerconcept-export.gif
+
 #begin sprites/2DTDplatformerconcept.gif
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -464,6 +476,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_base/crane_base_attack.png
 
+#begin sprites/Towers/Crane/crane_base/crane_base_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Crane/crane_base/crane_base_idle.png
+
 #begin sprites/Towers/Drone/drone_base/drone_base_gun.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -499,6 +523,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_base/mortar_base_fire.png
+
+#begin sprites/Towers/Mortar/mortar_base/mortar_base_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_base/mortar_base_idle.png
 
 #begin sprites/Towers/Mortar/mortar_base/mortarshell.png
 /importer:TextureImporter
@@ -548,7 +584,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire.png
 
-#begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb.png
+#begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -558,7 +594,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon.png
 /importer:TextureImporter
@@ -596,6 +632,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon.png
 
+#begin sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle.png
+
 #begin sprites/Towers/Mortar/mortar_heavyshells/heavyshell.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -632,6 +680,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon.png
 
+#begin sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle.png
+
 #begin sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -643,6 +703,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire.png
+
+#begin sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle.png
 
 #begin sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion.png
 /importer:TextureImporter
@@ -704,7 +776,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon.png
 
-#begin sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo.png
+#begin sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -714,7 +786,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo.png
+/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png
 
 #begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire.png
 /importer:TextureImporter
@@ -739,6 +811,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon.png
+
+#begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle.png
 
 #begin sprites/Towers/Mortar/mortar_nuke/nuclear_explosion.png
 /importer:TextureImporter
@@ -812,6 +896,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire.png
 
+#begin sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle.png
+
 #begin sprites/Towers/Railgun/railgun_base/railgun_base_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -823,6 +919,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_base/railgun_base_fire.png
+
+#begin sprites/Towers/Railgun/railgun_base/railgun_base_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_base/railgun_base_idle.png
 
 #begin sprites/Towers/Railgun/railgun_base/railgun_base.png
 /importer:TextureImporter
@@ -884,6 +992,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon.png
 
+#begin sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle.png
+
 #begin sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -908,6 +1028,30 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile.png
 
+#begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body.png
+
+#begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing.png
+
 #begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -920,7 +1064,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon.png
 
-#begin sprites/Towers/Railgun/railgun_goldengatling/turret_goldengatling_body.png
+#begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -930,19 +1074,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/turret_goldengatling_body.png
-
-#begin sprites/Towers/Railgun/railgun_goldengatling/turret_goldengatling_firing.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/turret_goldengatling_firing.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png
 
 #begin sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon.png
 /importer:TextureImporter
@@ -968,6 +1100,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire.png
 
+#begin sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png
+
 #begin sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -979,6 +1123,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png
+
+#begin sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle.png
 
 #begin sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon.png
 /importer:TextureImporter

@@ -38,15 +38,17 @@ class Hovership : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), price: 160);
-        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), price: 120);
-        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), price: 110);
-        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), price: 150);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), tempIcon, price: 160);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), tempIcon, price: 120);
+        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), tempIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), tempIcon, price: 110);
+        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), tempIcon, price: 150);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), tempIcon, price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
 
         towerCore.CurrentUpgrade = defaultNode;

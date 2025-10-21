@@ -42,14 +42,20 @@ class Railgun : Entity, ITower
 
         towerCore = new TowerCore(this);
 
-        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), price: 85);
-        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), price: 25, leftChild: AntimatterLaser);
+        var antimatterLaserIcon = AssetManager.GetTexture("railgun_antimatterlaser_icon");
+        var tungstenShellsIcon = AssetManager.GetTexture("railgun_tungstenshells_icon");
+        var cannonballIcon = AssetManager.GetTexture("railgun_cannonball_icon");
+        var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
+        var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
 
-        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), price: 70);
-        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), price: 80);
-        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 85);
+        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 70);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 80);
+        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), polishedRoundsIcon, price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: Momentum, rightChild: PolishedRound);
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -150,14 +156,14 @@ class Railgun : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("railgun_base");
+        var sprite = AssetManager.GetTexture("railgun_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
-            frameSize: new Vector2(sprite.Width, sprite.Height),
-            delaySeconds: 0
+            frameCount: 7,
+            frameSize: new Vector2(sprite.Width / 7, sprite.Height),
+            delaySeconds: 0.1f
         );
     }
 
