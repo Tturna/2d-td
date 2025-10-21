@@ -78,7 +78,7 @@ public class AnimationSystem
             throw new KeyNotFoundException($"No animation states added. Can't change state: {stateName}");
         }
 
-        if (!altAnimationStates.TryGetValue(stateName, out var _))
+        if (!altAnimationStates.ContainsKey(stateName))
         {
             throw new KeyNotFoundException($"Animation state {stateName} can't be changed because it is not added.");
         }

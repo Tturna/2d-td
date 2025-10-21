@@ -190,7 +190,7 @@ class Railgun : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
-        var newIdleTexture = AnimationSystem!.BaseAnimationData.Texture;
+        Texture2D newIdleTexture;
         Texture2D newFireTexture;
         var newIdleFrameCount = 1;
         var newFireFrameCount = 1;
@@ -247,7 +247,7 @@ class Railgun : Entity, ITower
             delaySeconds: 0.05f
         );
 
-        AnimationSystem.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
 }
