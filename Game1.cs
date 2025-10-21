@@ -86,6 +86,7 @@ public class Game1 : Game
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
+                ScrapSystem.Update(gameTime);
                 break;
         }
 

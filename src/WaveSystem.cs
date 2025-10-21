@@ -51,8 +51,10 @@ public static class WaveSystem
         public List<Wave> waves;
     }
 
+    public delegate void WaveEndedHandler();
     public delegate void LevelWinHandler();
     public static event LevelWinHandler LevelWin;
+    public static event WaveEndedHandler WaveEnded;
 
     private static int currentWaveIndex;
     private static int maxWaveIndex;
@@ -231,6 +233,8 @@ public static class WaveSystem
         waveStarted = false;
         waveCooldownLeft = waveCooldown;
         // called when the wave ends and will give the player time to build or wtv
+
+        WaveEnded?.Invoke();
 
         if (currentWaveIndex == maxWaveIndex - 1)
         {
