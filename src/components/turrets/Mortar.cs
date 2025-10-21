@@ -27,7 +27,7 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         var fireSprite = AssetManager.GetTexture("mortar_base_fire");
 
@@ -305,7 +305,7 @@ public class Mortar : Entity, ITower
         return new Vector2(2, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("mortar_base_idle");
 
@@ -321,5 +321,9 @@ public class Mortar : Entity, ITower
     public static BuildingSystem.TowerType GetTowerType()
     {
         return BuildingSystem.TowerType.Mortar;
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

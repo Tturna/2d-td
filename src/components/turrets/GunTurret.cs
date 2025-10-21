@@ -1,6 +1,7 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -31,7 +32,7 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -275,7 +276,7 @@ class GunTurret : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -306,5 +307,45 @@ class GunTurret : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new GunTurret(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        Texture2D newBaseTexture = AnimationSystem!.BaseAnimationData.Texture;
+        int newFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.BotShot.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_botshot_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_photoncannon_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_photoncannon_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.RocketShots.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_rocketshots_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.DoubleGun.ToString())
+        {
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_doublegun_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
+        {
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
+        }
+
+        var newBaseAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newBaseTexture,
+            frameCount: newFrameCount,
+            frameSize: new Vector2(newBaseTexture.Width / newFrameCount, newBaseTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        AnimationSystem.ChangeAnimationState(null, newBaseAnimation);
     }
 }

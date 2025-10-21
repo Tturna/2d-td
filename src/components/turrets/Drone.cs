@@ -27,7 +27,7 @@ class Drone : Entity, ITower
         UAV,
     }
 
-    public Drone(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Drone(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -161,7 +161,7 @@ class Drone : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("drone_base_idle");
 
@@ -236,5 +236,9 @@ class Drone : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Drone(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

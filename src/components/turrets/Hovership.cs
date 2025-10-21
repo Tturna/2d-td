@@ -34,7 +34,7 @@ class Hovership : Entity, ITower
         FloatingFactory
     }
 
-    public Hovership(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Hovership(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -207,7 +207,7 @@ class Hovership : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -238,5 +238,9 @@ class Hovership : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Hovership(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

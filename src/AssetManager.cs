@@ -34,6 +34,15 @@ public static class AssetManager
         // towers
         LoadTexture("gunTurretBase", "sprites/Towers/Turret/turret_base/turret_body_base");
         LoadTexture("gunTurretHead", "sprites/Towers/Turret/turret_base/turret_gun_base");
+        LoadTexture("gunTurret_botshot_body", "sprites/Towers/Turret/turret_botshot/turret_botshot_body");
+        LoadTexture("gunTurret_botshot_gun", "sprites/Towers/Turret/turret_botshot/turret_botshot_gun");
+        LoadTexture("gunTurret_doublegun_gun", "sprites/Towers/Turret/turret_doublegun/turret_gun_10");
+        LoadTexture("gunTurret_improvedbarrel_gun", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun");
+        LoadTexture("gunTurret_photoncannon_body", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body");
+        LoadTexture("gunTurret_photoncannon_gun", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun");
+        LoadTexture("gunTurret_rocketshots_body", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body");
+        LoadTexture("gunTurret_rocketshots_gun", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun");
+
         LoadTexture("gunTurret_botshot_icon", "sprites/Towers/Turret/turret_botshot/turret_botshot_icon");
         LoadTexture("gunTurret_doublegun_icon", "sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon");
         LoadTexture("gunTurret_improvedbarrel_icon", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon");
@@ -42,6 +51,17 @@ public static class AssetManager
 
         LoadTexture("railgun_base_idle", "sprites/Towers/Railgun/railgun_base/railgun_base_idle");
         LoadTexture("railgun_base_fire", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
+        LoadTexture("railgun_antimatterlaser_idle", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle");
+        LoadTexture("railgun_antimatterlaser_fire", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire");
+        LoadTexture("railgun_cannonball_idle", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle");
+        LoadTexture("railgun_cannonball_fire", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire");
+        LoadTexture("railgun_goldengatling_idle", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle");
+        LoadTexture("railgun_goldengatling_fire", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing");
+        LoadTexture("railgun_polishedrounds_idle", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle");
+        LoadTexture("railgun_polishedrounds_fire", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire");
+        LoadTexture("railgun_tungstenshells_idle", "sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle");
+        LoadTexture("railgun_tungstenshells_fire", "sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire");
+
         LoadTexture("railgun_antimatterlaser_icon", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon");
         LoadTexture("railgun_cannonball_icon", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon");
         LoadTexture("railgun_goldengatling_icon", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon");
