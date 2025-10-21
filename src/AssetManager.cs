@@ -75,6 +75,19 @@ public static class AssetManager
 
         LoadTexture("mortar_base_idle", "sprites/Towers/Mortar/mortar_base/mortar_base_idle");
         LoadTexture("mortar_base_fire", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
+        LoadTexture("mortar_bouncingbomb_idle", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle");
+        LoadTexture("mortar_bouncingbomb_fire", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire");
+        LoadTexture("mortar_efficientreload_idle", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle");
+        LoadTexture("mortar_efficientreload_fire", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire");
+        LoadTexture("mortar_heavyshells_idle", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle");
+        LoadTexture("mortar_heavyshells_fire", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire");
+        LoadTexture("mortar_hellrain_idle", "sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle");
+        LoadTexture("mortar_hellrain_fire", "sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire");
+        LoadTexture("mortar_missilesilo_idle", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle");
+        LoadTexture("mortar_missilesilo_fire", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire");
+        LoadTexture("mortar_nuke_idle", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle");
+        LoadTexture("mortar_nuke_fire", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire");
+
         LoadTexture("mortar_bouncingbomb_icon", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon");
         LoadTexture("mortar_efficientreload_icon", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon");
         LoadTexture("mortar_heavyshells_icon", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon");
