@@ -31,14 +31,16 @@ class Drone : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
-        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), price: 70);
-        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinDrone, rightChild: UAV);
+        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), tempIcon, price: 75);
+        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), tempIcon, price: 25, leftChild: FlyingArsenal);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), tempIcon, price: 70);
+        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), tempIcon, price: 60);
+        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), tempIcon, price: 15, leftChild: AssassinDrone, rightChild: UAV);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
         towerCore.CurrentUpgrade = defaultNode;

@@ -34,9 +34,19 @@ public static class AssetManager
         // towers
         LoadTexture("gunTurretBase", "sprites/Towers/Turret/turret_base/turret_body_base");
         LoadTexture("gunTurretHead", "sprites/Towers/Turret/turret_base/turret_gun_base");
+        LoadTexture("gunTurret_botshot_icon", "sprites/Towers/Turret/turret_botshot/turret_botshot_icon");
+        LoadTexture("gunTurret_doublegun_icon", "sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon");
+        LoadTexture("gunTurret_improvedbarrel_icon", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon");
+        LoadTexture("gunTurret_photoncannon_icon", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon");
+        LoadTexture("gunTurret_rocketshots_icon", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon");
 
         LoadTexture("railgun_base_idle", "sprites/Towers/Railgun/railgun_base/railgun_base_idle");
         LoadTexture("railgun_base_fire", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
+        LoadTexture("railgun_antimatterlaser_icon", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon");
+        LoadTexture("railgun_cannonball_icon", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon");
+        LoadTexture("railgun_goldengatling_icon", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon");
+        LoadTexture("railgun_polishedrounds_icon", "sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon");
+        LoadTexture("railgun_tungstenshells_icon", "sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon");
 
         LoadTexture("drone_base_idle", "sprites/Towers/Drone/drone_base/drone_base_idle");
 
@@ -45,6 +55,12 @@ public static class AssetManager
 
         LoadTexture("mortar_base_idle", "sprites/Towers/Mortar/mortar_base/mortar_base_idle");
         LoadTexture("mortar_base_fire", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
+        LoadTexture("mortar_bouncingbomb_icon", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon");
+        LoadTexture("mortar_efficientreload_icon", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon");
+        LoadTexture("mortar_heavyshells_icon", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon");
+        // hellrain icon missing?
+        LoadTexture("mortar_missilesilo_icon", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon");
+        LoadTexture("mortar_nuke_icon", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon");
 
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp
 

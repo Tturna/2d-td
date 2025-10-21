@@ -49,16 +49,18 @@ public class Crane : Entity, ITower
 
         towerCore = new TowerCore(this);
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), price: 70);
-        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), price: 25,
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), tempIcon, price: 85);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), tempIcon, price: 70);
+        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), tempIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), price: 50);
-        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), price: 15,
+        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), tempIcon, price: 50);
+        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), tempIcon, price: 15,
             leftChild: razorball);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBall, rightChild: chargedLifts);
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -424,6 +426,8 @@ public class Crane : Entity, ITower
 
     public override void Destroy()
     {
+        towerCore.CloseDetailsView();
+        Game.Components.Remove(towerCore);
         ballThing?.Destroy();
         base.Destroy();
     }
