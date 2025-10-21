@@ -108,8 +108,7 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void DrawCustom(GameTime gameTime)
     {
-        // sellBtn.DrawCustom(gameTime);
-
+        // Draw upgrade prices directly. No need for UI entity state.
         if (leftUpgradeBtn is not null)
         {
             var pos = leftUpgradeBtn.Position - Vector2.UnitX * 24;
