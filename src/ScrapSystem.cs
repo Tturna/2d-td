@@ -68,6 +68,7 @@ public static class ScrapSystem
         ScrapTile? tile = null;
 
         var targetPosition = gridPosition;
+        var failSafeCounter = 100;
 
         while (true)
         {
@@ -90,6 +91,11 @@ public static class ScrapSystem
             }
 
             targetPosition += Vector2.UnitY * Grid.TileLength;
+
+            failSafeCounter--;
+
+            // No available space found from under the given position
+            if (failSafeCounter <= 0) return;
         }
 
         targetPosition -= Vector2.UnitY * Grid.TileLength;
