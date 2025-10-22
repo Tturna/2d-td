@@ -39,6 +39,7 @@ public static class AssetManager
         LoadTexture("drone", "sprites/Towers/Drone/drone_base/drone_base_idle");
         LoadTexture("crane", "sprites/Towers/Crane/crane_base/crane_base_attack");
         LoadTexture("mortar", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
+        LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/base/punch_trap_idle");
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp
 
         // projectiles

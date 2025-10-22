@@ -12,7 +12,7 @@ class PunchTrap : Entity, ITower
     int tileRange = 2;
     Vector2 direction = new Vector2(-1,0);
     float knockback = 10f;
-    int damage = 10;
+    int damage = 1000000;
     float actionsPerSecond = 0.333f;
     float actionTimer;
 
@@ -28,9 +28,9 @@ class PunchTrap : Entity, ITower
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
-        var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
+        //var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base");
 
-        var fireAnimation = new AnimationSystem.AnimationData
+        /*var fireAnimation = new AnimationSystem.AnimationData
         (
             texture: fireAnimationTexture,
             frameCount: 5,
@@ -39,7 +39,7 @@ class PunchTrap : Entity, ITower
         );
 
         // base constructor defines animation system
-        AnimationSystem!.AddAnimationState("fire", fireAnimation);
+        AnimationSystem!.AddAnimationState("fire", fireAnimation);*/
 
         towerCore = new TowerCore(this);
 
@@ -60,7 +60,7 @@ class PunchTrap : Entity, ITower
     public override void Initialize()
     {
         // Offset so the tower is flat on the ground
-        Position += Vector2.UnitY * 3;
+        //Position += Vector2.UnitY * 3;
 
         base.Initialize();
     }
@@ -107,7 +107,7 @@ class PunchTrap : Entity, ITower
         {
             Shoot(damage, knockback);
             actionTimer = 0f;
-            AnimationSystem!.OneShotAnimationState("fire");
+            //AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
@@ -128,17 +128,19 @@ class PunchTrap : Entity, ITower
         {
             Shoot(damage, knockback);
             actionTimer = 0f;
-            AnimationSystem!.OneShotAnimationState("fire");
+            //AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
     private void Shoot(int damage, float knockback)
     {
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var Enemies = EnemySystem.Enemies.ToArray();
+        foreach (Enemy enemy in Enemies)
         {
             if (IsEnemyInRange(enemy, tileRange))
             {
                 enemy.HealthSystem.TakeDamage(damage);
+                Console.WriteLine("Knockback applied: " + knockback);
             }
         }
     }
@@ -169,7 +171,7 @@ class PunchTrap : Entity, ITower
             rocket.BulletPixelsPerSecond = 300f;
             rocket.Lifetime = 2f;
             actionTimer = 0f;
-            AnimationSystem!.OneShotAnimationState("fire");
+            //AnimationSystem!.OneShotAnimationState("fire");
         }
     }
     
@@ -192,7 +194,7 @@ class PunchTrap : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("gunturret_base");
+        var sprite = AssetManager.GetTexture("punchtrap_base");
 
         return new AnimationSystem.AnimationData
         (
@@ -205,7 +207,7 @@ class PunchTrap : Entity, ITower
 
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(3, 2);
+        return new Vector2(2, 1);
     }
 
     public static BuildingSystem.TowerType GetTowerType()

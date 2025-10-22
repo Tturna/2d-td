@@ -102,7 +102,7 @@ public class UIComponent : DrawableGameComponent
         craneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
         mortarIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
         hovershipIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
-        punchtrapIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
+        punchtrapIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 6;
         
         gunTurretIcon.DrawLayerDepth = 0.7f;
         railgunIcon.DrawLayerDepth = 0.7f;
@@ -119,7 +119,7 @@ public class UIComponent : DrawableGameComponent
         cranePriceText.Position = craneButton.Position + Vector2.UnitY * craneButton.Size.Y;
         mortarPriceText.Position = mortarButton.Position + Vector2.UnitY * mortarButton.Size.Y;
         hovershipPriceText.Position = hovershipButton.Position + Vector2.UnitY * hovershipButton.Size.Y;
-        punchtrapPriceText.Position = punchtrapPriceText.Position + Vector2.UnitY * punchtrapButton.Size.Y;
+        punchtrapPriceText.Position = punchtrapButton.Position + Vector2.UnitY * punchtrapButton.Size.Y;
 
         base.Initialize();
     }
