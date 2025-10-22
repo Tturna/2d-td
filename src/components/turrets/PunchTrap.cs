@@ -11,8 +11,8 @@ class PunchTrap : Entity, ITower
     private Vector2 spawnOffset = new (0, 11);
     int tileRange = 2;
     Vector2 direction = new Vector2(-1,0);
-    float knockback = 10f;
-    int damage = 1000000;
+    float knockback = 2.5f;
+    int damage = 10;
     float actionsPerSecond = 0.333f;
     float actionTimer;
 
@@ -140,7 +140,7 @@ class PunchTrap : Entity, ITower
             if (IsEnemyInRange(enemy, tileRange))
             {
                 enemy.HealthSystem.TakeDamage(damage);
-                Console.WriteLine("Knockback applied: " + knockback);
+                enemy.Knockback(direction,knockback);
             }
         }
     }
