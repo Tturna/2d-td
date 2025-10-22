@@ -128,6 +128,14 @@ public static class Collision
         return terrain.TileExistsAtPosition(pointTilePosition);
     }
 
+    private static bool ConfirmEntityScrapCollision(Entity ent, ScrapTile scrap)
+    {
+        if (scrap is null) return false;
+        if (scrap.Scale.Y == 1) return true;
+
+        return AreEntitiesColliding(ent, scrap);
+    }
+
     public static bool IsEntityInScrap(Entity ent, out ScrapTile[] collidedScraps)
     {
         var entityTileSize = Vector2.Floor(ent.Size / Grid.TileLength) + Vector2.One;
@@ -141,7 +149,7 @@ public static class Collision
                 var comparedWorldPosition = ent.Position + new Vector2(x, y) * Grid.TileLength;
                 scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
 
-                if (scrap is not null)
+                if (ConfirmEntityScrapCollision(ent, scrap))
                 {
                     collided.Add(scrap);
                 }
@@ -151,7 +159,7 @@ public static class Collision
             var feGridPos = Grid.SnapPositionToGrid(farEnd);
             scrap = ScrapSystem.GetScrapFromPosition(feGridPos);
 
-            if (scrap is not null)
+            if (ConfirmEntityScrapCollision(ent, scrap))
             {
                 collided.Add(scrap);
             }
@@ -165,7 +173,7 @@ public static class Collision
             var comparedWorldPosition = beGridPos + new Vector2(x * Grid.TileLength, 0f);
             scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
 
-            if (scrap is not null)
+            if (ConfirmEntityScrapCollision(ent, scrap))
             {
                 collided.Add(scrap);
             }
@@ -175,7 +183,7 @@ public static class Collision
         var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
         scrap = ScrapSystem.GetScrapFromPosition(brcGridPos);
 
-        if (scrap is not null)
+        if (ConfirmEntityScrapCollision(ent, scrap))
         {
             collided.Add(scrap);
         }
