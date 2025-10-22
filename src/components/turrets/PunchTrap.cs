@@ -10,10 +10,10 @@ class PunchTrap : Entity, ITower
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 11);
     int tileRange = 2;
-    Vector2 direction;
+    Vector2 direction = new Vector2(-1,0);
     float knockback = 10f;
     int damage = 10;
-    float actionsPerSecond = 0.3333f;
+    float actionsPerSecond = 0.333f;
     float actionTimer;
 
     public enum Upgrade
@@ -28,7 +28,7 @@ class PunchTrap : Entity, ITower
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
     {
-        var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base_fire");
+        var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
 
         var fireAnimation = new AnimationSystem.AnimationData
         (
@@ -79,20 +79,19 @@ class PunchTrap : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
-            HandleMegaPunch(deltaTime, actionsPerSecond, damage+20, tileRange);
+            HandleMegaPunch(deltaTime, actionsPerSecond, damage+20, tileRange,knockback*1.5f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.QuickJabs.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+25, tileRange);
+            HandleBasicShots(deltaTime, actionsPerSecond+.167f, damage, tileRange,knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, tileRange);
+            HandleBasicShots(deltaTime, 10f, 10, tileRange-1,0f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
-            // todo: inflict burn
-            HandleBasicShots(deltaTime, actionsPerSecond+5, 15, tileRange);
+            HandleRocketGlove(deltaTime, actionsPerSecond+5, 15, tileRange,1);
         }
 
         base.Update(gameTime);
@@ -111,7 +110,7 @@ class PunchTrap : Entity, ITower
             AnimationSystem!.OneShotAnimationState("fire");
         }
     }
-    
+
     private void HandleMegaPunch(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
     {
         var actionInterval = 1f / actionsPerSecond;
@@ -121,13 +120,13 @@ class PunchTrap : Entity, ITower
         var chargeTime = 10;
         var chargeRatio = actionTimer / chargeTime;
 
-        damage = (int)MathHelper.Lerp(damage, damage*2,chargeRatio);
-        
-        knockback = (int)MathHelper.Lerp(knockback, knockback*3.5f,chargeRatio);
+        damage = (int)MathHelper.Lerp(damage, damage * 2, chargeRatio);
+
+        knockback = (int)MathHelper.Lerp(knockback, knockback * 3.5f, chargeRatio);
 
         if (actionTimer >= actionInterval && DetectEnemies(tileRange))
         {
-            Shoot(damage,knockback);
+            Shoot(damage, knockback);
             actionTimer = 0f;
             AnimationSystem!.OneShotAnimationState("fire");
         }
@@ -147,15 +146,31 @@ class PunchTrap : Entity, ITower
     public bool IsEnemyInRange(Enemy enemy, int tileRange)
     {
         var range = tileRange * Grid.TileLength;
-        if (enemy.Position.Y < Position.Y + Size.Y &&
-            enemy.Position.Y > Position.Y &&
-            enemy.Position.X < Position.X &&
-            enemy.Position.X + range > Position.X)
-        {
-            return true;
-        }
+        var towerToEnemy = new Vector2(enemy.Position.X - Position.X, enemy.Position.Y - Position.Y);
+        float alignment = Vector2.Dot(direction, towerToEnemy);
+        float distance = towerToEnemy.Length();
 
-        return false;
+        return alignment > 0 && distance <= range;
+    }
+
+    public void HandleRocketGlove(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
+    {
+        var actionInterval = 1f / actionsPerSecond;
+
+        actionTimer += deltaTime;
+
+        if (actionTimer >= actionInterval && DetectEnemies(tileRange))
+        {
+            var rocket = new Projectile(Game, Position + spawnOffset);
+            rocket.Position = spawnOffset;
+            rocket.Direction = direction;
+            rocket.Lifetime = 2f;
+            rocket.Damage = damage;
+            rocket.BulletPixelsPerSecond = 300f;
+            rocket.Lifetime = 2f;
+            actionTimer = 0f;
+            AnimationSystem!.OneShotAnimationState("fire");
+        }
     }
     
     public bool DetectEnemies(int tileRange)
@@ -177,7 +192,7 @@ class PunchTrap : Entity, ITower
 
     public static AnimationSystem.AnimationData GetTowerAnimationData()
     {
-        var sprite = AssetManager.GetTexture("punchtrap_base");
+        var sprite = AssetManager.GetTexture("gunturret_base");
 
         return new AnimationSystem.AnimationData
         (

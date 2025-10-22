@@ -82,10 +82,10 @@ public class Enemy : Entity
         }
     }
 
-    public void Knockback(Vector2 force)
+    public void Knockback(Vector2 direction,float force)
     {
 
-        PhysicsSystem.AddForce(force);
+        PhysicsSystem.AddForce(direction*force);
     }
 
     private void OnDeath(Entity diedEntity)
