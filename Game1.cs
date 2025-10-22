@@ -87,6 +87,7 @@ public class Game1 : Game
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
                 ScrapSystem.Update(gameTime);
+                DebugUtility.Update(this);
                 break;
         }
 
@@ -124,6 +125,7 @@ public class Game1 : Game
             SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
+            DebugUtility.DrawDebugScreen(SpriteBatch);
             SpriteBatch.End();
         }
 
