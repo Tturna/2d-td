@@ -147,12 +147,10 @@ class PunchTrap : Entity, ITower
 
     public bool IsEnemyInRange(Enemy enemy, int tileRange)
     {
-        var range = tileRange * Grid.TileLength;
-        var towerToEnemy = new Vector2(enemy.Position.X - Position.X, enemy.Position.Y - Position.Y);
-        float alignment = Vector2.Dot(direction, towerToEnemy);
-        float distance = towerToEnemy.Length();
+        var pointA = Position + direction * Grid.TileLength;
+        var pointB = Position + direction * tileRange * Grid.TileLength;
 
-        return alignment > 0 && distance <= range;
+        return Collision.IsLineInEntity(pointA, pointB, enemy, out var _,out var _);
     }
 
     public void HandleRocketGlove(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
