@@ -11,8 +11,8 @@ public class Game1 : Game
     public Terrain Terrain;
     public Vector2 RenderTargetSize;
     public Vector2 RenderedBlackBoxSize;
-    public int NativeScreenWidth = 800;
-    public int NativeScreenHeight = 480;
+    public int NativeScreenWidth = 640;
+    public int NativeScreenHeight = 360;
     public int CurrentZone { get; private set; }
     public int CurrentLevel { get; private set; }
 
@@ -86,6 +86,8 @@ public class Game1 : Game
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
+                ScrapSystem.Update(gameTime);
+                DebugUtility.Update(this);
                 break;
         }
 
@@ -123,6 +125,7 @@ public class Game1 : Game
             SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
+            DebugUtility.DrawDebugScreen(SpriteBatch);
             SpriteBatch.End();
         }
 

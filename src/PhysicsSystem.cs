@@ -114,4 +114,9 @@ public class PhysicsSystem
     {
         Velocity += force;
     }
+
+    public void StopMovement()
+    {
+        Velocity = Vector2.Zero;
+    }
 }

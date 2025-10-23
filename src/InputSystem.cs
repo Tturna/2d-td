@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _2d_td;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -7,11 +8,13 @@ public static class InputSystem
 {
     private static Game1 game;
     private static MouseState mouseState;
+    private static KeyboardState keyboardState;
 
     private static bool isMouseLeftDown;
     private static bool isMouseRightDown;
     private static bool isMouseLeftClicked;
     private static bool isMouseRightClicked;
+    private static Dictionary<Keys, bool> keysDownMap = new();
 
     private static int totalScrollAmount;
     private static int justScrolledAmount;
@@ -30,6 +33,7 @@ public static class InputSystem
     public static void Update()
     {
         mouseState = Mouse.GetState();
+        keyboardState = Keyboard.GetState();
 
         if (IsLeftMouseButtonDown())
         {
@@ -53,6 +57,17 @@ public static class InputSystem
         {
             isMouseRightClicked = false;
             isMouseRightDown = false;
+        }
+
+        foreach (var keyDownItem in keysDownMap)
+        {
+            var key = keyDownItem.Key;
+            var isDown = keyDownItem.Value;
+
+            if (isDown && keyboardState.IsKeyUp(key))
+            {
+                keysDownMap[key] = false;
+            }
         }
 
         var newScrollAmount = Mouse.GetState().ScrollWheelValue;
@@ -142,5 +157,39 @@ public static class InputSystem
     public static int mouseJustScrolledAmount()
     {
         return justScrolledAmount;
+    }
+
+    public static bool IsKeyDown(Keys key)
+    {
+        var isDown = keyboardState.IsKeyDown(key);
+
+        if (isDown)
+        {
+            keysDownMap[key] = true;
+        }
+
+        return isDown;
+    }
+
+    public static bool IsKeyTapped(Keys key)
+    {
+        var isDown = keyboardState.IsKeyDown(key);
+
+        if (!isDown) return false;
+
+        var isKeyInMap = keysDownMap.TryGetValue(key, out var isHeld);
+
+        if (!isKeyInMap)
+        {
+            keysDownMap[key] = true;
+            return true;
+        }
+
+        if (!isHeld)
+        {
+            keysDownMap[key] = true;
+        }
+
+        return !isHeld;
     }
 }

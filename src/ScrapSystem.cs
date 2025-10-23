@@ -7,6 +7,10 @@ namespace _2d_td;
 public static class ScrapSystem
 {
     private static Dictionary<Vector2, ScrapTile>? scrapTileMap;
+    private static Stack<Vector2> scrapInsertionOrder = new();
+    private static bool clearingScrap;
+    private static readonly float clearStepInterval = 0.1f;
+    private static float clearStepTimer;
 
     public static void Initialize()
     {
@@ -19,6 +23,44 @@ public static class ScrapSystem
         }
 
         scrapTileMap = new();
+
+        WaveSystem.WaveEnded += ClearScrap;
+    }
+
+    public static void Update(GameTime gameTime)
+    {
+        if (!clearingScrap) return;
+
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        clearStepTimer -= deltaTime;
+
+        if (clearStepTimer <= 0)
+        {
+            clearStepTimer = clearStepInterval;
+
+            if (scrapTileMap is null)
+            {
+                clearingScrap = false;
+                return;
+            }
+
+            if (scrapTileMap.Count > 0)
+            {
+                var key = scrapInsertionOrder.Pop();
+                // Assume stack and scrap tile map are in sync
+                scrapTileMap[key].Destroy();
+                scrapTileMap.Remove(key);
+
+                if (scrapTileMap.Count == 0)
+                {
+                    clearingScrap = false;
+                }
+            }
+            else
+            {
+                clearingScrap = false;
+            }
+        }
     }
 
     public static void AddScrap(Game1 game, Vector2 worldPosition)
@@ -27,6 +69,7 @@ public static class ScrapSystem
         ScrapTile? tile = null;
 
         var targetPosition = gridPosition;
+        var failSafeCounter = 100;
 
         while (true)
         {
@@ -49,6 +92,11 @@ public static class ScrapSystem
             }
 
             targetPosition += Vector2.UnitY * Grid.TileLength;
+
+            failSafeCounter--;
+
+            // No available space found from under the given position
+            if (failSafeCounter <= 0) return;
         }
 
         targetPosition -= Vector2.UnitY * Grid.TileLength;
@@ -58,6 +106,7 @@ public static class ScrapSystem
         {
             tile = new ScrapTile(game, targetPosition);
             scrapTileMap.Add(targetPosition, tile);
+            scrapInsertionOrder.Push(targetPosition);
             return;
         }
 
@@ -74,5 +123,13 @@ public static class ScrapSystem
         }
 
         return null;
+    }
+
+    private static void ClearScrap()
+    {
+        if (clearingScrap) return;
+
+        clearingScrap = true;
+        clearStepTimer = clearStepInterval;
     }
 }
