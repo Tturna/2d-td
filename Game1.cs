@@ -11,8 +11,8 @@ public class Game1 : Game
     public Terrain Terrain;
     public Vector2 RenderTargetSize;
     public Vector2 RenderedBlackBoxSize;
-    public int NativeScreenWidth = 800;
-    public int NativeScreenHeight = 480;
+    public int NativeScreenWidth = 640;
+    public int NativeScreenHeight = 360;
     public int CurrentZone { get; private set; }
     public int CurrentLevel { get; private set; }
 
