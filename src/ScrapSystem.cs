@@ -47,6 +47,7 @@ public static class ScrapSystem
             if (scrapTileMap.Count > 0)
             {
                 var key = scrapInsertionOrder.Pop();
+                // Assume stack and scrap tile map are in sync
                 scrapTileMap[key].Destroy();
                 scrapTileMap.Remove(key);
 

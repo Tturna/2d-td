@@ -24,8 +24,6 @@ class Projectile : Entity
 
     public override void Update(GameTime gameTime)
     {
-        // hitEnemies.Clear();
-
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var oldPosition = Position;
