@@ -52,17 +52,18 @@ public class UIComponent : DrawableGameComponent
         var turretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(towerType).ToString());
         turretButton.ButtonPressed += () => SelectTurret<T>();
 
-        const float Margin = 20;
+        const float Margin = 8;
+        const float Gap = 20;
         var xPos = Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - buttonFrameSize.Y - Margin;
+        var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
         var pos = new Vector2(xPos, yPos);
         var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
         var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
 
-        turretButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * buyButtonCount;
-        turretIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * buyButtonCount;
+        turretButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin + Gap) * buyButtonCount;
+        turretIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin + Gap) * buyButtonCount;
         turretIcon.DrawLayerDepth = 0.7f;
-        turretPriceText.Position = turretButton.Position + Vector2.UnitY * turretButton.Size.Y;
+        turretPriceText.Position = turretButton.Position + Vector2.UnitX * turretButton.Size.X;
         buyButtonCount++;
     }
 
