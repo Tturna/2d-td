@@ -20,6 +20,30 @@
 /processorParam:TextureFormat=Compressed
 /build:default_font.spritefont
 
+#begin sprites/2dtd_palatte.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/2dtd_palatte.png
+
+#begin sprites/2DTDenemies.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/2DTDenemies.gif
+
 #begin sprites/2DTDplatformerconcept-export.gif
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -848,6 +872,66 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_nuke/nuke.png
 
+#begin sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png
+
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1471,6 +1555,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/UI/button_smallsquare.png
+
+#begin sprites/UI/button_square_empty.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/UI/button_square_empty.png
 
 #begin sprites/UI/button_square.png
 /importer:TextureImporter

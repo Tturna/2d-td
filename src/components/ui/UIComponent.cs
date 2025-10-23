@@ -24,18 +24,18 @@ public class UIComponent : DrawableGameComponent
     private int buyButtonCount = 0;
 
     private static SpriteFont defaultFont = AssetManager.GetFont("default");
-    private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
+    private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square_empty");
     private float halfScreenWidth = Game1.Instance.NativeScreenWidth / 2;
     private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
-    private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+    private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
     private readonly Vector2 scrapTextOffset = new Vector2(3, 6);
 
     private AnimationSystem.AnimationData buttonAnimationData = new
     (
         texture: buttonSprite,
-        frameCount: 2,
+        frameCount: 1,
         frameSize: buttonFrameSize,
-        delaySeconds: 0.5f
+        delaySeconds: 0
     );
 
     public static UIComponent Instance;
