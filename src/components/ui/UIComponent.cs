@@ -26,6 +26,7 @@ public class UIComponent : DrawableGameComponent
     private float halfScreenWidth = Game1.Instance.NativeScreenWidth / 2;
     private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
     private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+    private readonly Vector2 scrapTextOffset = new Vector2(3, 6);
 
     private AnimationSystem.AnimationData buttonAnimationData = new
     (
@@ -48,6 +49,28 @@ public class UIComponent : DrawableGameComponent
         HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
         WaveSystem.LevelWin += ShowLevelWinScreen;
 
+        var towerSelectionBgHeight = 52;
+        var towerSelectionBgTexture = TextureUtility.GetBlankTexture(game.SpriteBatch,
+            game.NativeScreenWidth, towerSelectionBgHeight, new Color(3, 12, 14));
+        var towerSelectionBg = new UIEntity(game, uiElements, towerSelectionBgTexture);
+        towerSelectionBg.Position = new Vector2(0, game.NativeScreenHeight - towerSelectionBgHeight);
+        
+        var horizontalLineHeight = 1;
+        var horizontalLineTexture = TextureUtility.GetBlankTexture(game.SpriteBatch,
+            game.NativeScreenWidth, horizontalLineHeight, new Color(184, 255, 58));
+        var horizontalLine = new UIEntity(game, uiElements, horizontalLineTexture);
+        horizontalLine.Position = new Vector2(0, game.NativeScreenHeight - towerSelectionBgHeight - horizontalLineHeight);
+
+        var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
+        var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
+        scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2,
+            horizontalLine.Position.Y + 4);
+
+        currencyText = new UIEntity(game, uiElements, defaultFont, $"{CurrencyManager.Balance}");
+        currencyText.Position = scrapIcon.Position;
+        currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
+        currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
+
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
@@ -65,7 +88,6 @@ public class UIComponent : DrawableGameComponent
         var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
         var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
         
-        currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
         var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
         var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
         var dronePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Drone).ToString());
@@ -109,7 +131,6 @@ public class UIComponent : DrawableGameComponent
         mortarIcon.DrawLayerDepth = 0.7f;
         hovershipIcon.DrawLayerDepth = 0.7f;
 
-        currencyText.Position = Vector2.Zero;
         gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
         railgunPriceText.Position = railgunButton.Position + Vector2.UnitY * railgunButton.Size.Y;
         dronePriceText.Position = droneButton.Position + Vector2.UnitY * droneButton.Size.Y;
@@ -144,7 +165,7 @@ public class UIComponent : DrawableGameComponent
             BuildingSystem.DeselectTower();
         }
 
-        currencyText.Text = $"Scrap: {CurrencyManager.Balance}";
+        currencyText.Text = $"{CurrencyManager.Balance}";
 
         var kbdState = Keyboard.GetState();
         if (!escHeld && kbdState.IsKeyDown(Keys.Escape))

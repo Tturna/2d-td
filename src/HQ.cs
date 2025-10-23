@@ -12,18 +12,7 @@ public class HQ : Entity
     
     private static Texture2D GetHQSprite(SpriteBatch spriteBatch)
     {
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: 4 * Grid.TileLength,
-            height: 4 * Grid.TileLength, mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[Grid.TileLength * Grid.TileLength * 16];
-
-        for (var i = 0; i < colorData.Length; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        texture.SetData(colorData);
-
+        var texture = TextureUtility.GetBlankTexture(spriteBatch, 4 * Grid.TileLength, 4 * Grid.TileLength, Color.White);
         return texture;
     }
 

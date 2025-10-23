@@ -409,18 +409,7 @@ public class Crane : Entity, ITower
 
     private static Texture2D GetBallSprite(SpriteBatch spriteBatch)
     {
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: Grid.TileLength, height: Grid.TileLength,
-        mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[Grid.TileLength * Grid.TileLength];
-
-        for (var i = 0; i < colorData.Length; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        texture.SetData(colorData);
-
+        var texture = TextureUtility.GetBlankTexture(spriteBatch, Grid.TileLength, Grid.TileLength, Color.White);
         return texture;
     }
 
