@@ -223,19 +223,8 @@ public class Mortar : Entity, ITower
 
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius)
     {
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-
-            var diff = shell.Position + shell.Size / 2 - enemy.Position + enemy.Size / 2;
-            var distance = diff.Length();
-
-            if (distance > explosionTileRadius * Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(damage);
-        }
+        EffectUtility.Explode(shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
+            magnitude: 5f, damage);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount)

@@ -12,9 +12,11 @@ public static class EffectUtility
     public static void Explode(Vector2 worldPosition, float radius, float magnitude, int damage,
         bool useEffectFalloff = true)
     {
-        foreach (var enemy in EnemySystem.Enemies)
+        var enemies = EnemySystem.Enemies.ToArray();
+
+        foreach (var enemy in enemies)
         {
-            var diff = enemy.Position - worldPosition;
+            var diff = enemy.Position + enemy.Size / 2 - worldPosition;
             var distance = diff.Length();
 
             if (distance > radius) continue;
