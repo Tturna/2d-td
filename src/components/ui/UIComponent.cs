@@ -20,6 +20,7 @@ public class UIComponent : DrawableGameComponent
     private bool escHeld;
     private bool isWon;
     private bool isLost;
+    private int buyButtonCount = 0;
 
     private static SpriteFont defaultFont = AssetManager.GetFont("default");
     private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
@@ -42,6 +43,27 @@ public class UIComponent : DrawableGameComponent
     {
         this.game = (Game1)game;
         Instance = this;
+    }
+
+    private void CreateTowerBuyButton<T>(Texture2D towerIcon, BuildingSystem.TowerType towerType) where T : ITower
+    {
+        var turretIcon = new UIEntity(game, uiElements, towerIcon);
+        var turretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var turretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(towerType).ToString());
+        turretButton.ButtonPressed += () => SelectTurret<T>();
+
+        const float Margin = 20;
+        var xPos = Margin;
+        var yPos = game.Graphics.PreferredBackBufferHeight - buttonFrameSize.Y - Margin;
+        var pos = new Vector2(xPos, yPos);
+        var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
+        var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
+
+        turretButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * buyButtonCount;
+        turretIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * buyButtonCount;
+        turretIcon.DrawLayerDepth = 0.7f;
+        turretPriceText.Position = turretButton.Position + Vector2.UnitY * turretButton.Size.Y;
+        buyButtonCount++;
     }
 
     public override void Initialize()
@@ -74,69 +96,12 @@ public class UIComponent : DrawableGameComponent
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
-        var gunTurretIcon = new UIEntity(game, uiElements, gunTurretSprite);
-        var railgunIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var droneIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
-        var hovershipIcon = new UIEntity(game, uiElements, turretTwoSprite);
-
-        var gunTurretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var railgunButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var droneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var craneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        
-        var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
-        var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
-        var dronePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Drone).ToString());
-        var cranePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Crane).ToString());
-        var mortarPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Mortar).ToString());
-        var hovershipPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Hovership).ToString());
-
-        gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
-        railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
-        droneButton.ButtonPressed += () => SelectTurret<Drone>();
-        craneButton.ButtonPressed += () => SelectTurret<Crane>();
-        mortarButton.ButtonPressed += () => SelectTurret<Mortar>();
-        hovershipButton.ButtonPressed += () => SelectTurret<Hovership>();
-
-        const float Margin = 20;
-        var xPos = Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - buttonFrameSize.Y - Margin;
-        var pos = new Vector2(xPos, yPos);
-
-        var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
-        var iconPosition = buttonCenter - new Vector2(gunTurretIcon.Size.X / 2, gunTurretIcon.Size.Y / 2);
-
-        gunTurretButton.Position = pos;
-        railgunButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin);
-        droneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
-        craneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
-        mortarButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
-        hovershipButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
-
-        gunTurretIcon.Position = iconPosition;
-        railgunIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin);
-        droneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
-        craneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
-        mortarIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
-        hovershipIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
-        
-        gunTurretIcon.DrawLayerDepth = 0.7f;
-        railgunIcon.DrawLayerDepth = 0.7f;
-        droneIcon.DrawLayerDepth = 0.7f;
-        craneIcon.DrawLayerDepth = 0.7f;
-        mortarIcon.DrawLayerDepth = 0.7f;
-        hovershipIcon.DrawLayerDepth = 0.7f;
-
-        gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
-        railgunPriceText.Position = railgunButton.Position + Vector2.UnitY * railgunButton.Size.Y;
-        dronePriceText.Position = droneButton.Position + Vector2.UnitY * droneButton.Size.Y;
-        cranePriceText.Position = craneButton.Position + Vector2.UnitY * craneButton.Size.Y;
-        mortarPriceText.Position = mortarButton.Position + Vector2.UnitY * mortarButton.Size.Y;
-        hovershipPriceText.Position = hovershipButton.Position + Vector2.UnitY * hovershipButton.Size.Y;
+        CreateTowerBuyButton<GunTurret>(gunTurretSprite, BuildingSystem.TowerType.GunTurret);
+        CreateTowerBuyButton<Railgun>(turretTwoSprite, BuildingSystem.TowerType.Railgun);
+        CreateTowerBuyButton<Drone>(turretTwoSprite, BuildingSystem.TowerType.Drone);
+        CreateTowerBuyButton<Crane>(turretTwoSprite, BuildingSystem.TowerType.Crane);
+        CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
+        CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
 
         base.Initialize();
     }
