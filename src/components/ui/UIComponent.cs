@@ -12,10 +12,14 @@ public class UIComponent : DrawableGameComponent
 
     private List<UIEntity> uiElements = new();
     private List<UIEntity> pauseMenuElements = new();
+    private List<UIEntity> winScreenElements = new();
+    private List<UIEntity> loseScreenElements = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
     private bool isPauseMenuVisible;
     private bool escHeld;
+    private bool isWon;
+    private bool isLost;
 
     private static SpriteFont defaultFont = AssetManager.GetFont("default");
     private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
@@ -205,8 +209,33 @@ public class UIComponent : DrawableGameComponent
             }
 
             pauseMenuElements.Clear();
+
+            if (isWon)
+            {
+                ShowLevelWinScreen();
+            }
+            else if (isLost)
+            {
+                ShowGameOverScreen();
+            }
+
             return;
         }
+
+        // clear win and loss screens
+        foreach (var element in winScreenElements)
+        {
+            element.Destroy();
+        }
+
+        winScreenElements.Clear();
+
+        foreach (var element in loseScreenElements)
+        {
+            element.Destroy();
+        }
+
+        loseScreenElements.Clear();
 
         var playButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
         var resumeButton = new UIEntity(game, uiElements, playButtonPos, buttonAnimationData);
@@ -228,8 +257,10 @@ public class UIComponent : DrawableGameComponent
         pauseMenuElements.Add(exitButtonText);
     }
 
-    private void ShowGameOverScreen(Entity diedEntity)
+    private void ShowGameOverScreen(Entity _ = null)
     {
+        isLost = true;
+
         var retryButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
         var retryButton = new UIEntity(game, uiElements, retryButtonPos, buttonAnimationData);
 
@@ -239,14 +270,23 @@ public class UIComponent : DrawableGameComponent
         retryButton.ButtonPressed += () => SceneManager.LoadGame();
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
+        var retryButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
         var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
-        resumeButtonText.Position = retryButtonPos + retryButton.Size / 2 - resumeButtonText.Size / 2;
+        retryButtonText.Position = retryButtonPos + retryButton.Size / 2 - retryButtonText.Size / 2;
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+
+        loseScreenElements.Add(retryButton);
+        loseScreenElements.Add(quitButton);
+        loseScreenElements.Add(retryButtonText);
+        loseScreenElements.Add(exitButtonText);
     }
 
     private void ShowLevelWinScreen()
     {
+        // prevent showing the win screen if you've already lost
+        if (isLost) return;
+
+        isWon = true;
         var beatTheGame = game.CurrentZone == 3 && game.CurrentLevel == 5;
 
         var quitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
@@ -273,12 +313,18 @@ public class UIComponent : DrawableGameComponent
                 game.SetCurrentZoneAndLevel(nextZone, nextLevel);
                 SceneManager.LoadGame();
             };
+
+            winScreenElements.Add(nextLevelButton);
+            winScreenElements.Add(nextLevelButtonText);
         }
 
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
         var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+
+        winScreenElements.Add(quitButton);
+        winScreenElements.Add(exitButtonText);
     }
 
     public void AddUIEntity(UIEntity entity)
