@@ -12,7 +12,6 @@ class Projectile : Entity
     public float BulletPixelsPerSecond = 0f;
     public float BulletLength = 16f;
     public float BulletWidth = 2f;
-    public bool knockback = false;
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
