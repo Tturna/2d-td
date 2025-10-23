@@ -113,7 +113,8 @@ class Projectile : Entity
         }
         else if (shouldExplode == true)
         {
-            HandleExplosion();
+            EffectUtility.Explode(Position, ExplosionTileRadius * Grid.TileLength,
+                magnitude: 5f, Damage);
 
             if (Pierce > 0)
             {
@@ -146,22 +147,5 @@ class Projectile : Entity
         }
 
         base.Draw(gameTime);
-    }
-    
-    private void HandleExplosion()
-    {
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-
-            var diff = Position + Size / 2 - enemy.Position + enemy.Size / 2;
-            var distance = diff.Length();
-
-            if (distance > ExplosionTileRadius * Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(Damage);
-        }
     }
 }
