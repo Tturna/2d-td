@@ -143,6 +143,9 @@ public static class AssetManager
         LoadTexture("icon_scrap_small", "sprites/UI/scrapicon_small");
         LoadTexture("upgradebg", "sprites/UI/upgradebg");
         LoadTexture("upgrade_indicator", "sprites/UI/upgradeindicator");
+        LoadTexture("main_play_button", "sprites/UI/mainmenu_playbutton");
+        LoadTexture("main_quit_button", "sprites/UI/mainmenu_quitbutton");
+        LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
 
         // fonts
         LoadFont("default", "default_font");

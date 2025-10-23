@@ -10,6 +10,9 @@ public class MainMenuUIComponent : DrawableGameComponent
     private List<UIEntity> uiEntities = new();
     private SpriteFont defaultFont = AssetManager.GetFont("default");
     private Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
+    private Texture2D playButtonSprite = AssetManager.GetTexture("main_play_button");
+    private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
+    private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -55,29 +58,47 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         var halfScreenWidth = game.NativeScreenWidth / 2;
         var halfScreenHeight = game.NativeScreenHeight / 2;
-        var playBtnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+        var playBtnFrameSize = new Vector2(playButtonSprite.Width, playButtonSprite.Height);
+        var quitBtnFrameSize = new Vector2(quitButtonSprite.Width, quitButtonSprite.Height);
+        var settingsBtnFrameSize = new Vector2(settingsButtonSprite.Width, settingsButtonSprite.Height);
 
         var playBtnAnimationData = new AnimationSystem.AnimationData
         (
-            texture: buttonSprite,
-            frameCount: 2,
+            texture: playButtonSprite,
+            frameCount: 1,
             frameSize: playBtnFrameSize,
-            delaySeconds: 0.5f
+            delaySeconds: 0
         );
 
-        var playButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight - playBtnFrameSize.Y / 2);
+        var quitBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: quitButtonSprite,
+            frameCount: 1,
+            frameSize: quitBtnFrameSize,
+            delaySeconds: 0
+        );
+
+        var settingsBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: settingsButtonSprite,
+            frameCount: 1,
+            frameSize: settingsBtnFrameSize,
+            delaySeconds: 0
+        );
+
+        const int Margin = 16;
+        const int Gap = 4;
+        var playButtonPos = new Vector2(Margin, halfScreenHeight);
         var playButton = new UIEntity(game, uiEntities, playButtonPos, playBtnAnimationData);
 
-        var exitButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight + playBtnFrameSize.Y / 2 + 10);
-        var exitButton = new UIEntity(game, uiEntities, exitButtonPos, playBtnAnimationData);
+        var settingsButtonPos = new Vector2(Margin, halfScreenHeight + playButtonSprite.Height + Gap);
+        var settingsButton = new UIEntity(game, uiEntities, settingsButtonPos, settingsBtnAnimationData);
+
+        var exitButtonPos = new Vector2(Margin, halfScreenHeight + playButtonSprite.Height + settingsButtonSprite.Height + Gap * 2);
+        var exitButton = new UIEntity(game, uiEntities, exitButtonPos, quitBtnAnimationData);
 
         playButton.ButtonPressed += () => LoadZoneSelector();
         exitButton.ButtonPressed += () => game.Exit();
-
-        var playButtonText = new UIEntity(game, uiEntities, defaultFont, "Play");
-        var exitButtonText = new UIEntity(game, uiEntities, defaultFont, "Exit");
-        playButtonText.Position = playButtonPos + playButton.Size / 2 - playButtonText.Size / 2;
-        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
     }
 
     private void LoadZoneSelector()
