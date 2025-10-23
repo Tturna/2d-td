@@ -16,6 +16,7 @@ public class UIComponent : DrawableGameComponent
     private List<UIEntity> loseScreenElements = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
+    private UIEntity waveIndicator;
     private bool isPauseMenuVisible;
     private bool escHeld;
     private bool isWon;
@@ -94,6 +95,10 @@ public class UIComponent : DrawableGameComponent
         currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
         currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
 
+        waveIndicator = new UIEntity(game, uiElements, defaultFont, "Wave 0 of 0");
+        var waveTextWidth = defaultFont.MeasureString("Wave 9 of 9").X;
+        waveIndicator.Position = new Vector2(game.NativeScreenWidth - waveTextWidth, 0);
+
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
@@ -132,6 +137,7 @@ public class UIComponent : DrawableGameComponent
         }
 
         currencyText.Text = $"{CurrencyManager.Balance}";
+        waveIndicator.Text = $"Wave {WaveSystem.CurrentWaveIndex + 1} of {WaveSystem.MaxWaveIndex}";
 
         var kbdState = Keyboard.GetState();
         if (!escHeld && kbdState.IsKeyDown(Keys.Escape))
