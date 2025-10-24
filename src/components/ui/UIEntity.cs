@@ -40,14 +40,18 @@ public class UIEntity : Entity, IClickable
     public UIEntity(Game game, List<UIEntity> uiEntities, Vector2 position, AnimationSystem.AnimationData animationData) :
         this(game, uiEntities.Add, uiEntities.Remove, position, animationData) { }
 
-    public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
+    public UIEntity(Game game, Action<UIEntity> addUIEntityCallback,
+        Func<UIEntity, bool> removeUIEntityCallback, SpriteFont font, string text) :
         base(game, size: font.MeasureString(text))
     {
-        uiEntities.Add(this);
-        this.removeUIEntityCallback = uiEntities.Remove;
+        addUIEntityCallback(this);
+        this.removeUIEntityCallback = removeUIEntityCallback;
         this.font = font;
         Text = text;
     }
+
+    public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
+        this(game, uiEntities.Add, uiEntities.Remove, font, text) { }
 
     public override void Update(GameTime gameTime)
     {
@@ -102,6 +106,11 @@ public class UIEntity : Entity, IClickable
     private void OnButtonPressed()
     {
         ButtonPressed?.Invoke();
+    }
+
+    public void ClearButtonHandlers()
+    {
+        ButtonPressed = null;
     }
 
     public void OnClick()
