@@ -63,6 +63,12 @@ public class Crane : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBall, rightChild: chargedLifts);
 
+        bigBall.Description = "+20 damage\nIncreased ball size ";
+        chargedLifts.Description = "-1s lift time";
+        explosivePayload.Description = "Ball explodes instantly\non contact with an enemy,\ndealing 120 damage in a\n6 tile radius.";
+        crusher.Description = "0.2 shots/sec\n+50 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
+        razorball.Description = "Ball passes through enemies,\ndealing 50 DPS to all\ntouching the blade.\nReeled up after 1.5s.";
+
         towerCore.CurrentUpgrade = defaultNode;
     }
 
