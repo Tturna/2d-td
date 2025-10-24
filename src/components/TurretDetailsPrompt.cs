@@ -4,28 +4,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 public class TurretDetailsPrompt : UIEntity
 {
     private UIEntity sellBtn;
-    private UIEntity leftUpgradeBtn;
-    private UIEntity rightUpgradeBtn;
+    private UIEntity? leftUpgradeBtn;
+    private UIEntity? rightUpgradeBtn;
+    private UIEntity upgradeIndicator;
     private Entity targetTurret;
-    private Vector2 upgradeBgSpriteSize, buttonSpriteSize;
+    private Vector2 upgradeBgSpriteSize, buttonSpriteSize, upgradeIndicatorSpriteSize;
     private int leftUpgradePrice, rightUpgradePrice;
     private SpriteFont defaultFont;
 
-    public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode> upgradeLeftCallback,
-        Func<TowerUpgradeNode> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
+    public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode?> upgradeLeftCallback,
+        Func<TowerUpgradeNode?> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
         base(game, position: null, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
         targetTurret = turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
         var buttonSprite = AssetManager.GetTexture("btn_square");
+        var upgradeIndicatorSprite = AssetManager.GetTexture("upgrade_indicator");
         defaultFont = AssetManager.GetFont("default");
 
-        upgradeBgSpriteSize = new Vector2(upgradeBgSprite.Bounds.Width, upgradeBgSprite.Bounds.Height);
-        buttonSpriteSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
+        upgradeBgSpriteSize = new Vector2(upgradeBgSprite.Width, upgradeBgSprite.Height);
+        buttonSpriteSize = new Vector2(buttonSprite.Width, buttonSprite.Height);
+        upgradeIndicatorSpriteSize = new Vector2(upgradeIndicatorSprite.Width, upgradeIndicatorSprite.Height);
 
         var buttonAnimationData = new AnimationSystem.AnimationData
         (
@@ -49,7 +53,7 @@ public class TurretDetailsPrompt : UIEntity
         if (currentUpgrade.LeftChild is not null)
         {
             leftUpgradeBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
-                UIComponent.Instance.RemoveUIEntity, currentUpgrade.LeftChild.UpgradeIcon);
+                UIComponent.Instance.RemoveUIEntity, currentUpgrade.LeftChild.UpgradeIcon!);
             leftUpgradeBtn.DrawLayerDepth = 0.8f;
             leftUpgradeBtn.ButtonPressed += () => Upgrade(upgradeLeftCallback);
             leftUpgradePrice = currentUpgrade.LeftChild.Price;
@@ -62,7 +66,7 @@ public class TurretDetailsPrompt : UIEntity
         if (currentUpgrade.RightChild is not null)
         {
             rightUpgradeBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
-                UIComponent.Instance.RemoveUIEntity, currentUpgrade.RightChild.UpgradeIcon);
+                UIComponent.Instance.RemoveUIEntity, currentUpgrade.RightChild.UpgradeIcon!);
             rightUpgradeBtn.DrawLayerDepth = 0.8f;
             rightUpgradeBtn.ButtonPressed += () => Upgrade(upgradeRightCallback);
             rightUpgradePrice = currentUpgrade.RightChild.Price;
@@ -71,18 +75,43 @@ public class TurretDetailsPrompt : UIEntity
         {
             rightUpgradeBtn = null;
         }
+
+        var upgradeIndicatorAnimation = new AnimationSystem.AnimationData
+        (
+            texture: upgradeIndicatorSprite,
+            frameCount: 3,
+            frameSize: new Vector2(upgradeIndicatorSprite.Width / 3, upgradeIndicatorSprite.Height),
+            delaySeconds: float.PositiveInfinity
+        );
+
+        upgradeIndicator = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, position: Vector2.Zero, upgradeIndicatorAnimation);
+
+        if (currentUpgrade.Parent is not null)
+        {
+            upgradeIndicator.AnimationSystem!.NextFrame();
+
+            if (currentUpgrade.Parent.Parent is not null)
+            {
+                upgradeIndicator.AnimationSystem.NextFrame();
+            }
+        }
     }
 
     public override void Update(GameTime gameTime)
     {
-        var halfTurretWidth = targetTurret.AnimationSystem.BaseAnimationData.FrameSize.X / 2;
+        var halfTurretWidth = targetTurret.AnimationSystem!.BaseAnimationData.FrameSize.X / 2;
         var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
         var sellBtnOffset = new Vector2(halfTurretWidth - 64, 40);
+        var upgradeIndicatorOffset = new Vector2(upgradeBgSpriteSize.X / 2 - upgradeIndicatorSpriteSize.X / 6, 2);
 
         var detailsOffsetPosition = targetTurret.Position - detailsPromptOffset;
         var sellBtnOffsetPosition = targetTurret.Position - sellBtnOffset;
+        var upgradeIndicatorOffsetPosition = detailsOffsetPosition + upgradeIndicatorOffset;
+
         var detailsScreenPosition = Camera.WorldToScreenPosition(detailsOffsetPosition);
         var sellBtnScreenPosition = Camera.WorldToScreenPosition(sellBtnOffsetPosition);
+        var upgradeIndicatorScreenPosition = Camera.WorldToScreenPosition(upgradeIndicatorOffsetPosition);
 
         var baseButtonPosition = detailsOffsetPosition + upgradeBgSpriteSize / 2 - Vector2.UnitY * 26;
         var upgradeLeftBtnPosition = baseButtonPosition - Vector2.UnitX * (buttonSpriteSize.X / 2 + 3);
@@ -92,6 +121,7 @@ public class TurretDetailsPrompt : UIEntity
 
         Position = detailsScreenPosition;
         sellBtn.Position = sellBtnScreenPosition;
+        upgradeIndicator.Position = upgradeIndicatorScreenPosition;
 
         if (leftUpgradeBtn is not null)
         {
@@ -129,6 +159,7 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn.Destroy();
         leftUpgradeBtn?.Destroy();
         rightUpgradeBtn?.Destroy();
+        upgradeIndicator.Destroy();
 
         base.Destroy();
     }
@@ -144,14 +175,18 @@ public class TurretDetailsPrompt : UIEntity
         return true;
     }
 
-    private void Upgrade(Func<TowerUpgradeNode> upgradeCallback)
+    private void Upgrade(Func<TowerUpgradeNode?> upgradeCallback)
     {
         var newUpgrade = upgradeCallback();
+
+        if (newUpgrade is null) return;
+
+        upgradeIndicator.AnimationSystem!.NextFrame();
 
         if (newUpgrade.LeftChild is not null)
         {
             leftUpgradePrice = newUpgrade.LeftChild.Price;
-            leftUpgradeBtn.Sprite = newUpgrade.LeftChild.UpgradeIcon;
+            leftUpgradeBtn!.Sprite = newUpgrade.LeftChild.UpgradeIcon;
         }
         else
         {
@@ -162,7 +197,7 @@ public class TurretDetailsPrompt : UIEntity
         if (newUpgrade.RightChild is not null)
         {
             rightUpgradePrice = newUpgrade.RightChild.Price;
-            rightUpgradeBtn.Sprite = newUpgrade.RightChild.UpgradeIcon;
+            rightUpgradeBtn!.Sprite = newUpgrade.RightChild.UpgradeIcon;
         }
         else
         {
