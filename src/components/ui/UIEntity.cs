@@ -81,7 +81,15 @@ public class UIEntity : Entity, IClickable
 
         if (font is not null && Text is not null)
         {
-            Game.SpriteBatch.DrawString(font, Text, Position, Color.White);
+            Game.SpriteBatch.DrawString(font,
+                Text,
+                Position,
+                Color.White,
+                rotation: 0f,
+                origin: DrawOrigin,
+                scale: Scale,
+                effects: SpriteEffects.None,
+                layerDepth: DrawLayerDepth);
         }
     }
 
