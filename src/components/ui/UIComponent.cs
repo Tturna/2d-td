@@ -114,6 +114,18 @@ public class UIComponent : DrawableGameComponent
         CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
         CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
 
+        var pauseIconTexture = AssetManager.GetTexture("btn_pause");
+        var pauseButtonAnimation = new AnimationSystem.AnimationData
+        (
+            texture: pauseIconTexture,
+            frameCount: 2,
+            frameSize: new Vector2(pauseIconTexture.Width / 2, pauseIconTexture.Height),
+            delaySeconds: 0.5f
+        );
+
+        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonAnimation);
+        pauseButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
+
         base.Initialize();
     }
 
