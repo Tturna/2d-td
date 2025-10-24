@@ -43,6 +43,12 @@ class Drone : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
+        AdvancedWeaponry.Description = "+10 damage,\n+ 0.5 shots/s";
+        ImprovedRadar.Description = "+8 range";
+        FlyingArsenal.Description = "+20 damage,\n+1 shots/s";
+        AssassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+100 damage";
+        UAV.Description = "-1.5 shots/s\nShoots a radar shot that makes\nenemies take 50% more damage\nfor X seconds. Other towers\nin range gain +4 range.";
+
         towerCore.CurrentUpgrade = defaultNode;
     }
 
