@@ -48,23 +48,37 @@ public class UIComponent : DrawableGameComponent
 
     private void CreateTowerBuyButton<T>(Texture2D towerIcon, BuildingSystem.TowerType towerType) where T : ITower
     {
+        var priceIcon = AssetManager.GetTexture("icon_scrap_small");
         var turretIcon = new UIEntity(game, uiElements, towerIcon);
         var turretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var turretPriceIcon = new UIEntity(game, uiElements, priceIcon);
         var turretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(towerType).ToString());
         turretButton.ButtonPressed += () => SelectTurret<T>();
 
-        const float Margin = 8;
-        const float Gap = 20;
-        var xPos = Margin;
+        const float Margin = 20;
+        const float Gap = 32;
+        const int towers = 6;
+        Vector2 priceIconOffset = new Vector2(3, 3);
+        Vector2 priceTextOffset = new Vector2(2, -4);
+
+        var xPos = game.NativeScreenWidth / 2 - buttonFrameSize.X / 2
+            + buttonFrameSize.X * buyButtonCount + Gap * buyButtonCount
+            - (buttonFrameSize.X / 2) * (towers - 1) - (Gap / 2 * (towers - 1));
         var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
         var pos = new Vector2(xPos, yPos);
         var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
         var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
 
-        turretButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin + Gap) * buyButtonCount;
-        turretIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin + Gap) * buyButtonCount;
+        turretButton.Position = pos;
+        turretIcon.Position = iconPosition;
         turretIcon.DrawLayerDepth = 0.7f;
-        turretPriceText.Position = turretButton.Position + Vector2.UnitX * turretButton.Size.X;
+        turretPriceIcon.Position = turretButton.Position + new Vector2(priceIconOffset.X,
+            turretButton.Size.Y + priceIconOffset.Y);
+
+        turretPriceText.Position = turretPriceIcon.Position
+            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y);
+
+        turretPriceText.Scale = Vector2.One * 0.8f; // temp until better font
         buyButtonCount++;
     }
 
@@ -73,24 +87,15 @@ public class UIComponent : DrawableGameComponent
         HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
         WaveSystem.LevelWin += ShowLevelWinScreen;
 
-        var towerSelectionBgHeight = 52;
-        var towerSelectionBgTexture = TextureUtility.GetBlankTexture(game.SpriteBatch,
-            game.NativeScreenWidth, towerSelectionBgHeight, new Color(3, 12, 14));
-        var towerSelectionBg = new UIEntity(game, uiElements, towerSelectionBgTexture);
-        towerSelectionBg.Position = new Vector2(0, game.NativeScreenHeight - towerSelectionBgHeight);
-        
-        var horizontalLineHeight = 1;
-        var horizontalLineTexture = TextureUtility.GetBlankTexture(game.SpriteBatch,
-            game.NativeScreenWidth, horizontalLineHeight, new Color(184, 255, 58));
-        var horizontalLine = new UIEntity(game, uiElements, horizontalLineTexture);
-        horizontalLine.Position = new Vector2(0, game.NativeScreenHeight - towerSelectionBgHeight - horizontalLineHeight);
-
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
         var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
-        scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2,
-            horizontalLine.Position.Y + 4);
-
         currencyText = new UIEntity(game, uiElements, defaultFont, $"{CurrencyManager.Balance}");
+
+        var balanceTextWidth = defaultFont.MeasureString("999").X;
+
+        scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2
+            - balanceTextWidth / 2 - scrapTextOffset.X / 2,
+            game.NativeScreenHeight - 64);
         currencyText.Position = scrapIcon.Position;
         currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
         currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
