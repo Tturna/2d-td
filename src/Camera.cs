@@ -49,7 +49,7 @@ public static class Camera
         Vector2 relativeWorldPos = pos - Position;
         Vector2 scaledRelativePos = relativeWorldPos * Scale;
         Vector2 screenPos = scaledRelativePos + new Vector2(gameViewWidth / 2f, gameViewHeight / 2f);
-        screenPos = Vector2.Floor(screenPos);
+        screenPos = Vector2.Round(screenPos);
 
         return screenPos;
     }
