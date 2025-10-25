@@ -23,12 +23,12 @@ public class UIComponent : DrawableGameComponent
     private bool isLost;
     private int buyButtonCount = 0;
 
-    private static SpriteFont defaultFont = AssetManager.GetFont("default");
+    private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
     private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square_empty");
     private float halfScreenWidth = Game1.Instance.NativeScreenWidth / 2;
     private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
     private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
-    private readonly Vector2 scrapTextOffset = new Vector2(3, 6);
+    private readonly Vector2 scrapTextOffset = new Vector2(3, -1);
 
     private AnimationSystem.AnimationData buttonAnimationData = new
     (
@@ -52,14 +52,14 @@ public class UIComponent : DrawableGameComponent
         var turretIcon = new UIEntity(game, uiElements, towerIcon);
         var turretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
         var turretPriceIcon = new UIEntity(game, uiElements, priceIcon);
-        var turretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(towerType).ToString());
+        var turretPriceText = new UIEntity(game, uiElements, pixelsixFont, CurrencyManager.GetTowerPrice(towerType).ToString());
         turretButton.ButtonPressed += () => SelectTurret<T>();
 
         const float Margin = 20;
         const float Gap = 32;
         const int towers = 6;
         Vector2 priceIconOffset = new Vector2(3, 3);
-        Vector2 priceTextOffset = new Vector2(2, -4);
+        Vector2 priceTextOffset = new Vector2(2, -2);
 
         var xPos = game.NativeScreenWidth / 2 - buttonFrameSize.X / 2
             + buttonFrameSize.X * buyButtonCount + Gap * buyButtonCount
@@ -78,7 +78,6 @@ public class UIComponent : DrawableGameComponent
         turretPriceText.Position = turretPriceIcon.Position
             + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y);
 
-        turretPriceText.Scale = Vector2.One * 0.8f; // temp until better font
         buyButtonCount++;
     }
 
@@ -89,19 +88,22 @@ public class UIComponent : DrawableGameComponent
 
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
         var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
-        currencyText = new UIEntity(game, uiElements, defaultFont, $"{CurrencyManager.Balance}");
+        currencyText = new UIEntity(game, uiElements, pixelsixFont, $"{CurrencyManager.Balance}");
 
-        var balanceTextWidth = defaultFont.MeasureString("999").X;
+        var balanceTextWidth = pixelsixFont.MeasureString("999").X * currencyText.Scale.X;
 
         scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2
             - balanceTextWidth / 2 - scrapTextOffset.X / 2,
             game.NativeScreenHeight - 64);
+        scrapIcon.Position = Vector2.Floor(scrapIcon.Position);
+
         currencyText.Position = scrapIcon.Position;
         currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
         currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
 
-        waveIndicator = new UIEntity(game, uiElements, defaultFont, "Wave 0 of 0");
-        var waveTextWidth = defaultFont.MeasureString("Wave 9 of 9").X;
+        waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Wave 0 of 0");
+        waveIndicator.Scale = Vector2.One * 2;
+        var waveTextWidth = pixelsixFont.MeasureString("Wave 9 of 9").X * waveIndicator.Scale.X;
         waveIndicator.Position = new Vector2(game.NativeScreenWidth - waveTextWidth, 0);
 
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
@@ -256,10 +258,12 @@ public class UIComponent : DrawableGameComponent
         resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
         exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Resume");
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
         resumeButtonText.Position = playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2;
         exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+        resumeButtonText.DrawLayerDepth = 0.8f;
+        exitButtonText.DrawLayerDepth = 0.8f;
 
         pauseMenuElements.Add(resumeButton);
         pauseMenuElements.Add(exitButton);
@@ -280,8 +284,8 @@ public class UIComponent : DrawableGameComponent
         retryButton.ButtonPressed += () => SceneManager.LoadGame();
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var retryButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        var retryButtonText = new UIEntity(game, uiElements, pixelsixFont, "Retry");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
         retryButtonText.Position = retryButtonPos + retryButton.Size / 2 - retryButtonText.Size / 2;
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
 
@@ -306,7 +310,7 @@ public class UIComponent : DrawableGameComponent
         {
             var nextLevelButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
             var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, buttonAnimationData);
-            var nextLevelButtonText = new UIEntity(game, uiElements, defaultFont, "Next Level");
+            var nextLevelButtonText = new UIEntity(game, uiElements, pixelsixFont, "Next Level");
             nextLevelButtonText.Position = nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2;
 
             nextLevelButton.ButtonPressed += () =>
@@ -330,7 +334,7 @@ public class UIComponent : DrawableGameComponent
 
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
 
         winScreenElements.Add(quitButton);

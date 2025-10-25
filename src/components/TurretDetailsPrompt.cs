@@ -17,7 +17,7 @@ public class TurretDetailsPrompt : UIEntity
     private Entity targetTurret;
     private Vector2 upgradeBgSpriteSize, buttonSpriteSize, upgradeIndicatorSpriteSize;
     private int leftUpgradePrice, rightUpgradePrice;
-    private SpriteFont defaultFont;
+    private SpriteFont pixelsixFont;
     private List<UIEntity> tooltipEntities = new();
 
     public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode?> upgradeLeftCallback,
@@ -30,7 +30,7 @@ public class TurretDetailsPrompt : UIEntity
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var upgradeIndicatorSprite = AssetManager.GetTexture("upgrade_indicator");
         var infoIconSprite = AssetManager.GetTexture("btn_info");
-        defaultFont = AssetManager.GetFont("default");
+        pixelsixFont = AssetManager.GetFont("pixelsix");
 
         upgradeBgSpriteSize = new Vector2(upgradeBgSprite.Width, upgradeBgSprite.Height);
         buttonSpriteSize = new Vector2(buttonSprite.Width, buttonSprite.Height);
@@ -138,16 +138,18 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn.Position = sellBtnScreenPosition;
         upgradeIndicator.Position = upgradeIndicatorScreenPosition;
 
+        const int InfoButtonMargin = 5;
+
         if (leftUpgradeBtn is not null)
         {
             leftUpgradeBtn.Position = upgradeLeftBtnScreenPosition;
-            leftInfoBtn!.Position = leftUpgradeBtn.Position - Vector2.UnitX * (leftInfoBtn.Size.X + 4);
+            leftInfoBtn!.Position = leftUpgradeBtn.Position - Vector2.UnitX * (leftInfoBtn.Size.X + InfoButtonMargin);
         }
 
         if (rightUpgradeBtn is not null)
         {
             rightUpgradeBtn.Position = upgradeRightBtnScreenPosition;
-            rightInfoBtn!.Position = rightUpgradeBtn.Position + Vector2.UnitX * (rightUpgradeBtn.Size.X + 4);
+            rightInfoBtn!.Position = rightUpgradeBtn.Position + Vector2.UnitX * (rightUpgradeBtn.Size.X + InfoButtonMargin);
         }
 
         base.Update(gameTime);
@@ -155,17 +157,22 @@ public class TurretDetailsPrompt : UIEntity
 
     public override void DrawCustom(GameTime gameTime)
     {
+        const int PriceMargin = 5;
+        const int PriceYOffset = 10;
+
         // Draw upgrade prices directly. No need for UI entity state.
         if (leftUpgradeBtn is not null)
         {
-            var pos = leftUpgradeBtn.Position - Vector2.UnitX * 24;
-            Game.SpriteBatch.DrawString(defaultFont, leftUpgradePrice.ToString(), pos, Color.White);
+            var priceWidth = pixelsixFont.MeasureString(leftUpgradePrice.ToString()).X;
+            var pos = leftUpgradeBtn.Position + new Vector2(-priceWidth - PriceMargin, PriceYOffset);
+            Game.SpriteBatch.DrawString(pixelsixFont, leftUpgradePrice.ToString(), pos, Color.White);
         }
 
         if (rightUpgradeBtn is not null)
         {
-            var pos = rightUpgradeBtn.Position + Vector2.UnitX * 24;
-            Game.SpriteBatch.DrawString(defaultFont, rightUpgradePrice.ToString(), pos, Color.White);
+            var upgradeBtnWidth = rightUpgradeBtn.Size.X;
+            var pos = rightUpgradeBtn.Position + new Vector2(upgradeBtnWidth + PriceMargin, PriceYOffset);
+            Game.SpriteBatch.DrawString(pixelsixFont, rightUpgradePrice.ToString(), pos, Color.White);
         }
 
         base.DrawCustom(gameTime);
@@ -267,16 +274,16 @@ public class TurretDetailsPrompt : UIEntity
         }
 
         const int Margin = 8;
-        var nameWidth = (int)defaultFont.MeasureString(upgrade.Name).X;
+        var nameWidth = (int)pixelsixFont.MeasureString(upgrade.Name).X;
         var titleLineWidth = upgrade.UpgradeIcon!.Width + nameWidth + Margin * 3;
         var maxWidth = titleLineWidth;
         var priceText = $"Price: {upgrade.Price.ToString()}";
-        var maxHeight = upgrade.UpgradeIcon.Height + (int)defaultFont.MeasureString(priceText).Y
+        var maxHeight = upgrade.UpgradeIcon.Height + (int)pixelsixFont.MeasureString(priceText).Y
             + Margin * 3;
 
         if (upgrade.Description is not null)
         {
-            var descriptionSize = defaultFont.MeasureString(upgrade.Description);
+            var descriptionSize = pixelsixFont.MeasureString(upgrade.Description);
             var descriptionWidth = (int)descriptionSize.X + Margin * 2;
             maxWidth = MathHelper.Max(maxWidth, descriptionWidth);
 
@@ -297,17 +304,17 @@ public class TurretDetailsPrompt : UIEntity
             UIComponent.Instance.RemoveUIEntity, upgrade.UpgradeIcon!);
 
         var name = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
-            UIComponent.Instance.RemoveUIEntity, defaultFont, upgrade.Name);
+            UIComponent.Instance.RemoveUIEntity, pixelsixFont, upgrade.Name);
         name.Position = iconPos + Vector2.UnitX * (icon.Size.X + Margin);
 
         var price = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
-            UIComponent.Instance.RemoveUIEntity, defaultFont, priceText);
+            UIComponent.Instance.RemoveUIEntity, pixelsixFont, priceText);
         price.Position = iconPos + new Vector2(0, icon.Size.Y + Margin);
 
         if (upgrade.Description is not null)
         {
             var description = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
-                UIComponent.Instance.RemoveUIEntity, defaultFont, upgrade.Description);
+                UIComponent.Instance.RemoveUIEntity, pixelsixFont, upgrade.Description);
             description.Position = price.Position + new Vector2(0, price.Size.Y + Margin);
             tooltipEntities.Add(description);
         }

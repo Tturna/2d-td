@@ -148,7 +148,8 @@ public static class AssetManager
         LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
 
         // fonts
-        LoadFont("default", "default_font");
+        LoadFont("default", "fonts/default_font");
+        LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
     }
 
     public static Texture2D GetTexture(string name)

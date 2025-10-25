@@ -13,12 +13,28 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin default_font.spritefont
+#begin fonts/default_font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:default_font.spritefont
+/build:fonts/default_font.spritefont
+
+#begin fonts/pixelsix/pixelsix_bitmap_test.png
+/importer:TextureImporter
+/processor:FontTextureProcessor
+/processorParam:FirstCharacter= 
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:fonts/pixelsix/pixelsix_bitmap_test.png
+
+#begin fonts/pixelsix/pixelsix_bitmap.png
+/importer:TextureImporter
+/processor:FontTextureProcessor
+/processorParam:FirstCharacter= 
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:fonts/pixelsix/pixelsix_bitmap.png
 
 #begin sprites/2dtd_palatte.png
 /importer:TextureImporter

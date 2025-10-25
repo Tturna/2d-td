@@ -8,7 +8,7 @@ public class MainMenuUIComponent : DrawableGameComponent
 {
     private Game1 game;
     private List<UIEntity> uiEntities = new();
-    private SpriteFont defaultFont = AssetManager.GetFont("default");
+    private SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
     private Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
     private Texture2D playButtonSprite = AssetManager.GetTexture("main_play_button");
     private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
@@ -110,8 +110,9 @@ public class MainMenuUIComponent : DrawableGameComponent
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
         var titleText = "Select Zone";
-        var title = new UIEntity(game, uiEntities, defaultFont, titleText);
-        var titleOffset = -defaultFont.MeasureString(titleText).X / 2;
+        var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
+        title.Scale = Vector2.One * 2;
+        var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
         title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
             
         var btnAnimationData = new AnimationSystem.AnimationData
@@ -138,8 +139,9 @@ public class MainMenuUIComponent : DrawableGameComponent
             btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
 
             var text = $"{i + 1}";
-            var zoneText = new UIEntity(game, uiEntities, defaultFont, text);
-            var textXOffset = -defaultFont.MeasureString(text).X / 2;
+            var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
+            zoneText.Scale = Vector2.One * 2;
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
         }
     }
@@ -153,8 +155,9 @@ public class MainMenuUIComponent : DrawableGameComponent
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
         var titleText = "Select Level";
-        var title = new UIEntity(game, uiEntities, defaultFont, titleText);
-        var titleOffset = -defaultFont.MeasureString(titleText).X / 2;
+        var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
+        title.Scale = Vector2.One * 2;
+        var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
         title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
 
         var btnAnimationData = new AnimationSystem.AnimationData
@@ -179,8 +182,9 @@ public class MainMenuUIComponent : DrawableGameComponent
             btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
 
             var text = $"{i + 1}";
-            var zoneText = new UIEntity(game, uiEntities, defaultFont, text);
-            var textXOffset = -defaultFont.MeasureString(text).X / 2;
+            var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
+            zoneText.Scale = Vector2.One * 2;
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
         }
     }
