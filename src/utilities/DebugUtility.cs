@@ -12,9 +12,10 @@ public static class DebugUtility
     public static HashSet<(Vector2, Vector2, Color)> LineSet { get; private set; } = new();
 
     private static bool debugEnabled;
-    private static SpriteFont? defaultFont;
+    private static SpriteFont? pixelsixFont;
+    private static FpsUtility? fpsUtility;
 
-    public static void Update(Game1 game)
+    public static void Update(Game1 game, GameTime gameTime)
     {
         if (InputSystem.IsKeyTapped(Keys.F1))
         {
@@ -23,6 +24,10 @@ public static class DebugUtility
         }
 
         if (!debugEnabled) return;
+
+        if (fpsUtility is null) fpsUtility = new FpsUtility();
+
+        fpsUtility.Update(gameTime);
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
@@ -62,16 +67,29 @@ public static class DebugUtility
     {
         if (!debugEnabled) return;
 
-        if (defaultFont is null)
+        if (pixelsixFont is null)
         {
-            defaultFont = AssetManager.GetFont("default");
+            pixelsixFont = AssetManager.GetFont("pixelsix");
         }
 
         var statusText = "Debug mode";
-        var statusTextWidth = defaultFont.MeasureString(statusText);
-        var corner = new Vector2(Game1.Instance.NativeScreenWidth, 0);
+        var statusTextWidth = pixelsixFont.MeasureString(statusText) * 2;
+        var corner = new Vector2(Game1.Instance.NativeScreenWidth, 20);
         var statusPos = corner - Vector2.UnitX * (statusTextWidth.X + 10);
-        spriteBatch.DrawString(defaultFont, statusText, statusPos, Color.White);
+        spriteBatch.DrawString(pixelsixFont,
+            statusText,
+            statusPos,
+            Color.White,
+            rotation: 0,
+            origin: default,
+            scale: Vector2.One * 2,
+            effects: SpriteEffects.None,
+            layerDepth: default);
+
+        if (fpsUtility is not null)
+        {
+            fpsUtility.DrawFps(spriteBatch, statusPos + new Vector2(-32, 20), Color.White);
+        }
     }
 
     public static void ResetLines()

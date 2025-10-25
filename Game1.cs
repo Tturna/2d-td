@@ -87,7 +87,7 @@ public class Game1 : Game
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
                 ScrapSystem.Update(gameTime);
-                DebugUtility.Update(this);
+                DebugUtility.Update(this, gameTime);
                 break;
         }
 
