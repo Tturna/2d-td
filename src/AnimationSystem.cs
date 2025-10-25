@@ -178,9 +178,14 @@ public class AnimationSystem
 
         if (frameTimer <= 0f)
         {
-            frameTimer = currentAnimationData.DelaySeconds;
-            currentFrame = (currentFrame + 1) % currentAnimationData.FrameCount;
+            NextFrame();
         }
+    }
+
+    public void NextFrame()
+    {
+        frameTimer = currentAnimationData.DelaySeconds;
+        currentFrame = (currentFrame + 1) % currentAnimationData.FrameCount;
     }
 
     public void OverrideTexture(Texture2D texture, float durationSeconds)

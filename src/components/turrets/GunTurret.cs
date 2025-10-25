@@ -52,6 +52,12 @@ class GunTurret : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
 
+        doubleGun.Description = "+1 shots/sec";
+        improvedBarrel.Description = "+3 damage,\n+4 range";
+        photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
+        botShot.Description = "-75% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
+        rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
+
         towerCore.CurrentUpgrade = defaultNode;
     }
 

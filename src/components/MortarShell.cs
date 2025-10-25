@@ -116,18 +116,7 @@ public class MortarShell : Entity
 
     private static Texture2D GetShellTexture(SpriteBatch spriteBatch)
     {
-        var tex = new Texture2D(spriteBatch.GraphicsDevice, width: 4, height: 4,
-                mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[16];
-
-        for (int i = 0; i < 16; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        tex.SetData(colorData);
-
+        var tex = TextureUtility.GetBlankTexture(spriteBatch, 4, 4, Color.White);
         return tex;
     }
 }

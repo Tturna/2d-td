@@ -55,9 +55,9 @@ public static class WaveSystem
     public delegate void LevelWinHandler();
     public static event LevelWinHandler LevelWin;
     public static event WaveEndedHandler WaveEnded;
+    public static int MaxWaveIndex;
+    public static int CurrentWaveIndex;
 
-    private static int currentWaveIndex;
-    private static int maxWaveIndex;
     private static bool waveStarted;
     private static float waveCooldown;
     private static float waveCooldownLeft;
@@ -126,19 +126,19 @@ public static class WaveSystem
 
         waveCooldown = 10f;
         waveCooldownLeft = 0f;
-        currentWaveIndex = 0;
+        CurrentWaveIndex = 0;
         waveStarted = true;
         var zone1 = new Zone { waves = waves };
         currentZone = zone1;
-        currentWave = currentZone.waves[currentWaveIndex];
+        currentWave = currentZone.waves[CurrentWaveIndex];
 
-        maxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
+        MaxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
     }
 
     public static void Update(GameTime gameTime)
     {
         if (game is null) return;
-        if (!waveStarted && currentWaveIndex >= maxWaveIndex - 1) return;
+        if (!waveStarted && CurrentWaveIndex >= MaxWaveIndex - 1) return;
 
         float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -229,14 +229,14 @@ public static class WaveSystem
 
     public static void EndWave()
     {
-        Console.WriteLine("Wave " + currentWaveIndex + " Has Ended");
+        Console.WriteLine("Wave " + CurrentWaveIndex + " Has Ended");
         waveStarted = false;
         waveCooldownLeft = waveCooldown;
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
 
-        if (currentWaveIndex == maxWaveIndex - 1)
+        if (CurrentWaveIndex == MaxWaveIndex - 1)
         {
             LevelWin?.Invoke();
         }
@@ -244,9 +244,9 @@ public static class WaveSystem
 
     private static void NextWave()
     { 
-        currentWaveIndex++;
-        currentWave = currentZone.waves[currentWaveIndex];
-        Console.WriteLine("Wave " + currentWaveIndex + " Has Started");
+        CurrentWaveIndex++;
+        currentWave = currentZone.waves[CurrentWaveIndex];
+        Console.WriteLine("Wave " + CurrentWaveIndex + " Has Started");
         waveStarted = true;
 
         // starts next wave

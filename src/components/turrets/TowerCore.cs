@@ -90,14 +90,14 @@ public class TowerCore : GameComponent, IClickable
         return Collision.IsPointInEntity(mouseWorldPosition, Turret);
     }
 
-    public TowerUpgradeNode UpgradeLeft()
+    public TowerUpgradeNode? UpgradeLeft()
     {
         if (CurrentUpgrade.LeftChild is null)
         {
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return CurrentUpgrade;
+        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return null;
 
         CurrentUpgrade = CurrentUpgrade.LeftChild;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);

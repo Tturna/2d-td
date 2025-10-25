@@ -136,15 +136,20 @@ public static class AssetManager
         // ui
         LoadTexture("btn_square", "sprites/UI/button_square");
         LoadTexture("btn_square_small", "sprites/UI/button_smallsquare");
+        LoadTexture("btn_square_empty", "sprites/UI/button_square_empty");
         LoadTexture("btn_info", "sprites/UI/infobutton");
         LoadTexture("btn_pause", "sprites/UI/pausebutton");
         LoadTexture("icon_scrap", "sprites/UI/scrapicon");
         LoadTexture("icon_scrap_small", "sprites/UI/scrapicon_small");
         LoadTexture("upgradebg", "sprites/UI/upgradebg");
         LoadTexture("upgrade_indicator", "sprites/UI/upgradeindicator");
+        LoadTexture("main_play_button", "sprites/UI/mainmenu_playbutton");
+        LoadTexture("main_quit_button", "sprites/UI/mainmenu_quitbutton");
+        LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
 
         // fonts
-        LoadFont("default", "default_font");
+        LoadFont("default", "fonts/default_font");
+        LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
     }
 
     public static Texture2D GetTexture(string name)

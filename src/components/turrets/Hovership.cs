@@ -51,6 +51,13 @@ class Hovership : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
 
+        BombierBay.Description = "+2 projectiles";
+        EfficientEngines.Description = "+10 tile range";
+        OrbitalLaser.Description = "-0.85 shots/s\nInstead of bombs,\nfires a massive orbital laser\nthat deals 300 damage\nover 4s.\nUnlimited pierce";
+        CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
+        EMPShip.Description = "-2 projectiles.\n+10 tile hover height.\n+5 tile area of effect\nNow Shocks enemies for 5s.";
+        FloatingFactory.Description = "Drops 2 ground troops which run\nat enemies, stalling them and\nattacking for 20 DPS.\nTroops drop worthless scrap on death.";
+
         towerCore.CurrentUpgrade = defaultNode;
 
         turretHovership = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));

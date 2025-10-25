@@ -59,6 +59,12 @@ class Railgun : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: Momentum, rightChild: PolishedRound);
 
+        Momentum.Description = "+3 pierce";
+        PolishedRound.Description = "+25 damage";
+        AntimatterLaser.Description = "+9 pierce,\n+ 6 range,\n+ 20 damage";
+        Cannonball.Description = "-2 pierce,\n+250 damage";
+        GoldenGatling.Description = "+5 shots/s,\n-40 damage\nAfter firing for 2s straight,\ninflicts burn stacks as well.";
+
         towerCore.CurrentUpgrade = defaultNode;
     }
 
