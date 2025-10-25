@@ -670,11 +670,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-<<<<<<< HEAD
 /build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png;sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle
-=======
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png
->>>>>>> main
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon.png
 /importer:TextureImporter
@@ -902,11 +898,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-<<<<<<< HEAD
 /build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png;sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle
-=======
-/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png
->>>>>>> main
 
 #begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire.png
 /importer:TextureImporter
@@ -1338,11 +1330,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-<<<<<<< HEAD
 /build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png;sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle
-=======
-/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png
->>>>>>> main
 
 #begin sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon.png
 /importer:TextureImporter
