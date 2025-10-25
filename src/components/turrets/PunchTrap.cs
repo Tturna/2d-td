@@ -8,7 +8,6 @@ namespace _2d_td;
 class PunchTrap : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 11);
     int tileRange = 2;
     Vector2 direction = new Vector2(-1,0);
     float knockback = 2.5f;
@@ -90,7 +89,7 @@ class PunchTrap : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime, 10f, 10, tileRange - 1, 0f);
+            HandleBasicShots(deltaTime, 10f, 10, tileRange, 0f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
@@ -168,13 +167,8 @@ class PunchTrap : Entity, ITower
 
         if (actionTimer >= actionInterval && DetectEnemies(tileRange))
         {
-            Projectile rocket = new Rocket(Game, Position + spawnOffset);
-            rocket.Position = spawnOffset;
+            RocketGlove rocket = new RocketGlove(Game, Position + direction*8);
             rocket.Direction = direction;
-            rocket.Lifetime = 2f;
-            rocket.Damage = damage;
-            rocket.BulletPixelsPerSecond = 300f;
-            rocket.Lifetime = 2f;
             actionTimer = 0f;
             //AnimationSystem!.OneShotAnimationState("fire");
         }
