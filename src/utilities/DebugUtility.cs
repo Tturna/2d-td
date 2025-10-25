@@ -96,10 +96,17 @@ public static class DebugUtility
             effects: SpriteEffects.None,
             layerDepth: default);
 
+        var fpsPos = statusPos + new Vector2(-32, 20);
+
         if (fpsUtility is not null)
         {
-            fpsUtility.DrawFps(spriteBatch, statusPos + new Vector2(-32, 20), Color.White);
+            fpsUtility.DrawFps(spriteBatch, fpsPos, Color.White);
         }
+
+        var enemiesText = $"Enemies: {EnemySystem.Enemies.Count}";
+        var enemiesTextWidth = (int)pixelsixFont.MeasureString(enemiesText).X;
+        var enemiesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - enemiesTextWidth - 8, fpsPos.Y + 20);
+        spriteBatch.DrawString(pixelsixFont, enemiesText, enemiesTextPos, Color.White);
     }
 
     public static void ResetLines()
@@ -151,6 +158,7 @@ public static class DebugUtility
 
         debugButtons.Add(vsyncButton);
         debugButtons.Add(vsyncButtonText);
+        debugButtons.Add(vsyncStatusText);
     }
 
     private static void HideDebugButtons()
