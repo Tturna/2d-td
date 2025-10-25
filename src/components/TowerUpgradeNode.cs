@@ -23,11 +23,7 @@ public class TowerUpgradeNode
         Parent = parent;
         LeftChild = leftChild;
         RightChild = rightChild;
-
-        if (description != null)
-        {
-            Description = description;
-        }
+        Description = description;
 
         if (leftChild != null)
         {

@@ -221,11 +221,7 @@ public class TurretDetailsPrompt : UIEntity
             leftUpgradePrice = newUpgrade.LeftChild.Price;
             leftUpgradeBtn!.Sprite = newUpgrade.LeftChild.UpgradeIcon;
             leftInfoBtn!.ClearButtonHandlers();
-
-            if (newUpgrade.LeftChild is not null)
-            {
-                leftInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.LeftChild);
-            }
+            leftInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.LeftChild);
         }
         else
         {
@@ -240,11 +236,7 @@ public class TurretDetailsPrompt : UIEntity
             rightUpgradePrice = newUpgrade.RightChild.Price;
             rightUpgradeBtn!.Sprite = newUpgrade.RightChild.UpgradeIcon;
             rightInfoBtn!.ClearButtonHandlers();
-
-            if (newUpgrade.RightChild is not null)
-            {
-                rightInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.RightChild);
-            }
+            rightInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.RightChild);
         }
         else
         {
