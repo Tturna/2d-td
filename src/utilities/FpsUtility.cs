@@ -21,7 +21,7 @@ public class FpsUtility
 
         if (elapsed > msgFrequency)
         {
-            msg = "FPS: " + (frames / elapsed).ToString() + "\nFrame interval: "
+            msg = "FPS: " + (frames / elapsed).ToString() + "\nMessage interval: "
                 + elapsed.ToString() +  "\nUpdates: " + updates.ToString()
                 + "\nFrames: " + frames.ToString();
             elapsed = 0;

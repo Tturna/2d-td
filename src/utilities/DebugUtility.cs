@@ -14,6 +14,7 @@ public static class DebugUtility
     private static bool debugEnabled;
     private static SpriteFont? pixelsixFont;
     private static FpsUtility? fpsUtility;
+    private static List<UIEntity>? debugButtons;
 
     public static void Update(Game1 game, GameTime gameTime)
     {
@@ -21,6 +22,15 @@ public static class DebugUtility
         {
             debugEnabled = !debugEnabled;
             Console.WriteLine($"Debug mode: {debugEnabled}");
+
+            if (debugEnabled)
+            {
+                ShowDebugButtons(game);
+            }
+            else
+            {
+                HideDebugButtons();
+            }
         }
 
         if (!debugEnabled) return;
@@ -100,5 +110,58 @@ public static class DebugUtility
     private static (Vector2, Vector2) NormalizeLine(Vector2 a, Vector2 b)
     {
         return a.X < b.X || (a.X == b.X && a.Y < b.Y) ? (a, b) : (b, a);
+    }
+
+    private static void ShowDebugButtons(Game1 game)
+    {
+        if (pixelsixFont is null)
+        {
+            pixelsixFont = AssetManager.GetFont("pixelsix");
+        }
+
+        if (debugButtons is null)
+        {
+            debugButtons = new();
+        }
+
+        var buttonSprite = AssetManager.GetTexture("btn_square_empty");
+        var vsyncButtonPos = new Vector2(game.NativeScreenWidth - buttonSprite.Width - 8,
+            100);
+        var vsyncButton = new UIEntity(game, vsyncButtonPos, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, buttonSprite);
+
+        var vsyncText = "Toggle V-Sync";
+        var vsyncButtonText = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, pixelsixFont, vsyncText);
+        var vsyncButtonTextWidth = pixelsixFont.MeasureString(vsyncText).X;
+        vsyncButtonText.Position = vsyncButtonPos + new Vector2(-vsyncButtonTextWidth - 10, 4);
+
+        var vsyncStatusText = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, pixelsixFont,
+            game.Graphics.SynchronizeWithVerticalRetrace ? "On" : "Off");
+        vsyncStatusText.Position = vsyncButtonPos + new Vector2(buttonSprite.Width, buttonSprite.Height) / 2
+            - vsyncStatusText.Size / 2;
+
+        vsyncButton.ButtonPressed += () =>
+        {
+            game.Graphics.SynchronizeWithVerticalRetrace = !game.Graphics.SynchronizeWithVerticalRetrace;
+            game.Graphics.ApplyChanges();
+            vsyncStatusText.Text = game.Graphics.SynchronizeWithVerticalRetrace ? "On" : "Off";
+        };
+
+        debugButtons.Add(vsyncButton);
+        debugButtons.Add(vsyncButtonText);
+    }
+
+    private static void HideDebugButtons()
+    {
+        if (debugButtons is null) return;
+
+        foreach (var button in debugButtons)
+        {
+            button.Destroy();
+        }
+
+        debugButtons.Clear();
     }
 }
