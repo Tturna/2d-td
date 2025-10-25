@@ -33,8 +33,14 @@ public class Game1 : Game
 
         Graphics.PreferredBackBufferWidth = NativeScreenWidth;
         Graphics.PreferredBackBufferHeight = NativeScreenHeight;
-        Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
+
+        // default vsync setting
+        Graphics.SynchronizeWithVerticalRetrace = true;
+        Graphics.ApplyChanges();
+
+        // FPS limit
+        IsFixedTimeStep = false;
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
@@ -87,7 +93,7 @@ public class Game1 : Game
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
                 ScrapSystem.Update(gameTime);
-                DebugUtility.Update(this);
+                DebugUtility.Update(this, gameTime);
                 break;
         }
 
