@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -18,25 +17,8 @@ public class RocketGlove : Entity
     public Vector2 Direction;
     public float Lifetime;
     
-    private static Texture2D GetShellTexture(SpriteBatch spriteBatch)
-    {
-        int size = 7;
-        var tex = new Texture2D(spriteBatch.GraphicsDevice, width: size, height: size,
-                mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[size * size];
-
-        for (int i = 0; i < size * size; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        tex.SetData(colorData);
-
-        return tex;
-    }
-
-    public RocketGlove(Game game, Vector2 startLocation, float knockback) : base(game, startLocation,GetShellTexture(((Game1)game).SpriteBatch))
+    public RocketGlove(Game game, Vector2 startLocation, float knockback) : base(game, startLocation,
+        TextureUtility.GetBlankTexture(((Game1)game).SpriteBatch, 7, 7, Color.White))
     {
         // Rocket specific defaults
         PixelsPerSecond = 100f;
