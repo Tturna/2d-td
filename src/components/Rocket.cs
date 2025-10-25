@@ -18,9 +18,10 @@ class Rocket : Projectile
         BulletPixelsPerSecond = 200f;
         BulletLength = 24f;
         BulletWidth = 4f;
-        Damage = 50;
+        Damage = 5000;
         ExplosionTileRadius = 2;
         maxHitEnemies = 5;
+        Console.WriteLine("Spawned rocket");
     }
 
     public override void Update(GameTime gameTime)
@@ -53,16 +54,19 @@ class Rocket : Projectile
                 out Vector2 entryPoint, out Vector2 exitPoint))
             {
                 hitEnemies.Add(enemy);
+                Console.WriteLine("Rocket hit enemy at " + enemy.Position);
             }
             else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
                 Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
             {
                 hitEnemies.Add(enemy);
+                Console.WriteLine("Rocket hit enemy at " + enemy.Position);
             }
             else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
             Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
             {
                 hitEnemies.Add(enemy);
+                Console.WriteLine("Rocket hit enemy at " + enemy.Position);
             }
 
         }
@@ -82,5 +86,7 @@ class Rocket : Projectile
                 enemy.HealthSystem.TakeDamage(Damage);
             }
         }
+
+        Console.WriteLine("Rocket exploded at " + explosionCenter);
     }
 }

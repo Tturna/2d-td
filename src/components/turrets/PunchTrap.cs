@@ -21,9 +21,11 @@ class PunchTrap : Entity, ITower
         NoUpgrade,
         FatFist,
         MegaPunch,
+        RocketGlove,
         QuickJabs,
-        Chainsaw,
-        RocketGlove
+        FlurryOfBlows,
+        Chainsaw
+
     }
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
@@ -43,13 +45,14 @@ class PunchTrap : Entity, ITower
 
         towerCore = new TowerCore(this);
 
-        var MegaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(), price: 45);
-        var FatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(), price: 10,leftChild: MegaPunch);
+        var MegaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(), price: 75);
+        var RocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(), price: 80);
+        var FatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(), price: 10,leftChild: MegaPunch,rightChild: RocketGlove);
         
 
-        var Chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(), price: 40);
-        var RocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(), price: 50);
-        var QuickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(), price: 10, leftChild: RocketGlove, rightChild: Chainsaw);
+        var Chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(), price: 70);
+        var FlurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(), price: 80);
+        var QuickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(), price: 10,leftChild: FlurryOfBlows, rightChild: Chainsaw);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
             leftChild: FatFist, rightChild: QuickJabs);
@@ -71,27 +74,31 @@ class PunchTrap : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange,knockback);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FatFist.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+10, tileRange,knockback*1.5f);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage + 10, tileRange, knockback * 1.5f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
-            HandleMegaPunch(deltaTime, actionsPerSecond, damage+20, tileRange,knockback*1.5f);
+            HandleMegaPunch(deltaTime, actionsPerSecond, damage + 20, tileRange, knockback * 1.5f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.QuickJabs.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond+.167f, damage, tileRange,knockback);
+            HandleBasicShots(deltaTime, actionsPerSecond + .167f, damage, tileRange, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime, 10f, 10, tileRange-1,0f);
+            HandleBasicShots(deltaTime, 10f, 10, tileRange - 1, 0f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
-            HandleRocketGlove(deltaTime, actionsPerSecond+5, 15, tileRange,1);
+            HandleRocketGlove(deltaTime, actionsPerSecond, damage+50, tileRange, 0);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond+1.5f, damage, tileRange, knockback);
         }
 
         base.Update(gameTime);
@@ -161,7 +168,7 @@ class PunchTrap : Entity, ITower
 
         if (actionTimer >= actionInterval && DetectEnemies(tileRange))
         {
-            var rocket = new Projectile(Game, Position + spawnOffset);
+            Projectile rocket = new Rocket(Game, Position + spawnOffset);
             rocket.Position = spawnOffset;
             rocket.Direction = direction;
             rocket.Lifetime = 2f;
