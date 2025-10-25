@@ -1,6 +1,7 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -27,24 +28,51 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
+        var fireSprite = AssetManager.GetTexture("mortar_base_fire");
+
+        var fireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: fireSprite,
+            frameCount: 5,
+            frameSize: new Vector2(fireSprite.Width / 5, fireSprite.Height),
+            delaySeconds: 0.05f
+        );
+
+        AnimationSystem.AddAnimationState("fire", fireAnimation);
+
         towerCore = new TowerCore(this);
         towerCore.Clicked += OnClickTower;
 
-        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), price: 80);
-        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), price: 200);
+        var bouncingBombIcon = AssetManager.GetTexture("mortar_bouncingbomb_icon");
+        var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
+        var bigBombIcon = AssetManager.GetTexture("mortar_heavyshells_icon");
+        var missileSiloIcon = AssetManager.GetTexture("mortar_missilesilo_icon");
+        // var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
+        var hellRainIcon = AssetManager.GetTexture("gunTurret_botshot_icon"); // temp
+        var efficientReloadIcon = AssetManager.GetTexture("mortar_efficientreload_icon");
 
-        var bigBomb = new TowerUpgradeNode(Upgrade.BigBomb.ToString(), price: 35,
+        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 80);
+        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 200);
+
+        var bigBomb = new TowerUpgradeNode(Upgrade.BigBomb.ToString(), bigBombIcon, price: 35,
             leftChild: bouncingBomb, rightChild: nuke);
 
-        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), price: 90);
-        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), price: 110);
-        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), price: 20,
+        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 90);
+        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 110);
+        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 20,
             leftChild: missileSilo, rightChild: hellrain);
 
-        var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBomb, rightChild: efficientReload);
+
+        bigBomb.Description = "+2 tile radius,\n+10 damage";
+        efficientReload.Description = "+0.3 shots/s";
+        bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n3 times, exploding with\neach impact.";
+        nuke.Description = "+8 tile explosion radius\n+300 damage\n-0.3 shots/s\nLeaves a radiation cloud\nthat deals 5DPS for 5s.";
+        missileSilo.Description = "+2 projectiles\nFires homing missiles directly\nupwards, dealing 30 damage each.";
+        hellrain.Description = "-2 tile explosion radius.\nFires in a 6-shot barrage\nwith considerable spread.";
 
         towerCore.CurrentUpgrade = defaultUpgrade;
     }
@@ -83,6 +111,7 @@ public class Mortar : Entity, ITower
                 actionTimer = 0;
             }
 
+            base.Update(gameTime);
             return;
         }
 
@@ -131,6 +160,8 @@ public class Mortar : Entity, ITower
         shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
 
         actionTimer = 1f / actionsPerSecond;
+
+        AnimationSystem.OneShotAnimationState("fire");
     }
 
     private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond)
@@ -146,6 +177,8 @@ public class Mortar : Entity, ITower
         HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3);
 
         actionTimer = 1f / actionsPerSecond;
+
+        AnimationSystem.OneShotAnimationState("fire");
     }
 
     private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond)
@@ -167,6 +200,8 @@ public class Mortar : Entity, ITower
         }
 
         actionTimer = 1f / actionsPerSecond;
+
+        AnimationSystem.OneShotAnimationState("fire");
     }
 
     private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond)
@@ -189,23 +224,14 @@ public class Mortar : Entity, ITower
         }
 
         actionTimer = 1f / actionsPerSecond;
+
+        AnimationSystem.OneShotAnimationState("fire");
     }
 
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius)
     {
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-
-            var diff = shell.Position + shell.Size / 2 - enemy.Position + enemy.Size / 2;
-            var distance = diff.Length();
-
-            if (distance > explosionTileRadius * Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(damage);
-        }
+        EffectUtility.Explode(shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
+            magnitude: 5f, damage);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount)
@@ -262,6 +288,9 @@ public class Mortar : Entity, ITower
 
     public override void Destroy()
     {
+        towerCore.CloseDetailsView();
+        Game.Components.Remove(towerCore);
+
         base.Destroy();
     }
 
@@ -280,15 +309,15 @@ public class Mortar : Entity, ITower
         return new Vector2(2, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("mortar");
+        var sprite = AssetManager.GetTexture("mortar_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
     }
@@ -296,5 +325,75 @@ public class Mortar : Entity, ITower
     public static BuildingSystem.TowerType GetTowerType()
     {
         return BuildingSystem.TowerType.Mortar;
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        Texture2D newIdleTexture;
+        Texture2D newFireTexture;
+        int newIdleFrameCount;
+        int newFireFrameCount;
+
+        if (newUpgrade.Name == Upgrade.BouncingBomb.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_bouncingbomb_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_bouncingbomb_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 3;
+        }
+        else if (newUpgrade.Name == Upgrade.EfficientReload.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_efficientreload_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_efficientreload_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 3;
+        }
+        else if (newUpgrade.Name == Upgrade.BigBomb.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_heavyshells_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_heavyshells_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 5;
+        }
+        else if (newUpgrade.Name == Upgrade.Hellrain.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_hellrain_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_hellrain_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 7;
+        }
+        else if (newUpgrade.Name == Upgrade.MissileSilo.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_missilesilo_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_missilesilo_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 4;
+        }
+        else
+        {
+            newIdleTexture = AssetManager.GetTexture("mortar_nuke_idle");
+            newFireTexture = AssetManager.GetTexture("mortar_nuke_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 7;
+        }
+
+        var newIdleAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newIdleTexture,
+            frameCount: newIdleFrameCount,
+            frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        var newFireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newFireTexture,
+            frameCount: newFireFrameCount,
+            frameSize: new Vector2(newFireTexture.Width / newFireFrameCount, newFireTexture.Height),
+            delaySeconds: 0.05f
+        );
+
+        AnimationSystem.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
 }

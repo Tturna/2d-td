@@ -27,19 +27,27 @@ class Drone : Entity, ITower
         UAV,
     }
 
-    public Drone(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Drone(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
-        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), price: 70);
-        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinDrone, rightChild: UAV);
+        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), tempIcon, price: 75);
+        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), tempIcon, price: 25, leftChild: FlyingArsenal);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), tempIcon, price: 70);
+        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), tempIcon, price: 60);
+        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), tempIcon, price: 15, leftChild: AssassinDrone, rightChild: UAV);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
+
+        AdvancedWeaponry.Description = "+10 damage,\n+ 0.5 shots/s";
+        ImprovedRadar.Description = "+8 range";
+        FlyingArsenal.Description = "+20 damage,\n+1 shots/s";
+        AssassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+100 damage";
+        UAV.Description = "-1.5 shots/s\nShoots a radar shot that makes\nenemies take 50% more damage\nfor X seconds. Other towers\nin range gain +4 range.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -159,16 +167,16 @@ class Drone : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("drone");
+        var sprite = AssetManager.GetTexture("drone_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
+            frameCount: 4,
             frameSize: new Vector2(sprite.Width / 4, sprite.Height),
-            delaySeconds: 0
+            delaySeconds: 0.1f
         );
     }
 
@@ -234,5 +242,9 @@ class Drone : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Drone(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

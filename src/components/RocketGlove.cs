@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
 #nullable enable
-class RocketGlove : Entity
+public class RocketGlove : Entity
 {
     private HashSet<Enemy> hitEnemies = new();
     private int maxHitEnemies;
+    private float knockback;
+
     public float PixelsPerSecond;
     public int Damage;
     public float ExplosionTileRadius;
@@ -20,12 +20,13 @@ class RocketGlove : Entity
     
     private static Texture2D GetShellTexture(SpriteBatch spriteBatch)
     {
-        var tex = new Texture2D(spriteBatch.GraphicsDevice, width: 8, height: 8,
+        int size = 7;
+        var tex = new Texture2D(spriteBatch.GraphicsDevice, width: size, height: size,
                 mipmap: false, SurfaceFormat.Color);
 
-        var colorData = new Color[64];
+        var colorData = new Color[size * size];
 
-        for (int i = 0; i < 64; i++)
+        for (int i = 0; i < size * size; i++)
         {
             colorData[i] = Color.White;
         }
@@ -35,7 +36,7 @@ class RocketGlove : Entity
         return tex;
     }
 
-    public RocketGlove(Game game, Vector2 startLocation) : base(game, startLocation,GetShellTexture(((Game1)game).SpriteBatch))
+    public RocketGlove(Game game, Vector2 startLocation, float knockback) : base(game, startLocation,GetShellTexture(((Game1)game).SpriteBatch))
     {
         // Rocket specific defaults
         PixelsPerSecond = 100f;
@@ -43,57 +44,49 @@ class RocketGlove : Entity
         ExplosionTileRadius = 2;
         maxHitEnemies = 5;
         Lifetime = 1f;
+        this.knockback = knockback;
         Console.WriteLine("Spawned rocket");
     }
 
     public override void Update(GameTime gameTime)
     {
-        if(Lifetime <= 0f)
+        if (Lifetime <= 0f)
         {
-            HandleExplosion();
+            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+                magnitude: knockback, Damage);
             Destroy();
             return;
         }
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var oldPosition = Position;
         Position += Direction * (PixelsPerSecond * deltaTime);
 
         if (hitEnemies.Count >= maxHitEnemies)
         {
-            HandleExplosion();
+            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+                magnitude: knockback, Damage);
             Destroy();
         }
 
         foreach (Enemy enemy in EnemySystem.Enemies)
         {
-            if(Collision.AreEntitiesColliding(this,enemy))
+            if (Collision.AreEntitiesColliding(this,enemy))
             {
                 hitEnemies.Add(enemy);
-                enemy.Knockback(Direction,4f);
+                enemy.ApplyKnockback(Direction * 4f);
                 Console.WriteLine("Rocket hit enemy at position " + enemy.Position);
             }
         }
 
         Lifetime -= deltaTime;
-    }
-    private void HandleExplosion()
-    {
-        var explosionCenter = Position + Direction;
 
-        var Enemies = EnemySystem.Enemies.ToArray();
-
-        foreach (Enemy enemy in Enemies)
+        if (Collision.IsEntityInTerrain(this, Game.Terrain, out var _) ||
+            Collision.IsEntityInScrap(this, out var _))
         {
-            var distance = Vector2.Distance(explosionCenter, enemy.Position + enemy.Size / 2);
-            var tileDistance = distance / Grid.TileLength;
-
-            if (tileDistance <= ExplosionTileRadius)
-            {
-                enemy.HealthSystem.TakeDamage(Damage);
-            }
+            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+                magnitude: knockback, Damage);
+            Destroy();
         }
-
-        Console.WriteLine("Rocket exploded at " + explosionCenter);
     }
 }

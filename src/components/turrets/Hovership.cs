@@ -34,20 +34,29 @@ class Hovership : Entity, ITower
         FloatingFactory
     }
 
-    public Hovership(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Hovership(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), price: 160);
-        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), price: 120);
-        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), price: 110);
-        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), price: 150);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), tempIcon, price: 160);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), tempIcon, price: 120);
+        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), tempIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), tempIcon, price: 110);
+        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), tempIcon, price: 150);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), tempIcon, price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
+
+        BombierBay.Description = "+2 projectiles";
+        EfficientEngines.Description = "+10 tile range";
+        OrbitalLaser.Description = "-0.85 shots/s\nInstead of bombs,\nfires a massive orbital laser\nthat deals 300 damage\nover 4s.\nUnlimited pierce";
+        CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
+        EMPShip.Description = "-2 projectiles.\n+10 tile hover height.\n+5 tile area of effect\nNow Shocks enemies for 5s.";
+        FloatingFactory.Description = "Drops 2 ground troops which run\nat enemies, stalling them and\nattacking for 20 DPS.\nTroops drop worthless scrap on death.";
 
         towerCore.CurrentUpgrade = defaultNode;
 
@@ -205,7 +214,7 @@ class Hovership : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -236,5 +245,9 @@ class Hovership : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Hovership(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

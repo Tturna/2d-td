@@ -1,6 +1,7 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -31,19 +32,31 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), price: 75);
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), price: 50);
-        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), price: 20, leftChild: photonCannon, rightChild: botShot);
+        var photonCannonIcon = AssetManager.GetTexture("gunTurret_photoncannon_icon");
+        var botShotIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+        var doubleGunIcon = AssetManager.GetTexture("gunTurret_doublegun_icon");
+        var rocketShotsIcon = AssetManager.GetTexture("gunTurret_rocketshots_icon");
+        var improvedBarrelIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), price: 70);
-        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), price: 15, leftChild: rocketShots);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 75);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 50);
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 20, leftChild: photonCannon, rightChild: botShot);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 70);
+        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon, price: 15, leftChild: rocketShots);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
+
+        doubleGun.Description = "+1 shots/sec";
+        improvedBarrel.Description = "+3 damage,\n+4 range";
+        photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
+        botShot.Description = "-75% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
+        rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -269,7 +282,7 @@ class GunTurret : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -300,5 +313,45 @@ class GunTurret : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new GunTurret(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        Texture2D newBaseTexture = AnimationSystem!.BaseAnimationData.Texture;
+        int newFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.BotShot.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_botshot_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_photoncannon_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_photoncannon_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.RocketShots.ToString())
+        {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_rocketshots_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.DoubleGun.ToString())
+        {
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_doublegun_gun");
+        }
+        else if (newUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
+        {
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
+        }
+
+        var newBaseAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newBaseTexture,
+            frameCount: newFrameCount,
+            frameSize: new Vector2(newBaseTexture.Width / newFrameCount, newBaseTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        AnimationSystem.ChangeAnimationState(null, newBaseAnimation);
     }
 }

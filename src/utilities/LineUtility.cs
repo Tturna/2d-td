@@ -15,10 +15,7 @@ public static class LineUtility
     {
         if (pixelTexture is null)
         {
-            pixelTexture = new Texture2D(spriteBatch.GraphicsDevice, width: 1, height: 1,
-                    mipmap: false, SurfaceFormat.Color);
-
-            pixelTexture.SetData(new[] { Color.White });
+            pixelTexture = TextureUtility.GetBlankTexture(spriteBatch, 1, 1, Color.White);
         }
 
         return pixelTexture;

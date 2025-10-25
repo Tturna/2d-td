@@ -1,5 +1,6 @@
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -25,7 +26,7 @@ class Railgun : Entity, ITower
         GoldenGatling
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
 
@@ -42,15 +43,27 @@ class Railgun : Entity, ITower
 
         towerCore = new TowerCore(this);
 
-        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), price: 85);
-        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), price: 25, leftChild: AntimatterLaser);
+        var antimatterLaserIcon = AssetManager.GetTexture("railgun_antimatterlaser_icon");
+        var tungstenShellsIcon = AssetManager.GetTexture("railgun_tungstenshells_icon");
+        var cannonballIcon = AssetManager.GetTexture("railgun_cannonball_icon");
+        var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
+        var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
 
-        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), price: 70);
-        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), price: 80);
-        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 85);
+        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 70);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 80);
+        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), polishedRoundsIcon, price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: Momentum, rightChild: PolishedRound);
+
+        Momentum.Description = "+3 pierce";
+        PolishedRound.Description = "+25 damage";
+        AntimatterLaser.Description = "+9 pierce,\n+ 6 range,\n+ 20 damage";
+        Cannonball.Description = "-2 pierce,\n+250 damage";
+        GoldenGatling.Description = "+5 shots/s,\n-40 damage\nAfter firing for 2s straight,\ninflicts burn stacks as well.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -148,16 +161,16 @@ class Railgun : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("railgun_base");
+        var sprite = AssetManager.GetTexture("railgun_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
-            frameSize: new Vector2(sprite.Width, sprite.Height),
-            delaySeconds: 0
+            frameCount: 7,
+            frameSize: new Vector2(sprite.Width / 7, sprite.Height),
+            delaySeconds: 0.1f
         );
     }
 
@@ -179,5 +192,68 @@ class Railgun : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new Railgun(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        Texture2D newIdleTexture;
+        Texture2D newFireTexture;
+        var newIdleFrameCount = 1;
+        var newFireFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.AntimatterLaser.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_antimatterlaser_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_antimatterlaser_fire");
+            newIdleFrameCount = 4;
+            newFireFrameCount = 6;
+        }
+        else if (newUpgrade.Name == Upgrade.Cannonball.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_cannonball_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_cannonball_fire");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 7;
+        }
+        else if (newUpgrade.Name == Upgrade.GoldenGatling.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_goldengatling_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_goldengatling_fire");
+            newIdleFrameCount = 3;
+            newFireFrameCount = 2;
+        }
+        else if (newUpgrade.Name == Upgrade.PolishedRound.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_polishedrounds_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_polishedrounds_fire");
+            newIdleFrameCount = 8;
+            newFireFrameCount = 5;
+        }
+        else
+        {
+            newIdleTexture = AssetManager.GetTexture("railgun_tungstenshells_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_tungstenshells_fire");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 5;
+        }
+
+        var newIdleAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newIdleTexture,
+            frameCount: newIdleFrameCount,
+            frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        var newFireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newFireTexture,
+            frameCount: newFireFrameCount,
+            frameSize: new Vector2(newFireTexture.Width / newFireFrameCount, newFireTexture.Height),
+            delaySeconds: 0.05f
+        );
+
+        AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
 }

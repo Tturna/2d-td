@@ -12,23 +12,30 @@ public class UIComponent : DrawableGameComponent
 
     private List<UIEntity> uiElements = new();
     private List<UIEntity> pauseMenuElements = new();
+    private List<UIEntity> winScreenElements = new();
+    private List<UIEntity> loseScreenElements = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
+    private UIEntity waveIndicator;
     private bool isPauseMenuVisible;
     private bool escHeld;
+    private bool isWon;
+    private bool isLost;
+    private int buyButtonCount = 0;
 
-    private static SpriteFont defaultFont = AssetManager.GetFont("default");
-    private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
+    private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
+    private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square_empty");
     private float halfScreenWidth = Game1.Instance.NativeScreenWidth / 2;
     private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
-    private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+    private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
+    private readonly Vector2 scrapTextOffset = new Vector2(3, -1);
 
     private AnimationSystem.AnimationData buttonAnimationData = new
     (
         texture: buttonSprite,
-        frameCount: 2,
+        frameCount: 1,
         frameSize: buttonFrameSize,
-        delaySeconds: 0.5f
+        delaySeconds: 0
     );
 
     public static UIComponent Instance;
@@ -39,87 +46,88 @@ public class UIComponent : DrawableGameComponent
         Instance = this;
     }
 
+    private void CreateTowerBuyButton<T>(Texture2D towerIcon, BuildingSystem.TowerType towerType) where T : ITower
+    {
+        var priceIcon = AssetManager.GetTexture("icon_scrap_small");
+        var turretIcon = new UIEntity(game, uiElements, towerIcon);
+        var turretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var turretPriceIcon = new UIEntity(game, uiElements, priceIcon);
+        var turretPriceText = new UIEntity(game, uiElements, pixelsixFont, CurrencyManager.GetTowerPrice(towerType).ToString());
+        turretButton.ButtonPressed += () => SelectTurret<T>();
+
+        const float Margin = 20;
+        const float Gap = 32;
+        const int towers = 6;
+        Vector2 priceIconOffset = new Vector2(3, 3);
+        Vector2 priceTextOffset = new Vector2(2, -2);
+
+        var xPos = game.NativeScreenWidth / 2 - buttonFrameSize.X / 2
+            + buttonFrameSize.X * buyButtonCount + Gap * buyButtonCount
+            - (buttonFrameSize.X / 2) * (towers - 1) - (Gap / 2 * (towers - 1));
+        var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
+        var pos = new Vector2(xPos, yPos);
+        var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
+        var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
+
+        turretButton.Position = pos;
+        turretIcon.Position = iconPosition;
+        turretIcon.DrawLayerDepth = 0.7f;
+        turretPriceIcon.Position = turretButton.Position + new Vector2(priceIconOffset.X,
+            turretButton.Size.Y + priceIconOffset.Y);
+
+        turretPriceText.Position = turretPriceIcon.Position
+            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y);
+
+        buyButtonCount++;
+    }
+
     public override void Initialize()
     {
         HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
         WaveSystem.LevelWin += ShowLevelWinScreen;
 
+        var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
+        var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
+        currencyText = new UIEntity(game, uiElements, pixelsixFont, $"{CurrencyManager.Balance}");
+
+        var balanceTextWidth = pixelsixFont.MeasureString("999").X * currencyText.Scale.X;
+
+        scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2
+            - balanceTextWidth / 2 - scrapTextOffset.X / 2,
+            game.NativeScreenHeight - 64);
+        scrapIcon.Position = Vector2.Floor(scrapIcon.Position);
+
+        currencyText.Position = scrapIcon.Position;
+        currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
+        currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
+
+        waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Wave 0 of 0");
+        waveIndicator.Scale = Vector2.One * 2;
+        var waveTextWidth = pixelsixFont.MeasureString("Wave 9 of 9").X * waveIndicator.Scale.X;
+        waveIndicator.Position = new Vector2(game.NativeScreenWidth - waveTextWidth, 0);
+
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
 
-        var gunTurretIcon = new UIEntity(game, uiElements, gunTurretSprite);
-        var railgunIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var droneIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var craneIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var mortarIcon = new UIEntity(game, uiElements, gunTurretSprite);
-        var hovershipIcon = new UIEntity(game, uiElements, turretTwoSprite);
-        var punchtrapIcon = new UIEntity(game, uiElements, turretTwoSprite);
+        CreateTowerBuyButton<GunTurret>(gunTurretSprite, BuildingSystem.TowerType.GunTurret);
+        CreateTowerBuyButton<Railgun>(turretTwoSprite, BuildingSystem.TowerType.Railgun);
+        CreateTowerBuyButton<Drone>(turretTwoSprite, BuildingSystem.TowerType.Drone);
+        CreateTowerBuyButton<Crane>(turretTwoSprite, BuildingSystem.TowerType.Crane);
+        CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
+        CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
+        CreateTowerBuyButton<PunchTrap>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
 
-        var gunTurretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var railgunButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var droneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var craneButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var mortarButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var hovershipButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var punchtrapButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        
-        currencyText = new UIEntity(game, uiElements, defaultFont, $"Scrap: {CurrencyManager.Balance}");
-        var gunTurretPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.GunTurret).ToString());
-        var railgunPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Railgun).ToString());
-        var dronePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Drone).ToString());
-        var cranePriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Crane).ToString());
-        var mortarPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Mortar).ToString());
-        var hovershipPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.Hovership).ToString());
-        var punchtrapPriceText = new UIEntity(game, uiElements, defaultFont, CurrencyManager.GetTowerPrice(BuildingSystem.TowerType.PunchTrap).ToString());
+        var pauseIconTexture = AssetManager.GetTexture("btn_pause");
+        var pauseButtonAnimation = new AnimationSystem.AnimationData
+        (
+            texture: pauseIconTexture,
+            frameCount: 2,
+            frameSize: new Vector2(pauseIconTexture.Width / 2, pauseIconTexture.Height),
+            delaySeconds: 0.5f
+        );
 
-        gunTurretButton.ButtonPressed += () => SelectTurret<GunTurret>();
-        railgunButton.ButtonPressed += () => SelectTurret<Railgun>();
-        droneButton.ButtonPressed += () => SelectTurret<Drone>();
-        craneButton.ButtonPressed += () => SelectTurret<Crane>();
-        mortarButton.ButtonPressed += () => SelectTurret<Mortar>();
-        hovershipButton.ButtonPressed += () => SelectTurret<Hovership>();
-        punchtrapButton.ButtonPressed += () => SelectTurret<PunchTrap>();
-
-        const float Margin = 20;
-        var xPos = Margin;
-        var yPos = game.Graphics.PreferredBackBufferHeight - buttonFrameSize.Y - Margin;
-        var pos = new Vector2(xPos, yPos);
-
-        var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
-        var iconPosition = buttonCenter - new Vector2(gunTurretIcon.Size.X / 2, gunTurretIcon.Size.Y / 2);
-
-        gunTurretButton.Position = pos;
-        railgunButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin);
-        droneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
-        craneButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
-        mortarButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
-        hovershipButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
-        punchtrapButton.Position = pos + Vector2.UnitX * (buttonFrameSize.X + Margin) * 6;
-
-        gunTurretIcon.Position = iconPosition;
-        railgunIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin);
-        droneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 2;
-        craneIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 3;
-        mortarIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 4;
-        hovershipIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 5;
-        punchtrapIcon.Position = iconPosition + Vector2.UnitX * (buttonFrameSize.X + Margin) * 6;
-        
-        gunTurretIcon.DrawLayerDepth = 0.7f;
-        railgunIcon.DrawLayerDepth = 0.7f;
-        droneIcon.DrawLayerDepth = 0.7f;
-        craneIcon.DrawLayerDepth = 0.7f;
-        mortarIcon.DrawLayerDepth = 0.7f;
-        hovershipIcon.DrawLayerDepth = 0.7f;
-        punchtrapIcon.DrawLayerDepth = 0.7f;
-
-        currencyText.Position = Vector2.Zero;
-        gunTurretPriceText.Position = gunTurretButton.Position + Vector2.UnitY * gunTurretButton.Size.Y;
-        railgunPriceText.Position = railgunButton.Position + Vector2.UnitY * railgunButton.Size.Y;
-        dronePriceText.Position = droneButton.Position + Vector2.UnitY * droneButton.Size.Y;
-        cranePriceText.Position = craneButton.Position + Vector2.UnitY * craneButton.Size.Y;
-        mortarPriceText.Position = mortarButton.Position + Vector2.UnitY * mortarButton.Size.Y;
-        hovershipPriceText.Position = hovershipButton.Position + Vector2.UnitY * hovershipButton.Size.Y;
-        punchtrapPriceText.Position = punchtrapButton.Position + Vector2.UnitY * punchtrapButton.Size.Y;
+        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonAnimation);
+        pauseButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
 
         base.Initialize();
     }
@@ -148,7 +156,8 @@ public class UIComponent : DrawableGameComponent
             BuildingSystem.DeselectTower();
         }
 
-        currencyText.Text = $"Scrap: {CurrencyManager.Balance}";
+        currencyText.Text = $"{CurrencyManager.Balance}";
+        waveIndicator.Text = $"Wave {WaveSystem.CurrentWaveIndex + 1} of {WaveSystem.MaxWaveIndex}";
 
         var kbdState = Keyboard.GetState();
         if (!escHeld && kbdState.IsKeyDown(Keys.Escape))
@@ -196,7 +205,7 @@ public class UIComponent : DrawableGameComponent
     private void SelectTurret<T>() where T : ITower
     {
         BuildingSystem.SelectTurret<T>();
-        var turretAnimationData = T.GetTowerAnimationData();
+        var turretAnimationData = T.GetTowerBaseAnimationData();
         CreateTurretHologram(turretAnimationData);
     }
 
@@ -213,8 +222,33 @@ public class UIComponent : DrawableGameComponent
             }
 
             pauseMenuElements.Clear();
+
+            if (isWon)
+            {
+                ShowLevelWinScreen();
+            }
+            else if (isLost)
+            {
+                ShowGameOverScreen();
+            }
+
             return;
         }
+
+        // clear win and loss screens
+        foreach (var element in winScreenElements)
+        {
+            element.Destroy();
+        }
+
+        winScreenElements.Clear();
+
+        foreach (var element in loseScreenElements)
+        {
+            element.Destroy();
+        }
+
+        loseScreenElements.Clear();
 
         var playButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
         var resumeButton = new UIEntity(game, uiElements, playButtonPos, buttonAnimationData);
@@ -225,10 +259,12 @@ public class UIComponent : DrawableGameComponent
         resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
         exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Resume");
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
         resumeButtonText.Position = playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2;
         exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+        resumeButtonText.DrawLayerDepth = 0.8f;
+        exitButtonText.DrawLayerDepth = 0.8f;
 
         pauseMenuElements.Add(resumeButton);
         pauseMenuElements.Add(exitButton);
@@ -236,8 +272,10 @@ public class UIComponent : DrawableGameComponent
         pauseMenuElements.Add(exitButtonText);
     }
 
-    private void ShowGameOverScreen(Entity diedEntity)
+    private void ShowGameOverScreen(Entity _ = null)
     {
+        isLost = true;
+
         var retryButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
         var retryButton = new UIEntity(game, uiElements, retryButtonPos, buttonAnimationData);
 
@@ -247,14 +285,23 @@ public class UIComponent : DrawableGameComponent
         retryButton.ButtonPressed += () => SceneManager.LoadGame();
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var resumeButtonText = new UIEntity(game, uiElements, defaultFont, "Retry");
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
-        resumeButtonText.Position = retryButtonPos + retryButton.Size / 2 - resumeButtonText.Size / 2;
+        var retryButtonText = new UIEntity(game, uiElements, pixelsixFont, "Retry");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
+        retryButtonText.Position = retryButtonPos + retryButton.Size / 2 - retryButtonText.Size / 2;
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+
+        loseScreenElements.Add(retryButton);
+        loseScreenElements.Add(quitButton);
+        loseScreenElements.Add(retryButtonText);
+        loseScreenElements.Add(exitButtonText);
     }
 
     private void ShowLevelWinScreen()
     {
+        // prevent showing the win screen if you've already lost
+        if (isLost) return;
+
+        isWon = true;
         var beatTheGame = game.CurrentZone == 3 && game.CurrentLevel == 5;
 
         var quitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
@@ -264,7 +311,7 @@ public class UIComponent : DrawableGameComponent
         {
             var nextLevelButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
             var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, buttonAnimationData);
-            var nextLevelButtonText = new UIEntity(game, uiElements, defaultFont, "Next Level");
+            var nextLevelButtonText = new UIEntity(game, uiElements, pixelsixFont, "Next Level");
             nextLevelButtonText.Position = nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2;
 
             nextLevelButton.ButtonPressed += () =>
@@ -281,12 +328,18 @@ public class UIComponent : DrawableGameComponent
                 game.SetCurrentZoneAndLevel(nextZone, nextLevel);
                 SceneManager.LoadGame();
             };
+
+            winScreenElements.Add(nextLevelButton);
+            winScreenElements.Add(nextLevelButtonText);
         }
 
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var exitButtonText = new UIEntity(game, uiElements, defaultFont, "Exit");
+        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
         exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+
+        winScreenElements.Add(quitButton);
+        winScreenElements.Add(exitButtonText);
     }
 
     public void AddUIEntity(UIEntity entity)

@@ -1,4 +1,3 @@
-using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -27,7 +26,7 @@ class PunchTrap : Entity, ITower
 
     }
 
-    public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
     {
         //var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base");
 
@@ -44,17 +43,25 @@ class PunchTrap : Entity, ITower
 
         towerCore = new TowerCore(this);
 
-        var MegaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(), price: 75);
-        var RocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(), price: 80);
-        var FatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(), price: 10,leftChild: MegaPunch,rightChild: RocketGlove);
+        var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
+
+        var MegaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(),
+            upgradeIcon: nukeIcon, price: 75);
+        var RocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(),
+            upgradeIcon: nukeIcon, price: 80);
+        var FatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(),
+            upgradeIcon: nukeIcon, price: 10,leftChild: MegaPunch,rightChild: RocketGlove);
         
 
-        var Chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(), price: 70);
-        var FlurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(), price: 80);
-        var QuickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(), price: 10,leftChild: FlurryOfBlows, rightChild: Chainsaw);
+        var Chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(),
+            upgradeIcon: nukeIcon, price: 70);
+        var FlurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(),
+            upgradeIcon: nukeIcon, price: 80);
+        var QuickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(),
+            upgradeIcon: nukeIcon, price: 10,leftChild: FlurryOfBlows, rightChild: Chainsaw);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0, parent: null,
-            leftChild: FatFist, rightChild: QuickJabs);
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(),
+            upgradeIcon: null, price: 0, parent: null, leftChild: FatFist, rightChild: QuickJabs);
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -93,7 +100,7 @@ class PunchTrap : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
-            HandleRocketGlove(deltaTime, actionsPerSecond, damage+50, tileRange, 0);
+            HandleRocketGlove(deltaTime, actionsPerSecond, damage + 50, tileRange, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
         {
@@ -167,7 +174,7 @@ class PunchTrap : Entity, ITower
 
         if (actionTimer >= actionInterval && DetectEnemies(tileRange))
         {
-            RocketGlove rocket = new RocketGlove(Game, Position + direction*8);
+            RocketGlove rocket = new RocketGlove(Game, Position + direction * 8, knockback);
             rocket.Direction = direction;
             actionTimer = 0f;
             //AnimationSystem!.OneShotAnimationState("fire");
@@ -191,7 +198,7 @@ class PunchTrap : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("punchtrap_base");
 
@@ -222,5 +229,9 @@ class PunchTrap : Entity, ITower
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
     {
         return new PunchTrap(game, worldPosition);
+    }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
     }
 }

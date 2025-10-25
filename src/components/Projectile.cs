@@ -15,7 +15,8 @@ class Projectile : Entity
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
-    private List<Enemy> hitEnemies = new();
+    private HashSet<Enemy> hitEnemies = new();
+    private HashSet<Enemy> damagedEnemies = new();
 
     // this constructor is simple so that the turrets can edit the property
     // of bullet themself
@@ -23,8 +24,6 @@ class Projectile : Entity
 
     public override void Update(GameTime gameTime)
     {
-        hitEnemies.Clear();
-
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var oldPosition = Position;
@@ -88,27 +87,34 @@ class Projectile : Entity
 
         if (ExplosionTileRadius == 0)
         {
-            for (int i = 0; i < hitEnemies.Count; i++)
+            foreach (var enemy in hitEnemies)
             {
-                // todo: make it so a projectile with pierce doesn't hit the same enemy multiple time
+                if (damagedEnemies.Contains(enemy)) continue;
+
+                var diff = enemy.Position - oldPosition;
+                var knockbackDirection = diff;
+                knockbackDirection.Normalize();
+                var knockback = knockbackDirection * (Damage / 15);
+
+                enemy.HealthSystem.TakeDamage(Damage);
+                enemy.ApplyKnockback(knockback);
+                damagedEnemies.Add(enemy);
+
                 if (Pierce > 0)
                 {
-                    var enemy = hitEnemies[i];
-                    enemy.HealthSystem.TakeDamage(Damage);
                     Pierce -= 1;
                 }
                 else
                 {
                     bulletToDelete = true;
-                    var enemy = hitEnemies[i];
-                    enemy.HealthSystem.TakeDamage(Damage);
                     break;
                 }
             }
         }
         else if (shouldExplode == true)
         {
-            HandleExplosion();
+            EffectUtility.Explode(Position, ExplosionTileRadius * Grid.TileLength,
+                magnitude: 5f, Damage);
 
             if (Pierce > 0)
             {
@@ -141,22 +147,5 @@ class Projectile : Entity
         }
 
         base.Draw(gameTime);
-    }
-    
-    private void HandleExplosion()
-    {
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-
-            var diff = Position + Size / 2 - enemy.Position + enemy.Size / 2;
-            var distance = diff.Length();
-
-            if (distance > ExplosionTileRadius * Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(Damage);
-        }
     }
 }

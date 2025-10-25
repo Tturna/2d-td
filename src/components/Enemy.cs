@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +19,7 @@ public class Enemy : Entity
     private int attackDamage = 10;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
+    private Vector2 lastPosition;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -50,7 +52,11 @@ public class Enemy : Entity
         MovementSystem.UpdateMovement(this, gameTime);
         PhysicsSystem.UpdatePhysics(this, deltaTime);
 
-        if (PhysicsSystem.Velocity.X > 0.1f)
+        var posDiff = Position - lastPosition;
+        lastPosition = Position;
+        var rawXVelocity = MathF.Abs(posDiff.X);
+
+        if (rawXVelocity > 0.1f)
         {
             selfDestructTimer = selfDestructTime;
         }
@@ -60,6 +66,8 @@ public class Enemy : Entity
 
             if (selfDestructTimer <= 0)
             {
+                EffectUtility.Explode(Position, radius: 3 * Grid.TileLength, magnitude: 20f,
+                    damage: 10);
                 OnDeath(this);
             }
         }
@@ -70,6 +78,13 @@ public class Enemy : Entity
     public override void Draw(GameTime gameTime)
     {
         base.Draw(gameTime);
+    }
+
+    public void ApplyKnockback(Vector2 knockback)
+    {
+        PhysicsSystem.StopMovement();
+        PhysicsSystem.AddForce(knockback);
+        selfDestructTimer = selfDestructTime;
     }
 
     private void OnDamaged(Entity damagedEntity, int amount)
@@ -94,6 +109,4 @@ public class Enemy : Entity
         ScrapSystem.AddScrap(Game, Position);
         Destroy();
     }
-
-
 }

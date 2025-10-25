@@ -11,8 +11,8 @@ public class Game1 : Game
     public Terrain Terrain;
     public Vector2 RenderTargetSize;
     public Vector2 RenderedBlackBoxSize;
-    public int NativeScreenWidth = 800;
-    public int NativeScreenHeight = 480;
+    public int NativeScreenWidth = 640;
+    public int NativeScreenHeight = 360;
     public int CurrentZone { get; private set; }
     public int CurrentLevel { get; private set; }
 
@@ -33,8 +33,14 @@ public class Game1 : Game
 
         Graphics.PreferredBackBufferWidth = NativeScreenWidth;
         Graphics.PreferredBackBufferHeight = NativeScreenHeight;
-        Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
+
+        // default vsync setting
+        Graphics.SynchronizeWithVerticalRetrace = true;
+        Graphics.ApplyChanges();
+
+        // FPS limit
+        IsFixedTimeStep = false;
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
@@ -86,6 +92,8 @@ public class Game1 : Game
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
+                ScrapSystem.Update(gameTime);
+                DebugUtility.Update(this, gameTime);
                 break;
         }
 
@@ -120,14 +128,17 @@ public class Game1 : Game
         // Draw UI separately after everything else to avoid it from being moved by the camera.
         if (ui is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
+            DebugUtility.DrawDebugScreen(SpriteBatch);
             SpriteBatch.End();
         }
 
         if (mainMenu is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
             SpriteBatch.End();
         }

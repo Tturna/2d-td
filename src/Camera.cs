@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -50,6 +49,7 @@ public static class Camera
         Vector2 relativeWorldPos = pos - Position;
         Vector2 scaledRelativePos = relativeWorldPos * Scale;
         Vector2 screenPos = scaledRelativePos + new Vector2(gameViewWidth / 2f, gameViewHeight / 2f);
+        screenPos = Vector2.Round(screenPos);
 
         return screenPos;
     }
