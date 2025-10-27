@@ -27,6 +27,7 @@ public class MovementSystem
     private float jumpTimer;
     private float jumpInterval = 0.5f;
     private float jumpCheckDistanceFactor = 0.5f;
+    private float climbCheckDistanceFactor = 0.15f;
 
     public MovementData CurrentData { get; private set; }
 
@@ -99,16 +100,74 @@ public class MovementSystem
         return shouldJump;
     }
 
+    private bool ShouldClimb(Entity entity)
+    {
+        var entityBottom = entity.Position + Vector2.UnitY * entity.Size.Y;
+
+        (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
+        var entityTileWidth = Math.Floor(tileWidth);
+
+        var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
+        var remainderHeight = entity.Size.Y % Grid.TileLength;
+        var halfEntityWidth = entity.Size.X / 2;
+        var climbCheckDistance = halfEntityWidth + climbCheckDistanceFactor * Grid.TileLength;
+        var shouldClimb = false;
+
+        for (int i = 0; i <= entityTileHeight; i++)
+        {
+            var yOffset = Vector2.UnitY * (Grid.TileLength * i);
+
+            if (i == entityTileHeight)
+            {
+                yOffset -= Vector2.UnitY * (Grid.TileLength / 2);
+                yOffset += Vector2.UnitY * (remainderHeight / 2);
+            }
+
+            var startPos = entity.Position + yOffset;
+            var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
+            var climbCheckPoint = horizontalEntityCenter + defaultChargeDirection * climbCheckDistance;
+            
+            if (Collision.IsPointInTerrain(climbCheckPoint, game.Terrain) ||
+                ScrapSystem.GetScrapFromPosition(climbCheckPoint) is not null)
+            {
+                shouldClimb = true;
+                break;
+            }
+        }
+
+        var bottomStartPos = entity.Position + Vector2.UnitY * (entity.Size.Y - 1);
+        var centerStartPos = bottomStartPos + Vector2.UnitX * halfEntityWidth;
+        var finalCheckPoint = centerStartPos + defaultChargeDirection * climbCheckDistance;
+
+        if (Collision.IsPointInTerrain(finalCheckPoint, game.Terrain) ||
+            ScrapSystem.GetScrapFromPosition(finalCheckPoint) is not null)
+        {
+            shouldClimb = true;
+        }
+
+        return shouldClimb;
+    }
+
     private void HandleCharge(Entity entity, float deltaTime)
     {
         if (CurrentData.CanWalk)
         {
-            if (CanAndShouldJump(entity))
+            // if (CanAndShouldJump(entity))
+            // {
+            //     var enemy = (Enemy)entity;
+            //     enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
+            //     enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
+            //     jumpTimer = jumpInterval;
+            // }
+
+            if (ShouldClimb(entity))
             {
-                var enemy = (Enemy)entity;
-                enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
-                enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
-                jumpTimer = jumpInterval;
+                if (entity is Enemy)
+                {
+                    ((Enemy)entity).PhysicsSystem.StopMovement();
+                }
+
+                entity.UpdatePosition(-Vector2.UnitY * deltaTime * 100);
             }
 
             entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
