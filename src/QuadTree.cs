@@ -240,6 +240,68 @@ public class QuadTree<T> where T : Enemy
         return totalValues;
     }
 
+    private float DistanceToRectSq(Vector2 p, Vector2 rectPos, Vector2 rectSize)
+    {
+        float xMin = rectPos.X;
+        float yMin = rectPos.Y;
+        float xMax = rectPos.X + rectSize.X;
+        float yMax = rectPos.Y + rectSize.Y;
+
+        float dx = Math.Max(Math.Max(xMin - p.X, 0), p.X - xMax);
+        float dy = Math.Max(Math.Max(yMin - p.Y, 0), p.Y - yMax);
+        return dx * dx + dy * dy;
+    }
+
+    // ChatGPT vibe coded
+    public Enemy? FindClosestEnemy(Vector2 point)
+    {
+        var pq = new PriorityQueue<QuadTree<Enemy>, float>();
+        pq.Enqueue(EnemySystem.EnemyTree, 0f);
+
+        Enemy? closestEnemy = null;
+        float bestDistSq = float.PositiveInfinity;
+
+        while (pq.Count > 0)
+        {
+            pq.TryDequeue(out var node, out var distToNode);
+
+            // If this node is farther than our best known enemy, we can stop
+            if (distToNode > bestDistSq)
+                break;
+
+            if (node!.topLeftQuad is null)
+            {
+                foreach (var enemy in node.Values)
+                {
+                    float distSq = (enemy.Position - point).LengthSquared();
+
+                    if (distSq < bestDistSq)
+                    {
+                        bestDistSq = distSq;
+                        closestEnemy = enemy;
+                    }
+                }
+            }
+            else
+            {
+                var topLeftPos = new Vector2(node.topLeftQuad!.bounds.X, node.topLeftQuad.bounds.Y);
+                var topLeftSize = new Vector2(node.topLeftQuad!.bounds.Width, node.topLeftQuad.bounds.Height);
+                var topRightPos = new Vector2(node.topRightQuad!.bounds.X, node.topRightQuad.bounds.Y);
+                var topRightSize = new Vector2(node.topRightQuad!.bounds.Width, node.topRightQuad.bounds.Height);
+                var botLeftPos = new Vector2(node.botLeftQuad!.bounds.X, node.botLeftQuad.bounds.Y);
+                var botLeftSize = new Vector2(node.botLeftQuad!.bounds.Width, node.botLeftQuad.bounds.Height);
+                var botRightPos = new Vector2(node.botRightQuad!.bounds.X, node.botRightQuad.bounds.Y);
+                var botRightSize = new Vector2(node.botRightQuad!.bounds.Width, node.botRightQuad.bounds.Height);
+                pq.Enqueue((node.topLeftQuad as QuadTree<Enemy>)!, DistanceToRectSq(point, topLeftPos, topLeftSize));
+                pq.Enqueue((node.topRightQuad as QuadTree<Enemy>)!, DistanceToRectSq(point, topRightPos, topRightSize));
+                pq.Enqueue((node.botLeftQuad as QuadTree<Enemy>)!, DistanceToRectSq(point, botLeftPos, botLeftSize));
+                pq.Enqueue((node.botRightQuad as QuadTree<Enemy>)!, DistanceToRectSq(point, botRightPos, botRightSize));
+            }
+        }
+
+        return closestEnemy;
+    }
+
     public void Add(T value)
     {
         TryGetSmallestQuad(value.Position, out var smallestQuad);

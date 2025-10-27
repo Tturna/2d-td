@@ -4,15 +4,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 public class MortarShell : Entity
 {
     public delegate void DestroyedHandler(Vector2 previousVelocity);
-    public event DestroyedHandler Destroyed;
+    public event DestroyedHandler? Destroyed;
 
     public PhysicsSystem physics;
     public bool Homing;
 
-    private Enemy closestEnemy;
+    private Enemy? closestEnemy;
     private Vector2? differenceToClosestEnemy;
     private float homingDelayTimer;
     private float lifeTime = 5f;
@@ -27,12 +28,12 @@ public class MortarShell : Entity
         physics = new PhysicsSystem(Game);
         var rng = new Random();
         homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
-        shellCenter = Position + Size / 2;
     }
 
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        shellCenter = Position + Size / 2;
 
         lifeTime -= deltaTime;
 
@@ -45,29 +46,12 @@ public class MortarShell : Entity
             else
             {
                 physics.DragFactor = homingDragFactor;
-                closestEnemy = null;
+                closestEnemy = EnemySystem.EnemyTree.FindClosestEnemy(shellCenter);
                 differenceToClosestEnemy = null;
 
-                if (!EnemySystem.EnemyTree.TryGetSmallestQuad(shellCenter, out var smallestQuad))
+                if (closestEnemy is not null)
                 {
-                    // shell is outside of enemy quad tree. Don't trigger real shell impact
-                    Destroy();
-                }
-
-                var enemyCandidates = smallestQuad.Values;
-
-                foreach (var enemy in enemyCandidates)
-                {
-                    // Target the bottom part of enemies to hit the ground
-                    var targetEnemyPosition = enemy.Position + new Vector2(enemy.Size.X / 2, enemy.Size.Y);
-                    var diff = targetEnemyPosition - shellCenter;
-                    var distance = diff.Length();
-
-                    if (differenceToClosestEnemy is null || distance < ((Vector2)differenceToClosestEnemy).Length())
-                    {
-                        closestEnemy = enemy;
-                        differenceToClosestEnemy = diff;
-                    }
+                    differenceToClosestEnemy = closestEnemy.Position + closestEnemy.Size / 2 - shellCenter;
                 }
 
                 if (differenceToClosestEnemy is not null)
