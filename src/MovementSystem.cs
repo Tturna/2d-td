@@ -128,7 +128,8 @@ public class MovementSystem
             var climbCheckPoint = horizontalEntityCenter + defaultChargeDirection * climbCheckDistance;
             
             if (Collision.IsPointInTerrain(climbCheckPoint, game.Terrain) ||
-                ScrapSystem.GetScrapFromPosition(climbCheckPoint) is not null)
+                ScrapSystem.GetScrapFromPosition(climbCheckPoint) is not null ||
+                ScrapSystem.IsPointInCorpse(climbCheckPoint))
             {
                 shouldClimb = true;
                 break;
@@ -140,7 +141,8 @@ public class MovementSystem
         var finalCheckPoint = centerStartPos + defaultChargeDirection * climbCheckDistance;
 
         if (Collision.IsPointInTerrain(finalCheckPoint, game.Terrain) ||
-            ScrapSystem.GetScrapFromPosition(finalCheckPoint) is not null)
+            ScrapSystem.GetScrapFromPosition(finalCheckPoint) is not null ||
+                ScrapSystem.IsPointInCorpse(finalCheckPoint))
         {
             shouldClimb = true;
         }

@@ -122,7 +122,11 @@ public class Enemy : Entity
     {
         EnemySystem.EnemyTree.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
-        ScrapSystem.AddScrap(Game, Position);
+        // ScrapSystem.AddScrap(Game, Position);
+
+        var anim = AnimationSystem.BaseAnimationData;
+        anim.DelaySeconds = float.PositiveInfinity;
+        ScrapSystem.AddCorpse(Game, Position, anim);
         Destroy();
     }
 }

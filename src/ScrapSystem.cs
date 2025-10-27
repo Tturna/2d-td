@@ -12,6 +12,8 @@ public static class ScrapSystem
     private static readonly float clearStepInterval = 0.1f;
     private static float clearStepTimer;
 
+    public static List<Entity> Corpses = new();
+
     public static void Initialize()
     {
         if (scrapTileMap is not null)
@@ -113,6 +115,12 @@ public static class ScrapSystem
         tile.AddToPile();
     }
 
+    public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation)
+    {
+        var corpse = new Entity(game, position, animation);
+        Corpses.Add(corpse);
+    }
+
     public static ScrapTile? GetScrapFromPosition(Vector2 worldPosition)
     {
         var gridPosition = Grid.SnapPositionToGrid(worldPosition);
@@ -125,11 +133,29 @@ public static class ScrapSystem
         return null;
     }
 
+    public static bool IsPointInCorpse(Vector2 point)
+    {
+        foreach (var corpse in Corpses)
+        {
+            if (Collision.IsPointInEntity(point, corpse)) return true;
+        }
+
+        return false;
+    }
+
     private static void ClearScrap()
     {
         if (clearingScrap) return;
 
         clearingScrap = true;
         clearStepTimer = clearStepInterval;
+
+        // TODO: make sure corpses are cleared when going to the menu and back
+        foreach (var corpse in Corpses)
+        {
+            corpse.Destroy();
+        }
+
+        Corpses.Clear();
     }
 }

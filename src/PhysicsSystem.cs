@@ -59,6 +59,14 @@ public class PhysicsSystem
             ResolveEntitiesCollision(entity, enemy);
         }
 
+        // Collide with corpses
+        foreach (var corpse in ScrapSystem.Corpses)
+        {
+            if (!Collision.AreEntitiesColliding(entity, corpse)) continue;
+
+            ResolveEntitiesCollision(entity, corpse);
+        }
+
         return collidedScraps.Length + collidedTilePositions.Length > 0;
     }
 
