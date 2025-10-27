@@ -77,6 +77,7 @@ public class Game1 : Game
         {
             if (ui is not null) ui.Update(gameTime);
             if (mainMenu is not null) mainMenu.Update(gameTime);
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game) DebugUtility.Update(this, gameTime);
             return;
         }
 
@@ -118,7 +119,7 @@ public class Game1 : Game
             Vector2 startPoint = lineTuple.Item1;
             Vector2 endPoint = lineTuple.Item2;
             Color color = lineTuple.Item3;
-            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color, thickness: 1f);
         }
 
         DebugUtility.ResetLines();

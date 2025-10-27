@@ -79,7 +79,7 @@ public class Mortar : Entity, ITower
 
     public override void Initialize()
     {
-        Position -= Vector2.UnitY * 4;
+        UpdatePosition(-Vector2.UnitY * 4);
 
         base.Initialize();
     }
@@ -152,7 +152,7 @@ public class Mortar : Entity, ITower
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.Position = Position;
+        shell.SetPosition(Position);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
@@ -169,7 +169,7 @@ public class Mortar : Entity, ITower
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.Position = Position;
+        shell.SetPosition(Position);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
@@ -189,7 +189,7 @@ public class Mortar : Entity, ITower
         {
             var shell = new MortarShell(Game);
             var xOffset = i * Grid.TileLength;
-            shell.Position = Position + Vector2.UnitX * xOffset;
+            shell.SetPosition(Position + Vector2.UnitX * xOffset);
             shell.physics.LocalGravity = 0f;
             shell.Homing = true;
 
@@ -211,7 +211,7 @@ public class Mortar : Entity, ITower
         for (int i = 0; i < 6; i++)
         {
             var shell = new MortarShell(Game);
-            shell.Position = Position;
+            shell.SetPosition(Position);
             shell.physics.LocalGravity = projectileGravity;
             shell.physics.DragFactor = 0f;
 
@@ -248,7 +248,7 @@ public class Mortar : Entity, ITower
             var newVelocity = newVelocityDirection * previousVelocity.Length();
             var newShell = new MortarShell(Game);
 
-            newShell.Position = shell.Position;
+            newShell.SetPosition(shell.Position);
             newShell.physics.LocalGravity = projectileGravity;
             newShell.physics.DragFactor = 0f;
             newShell.physics.AddForce(newVelocity);

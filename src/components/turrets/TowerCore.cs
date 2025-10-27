@@ -31,19 +31,20 @@ public class TowerCore : GameComponent, IClickable
     {
         Enemy? closestEnemy = null;
         float closestDistance = float.PositiveInfinity;
+        var range = tileRange * Grid.TileLength;
+        var towerCenter = Turret.Position + Turret.Size / 2;
+        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(towerCenter, range);
 
-        // TODO: Don't loop over all enemies. Just the ones in range.
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        foreach (Enemy enemy in enemyCandidates)
         {
-            var distanceToEnemy = Vector2.Distance(Turret.Position, enemy.Position);
+            var enemyCenter = enemy.Position + enemy.Size / 2;
+            var distanceToEnemy = Vector2.Distance(towerCenter, enemyCenter);
 
-            if (distanceToEnemy > tileRange * Grid.TileLength)
+            if (distanceToEnemy > range)
                 continue;
 
             if (distanceToEnemy < closestDistance)
             {
-                var towerCenter = Turret.Position + Turret.Size / 2;
-                var enemyCenter = enemy.Position + enemy.Size / 2;
                 if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
 
                 closestDistance = distanceToEnemy;

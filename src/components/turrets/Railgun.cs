@@ -71,7 +71,7 @@ class Railgun : Entity, ITower
     public override void Initialize()
     {
         // Offset so the tower is flat on the ground
-        Position += Vector2.UnitY * 3;
+        UpdatePosition(Vector2.UnitY * 3);
 
         base.Initialize();
     }
@@ -140,8 +140,12 @@ class Railgun : Entity, ITower
     public bool IsEnemyInLine(int tileRange)
     {
         var range = tileRange * Grid.TileLength;
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInQuadLine(Position,
+            QuadTree<Enemy>.LineDirection.Left);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
+            // TODO: ensure this condition is correct
             if (enemy.Position.Y < Position.Y + Size.Y &&
                 enemy.Position.Y > Position.Y &&
                 enemy.Position.X < Position.X &&

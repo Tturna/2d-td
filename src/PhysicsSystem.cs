@@ -25,14 +25,14 @@ public class PhysicsSystem
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 
         var oldPosition = entity.Position + entity.Size / 2;
-        entity.Position += Velocity;
+        entity.UpdatePosition(Velocity);
 
         if (Collision.IsLineInTerrain(oldPosition, entity.Position + entity.Size / 2, out var entryPoint, out var _))
         {
             // Set entity position to first collision point and then resolve.
             // This helps prevent fast moving objects moving far into terrain or scrap and
             // resolving incorrectly.
-            entity.Position = entryPoint - entity.Size / 2;
+            entity.SetPosition(entryPoint - entity.Size / 2);
         }
 
         if (Collision.IsEntityInScrap(entity, out var collidedScraps))
@@ -71,7 +71,7 @@ public class PhysicsSystem
                 Velocity = Vector2.UnitX * Velocity.X;
             }
 
-            entity.Position += correction;
+            entity.UpdatePosition(correction);
     }
 
     private void ResolveEntityTerrainCollision(Entity entity, Vector2[] collidedTilePositions)

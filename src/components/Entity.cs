@@ -9,7 +9,7 @@ public class Entity : DrawableGameComponent
 {
     // Hide Game field of DrawableGameComponent so children can directly use a Game1 instance.
     new protected Game1 Game;
-    public Vector2 Position { get; set; } = Vector2.Zero;
+    public Vector2 Position { get; private set; } = Vector2.Zero;
     public float RotationRadians { get; set; }
     public Vector2 Size { get; set; }
     public Vector2 DrawOrigin { get; set; } = Vector2.Zero;
@@ -111,5 +111,15 @@ public class Entity : DrawableGameComponent
         {
             Game.Components.RemoveAt(index);
         }
+    }
+
+    public virtual void UpdatePosition(Vector2 positionChange)
+    {
+        Position += positionChange;
+    }
+
+    public virtual void SetPosition(Vector2 newPosition)
+    {
+        Position = newPosition;
     }
 }

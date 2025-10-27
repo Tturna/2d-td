@@ -17,7 +17,7 @@ public class ScrapTile : Entity
     {
         var yScale = (float)ScrapLevel / MaxScrapLevel;
         Scale = new Vector2(1f, yScale);
-        Position += Vector2.UnitY * (Grid.TileLength * (1f - yScale));
+        UpdatePosition(Vector2.UnitY * (Grid.TileLength * (1f - yScale)));
     }
 
     public void AddToPile(int amount = 1)
@@ -68,7 +68,7 @@ public class ScrapTile : Entity
         ScrapLevel = Math.Min(ScrapLevel + amount, MaxScrapLevel);
         var yScale = (float)ScrapLevel / MaxScrapLevel;
         Scale = new Vector2(1f, yScale);
-        Position -= Vector2.UnitY * (Grid.TileLength * (1f / MaxScrapLevel));
+        UpdatePosition(-Vector2.UnitY * (Grid.TileLength * (1f / MaxScrapLevel)));
     }
 
     private static Texture2D GetBaseScrapTileSprite(SpriteBatch spriteBatch)

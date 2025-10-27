@@ -27,7 +27,7 @@ class Projectile : Entity
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var oldPosition = Position;
-        Position += Direction * (BulletPixelsPerSecond * deltaTime);
+        UpdatePosition(Direction * (BulletPixelsPerSecond * deltaTime));
 
         RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
@@ -43,7 +43,21 @@ class Projectile : Entity
         var bulletToDelete = false;
         var shouldExplode = false;
 
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        if (!EnemySystem.EnemyTree.TryGetSmallestQuad(Position, out var endPointQuad))
+        {
+            // Projectile is outside of enemy quad tree
+            Destroy();
+        }
+
+        if (!EnemySystem.EnemyTree.TryGetSmallestQuad(oldPosition, out var startPointQuad))
+        {
+            Destroy();
+        }
+
+        HashSet<Enemy> enemyCandidates = new (startPointQuad.Values);
+        enemyCandidates.UnionWith(endPointQuad.Values);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             if (ExplosionTileRadius == 0)
             {

@@ -111,7 +111,7 @@ public class MovementSystem
                 jumpTimer = jumpInterval;
             }
 
-            entity.Position += defaultChargeDirection * CurrentData.WalkSpeed * deltaTime;
+            entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
         }
         // TODO: Implement flying enemy logic and shi
     }

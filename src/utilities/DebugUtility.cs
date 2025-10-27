@@ -38,6 +38,7 @@ public static class DebugUtility
         if (fpsUtility is null) fpsUtility = new FpsUtility();
 
         fpsUtility.Update(gameTime);
+        EnemySystem.EnemyTree.VisualizeTree();
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
@@ -51,14 +52,7 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.Q))
         {
-            var enemies = EnemySystem.Enemies.ToArray();
-
-            foreach (var enemy in enemies)
-            {
-                enemy.Destroy();
-            }
-
-            EnemySystem.Enemies.Clear();
+            EnemySystem.EnemyTree.Destroy();
         }
 
         if (InputSystem.IsKeyTapped(Keys.T))
@@ -103,7 +97,7 @@ public static class DebugUtility
             fpsUtility.DrawFps(spriteBatch, fpsPos, Color.White);
         }
 
-        var enemiesText = $"Enemies: {EnemySystem.Enemies.Count}";
+        var enemiesText = $"Enemies: {EnemySystem.EnemyTree.CountValues()}";
         var enemiesTextWidth = (int)pixelsixFont.MeasureString(enemiesText).X;
         var enemiesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - enemiesTextWidth - 8, fpsPos.Y + 20);
         spriteBatch.DrawString(pixelsixFont, enemiesText, enemiesTextPos, Color.White);
@@ -141,13 +135,13 @@ public static class DebugUtility
         var vsyncButtonText = new UIEntity(game, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, pixelsixFont, vsyncText);
         var vsyncButtonTextWidth = pixelsixFont.MeasureString(vsyncText).X;
-        vsyncButtonText.Position = vsyncButtonPos + new Vector2(-vsyncButtonTextWidth - 10, 4);
+        vsyncButtonText.SetPosition(vsyncButtonPos + new Vector2(-vsyncButtonTextWidth - 10, 4));
 
         var vsyncStatusText = new UIEntity(game, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, pixelsixFont,
             game.Graphics.SynchronizeWithVerticalRetrace ? "On" : "Off");
-        vsyncStatusText.Position = vsyncButtonPos + new Vector2(buttonSprite.Width, buttonSprite.Height) / 2
-            - vsyncStatusText.Size / 2;
+        vsyncStatusText.SetPosition(vsyncButtonPos + new Vector2(buttonSprite.Width, buttonSprite.Height) / 2
+            - vsyncStatusText.Size / 2);
 
         vsyncButton.ButtonPressed += () =>
         {

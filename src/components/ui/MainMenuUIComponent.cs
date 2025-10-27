@@ -113,7 +113,7 @@ public class MainMenuUIComponent : DrawableGameComponent
         var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
         title.Scale = Vector2.One * 2;
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
-        title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
             
         var btnAnimationData = new AnimationSystem.AnimationData
         (
@@ -142,7 +142,7 @@ public class MainMenuUIComponent : DrawableGameComponent
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
+            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
     }
 
@@ -158,7 +158,7 @@ public class MainMenuUIComponent : DrawableGameComponent
         var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
         title.Scale = Vector2.One * 2;
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
-        title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
 
         var btnAnimationData = new AnimationSystem.AnimationData
             (
@@ -185,7 +185,7 @@ public class MainMenuUIComponent : DrawableGameComponent
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
+            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
     }
 

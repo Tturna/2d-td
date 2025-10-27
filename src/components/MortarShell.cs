@@ -20,12 +20,14 @@ public class MortarShell : Entity
     private float homingDragFactor = 0.02f;
     private float directionCorrectionThreshold = 0.6f;
     private float directionCorrectionSpeed = 1.5f;
+    private Vector2 shellCenter;
 
     public MortarShell(Game1 game) : base(game, position: null, GetShellTexture(game.SpriteBatch))
     {
         physics = new PhysicsSystem(Game);
         var rng = new Random();
         homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
+        shellCenter = Position + Size / 2;
     }
 
     public override void Update(GameTime gameTime)
@@ -46,12 +48,19 @@ public class MortarShell : Entity
                 closestEnemy = null;
                 differenceToClosestEnemy = null;
 
-                // TODO: Consider spatial partitioning
-                foreach (var enemy in EnemySystem.Enemies)
+                if (!EnemySystem.EnemyTree.TryGetSmallestQuad(shellCenter, out var smallestQuad))
+                {
+                    // shell is outside of enemy quad tree. Don't trigger real shell impact
+                    Destroy();
+                }
+
+                var enemyCandidates = smallestQuad.Values;
+
+                foreach (var enemy in enemyCandidates)
                 {
                     // Target the bottom part of enemies to hit the ground
                     var targetEnemyPosition = enemy.Position + new Vector2(enemy.Size.X / 2, enemy.Size.Y);
-                    var diff = targetEnemyPosition - Position + Size / 2;
+                    var diff = targetEnemyPosition - shellCenter;
                     var distance = diff.Length();
 
                     if (differenceToClosestEnemy is null || distance < ((Vector2)differenceToClosestEnemy).Length())
@@ -91,12 +100,15 @@ public class MortarShell : Entity
 
         if (!collided)
         {
-            foreach (var enemy in EnemySystem.Enemies)
+            var collisionDistance = Math.Max(Size.X, Size.Y);
+            var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(shellCenter, (int)collisionDistance);
+
+            foreach (var enemy in enemyCandidates)
             {
                 var diff = enemy.Position + enemy.Size / 2 - Position + Size / 2;
                 var distance = diff.Length();
 
-                if (distance > Math.Max(Size.X, Size.Y)) continue;
+                if (distance > collisionDistance) continue;
 
                 collided = true;
                 break;

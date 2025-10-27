@@ -22,6 +22,18 @@ public static class Collision
         }
     }
 
+    public static bool AreRectAndCircleColliding(Vector2 rectPos, Vector2 rectSize,
+        Vector2 circlePos, float circleRadius)
+    {
+        var closestX = MathHelper.Clamp(circlePos.X, rectPos.X, rectPos.X + rectSize.X);
+        var closestY = MathHelper.Clamp(circlePos.Y, rectPos.Y, rectPos.Y + rectSize.Y);
+
+        var dx = circlePos.X - closestX;
+        var dy = circlePos.Y - closestY;
+
+        return dx * dx + dy * dy <= circleRadius * circleRadius;
+    }
+
     public static bool AreEntitiesColliding(Entity ent1, Entity ent2)
     {
         var x1 = ent1.Position.X;

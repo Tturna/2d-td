@@ -20,6 +20,7 @@ public class Enemy : Entity
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 lastPosition;
+    private QuadTree<Enemy> containingQuad;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -43,8 +44,9 @@ public class Enemy : Entity
     {
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
+            Console.WriteLine("Enemy hit HQ");
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
-            EnemySystem.Enemies.Remove(this);
+            EnemySystem.EnemyTree.Remove(this);
             Destroy();
         }
 
@@ -80,6 +82,26 @@ public class Enemy : Entity
         base.Draw(gameTime);
     }
 
+    public override void UpdatePosition(Vector2 positionChange)
+    {
+        var newPosition = Position + positionChange;
+
+        if (!containingQuad.IsWithinBounds(newPosition))
+        {
+            containingQuad.Remove(this);
+            SetPosition(newPosition);
+            EnemySystem.EnemyTree.Add(this);
+            return;
+        }
+
+        SetPosition(newPosition);
+    }
+
+    public void SetContainingQuad<T>(QuadTree<T> quad) where T : Enemy
+    {
+        containingQuad = quad as QuadTree<Enemy>;
+    }
+
     public void ApplyKnockback(Vector2 knockback)
     {
         PhysicsSystem.StopMovement();
@@ -99,7 +121,7 @@ public class Enemy : Entity
 
     private void OnDeath(Entity diedEntity)
     {
-        EnemySystem.Enemies.Remove(this);
+        EnemySystem.EnemyTree.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
         ScrapSystem.AddScrap(Game, Position);
         Destroy();

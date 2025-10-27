@@ -69,14 +69,14 @@ public class UIComponent : DrawableGameComponent
         var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
         var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
 
-        turretButton.Position = pos;
-        turretIcon.Position = iconPosition;
+        turretButton.SetPosition(pos);
+        turretIcon.SetPosition(iconPosition);
         turretIcon.DrawLayerDepth = 0.7f;
-        turretPriceIcon.Position = turretButton.Position + new Vector2(priceIconOffset.X,
-            turretButton.Size.Y + priceIconOffset.Y);
+        turretPriceIcon.SetPosition(turretButton.Position + new Vector2(priceIconOffset.X,
+            turretButton.Size.Y + priceIconOffset.Y));
 
-        turretPriceText.Position = turretPriceIcon.Position
-            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y);
+        turretPriceText.SetPosition(turretPriceIcon.Position
+            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y));
 
         buyButtonCount++;
     }
@@ -92,19 +92,19 @@ public class UIComponent : DrawableGameComponent
 
         var balanceTextWidth = pixelsixFont.MeasureString("999").X * currencyText.Scale.X;
 
-        scrapIcon.Position = new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2
+        scrapIcon.SetPosition(new Vector2(game.NativeScreenWidth / 2 - scrapIconTexture.Width / 2
             - balanceTextWidth / 2 - scrapTextOffset.X / 2,
-            game.NativeScreenHeight - 64);
-        scrapIcon.Position = Vector2.Floor(scrapIcon.Position);
+            game.NativeScreenHeight - 64));
+        scrapIcon.SetPosition(Vector2.Floor(scrapIcon.Position));
 
-        currencyText.Position = scrapIcon.Position;
-        currencyText.Position += Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X);
-        currencyText.Position -= Vector2.UnitY * scrapTextOffset.Y;
+        currencyText.SetPosition(scrapIcon.Position);
+        currencyText.UpdatePosition(Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X));
+        currencyText.UpdatePosition(-Vector2.UnitY * scrapTextOffset.Y);
 
         waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Wave 0 of 0");
         waveIndicator.Scale = Vector2.One * 2;
         var waveTextWidth = pixelsixFont.MeasureString("Wave 9 of 9").X * waveIndicator.Scale.X;
-        waveIndicator.Position = new Vector2(game.NativeScreenWidth - waveTextWidth, 0);
+        waveIndicator.SetPosition(new Vector2(game.NativeScreenWidth - waveTextWidth, 0));
 
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
@@ -144,7 +144,7 @@ public class UIComponent : DrawableGameComponent
             var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
             var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
 
-            turretHologram.Position = mouseSnappedScreenPos;
+            turretHologram.SetPosition(mouseSnappedScreenPos);
             var size = Camera.Scale;
             turretHologram.Scale = new Vector2(size, size);
         }
@@ -260,8 +260,8 @@ public class UIComponent : DrawableGameComponent
 
         var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
         var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        resumeButtonText.Position = playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2;
-        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+        resumeButtonText.SetPosition(playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2);
+        exitButtonText.SetPosition(exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2);
         resumeButtonText.DrawLayerDepth = 0.8f;
         exitButtonText.DrawLayerDepth = 0.8f;
 
@@ -286,8 +286,8 @@ public class UIComponent : DrawableGameComponent
 
         var retryButtonText = new UIEntity(game, uiElements, pixelsixFont, "Retry");
         var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        retryButtonText.Position = retryButtonPos + retryButton.Size / 2 - retryButtonText.Size / 2;
-        exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+        retryButtonText.SetPosition(retryButtonPos + retryButton.Size / 2 - retryButtonText.Size / 2);
+        exitButtonText.SetPosition(quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2);
 
         loseScreenElements.Add(retryButton);
         loseScreenElements.Add(quitButton);
@@ -311,7 +311,7 @@ public class UIComponent : DrawableGameComponent
             var nextLevelButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
             var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, buttonAnimationData);
             var nextLevelButtonText = new UIEntity(game, uiElements, pixelsixFont, "Next Level");
-            nextLevelButtonText.Position = nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2;
+            nextLevelButtonText.SetPosition(nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2);
 
             nextLevelButton.ButtonPressed += () =>
             {
@@ -335,7 +335,7 @@ public class UIComponent : DrawableGameComponent
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
         var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        exitButtonText.Position = quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2;
+        exitButtonText.SetPosition(quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2);
 
         winScreenElements.Add(quitButton);
         winScreenElements.Add(exitButtonText);
