@@ -44,7 +44,6 @@ public class Enemy : Entity
     {
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
-            Console.WriteLine("Enemy hit HQ");
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
             EnemySystem.EnemyTree.Remove(this);
             Destroy();

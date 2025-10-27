@@ -26,8 +26,9 @@ public class PhysicsSystem
 
         var oldPosition = entity.Position + entity.Size / 2;
         entity.UpdatePosition(Velocity);
+        var newCenter = entity.Position + entity.Size / 2;
 
-        if (Collision.IsLineInTerrain(oldPosition, entity.Position + entity.Size / 2, out var entryPoint, out var _))
+        if (Collision.IsLineInTerrain(oldPosition, newCenter, out var entryPoint, out var _))
         {
             // Set entity position to first collision point and then resolve.
             // This helps prevent fast moving objects moving far into terrain or scrap and
@@ -43,6 +44,19 @@ public class PhysicsSystem
         if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
             ResolveEntityTerrainCollision(entity, collidedTilePositions);
+        }
+
+        // Collide with other enemies
+        var maxSide = MathHelper.Max(entity.Size.X, entity.Size.Y);
+        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(newCenter, (int)(maxSide));
+
+        foreach (var enemy in enemyCandidates)
+        {
+            if (enemy == entity) continue;
+
+            if (!Collision.AreEntitiesColliding(enemy, entity)) continue;
+
+            ResolveEntitiesCollision(entity, enemy);
         }
 
         return collidedScraps.Length + collidedTilePositions.Length > 0;
@@ -72,6 +86,20 @@ public class PhysicsSystem
             }
 
             entity.UpdatePosition(correction);
+    }
+
+    private void ResolveEntitiesCollision(Entity resolvingEntity, Entity collidedEntity)
+    {
+        var x1 = resolvingEntity.Position.X;
+        var x2 = collidedEntity.Position.X;
+        var y1 = resolvingEntity.Position.Y;
+        var y2 = collidedEntity.Position.Y;
+        var w1 = x1 + resolvingEntity.Size.X;
+        var w2 = x2 + collidedEntity.Size.X;
+        var h1 = y1 + resolvingEntity.Size.Y;
+        var h2 = y2 + collidedEntity.Size.Y;
+
+        ResolveEntityCollision(resolvingEntity, x1, x2, y1, y2, w1, w2, h1, h2);
     }
 
     private void ResolveEntityTerrainCollision(Entity entity, Vector2[] collidedTilePositions)
