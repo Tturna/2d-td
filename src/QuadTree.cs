@@ -190,6 +190,8 @@ public class QuadTree<T> where T : Enemy
         return overlappingQuadValues;
     }
 
+    // TODO: Make this work with big enemies whose real position might not be within
+    // any horizontal quads, but their bodies might
     public List<T> GetValuesInQuadLine(Vector2 position, LineDirection direction)
     {
         switch (direction)
