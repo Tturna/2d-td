@@ -45,11 +45,6 @@ public static class DebugUtility
             EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
-        if (InputSystem.IsKeyTapped(Keys.R))
-        {
-            ScrapSystem.AddScrap(game, InputSystem.GetMouseWorldPosition());
-        }
-
         if (InputSystem.IsKeyTapped(Keys.Q))
         {
             EnemySystem.EnemyTree.Destroy();

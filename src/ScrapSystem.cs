@@ -6,8 +6,6 @@ namespace _2d_td;
 #nullable enable
 public static class ScrapSystem
 {
-    private static Dictionary<Vector2, ScrapTile>? scrapTileMap;
-    private static Stack<Vector2> scrapInsertionOrder = new();
     private static bool clearingScrap;
     private static readonly float clearStepInterval = 0.1f;
     private static float clearStepTimer;
@@ -16,15 +14,12 @@ public static class ScrapSystem
 
     public static void Initialize()
     {
-        if (scrapTileMap is not null)
+        foreach (var item in Corpses)
         {
-            foreach (var item in scrapTileMap)
-            {
-                item.Value.Destroy();
-            }
+            item.Destroy();
         }
 
-        scrapTileMap = new();
+        Corpses = new();
 
         WaveSystem.WaveEnded += ClearScrap;
     }
@@ -40,20 +35,13 @@ public static class ScrapSystem
         {
             clearStepTimer = clearStepInterval;
 
-            if (scrapTileMap is null)
+            if (Corpses.Count > 0)
             {
-                clearingScrap = false;
-                return;
-            }
+                var index = Corpses.Count - 1;
+                Corpses[index].Destroy();
+                Corpses.RemoveAt(index);
 
-            if (scrapTileMap.Count > 0)
-            {
-                var key = scrapInsertionOrder.Pop();
-                // Assume stack and scrap tile map are in sync
-                scrapTileMap[key].Destroy();
-                scrapTileMap.Remove(key);
-
-                if (scrapTileMap.Count == 0)
+                if (Corpses.Count == 0)
                 {
                     clearingScrap = false;
                 }
@@ -65,72 +53,10 @@ public static class ScrapSystem
         }
     }
 
-    public static void AddScrap(Game1 game, Vector2 worldPosition)
-    {
-        var gridPosition = Grid.SnapPositionToGrid(worldPosition);
-        ScrapTile? tile = null;
-
-        var targetPosition = gridPosition;
-        var failSafeCounter = 100;
-
-        while (true)
-        {
-            var belowTile = ScrapSystem.GetScrapFromPosition(targetPosition);
-
-            if (belowTile is not null && belowTile.ScrapLevel > 0)
-            {
-                if (belowTile.ScrapLevel < ScrapTile.MaxScrapLevel)
-                {
-                    belowTile.AddToPile();
-                    return;
-                }
-
-                break;
-            }
-
-            if (Collision.IsPointInTerrain(targetPosition, game.Terrain))
-            {
-                break;
-            }
-
-            targetPosition += Vector2.UnitY * Grid.TileLength;
-
-            failSafeCounter--;
-
-            // No available space found from under the given position
-            if (failSafeCounter <= 0) return;
-        }
-
-        targetPosition -= Vector2.UnitY * Grid.TileLength;
-
-        // Assume Initialize has been called. Throw if not.
-        if (!scrapTileMap!.TryGetValue(targetPosition, out tile))
-        {
-            tile = new ScrapTile(game, targetPosition);
-            scrapTileMap.Add(targetPosition, tile);
-            scrapInsertionOrder.Push(targetPosition);
-            return;
-        }
-
-        tile.AddToPile();
-    }
-
     public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation)
     {
         var corpse = new Entity(game, position, animation);
         Corpses.Add(corpse);
-    }
-
-    public static ScrapTile? GetScrapFromPosition(Vector2 worldPosition)
-    {
-        var gridPosition = Grid.SnapPositionToGrid(worldPosition);
-
-        if (scrapTileMap!.TryGetValue(gridPosition, out var tile))
-        {
-            return tile;
-        }
-
-        return null;
     }
 
     public static bool IsPointInCorpse(Vector2 point)
@@ -149,13 +75,5 @@ public static class ScrapSystem
 
         clearingScrap = true;
         clearStepTimer = clearStepInterval;
-
-        // TODO: make sure corpses are cleared when going to the menu and back
-        foreach (var corpse in Corpses)
-        {
-            corpse.Destroy();
-        }
-
-        Corpses.Clear();
     }
 }

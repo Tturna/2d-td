@@ -407,8 +407,7 @@ public class Crane : Entity, ITower
         actionTimer = actionTime;
         var groundCheckPosition = ballThing!.Position;
         
-        while (ScrapSystem.GetScrapFromPosition(groundCheckPosition) is null &&
-            !Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
+        while (!Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
         {
             groundCheckPosition += Vector2.UnitY * Grid.TileLength;
         }

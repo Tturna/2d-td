@@ -36,11 +36,6 @@ public class PhysicsSystem
             entity.SetPosition(entryPoint - entity.Size / 2);
         }
 
-        if (Collision.IsEntityInScrap(entity, out var collidedScraps))
-        {
-            ResolveEntityScrapCollision(entity, collidedScraps);
-        }
-
         if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
             ResolveEntityTerrainCollision(entity, collidedTilePositions);
@@ -67,7 +62,7 @@ public class PhysicsSystem
             ResolveEntitiesCollision(entity, corpse);
         }
 
-        return collidedScraps.Length + collidedTilePositions.Length > 0;
+        return collidedTilePositions.Length > 0;
     }
 
     private void ResolveEntityCollision(Entity entity, float x1, float x2, float y1, float y2,
@@ -124,23 +119,6 @@ public class PhysicsSystem
             var w2 = x2 + Grid.TileLength;
             var h1 = y1 + entity.Size.Y;
             var h2 = y2 + Grid.TileLength;
-
-            ResolveEntityCollision(entity, x1, x2, y1, y2, w1, w2, h1, h2);
-        }
-    }
-
-    private void ResolveEntityScrapCollision(Entity entity, ScrapTile[] collidedScraps)
-    {
-        foreach (var scrapTile in collidedScraps)
-        {
-            var x1 = entity.Position.X;
-            var x2 = scrapTile.Position.X;
-            var y1 = entity.Position.Y;
-            var y2 = scrapTile.Position.Y;
-            var w1 = x1 + entity.Size.X;
-            var w2 = x2 + scrapTile.Size.X * scrapTile.Scale.X;
-            var h1 = y1 + entity.Size.Y;
-            var h2 = y2 + scrapTile.Size.Y * scrapTile.Scale.Y;
 
             ResolveEntityCollision(entity, x1, x2, y1, y2, w1, w2, h1, h2);
         }
