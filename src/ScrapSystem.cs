@@ -10,7 +10,7 @@ public static class ScrapSystem
     private static readonly float clearStepInterval = 0.1f;
     private static float clearStepTimer;
 
-    public static List<Entity> Corpses = new();
+    public static List<ScrapCorpse> Corpses = new();
 
     public static void Initialize()
     {
@@ -55,7 +55,7 @@ public static class ScrapSystem
 
     public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation)
     {
-        var corpse = new Entity(game, position, animation);
+        var corpse = new ScrapCorpse(game, position, animation);
         Corpses.Add(corpse);
     }
 

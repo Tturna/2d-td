@@ -41,7 +41,9 @@ public class PhysicsSystem
             ResolveEntityTerrainCollision(entity, collidedTilePositions);
         }
 
-        // Collide with other enemies
+        var collided = collidedTilePositions.Length > 0;
+
+        // Collide with enemies
         var maxSide = MathHelper.Max(entity.Size.X, entity.Size.Y);
         var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(newCenter, (int)(maxSide));
 
@@ -51,18 +53,21 @@ public class PhysicsSystem
 
             if (!Collision.AreEntitiesColliding(enemy, entity)) continue;
 
+            collided = true;
             ResolveEntitiesCollision(entity, enemy);
         }
 
         // Collide with corpses
         foreach (var corpse in ScrapSystem.Corpses)
         {
+            if (entity == corpse) continue;
             if (!Collision.AreEntitiesColliding(entity, corpse)) continue;
 
+            collided = true;
             ResolveEntitiesCollision(entity, corpse);
         }
 
-        return collidedTilePositions.Length > 0;
+        return collided;
     }
 
     private void ResolveEntityCollision(Entity entity, float x1, float x2, float y1, float y2,

@@ -82,23 +82,6 @@ public class MortarShell : Entity
         var oldVelocity = physics.Velocity;
         var collided = physics.UpdatePhysics(this, deltaTime);
 
-        if (!collided)
-        {
-            var collisionDistance = Math.Max(Size.X, Size.Y);
-            var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(shellCenter, (int)collisionDistance);
-
-            foreach (var enemy in enemyCandidates)
-            {
-                var diff = enemy.Position + enemy.Size / 2 - Position + Size / 2;
-                var distance = diff.Length();
-
-                if (distance > collisionDistance) continue;
-
-                collided = true;
-                break;
-            }
-        }
-
         if (lifeTime <= 0 || collided) DestroyShell(oldVelocity);
 
         base.Update(gameTime);

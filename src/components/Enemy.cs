@@ -1,10 +1,11 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
-public class Enemy : Entity
+public class Enemy : Entity, IKnockable
 {
     private Texture2D hurtTexture;
     private float hurtTimeSeconds = 0.1f;
@@ -122,7 +123,7 @@ public class Enemy : Entity
     {
         EnemySystem.EnemyTree.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
-        // ScrapSystem.AddScrap(Game, Position);
+        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
 
         var anim = AnimationSystem.BaseAnimationData;
         anim.DelaySeconds = float.PositiveInfinity;
