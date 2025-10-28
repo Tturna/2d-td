@@ -24,9 +24,6 @@ public class MovementSystem
 
     private Game1 game;
     private Vector2 defaultChargeDirection = Vector2.UnitX;
-    private float jumpTimer;
-    private float jumpInterval = 0.5f;
-    private float jumpCheckDistanceFactor = 0.5f;
     private float climbCheckDistanceFactor = 0.15f;
 
     public MovementData CurrentData { get; private set; }
@@ -41,62 +38,12 @@ public class MovementSystem
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (jumpTimer > 0f)
-        {
-            jumpTimer -= deltaTime;
-
-            if (jumpTimer <= 0f)
-            {
-                jumpTimer = 0f;
-            }
-        }
-
         switch (CurrentData.Pattern)
         {
             case MovementPattern.Charge:
                 HandleCharge(entity, deltaTime);
                 break;
         }
-    }
-
-    private bool CanAndShouldJump(Entity entity)
-    {
-        if (jumpTimer > 0 || entity is not Enemy) return false;
-
-        var entityBottom = entity.Position + Vector2.UnitY * entity.Size.Y;
-        var groundCheckStartPoint = entityBottom + Vector2.UnitY * (Grid.TileLength / 3);
-
-        (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
-        var entityTileWidth = Math.Floor(tileWidth);
-
-        var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
-        var remainderHeight = entity.Size.Y % Grid.TileLength;
-        var halfEntityWidth = entity.Size.X / 2;
-        var jumpCheckDistance = halfEntityWidth + jumpCheckDistanceFactor * Grid.TileLength;
-        var shouldJump = false;
-
-        for (int i = 0; i <= entityTileHeight; i++)
-        {
-            var yOffset = Vector2.UnitY * (Grid.TileLength * i);
-
-            if (i == entityTileHeight)
-            {
-                yOffset -= Vector2.UnitY * (Grid.TileLength / 2);
-                yOffset += Vector2.UnitY * (remainderHeight / 2);
-            }
-
-            var startPos = entity.Position + yOffset;
-            var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
-            var jumpCheckPoint = horizontalEntityCenter + defaultChargeDirection * jumpCheckDistance;
-            
-            if (Collision.IsPointInTerrain(jumpCheckPoint, game.Terrain))
-            {
-                shouldJump = true;
-                break;
-            }
-        }
-
-        return shouldJump;
     }
 
     private bool ShouldClimb(Entity entity)
