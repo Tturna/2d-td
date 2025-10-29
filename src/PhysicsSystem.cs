@@ -45,7 +45,7 @@ public class PhysicsSystem
 
         // Collide with enemies
         var maxSide = MathHelper.Max(entity.Size.X, entity.Size.Y);
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(newCenter, (int)(maxSide));
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(newCenter, maxSide);
 
         foreach (var enemy in enemyCandidates)
         {

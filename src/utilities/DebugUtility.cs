@@ -38,7 +38,6 @@ public static class DebugUtility
         if (fpsUtility is null) fpsUtility = new FpsUtility();
 
         fpsUtility.Update(gameTime);
-        EnemySystem.EnemyTree.VisualizeTree();
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
@@ -47,7 +46,7 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.Q))
         {
-            EnemySystem.EnemyTree.Destroy();
+            EnemySystem.EnemyBins.Destroy();
         }
 
         if (InputSystem.IsKeyTapped(Keys.T))
@@ -92,7 +91,7 @@ public static class DebugUtility
             fpsUtility.DrawFps(spriteBatch, fpsPos, Color.White);
         }
 
-        var enemiesText = $"Enemies: {EnemySystem.EnemyTree.CountValues()}";
+        var enemiesText = $"Enemies: {EnemySystem.EnemyBins.TotalValueCount}";
         var enemiesTextWidth = (int)pixelsixFont.MeasureString(enemiesText).X;
         var enemiesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - enemiesTextWidth - 8, fpsPos.Y + 20);
         spriteBatch.DrawString(pixelsixFont, enemiesText, enemiesTextPos, Color.White);

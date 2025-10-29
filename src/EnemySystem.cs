@@ -5,7 +5,7 @@ namespace _2d_td;
 
 public static class EnemySystem
 {
-    public static QuadTree<Enemy> EnemyTree { get; private set; }
+    public static BinGrid<Enemy> EnemyBins;
     static Game1 Game;
 
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
@@ -19,7 +19,7 @@ public static class EnemySystem
         Game = game;
         var mainBounds = new Rectangle(-game.NativeScreenWidth, 0,
             game.NativeScreenWidth * 3, game.NativeScreenHeight * 2);
-        EnemyTree = new QuadTree<Enemy>(mainBounds);
+        EnemyBins = new BinGrid<Enemy>(Grid.TileLength * 4);
     }
 
     public static void Update(GameTime gameTime)
@@ -52,7 +52,7 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 100, scrapValue: 1);
-        EnemyTree.Add(enemy);
+        EnemyBins.Add(enemy);
 
         return enemy;
     }
@@ -81,7 +81,7 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 300, scrapValue: 5);
-        EnemyTree.Add(enemy);
+        EnemyBins.Add(enemy);
 
         return enemy;
     }

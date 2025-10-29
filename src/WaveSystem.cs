@@ -199,7 +199,7 @@ public static class WaveSystem
             return;
         }
 
-        if (EnemySystem.EnemyTree.IsEmpty())
+        if (EnemySystem.EnemyBins.TotalValueCount == 0)
         {
             EndWave();
             return;

@@ -128,7 +128,7 @@ class Drone : Entity, ITower
         // Define the direction the tower is facing
         var towerDirectionAngle = (float)Math.PI; // in radians, assuming it faces left.
         var range = tileRange * Grid.TileLength;
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(
             turretSpawnAxisCenter, range);
 
         foreach (Enemy enemy in enemyCandidates)

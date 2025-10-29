@@ -12,7 +12,7 @@ public static class EffectUtility
     public static void Explode(Vector2 worldPosition, float radius, float magnitude, int damage,
         bool useEffectFalloff = true)
     {
-        var enemies = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(worldPosition, (int)radius).ToArray();
+        var enemies = EnemySystem.EnemyBins.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
 
         foreach (var enemy in enemies)
         {

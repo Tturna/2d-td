@@ -33,7 +33,7 @@ public class TowerCore : GameComponent, IClickable
         float closestDistance = float.PositiveInfinity;
         var range = tileRange * Grid.TileLength;
         var towerCenter = Turret.Position + Turret.Size / 2;
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(towerCenter, range);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(towerCenter, range);
 
         foreach (Enemy enemy in enemyCandidates)
         {

@@ -174,7 +174,7 @@ class Hovership : Entity, ITower
         // Define the direction the tower is facing
         var towerDirectionAngle = (float)Math.PI/2f; // in radians, assuming it faces down.
         var range = tileRange * Grid.TileLength;
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(
             turretSpawnAxisCenter, range);
 
         foreach (Enemy enemy in enemyCandidates)

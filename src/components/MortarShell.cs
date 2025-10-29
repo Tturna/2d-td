@@ -46,7 +46,7 @@ public class MortarShell : Entity
             else
             {
                 physics.DragFactor = homingDragFactor;
-                closestEnemy = EnemySystem.EnemyTree.FindClosestEnemy(shellCenter);
+                closestEnemy = EnemySystem.EnemyBins.GetClosestValue(shellCenter);
                 differenceToClosestEnemy = null;
 
                 if (closestEnemy is not null)

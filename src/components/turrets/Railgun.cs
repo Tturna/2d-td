@@ -1,4 +1,3 @@
-using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -141,7 +140,7 @@ class Railgun : Entity, ITower
     public bool IsEnemyInLine(int tileRange)
     {
         var range = tileRange * Grid.TileLength;
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(Position, range);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, range);
 
         foreach (Enemy enemy in enemyCandidates)
         {

@@ -43,19 +43,11 @@ class Projectile : Entity
         var bulletToDelete = false;
         var shouldExplode = false;
 
-        if (!EnemySystem.EnemyTree.TryGetSmallestQuad(Position, out var endPointQuad))
-        {
-            // Projectile is outside of enemy quad tree
-            Destroy();
-        }
+        var startPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(oldPosition);
+        var endPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position);
 
-        if (!EnemySystem.EnemyTree.TryGetSmallestQuad(oldPosition, out var startPointQuad))
-        {
-            Destroy();
-        }
-
-        HashSet<Enemy> enemyCandidates = new (startPointQuad.Values);
-        enemyCandidates.UnionWith(endPointQuad.Values);
+        HashSet<Enemy> enemyCandidates = new (startPointCandidates);
+        enemyCandidates.UnionWith(endPointCandidates);
 
         foreach (Enemy enemy in enemyCandidates)
         {

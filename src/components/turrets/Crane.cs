@@ -121,7 +121,7 @@ public class Crane : Entity, ITower
         List<Enemy> enemies = new();
         var ballThingCenter = ballThing!.Position + ballThing.Size / 2;
         var ballThingSize = MathHelper.Max(ballThing.Size.X, ballThing.Size.Y);
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInOverlappingQuads(ballThingCenter, (int)(ballThingSize + extraRange));
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(ballThingCenter, ballThingSize + extraRange);
 
         foreach (var enemy in enemyCandidates)
         {
@@ -385,8 +385,8 @@ public class Crane : Entity, ITower
     private bool IsEnemyBelow()
     {
         var towerTestPosition = ballThing!.Position + ballThing.Size / 2;
-        var enemyCandidates = EnemySystem.EnemyTree.GetValuesInQuadLine(towerTestPosition,
-            QuadTree<Enemy>.LineDirection.Down);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(towerTestPosition,
+            BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
 
         foreach (var enemy in enemyCandidates)
         {

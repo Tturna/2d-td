@@ -256,7 +256,7 @@ public class QuadTree<T> where T : Enemy
     public Enemy? FindClosestEnemy(Vector2 point)
     {
         var pq = new PriorityQueue<QuadTree<Enemy>, float>();
-        pq.Enqueue(EnemySystem.EnemyTree, 0f);
+        // pq.Enqueue(EnemySystem.EnemyTree, 0f);
 
         Enemy? closestEnemy = null;
         float bestDistSq = float.PositiveInfinity;
@@ -310,7 +310,7 @@ public class QuadTree<T> where T : Enemy
         if (smallestQuad == this)
         {
             Values.Add(value);
-            value.SetContainingQuad(this);
+            // value.SetContainingQuad(this);
 
             if (Values.Count > maxValues && depth < maxDepth)
             {

@@ -21,7 +21,6 @@ public class Enemy : Entity, IKnockable
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 lastPosition;
-    private QuadTree<Enemy> containingQuad;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -43,10 +42,23 @@ public class Enemy : Entity, IKnockable
 
     public override void Update(GameTime gameTime)
     {
+        if (HealthSystem.CurrentHealth <= 0)
+        {
+            return;
+        }
+
+        if (!Game.Components.Contains(this))
+        {
+            // Apparently MonoGame will call Update on a component that has already been
+            // removed from Components. I guess this can happen if something removes a
+            // component from Components in the same frame it would be updated.
+            return;
+        }
+
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
-            EnemySystem.EnemyTree.Remove(this);
+            EnemySystem.EnemyBins.Remove(this);
             Destroy();
         }
 
@@ -85,21 +97,24 @@ public class Enemy : Entity, IKnockable
     public override void UpdatePosition(Vector2 positionChange)
     {
         var newPosition = Position + positionChange;
+        var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
+        var newBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(newPosition);
 
-        if (!containingQuad.IsWithinBounds(newPosition))
+        if (oldBinGridPosition != newBinGridPosition)
         {
-            containingQuad.Remove(this);
+            var canRemove = EnemySystem.EnemyBins.Remove(this);
             SetPosition(newPosition);
-            EnemySystem.EnemyTree.Add(this);
+
+            if (!canRemove)
+            {
+                throw new InvalidOperationException($"Couldn't remove enemy ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+            }
+
+            EnemySystem.EnemyBins.Add(this);
             return;
         }
 
         SetPosition(newPosition);
-    }
-
-    public void SetContainingQuad<T>(QuadTree<T> quad) where T : Enemy
-    {
-        containingQuad = quad as QuadTree<Enemy>;
     }
 
     public void ApplyKnockback(Vector2 knockback)
@@ -121,7 +136,7 @@ public class Enemy : Entity, IKnockable
 
     private void OnDeath(Entity diedEntity)
     {
-        EnemySystem.EnemyTree.Remove(this);
+        EnemySystem.EnemyBins.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
         EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
 
