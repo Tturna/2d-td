@@ -206,7 +206,8 @@ public class BinGrid<T> where T : Entity
     {
         foreach (var item in bins)
         {
-            foreach (var value in item.Value)
+            var values = item.Value.ToArray();
+            foreach (var value in values)
             {
                 value.Destroy();
             }
