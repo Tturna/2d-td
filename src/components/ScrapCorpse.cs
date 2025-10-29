@@ -43,8 +43,10 @@ public class ScrapCorpse : Entity, IKnockable
 
             if (!canRemove)
             {
-                Console.WriteLine($"Components contains this scrap: {Game.Components.Contains(this)}");
-                throw new InvalidOperationException($"Couldn't remove corpse ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                // throw new InvalidOperationException($"Couldn't remove corpse ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                Console.WriteLine($"Couldn't remove corpse ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                base.Destroy();
+                return;
             }
 
             ScrapSystem.Corpses.Add(this);

@@ -33,7 +33,7 @@ public class Enemy : Entity, IKnockable
         PhysicsSystem = new PhysicsSystem(Game);
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
-        hurtAnimThreshold = .33*HealthSystem.MaxHealth;
+        hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
 
         this.hurtTexture = hurtTexture;
 
@@ -42,10 +42,7 @@ public class Enemy : Entity, IKnockable
 
     public override void Update(GameTime gameTime)
     {
-        if (HealthSystem.CurrentHealth <= 0)
-        {
-            return;
-        }
+        if (IsDestroyed) return;
 
         if (!Game.Components.Contains(this))
         {
@@ -58,8 +55,8 @@ public class Enemy : Entity, IKnockable
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
-            EnemySystem.EnemyBins.Remove(this);
             Destroy();
+            return;
         }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -100,7 +97,6 @@ public class Enemy : Entity, IKnockable
 
         if (newPosition.Y >= yKillThreshold)
         {
-            Console.WriteLine("Enemy died to kill zone");
             Destroy();
             return;
         }
