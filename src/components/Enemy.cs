@@ -7,20 +7,20 @@ namespace _2d_td;
 
 public class Enemy : Entity, IKnockable
 {
-    private Texture2D hurtTexture;
-    private float hurtTimeSeconds = 0.1f;
-
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
     public int ScrapValue;
 
+    private Texture2D hurtTexture;
+    private float hurtTimeSeconds = 0.1f;
     private double hurtProgress;
     private double hurtAnimThreshold;
     private int attackDamage = 10;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 lastPosition;
+    private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -97,6 +97,14 @@ public class Enemy : Entity, IKnockable
     public override void UpdatePosition(Vector2 positionChange)
     {
         var newPosition = Position + positionChange;
+
+        if (newPosition.Y >= yKillThreshold)
+        {
+            Console.WriteLine("Enemy died to kill zone");
+            Destroy();
+            return;
+        }
+
         var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
         var newBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(newPosition);
 
@@ -134,9 +142,14 @@ public class Enemy : Entity, IKnockable
         }
     }
 
-    private void OnDeath(Entity diedEntity)
+    public override void Destroy()
     {
         EnemySystem.EnemyBins.Remove(this);
+        base.Destroy();
+    }
+
+    private void OnDeath(Entity diedEntity)
+    {
         CurrencyManager.AddBalance(ScrapValue);
         EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
 
