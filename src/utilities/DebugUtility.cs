@@ -44,6 +44,11 @@ public static class DebugUtility
             EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
+        if (InputSystem.IsKeyDown(Keys.R))
+        {
+            EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
+        }
+
         if (InputSystem.IsKeyTapped(Keys.Q))
         {
             EnemySystem.EnemyBins.Destroy();
@@ -95,6 +100,11 @@ public static class DebugUtility
         var enemiesTextWidth = (int)pixelsixFont.MeasureString(enemiesText).X;
         var enemiesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - enemiesTextWidth - 8, fpsPos.Y + 20);
         spriteBatch.DrawString(pixelsixFont, enemiesText, enemiesTextPos, Color.White);
+
+        var corpsesText = $"Corpses: {ScrapSystem.Corpses?.TotalValueCount}";
+        var corpsesTextWidth = (int)pixelsixFont.MeasureString(corpsesText).X;
+        var corpsesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - corpsesTextWidth - 8, enemiesTextPos.Y + 10);
+        spriteBatch.DrawString(pixelsixFont, corpsesText, corpsesTextPos, Color.White);
     }
 
     public static void ResetLines()
