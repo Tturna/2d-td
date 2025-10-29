@@ -19,6 +19,8 @@ public class Entity : DrawableGameComponent
     public Texture2D? Sprite { get; set; }
     public AnimationSystem? AnimationSystem;
 
+    protected bool IsDestroyed = false;
+
     public Entity(Game game, Vector2? position = null, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
         this.Game = (Game1)game;
@@ -60,6 +62,8 @@ public class Entity : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
+        if (IsDestroyed) return;
+
         if (AnimationSystem is not null)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -110,6 +114,7 @@ public class Entity : DrawableGameComponent
         if (index >= 0)
         {
             Game.Components.RemoveAt(index);
+            IsDestroyed = true;
         }
     }
 

@@ -58,7 +58,9 @@ public class PhysicsSystem
         }
 
         // Collide with corpses
-        foreach (var corpse in ScrapSystem.Corpses)
+        var corpseCandidates = ScrapSystem.Corpses.GetValuesFromBinsInRange(newCenter, maxSide);
+
+        foreach (var corpse in corpseCandidates)
         {
             if (entity == corpse) continue;
             if (!Collision.AreEntitiesColliding(entity, corpse)) continue;

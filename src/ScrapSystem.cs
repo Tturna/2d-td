@@ -9,17 +9,16 @@ public static class ScrapSystem
     private static bool clearingScrap;
     private static readonly float clearStepInterval = 0.1f;
     private static float clearStepTimer;
+    private static Stack<ScrapCorpse>? corpseAddOrder;
 
-    public static List<ScrapCorpse> Corpses = new();
+    public static BinGrid<ScrapCorpse>? Corpses;
 
     public static void Initialize()
     {
-        foreach (var item in Corpses)
-        {
-            item.Destroy();
-        }
+        if (Corpses is not null) Corpses.Destroy();
 
-        Corpses = new();
+        Corpses = new(Grid.TileLength * 2);
+        corpseAddOrder = new();
 
         WaveSystem.WaveEnded += ClearScrap;
     }
@@ -35,13 +34,12 @@ public static class ScrapSystem
         {
             clearStepTimer = clearStepInterval;
 
-            if (Corpses.Count > 0)
+            if (Corpses?.TotalValueCount > 0)
             {
-                var index = Corpses.Count - 1;
-                Corpses[index].Destroy();
-                Corpses.RemoveAt(index);
+                var corpse = corpseAddOrder!.Pop();
+                corpse.Destroy();
 
-                if (Corpses.Count == 0)
+                if (Corpses.TotalValueCount == 0)
                 {
                     clearingScrap = false;
                 }
@@ -56,12 +54,15 @@ public static class ScrapSystem
     public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation)
     {
         var corpse = new ScrapCorpse(game, position, animation);
-        Corpses.Add(corpse);
+        Corpses!.Add(corpse);
+        corpseAddOrder!.Push(corpse);
     }
 
     public static bool IsPointInCorpse(Vector2 point)
     {
-        foreach (var corpse in Corpses)
+        var corpseCandidates = Corpses!.GetBinAndNeighborValues(point);
+
+        foreach (var corpse in corpseCandidates)
         {
             if (Collision.IsPointInEntity(point, corpse)) return true;
         }

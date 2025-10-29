@@ -25,6 +25,9 @@ public class BinGrid<T> where T : Entity
         this.cellSideLength = cellSideLength;
     }
 
+    /// <summary>
+    /// Add value to the bin grid
+    /// </summary>
     public void Add(T value)
     {
         var gridPosition = WorldToGridPosition(value.Position);
@@ -41,9 +44,13 @@ public class BinGrid<T> where T : Entity
         }
 
         TotalValueCount++;
+        return;
     }
 
-
+    /// <summary>
+    /// Attempt to remove a value from the bin grid. Returns true when value was removed and
+    /// true if removal failed.
+    /// </summary>
     public bool Remove(T value)
     {
         var gridPosition = WorldToGridPosition(value.Position);
@@ -55,7 +62,11 @@ public class BinGrid<T> where T : Entity
         if (bin is null) return false;
 
         var canRemove = bin.Remove(value);
-        TotalValueCount--;
+
+        if (canRemove)
+        {
+            TotalValueCount--;
+        }
 
         return canRemove;
     }

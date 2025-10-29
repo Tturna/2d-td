@@ -37,7 +37,9 @@ public static class EffectUtility
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
-        foreach (var corpse in ScrapSystem.Corpses)
+        var corpses = ScrapSystem.Corpses.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
+
+        foreach (var corpse in corpses)
         {
             var diff = corpse.Position + corpse.Size / 2 - worldPosition;
             var distance = diff.Length();
