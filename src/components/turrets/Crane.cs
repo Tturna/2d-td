@@ -149,23 +149,23 @@ public class Crane : Entity, ITower
         return enemies;
     }
 
-    private void DamageHitEnemies(int damage)
+    private void DamageHitEnemies(int damage, float deltaTime)
     {
         var enemies = GetEnemiesInRange(useHashSet: true);
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(damage, deltaTime);
         }
     }
 
-    private void DamageEnemiesUnconditionally(int damage, float extraRange = 0f)
+    private void DamageEnemiesUnconditionally(int damage, float deltaTime, float extraRange = 0f)
     {
         var enemies = GetEnemiesInRange(extraRange: extraRange);
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(damage, deltaTime);
         }
     }
 
@@ -179,7 +179,7 @@ public class Crane : Entity, ITower
         ballSpeed += ballFallAcceleration;
         ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
 
-        DamageHitEnemies(damage);
+        DamageHitEnemies(damage, deltaTime);
 
         if (ballThing.Position.Y >= targetBallPosition.Y)
         {
@@ -252,7 +252,7 @@ public class Crane : Entity, ITower
             if (enemyHit || ballThing.Position.Y >= targetBallPosition.Y)
             {
                 ballThing.SetPosition(targetBallPosition);
-                DamageEnemiesUnconditionally(damage: 120, extraRange: 6 * Grid.TileLength);
+                DamageEnemiesUnconditionally(damage: 120, deltaTime, extraRange: 6 * Grid.TileLength);
 
                 actionTimer = 0;
                 cooldownTimer = cooldownTime + reelDelayTime;
@@ -275,7 +275,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 25 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 15);
+                DamageEnemiesUnconditionally(damage: 15, deltaTime);
             }
         }
 
@@ -330,7 +330,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 10 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 8);
+                DamageEnemiesUnconditionally(damage: 8, deltaTime);
             }
 
             return;

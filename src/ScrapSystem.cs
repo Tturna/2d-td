@@ -51,9 +51,15 @@ public static class ScrapSystem
         }
     }
 
-    public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation)
+    public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation,
+        Vector2? knockback = null)
     {
         var corpse = new ScrapCorpse(game, position, animation);
+
+        if (knockback is not null) {
+            corpse.PhysicsSystem.AddForce((Vector2)knockback);
+        }
+
         Corpses!.Add(corpse);
         corpseAddOrder!.Push(corpse);
     }

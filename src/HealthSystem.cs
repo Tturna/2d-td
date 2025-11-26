@@ -6,7 +6,7 @@ public class HealthSystem
     public int CurrentHealth { get; private set; }
     public int MaxHealth { get; private set; }
 
-    public delegate void DiedHandler(Entity diedEntity);
+    public delegate void DiedHandler(Entity diedEntity, float deltaTime);
     public event DiedHandler Died;
 
     public delegate void DamagedHandler(Entity damagedEntity, int amount);
@@ -26,7 +26,7 @@ public class HealthSystem
         CurrentHealth = initialHealth;
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, float deltaTime)
     {
         if (CurrentHealth == 0) return;
 
@@ -37,13 +37,13 @@ public class HealthSystem
         {
             CurrentHealth = 0;
 
-            OnDied(Owner);
+            OnDied(Owner, deltaTime);
         }
     }
 
-    private void OnDied(Entity diedEntity)
+    private void OnDied(Entity diedEntity, float deltaTime)
     {
-        Died?.Invoke(diedEntity);
+        Died?.Invoke(diedEntity, deltaTime);
     }
 
     private void OnDamaged(Entity damagedEntity, int amount)

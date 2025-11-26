@@ -271,7 +271,7 @@ public class UIComponent : DrawableGameComponent
         pauseMenuElements.Add(exitButtonText);
     }
 
-    private void ShowGameOverScreen(Entity _ = null)
+    private void ShowGameOverScreen(Entity _ = null, float deltaTime = 0f)
     {
         isLost = true;
 

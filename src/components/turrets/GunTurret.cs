@@ -203,7 +203,7 @@ class GunTurret : Entity, ITower
             {
                 // 60 DPS
                 var damage = (int)(60 * actionInterval);
-                closestEnemy.HealthSystem.TakeDamage(damage);
+                closestEnemy.HealthSystem.TakeDamage(damage, deltaTime);
                 actionTimer = 0f;
             }
         }
