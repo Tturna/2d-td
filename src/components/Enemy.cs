@@ -54,7 +54,7 @@ public class Enemy : Entity, IKnockable
 
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
-            HQ.Instance.HealthSystem.TakeDamage(attackDamage, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            HQ.Instance.HealthSystem.TakeDamage(attackDamage);
             Destroy();
             return;
         }
@@ -76,8 +76,8 @@ public class Enemy : Entity, IKnockable
             if (selfDestructTimer <= 0)
             {
                 EffectUtility.Explode(Position, radius: 3 * Grid.TileLength, magnitude: 20f,
-                    damage: 10, deltaTime);
-                OnDeath(this, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    damage: 10);
+                OnDeath(this);
             }
         }
 
@@ -153,10 +153,10 @@ public class Enemy : Entity, IKnockable
         PhysicsSystem.AddForce(direction*force);
     }
 
-    private void OnDeath(Entity diedEntity, float deltaTime)
+    private void OnDeath(Entity diedEntity)
     {
         CurrencyManager.AddBalance(ScrapValue);
-        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0, deltaTime);
+        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
 
         var anim = AnimationSystem.BaseAnimationData;
         anim.DelaySeconds = float.PositiveInfinity;

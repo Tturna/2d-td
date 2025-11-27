@@ -102,7 +102,7 @@ class Projectile : Entity
                 knockbackDirection.Normalize();
                 var knockback = knockbackDirection * (Damage / 15);
 
-                enemy.HealthSystem.TakeDamage(Damage, deltaTime);
+                enemy.HealthSystem.TakeDamage(Damage);
                 enemy.ApplyKnockback(knockback);
                 damagedEnemies.Add(enemy);
 
@@ -120,7 +120,7 @@ class Projectile : Entity
         else if (shouldExplode == true)
         {
             EffectUtility.Explode(Position, ExplosionTileRadius * Grid.TileLength,
-                magnitude: 5f, Damage, deltaTime);
+                magnitude: 5f, Damage);
 
             if (Pierce > 0)
             {

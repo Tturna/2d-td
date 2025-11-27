@@ -147,11 +147,14 @@ class PunchTrap : Entity, ITower
 
     private void Shoot(int damage, float knockback)
     {
-        var Enemies = EnemySystem.Enemies.ToArray();
-        foreach (Enemy enemy in Enemies)
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, tileRange);
+        var hitCount = 0;
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             if (IsEnemyInRange(enemy, tileRange))
             {
+                hitCount++;
                 enemy.HealthSystem.TakeDamage(damage);
                 enemy.Knockback(direction,knockback);
             }
@@ -183,10 +186,13 @@ class PunchTrap : Entity, ITower
     
     public bool DetectEnemies(int tileRange)
     {
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, tileRange);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             if (IsEnemyInRange(enemy, tileRange)) { return true; }
         }
+
         return false;
     }
 

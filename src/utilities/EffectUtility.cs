@@ -10,7 +10,7 @@ public static class EffectUtility
     /// entities further from the explosion.
     /// </summary>
     public static void Explode(Vector2 worldPosition, float radius, float magnitude, int damage,
-        float deltaTime, bool useEffectFalloff = true)
+        bool useEffectFalloff = true)
     {
         var enemies = EnemySystem.EnemyBins.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
 
@@ -33,7 +33,7 @@ public static class EffectUtility
                 effectStrength = MathHelper.Max(1f - rawMagnitude, 0.2f);
             }
 
-            enemy.HealthSystem.TakeDamage((int)(damage * effectStrength), deltaTime);
+            enemy.HealthSystem.TakeDamage((int)(damage * effectStrength));
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
