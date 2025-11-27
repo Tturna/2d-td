@@ -12,7 +12,7 @@ public class Mortar : Entity, ITower
     private float actionTimer;
     private bool isTargeting, canSetTarget;
     private Vector2 projectileVelocity;
-    private float projectileGravity = 10f;
+    private float projectileGravity = 0.12f;
 
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
@@ -270,7 +270,7 @@ public class Mortar : Entity, ITower
         // When θ = 45°, Range = v₀² / g
         // Knowing the range, the velocity can be solved by rearranging the formula:
         // v₀ = √(Range × g / sin(2 × θ))
-        var velocityMagnitude = MathF.Sqrt(projectileGravity * dx * deltaTime / MathF.Sin(2 * FiringAngle));
+        var velocityMagnitude = MathF.Sqrt(projectileGravity * dx / MathF.Sin(2 * FiringAngle));
 
         // Adjust for height difference
         float heightFactor = 1.0f - (dy / (3 * dx));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -85,13 +86,15 @@ public class Game1 : Game
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         physicsTimer += deltaTime;
+        var componentsToUpdate = new GameComponent[Components.Count];
+        Components.CopyTo(componentsToUpdate, 0);
 
         while (physicsTimer >= FixedDeltaTime) {
-            foreach (var component in Components)
+            foreach (var component in componentsToUpdate)
             {
                 if (component is not Entity) continue;
                 var ent = component as Entity;
-                ent.FixedUpdate(deltaTime);
+                ent.FixedUpdate(FixedDeltaTime);
             }
 
             if (SceneManager.CurrentScene == SceneManager.Scene.Game)

@@ -30,9 +30,8 @@ public class MortarShell : Entity
         homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
     }
 
-    public override void Update(GameTime gameTime)
+    public override void FixedUpdate(float deltaTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         shellCenter = Position + Size / 2;
 
         lifeTime -= deltaTime;
@@ -66,10 +65,10 @@ public class MortarShell : Entity
 
                     if (dot < directionCorrectionThreshold)
                     {
-                        physics.AddForce(-physics.Velocity * deltaTime * directionCorrectionSpeed);
+                        physics.AddForce(-physics.Velocity * directionCorrectionSpeed);
                     }
 
-                    physics.AddForce(targetDirection * homingSpeed * deltaTime);
+                    physics.AddForce(targetDirection * homingSpeed);
                 }
                 else
                 {
@@ -80,11 +79,10 @@ public class MortarShell : Entity
         }
 
         var oldVelocity = physics.Velocity;
+        var oldPos = Position;
         var collided = physics.UpdatePhysics(this, deltaTime);
 
         if (lifeTime <= 0 || collided) DestroyShell(oldVelocity);
-
-        base.Update(gameTime);
     }
 
     public void DestroyShell(Vector2 previousVelocity)
