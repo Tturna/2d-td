@@ -49,7 +49,7 @@ public class BinGrid<T> where T : Entity
 
     /// <summary>
     /// Attempt to remove a value from the bin grid. Returns true when value was removed and
-    /// true if removal failed.
+    /// false if removal failed.
     /// </summary>
     public bool Remove(T value)
     {

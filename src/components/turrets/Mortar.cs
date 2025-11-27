@@ -204,7 +204,7 @@ public class Mortar : Entity, ITower
         AnimationSystem.OneShotAnimationState("fire");
     }
 
-    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSeconad, float deltaTime)
+    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
 
