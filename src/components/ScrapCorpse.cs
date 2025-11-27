@@ -20,12 +20,15 @@ public class ScrapCorpse : Entity, IKnockable
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
+    }
+
+    public override void FixedUpdate(float deltaTime)
+    {
         if (IsDestroyed) return;
         if (EnemySystem.EnemyBins.TotalValueCount == 0) return;
 
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         PhysicsSystem.UpdatePhysics(this, deltaTime);
-        base.Update(gameTime);
     }
 
     public override void UpdatePosition(Vector2 positionChange)

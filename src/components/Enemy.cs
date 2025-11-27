@@ -60,8 +60,6 @@ public class Enemy : Entity, IKnockable
         }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        MovementSystem.UpdateMovement(this, gameTime);
-        PhysicsSystem.UpdatePhysics(this, deltaTime);
 
         var posDiff = Position - lastPosition;
         lastPosition = Position;
@@ -84,6 +82,12 @@ public class Enemy : Entity, IKnockable
         }
 
         base.Update(gameTime);
+    }
+
+    public override void FixedUpdate(float deltaTime)
+    {
+        MovementSystem.UpdateMovement(this, deltaTime);
+        PhysicsSystem.UpdatePhysics(this, deltaTime);
     }
 
     public override void Draw(GameTime gameTime)
@@ -151,7 +155,7 @@ public class Enemy : Entity, IKnockable
 
         var anim = AnimationSystem.BaseAnimationData;
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, knockback: Vector2.UnitX * 16f * deltaTime);
+        ScrapSystem.AddCorpse(Game, Position, anim, knockback: Vector2.UnitX * 0.7f);
         Destroy();
     }
 }

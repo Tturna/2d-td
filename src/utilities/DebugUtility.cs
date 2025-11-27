@@ -60,6 +60,11 @@ public static class DebugUtility
         }
     }
 
+    public static void FixedUpdate()
+    {
+        fpsUtility?.FixedUpdate();
+    }
+
     public static void DrawDebugLine(Vector2 startPoint, Vector2 endPoint, Color color)
     {
         var lineTuple = NormalizeLine(startPoint, endPoint);

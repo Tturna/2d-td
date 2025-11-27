@@ -73,6 +73,8 @@ public class Entity : DrawableGameComponent
         base.Update(gameTime);
     }
 
+    public virtual void FixedUpdate(float deltaTime) { }
+
     public override void Initialize()
     {
         base.Initialize();

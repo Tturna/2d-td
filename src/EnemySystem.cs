@@ -34,7 +34,7 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 22f,
+            WalkSpeed = 0.35f,
             JumpForce = 7f
         };
 
@@ -63,7 +63,7 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 16f,
+            WalkSpeed = 0.2f,
             JumpForce = 6f
         };
 

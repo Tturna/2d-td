@@ -6,7 +6,7 @@ namespace _2d_td;
 public class PhysicsSystem
 {
     private Game1 game;
-    public float LocalGravity { get; set; } = 30f;
+    public float LocalGravity { get; set; } = 0.8f;
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
 
@@ -21,7 +21,7 @@ public class PhysicsSystem
     /// </summary>
     public bool UpdatePhysics(Entity entity, float deltaTime)
     {
-        Velocity += Vector2.UnitY * LocalGravity * deltaTime;
+        Velocity += Vector2.UnitY * LocalGravity;
         Velocity = Vector2.Lerp(Velocity, Vector2.Zero, DragFactor);
 
         var oldPosition = entity.Position + entity.Size / 2;

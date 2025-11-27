@@ -7,6 +7,7 @@ public class FpsUtility
 {
     private double frames = 0;
     private double updates = 0;
+    private double fixedUpdates = 0;
     private double elapsed = 0;
     private double last = 0;
     private double now = 0;
@@ -23,14 +24,21 @@ public class FpsUtility
         {
             msg = "FPS: " + (frames / elapsed).ToString() + "\nMessage interval: "
                 + elapsed.ToString() +  "\nUpdates: " + updates.ToString()
-                + "\nFrames: " + frames.ToString();
+                + "\nFixed updates: " + fixedUpdates.ToString();
+                // + "\nFrames: " + frames.ToString();
             elapsed = 0;
             frames = 0;
             updates = 0;
+            fixedUpdates = 0;
             last = now;
         }
 
         updates++;
+    }
+
+    public void FixedUpdate()
+    {
+        fixedUpdates++;
     }
 
     public void DrawFps(SpriteBatch spriteBatch, Vector2 fpsDisplayPosition, Color fpsTextColor)
