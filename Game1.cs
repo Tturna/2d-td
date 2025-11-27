@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,12 +16,14 @@ public class Game1 : Game
     public int NativeScreenHeight = 360;
     public int CurrentZone { get; private set; }
     public int CurrentLevel { get; private set; }
+    public const float FixedDeltaTime = 1f / 60f;
 
     private UIComponent ui;
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
     private bool isPaused;
+    private float physicsTimer;
 
     public static Game1 Instance { get; private set; }
 
@@ -77,7 +80,29 @@ public class Game1 : Game
         {
             if (ui is not null) ui.Update(gameTime);
             if (mainMenu is not null) mainMenu.Update(gameTime);
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game) DebugUtility.Update(this, gameTime);
             return;
+        }
+
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        physicsTimer += deltaTime;
+        var componentsToUpdate = new GameComponent[Components.Count];
+        Components.CopyTo(componentsToUpdate, 0);
+
+        while (physicsTimer >= FixedDeltaTime) {
+            foreach (var component in componentsToUpdate)
+            {
+                if (component is not Entity) continue;
+                var ent = component as Entity;
+                ent.FixedUpdate(FixedDeltaTime);
+            }
+
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game)
+            {
+                DebugUtility.FixedUpdate();
+            }
+
+            physicsTimer -= FixedDeltaTime;
         }
 
         // Console.WriteLine("Components ===============================");
@@ -118,7 +143,7 @@ public class Game1 : Game
             Vector2 startPoint = lineTuple.Item1;
             Vector2 endPoint = lineTuple.Item2;
             Color color = lineTuple.Item3;
-            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color, thickness: 1f);
         }
 
         DebugUtility.ResetLines();

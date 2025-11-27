@@ -27,7 +27,7 @@ class Projectile : Entity
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var oldPosition = Position;
-        Position += Direction * (BulletPixelsPerSecond * deltaTime);
+        UpdatePosition(Direction * (BulletPixelsPerSecond * deltaTime));
 
         RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
@@ -43,7 +43,13 @@ class Projectile : Entity
         var bulletToDelete = false;
         var shouldExplode = false;
 
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var startPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(oldPosition);
+        var endPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position);
+
+        HashSet<Enemy> enemyCandidates = new (startPointCandidates);
+        enemyCandidates.UnionWith(endPointCandidates);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             if (ExplosionTileRadius == 0)
             {

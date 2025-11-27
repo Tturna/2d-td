@@ -69,7 +69,7 @@ class GunTurret : Entity, ITower
         turretHeadAxisCenter = Position + new Vector2(TurretHeadXOffset, TurretHeadYOffset);
 
         // Offset turret base pos by 2 pixels;
-        Position += Vector2.UnitX * 2;
+        UpdatePosition(Vector2.UnitX * 2);
 
         turretHead = new Entity(Game, turretHeadAxisCenter, AssetManager.GetTexture("gunTurretHead"));
 

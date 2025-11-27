@@ -4,15 +4,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 public class MortarShell : Entity
 {
     public delegate void DestroyedHandler(Vector2 previousVelocity);
-    public event DestroyedHandler Destroyed;
+    public event DestroyedHandler? Destroyed;
 
     public PhysicsSystem physics;
     public bool Homing;
 
-    private Enemy closestEnemy;
+    private Enemy? closestEnemy;
     private Vector2? differenceToClosestEnemy;
     private float homingDelayTimer;
     private float lifeTime = 5f;
@@ -20,6 +21,7 @@ public class MortarShell : Entity
     private float homingDragFactor = 0.02f;
     private float directionCorrectionThreshold = 0.6f;
     private float directionCorrectionSpeed = 1.5f;
+    private Vector2 shellCenter;
 
     public MortarShell(Game1 game) : base(game, position: null, GetShellTexture(game.SpriteBatch))
     {
@@ -28,9 +30,9 @@ public class MortarShell : Entity
         homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
     }
 
-    public override void Update(GameTime gameTime)
+    public override void FixedUpdate(float deltaTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        shellCenter = Position + Size / 2;
 
         lifeTime -= deltaTime;
 
@@ -43,22 +45,12 @@ public class MortarShell : Entity
             else
             {
                 physics.DragFactor = homingDragFactor;
-                closestEnemy = null;
+                closestEnemy = EnemySystem.EnemyBins.GetClosestValue(shellCenter);
                 differenceToClosestEnemy = null;
 
-                // TODO: Consider spatial partitioning
-                foreach (var enemy in EnemySystem.Enemies)
+                if (closestEnemy is not null)
                 {
-                    // Target the bottom part of enemies to hit the ground
-                    var targetEnemyPosition = enemy.Position + new Vector2(enemy.Size.X / 2, enemy.Size.Y);
-                    var diff = targetEnemyPosition - Position + Size / 2;
-                    var distance = diff.Length();
-
-                    if (differenceToClosestEnemy is null || distance < ((Vector2)differenceToClosestEnemy).Length())
-                    {
-                        closestEnemy = enemy;
-                        differenceToClosestEnemy = diff;
-                    }
+                    differenceToClosestEnemy = closestEnemy.Position + closestEnemy.Size / 2 - shellCenter;
                 }
 
                 if (differenceToClosestEnemy is not null)
@@ -73,10 +65,10 @@ public class MortarShell : Entity
 
                     if (dot < directionCorrectionThreshold)
                     {
-                        physics.AddForce(-physics.Velocity * deltaTime * directionCorrectionSpeed);
+                        physics.AddForce(-physics.Velocity * directionCorrectionSpeed);
                     }
 
-                    physics.AddForce(targetDirection * homingSpeed * deltaTime);
+                    physics.AddForce(targetDirection * homingSpeed);
                 }
                 else
                 {
@@ -87,25 +79,10 @@ public class MortarShell : Entity
         }
 
         var oldVelocity = physics.Velocity;
+        var oldPos = Position;
         var collided = physics.UpdatePhysics(this, deltaTime);
 
-        if (!collided)
-        {
-            foreach (var enemy in EnemySystem.Enemies)
-            {
-                var diff = enemy.Position + enemy.Size / 2 - Position + Size / 2;
-                var distance = diff.Length();
-
-                if (distance > Math.Max(Size.X, Size.Y)) continue;
-
-                collided = true;
-                break;
-            }
-        }
-
         if (lifeTime <= 0 || collided) DestroyShell(oldVelocity);
-
-        base.Update(gameTime);
     }
 
     public void DestroyShell(Vector2 previousVelocity)

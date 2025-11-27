@@ -117,7 +117,7 @@ class Hovership : Entity, ITower
         var difference = target - turretHovership.Position;
         difference.Normalize();
 
-        turretHovership.Position += difference * hovershipSpeed * deltaTime;
+        turretHovership.UpdatePosition(difference * hovershipSpeed * deltaTime);
         turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
     }
 
@@ -173,10 +173,14 @@ class Hovership : Entity, ITower
 
         // Define the direction the tower is facing
         var towerDirectionAngle = (float)Math.PI/2f; // in radians, assuming it faces down.
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var range = tileRange * Grid.TileLength;
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(
+            turretSpawnAxisCenter, range);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             var distanceToEnemy = Vector2.Distance(turretSpawnAxisCenter, enemy.Position);
-            if (distanceToEnemy > tileRange * Grid.TileLength)
+            if (distanceToEnemy > range)
                 continue;
             var enemyCenter = enemy.Position + enemy.Size / 2;
             var deltaX = enemyCenter.X - turretSpawnAxisCenter.X;

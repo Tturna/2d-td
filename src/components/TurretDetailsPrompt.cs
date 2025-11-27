@@ -134,22 +134,22 @@ public class TurretDetailsPrompt : UIEntity
         var upgradeLeftBtnScreenPosition = Camera.WorldToScreenPosition(upgradeLeftBtnPosition);
         var upgradeRightBtnScreenPosition = Camera.WorldToScreenPosition(upgradeRightBtnPosition);
 
-        Position = detailsScreenPosition;
-        sellBtn.Position = sellBtnScreenPosition;
-        upgradeIndicator.Position = upgradeIndicatorScreenPosition;
+        SetPosition(detailsScreenPosition);
+        sellBtn.SetPosition(sellBtnScreenPosition);
+        upgradeIndicator.SetPosition(upgradeIndicatorScreenPosition);
 
         const int InfoButtonMargin = 5;
 
         if (leftUpgradeBtn is not null)
         {
-            leftUpgradeBtn.Position = upgradeLeftBtnScreenPosition;
-            leftInfoBtn!.Position = leftUpgradeBtn.Position - Vector2.UnitX * (leftInfoBtn.Size.X + InfoButtonMargin);
+            leftUpgradeBtn.SetPosition(upgradeLeftBtnScreenPosition);
+            leftInfoBtn!.SetPosition(leftUpgradeBtn.Position - Vector2.UnitX * (leftInfoBtn.Size.X + InfoButtonMargin));
         }
 
         if (rightUpgradeBtn is not null)
         {
-            rightUpgradeBtn.Position = upgradeRightBtnScreenPosition;
-            rightInfoBtn!.Position = rightUpgradeBtn.Position + Vector2.UnitX * (rightUpgradeBtn.Size.X + InfoButtonMargin);
+            rightUpgradeBtn.SetPosition(upgradeRightBtnScreenPosition);
+            rightInfoBtn!.SetPosition(rightUpgradeBtn.Position + Vector2.UnitX * (rightUpgradeBtn.Size.X + InfoButtonMargin));
         }
 
         base.Update(gameTime);
@@ -297,17 +297,17 @@ public class TurretDetailsPrompt : UIEntity
 
         var name = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, pixelsixFont, upgrade.Name);
-        name.Position = iconPos + Vector2.UnitX * (icon.Size.X + Margin);
+        name.SetPosition(iconPos + Vector2.UnitX * (icon.Size.X + Margin));
 
         var price = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, pixelsixFont, priceText);
-        price.Position = iconPos + new Vector2(0, icon.Size.Y + Margin);
+        price.SetPosition(iconPos + new Vector2(0, icon.Size.Y + Margin));
 
         if (upgrade.Description is not null)
         {
             var description = new UIEntity(Game, UIComponent.Instance.AddUIEntity,
                 UIComponent.Instance.RemoveUIEntity, pixelsixFont, upgrade.Description);
-            description.Position = price.Position + new Vector2(0, price.Size.Y + Margin);
+            description.SetPosition(price.Position + new Vector2(0, price.Size.Y + Margin));
             tooltipEntities.Add(description);
         }
 

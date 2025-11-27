@@ -5,7 +5,7 @@ namespace _2d_td;
 
 public static class EnemySystem
 {
-    public static List<Enemy> Enemies { get; private set; } = new();
+    public static BinGrid<Enemy> EnemyBins;
     static Game1 Game;
 
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
@@ -17,28 +17,14 @@ public static class EnemySystem
     public static void Initialize(Game1 game)
     {
         Game = game;
+        var mainBounds = new Rectangle(-game.NativeScreenWidth, 0,
+            game.NativeScreenWidth * 3, game.NativeScreenHeight * 2);
+        EnemyBins = new BinGrid<Enemy>(Grid.TileLength * 4);
     }
 
     public static void Update(GameTime gameTime)
     {
-        CheckIfEnemyPastLevel();
     }
-
-    public static void CheckIfEnemyPastLevel()
-    {
-        float levelEndX = Game.Terrain.GetLastTilePosition().X;
-        
-        foreach (Enemy enemy in Enemies)
-        {
-            float enemyX = enemy.Position.X;
-            if (enemyX > levelEndX)
-            {
-
-                //Console.WriteLine("Enemy has passed level");
-            }
-        }
-    }
-
 
     public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
@@ -48,7 +34,7 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 22f,
+            WalkSpeed = 0.35f,
             JumpForce = 7f
         };
 
@@ -66,7 +52,7 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 100, scrapValue: 1);
-        Enemies.Add(enemy);
+        EnemyBins.Add(enemy);
 
         return enemy;
     }
@@ -77,7 +63,7 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 16f,
+            WalkSpeed = 0.2f,
             JumpForce = 6f
         };
 
@@ -95,7 +81,7 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
             health: 300, scrapValue: 5);
-        Enemies.Add(enemy);
+        EnemyBins.Add(enemy);
 
         return enemy;
     }

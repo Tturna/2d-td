@@ -12,7 +12,7 @@ public class Mortar : Entity, ITower
     private float actionTimer;
     private bool isTargeting, canSetTarget;
     private Vector2 projectileVelocity;
-    private float projectileGravity = 10f;
+    private float projectileGravity = 0.12f;
 
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
@@ -79,7 +79,7 @@ public class Mortar : Entity, ITower
 
     public override void Initialize()
     {
-        Position -= Vector2.UnitY * 4;
+        UpdatePosition(-Vector2.UnitY * 4);
 
         base.Initialize();
     }
@@ -117,71 +117,71 @@ public class Mortar : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond);
+            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
         {
-            HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond);
+            HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
         {
-            HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond);
+            HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
         {
-            HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f);
+            HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
         {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f);
+            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
         {
-            HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f);
+            HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
         {
-            HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f);
+            HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
         }
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShot(int explosionTileRadius, int damage, float shotsPerSecond)
+    private void HandleBasicShot(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.Position = Position;
+        shell.SetPosition(Position);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
 
-        shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+        shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
 
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
     }
 
-    private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond)
+    private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.Position = Position;
+        shell.SetPosition(Position);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
 
-        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3);
+        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3, deltaTime);
 
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
     }
 
-    private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond)
+    private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
 
@@ -189,14 +189,14 @@ public class Mortar : Entity, ITower
         {
             var shell = new MortarShell(Game);
             var xOffset = i * Grid.TileLength;
-            shell.Position = Position + Vector2.UnitX * xOffset;
+            shell.SetPosition(Position + Vector2.UnitX * xOffset);
             shell.physics.LocalGravity = 0f;
             shell.Homing = true;
 
             var randomX = (float)random.NextDouble() * 2f - 1f;
             shell.physics.AddForce(-Vector2.UnitY * 4f + Vector2.UnitX * randomX);
 
-            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
         }
 
         actionTimer = 1f / actionsPerSecond;
@@ -204,14 +204,14 @@ public class Mortar : Entity, ITower
         AnimationSystem.OneShotAnimationState("fire");
     }
 
-    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond)
+    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
 
         for (int i = 0; i < 6; i++)
         {
             var shell = new MortarShell(Game);
-            shell.Position = Position;
+            shell.SetPosition(Position);
             shell.physics.LocalGravity = projectileGravity;
             shell.physics.DragFactor = 0f;
 
@@ -220,7 +220,7 @@ public class Mortar : Entity, ITower
             var randomAddition = new Vector2(randomX, randomY);
             shell.physics.AddForce(projectileVelocity + randomAddition);
 
-            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius);
+            shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
         }
 
         actionTimer = 1f / actionsPerSecond;
@@ -228,13 +228,14 @@ public class Mortar : Entity, ITower
         AnimationSystem.OneShotAnimationState("fire");
     }
 
-    private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius)
+    private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
     {
         EffectUtility.Explode(shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
             magnitude: 5f, damage);
     }
 
-    private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount)
+    private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount,
+        float deltaTime)
     {
         if (bounceCount <= 0) return;
 
@@ -248,13 +249,13 @@ public class Mortar : Entity, ITower
             var newVelocity = newVelocityDirection * previousVelocity.Length();
             var newShell = new MortarShell(Game);
 
-            newShell.Position = shell.Position;
+            newShell.SetPosition(shell.Position);
             newShell.physics.LocalGravity = projectileGravity;
             newShell.physics.DragFactor = 0f;
             newShell.physics.AddForce(newVelocity);
 
-            HandleBasicProjectileHit(shell, damage, explosionTileRadius);
-            HandleBouncingHit(newShell, damage, explosionTileRadius, bounceCount - 1);
+            HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
+            HandleBouncingHit(newShell, damage, explosionTileRadius, bounceCount - 1, deltaTime);
         };
     }
 
@@ -269,7 +270,7 @@ public class Mortar : Entity, ITower
         // When θ = 45°, Range = v₀² / g
         // Knowing the range, the velocity can be solved by rearranging the formula:
         // v₀ = √(Range × g / sin(2 × θ))
-        var velocityMagnitude = MathF.Sqrt(projectileGravity * dx * deltaTime / MathF.Sin(2 * FiringAngle));
+        var velocityMagnitude = MathF.Sqrt(projectileGravity * dx / MathF.Sin(2 * FiringAngle));
 
         // Adjust for height difference
         float heightFactor = 1.0f - (dy / (3 * dx));

@@ -74,7 +74,7 @@ public class Crane : Entity, ITower
 
     public override void Initialize()
     {
-        Position -= Vector2.UnitY * 3;
+        UpdatePosition(-Vector2.UnitY * 3);
         ballThing = new Entity(Game, position: Position + defaultBallOffset, GetBallSprite(Game.SpriteBatch));
     }
 
@@ -119,19 +119,21 @@ public class Crane : Entity, ITower
     private List<Enemy> GetEnemiesInRange(float extraRange = 0f, bool getOnlyFirst = false, bool useHashSet = false)
     {
         List<Enemy> enemies = new();
+        var ballThingCenter = ballThing!.Position + ballThing.Size / 2;
+        var ballThingSize = MathHelper.Max(ballThing.Size.X, ballThing.Size.Y);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(ballThingCenter, ballThingSize + extraRange);
 
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
+        foreach (var enemy in enemyCandidates)
         {
-            var enemy = EnemySystem.Enemies[i];
-
             if (useHashSet)
             {
                 if (hitEnemies.Contains(enemy)) continue;
             }
 
-            var diff = (ballThing!.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
+            var diff = (ballThingCenter) - (enemy.Position + enemy.Size / 2);
             var distance = diff.Length();
 
+            // TODO: ensure this condition is correct
             if (distance > ballThing.Size.X / 2 + enemy.Size.X / 2 + extraRange) continue;
 
             if (useHashSet)
@@ -147,7 +149,7 @@ public class Crane : Entity, ITower
         return enemies;
     }
 
-    private void DamageHitEnemies(int damage)
+    private void DamageHitEnemies(int damage, float deltaTime)
     {
         var enemies = GetEnemiesInRange(useHashSet: true);
 
@@ -157,7 +159,7 @@ public class Crane : Entity, ITower
         }
     }
 
-    private void DamageEnemiesUnconditionally(int damage, float extraRange = 0f)
+    private void DamageEnemiesUnconditionally(int damage, float deltaTime, float extraRange = 0f)
     {
         var enemies = GetEnemiesInRange(extraRange: extraRange);
 
@@ -175,13 +177,13 @@ public class Crane : Entity, ITower
         if (ballThing!.Position == targetBallPosition) return true;
 
         ballSpeed += ballFallAcceleration;
-        ballThing.Position += Vector2.UnitY * ballSpeed * deltaTime;
+        ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
 
-        DamageHitEnemies(damage);
+        DamageHitEnemies(damage, deltaTime);
 
         if (ballThing.Position.Y >= targetBallPosition.Y)
         {
-            ballThing.Position = targetBallPosition;
+            ballThing.SetPosition(targetBallPosition);
         }
 
         return false;
@@ -191,12 +193,12 @@ public class Crane : Entity, ITower
     {
         if (ballThing!.Position == Position + defaultBallOffset) return;
 
-        ballThing.Position = Vector2.Lerp(targetBallPosition, Position + defaultBallOffset,
-            (1f - (cooldownTimer / cooldownTime)) * reelSpeedFactor);
+        ballThing.SetPosition(Vector2.Lerp(targetBallPosition, Position + defaultBallOffset,
+            (1f - (cooldownTimer / cooldownTime)) * reelSpeedFactor));
 
         if (ballThing.Position.Y <= Position.Y + defaultBallOffset.Y)
         {
-            ballThing.Position = Position + defaultBallOffset;
+            ballThing.SetPosition(Position + defaultBallOffset);
         }
     }
 
@@ -243,18 +245,18 @@ public class Crane : Entity, ITower
         if (actionTimer > 0)
         {
             ballSpeed += ballFallAcceleration;
-            ballThing!.Position += Vector2.UnitY * ballSpeed * deltaTime;
+            ballThing!.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
             var enemyHit = GetEnemiesInRange(getOnlyFirst: true).Count > 0;
 
             // Explode if enemy or ground hit
             if (enemyHit || ballThing.Position.Y >= targetBallPosition.Y)
             {
-                ballThing.Position = targetBallPosition;
-                DamageEnemiesUnconditionally(damage: 120, extraRange: 6 * Grid.TileLength);
+                ballThing.SetPosition(targetBallPosition);
+                DamageEnemiesUnconditionally(damage: 120, deltaTime, extraRange: 6 * Grid.TileLength);
 
                 actionTimer = 0;
                 cooldownTimer = cooldownTime + reelDelayTime;
-                ballThing.Position = Position + defaultBallOffset;
+                ballThing.SetPosition(Position + defaultBallOffset);
             }
         }
 
@@ -273,7 +275,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 25 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 15);
+                DamageEnemiesUnconditionally(damage: 15, deltaTime);
             }
         }
 
@@ -328,7 +330,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 10 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 8);
+                DamageEnemiesUnconditionally(damage: 8, deltaTime);
             }
 
             return;
@@ -338,7 +340,7 @@ public class Crane : Entity, ITower
 
         if (cooldownTimerRunning)
         {
-            ballThing!.Position = Position + defaultBallOffset;
+            ballThing!.SetPosition(Position + defaultBallOffset);
 
             return;
         }
@@ -383,7 +385,10 @@ public class Crane : Entity, ITower
     private bool IsEnemyBelow()
     {
         var towerTestPosition = ballThing!.Position + ballThing.Size / 2;
-        foreach (var enemy in EnemySystem.Enemies)
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(towerTestPosition,
+            BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
+
+        foreach (var enemy in enemyCandidates)
         {
             var enemyTestPosition = enemy.Position + enemy.Size / 2;
 
@@ -402,8 +407,7 @@ public class Crane : Entity, ITower
         actionTimer = actionTime;
         var groundCheckPosition = ballThing!.Position;
         
-        while (ScrapSystem.GetScrapFromPosition(groundCheckPosition) is null &&
-            !Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
+        while (!Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
         {
             groundCheckPosition += Vector2.UnitY * Grid.TileLength;
         }

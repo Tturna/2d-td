@@ -9,7 +9,7 @@ public class Entity : DrawableGameComponent
 {
     // Hide Game field of DrawableGameComponent so children can directly use a Game1 instance.
     new protected Game1 Game;
-    public Vector2 Position { get; set; } = Vector2.Zero;
+    public Vector2 Position { get; private set; } = Vector2.Zero;
     public float RotationRadians { get; set; }
     public Vector2 Size { get; set; }
     public Vector2 DrawOrigin { get; set; } = Vector2.Zero;
@@ -18,6 +18,8 @@ public class Entity : DrawableGameComponent
     public float DrawLayerDepth { get; set; } = 0.9f;
     public Texture2D? Sprite { get; set; }
     public AnimationSystem? AnimationSystem;
+
+    protected bool IsDestroyed = false;
 
     public Entity(Game game, Vector2? position = null, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
@@ -60,6 +62,8 @@ public class Entity : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
+        if (IsDestroyed) return;
+
         if (AnimationSystem is not null)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -68,6 +72,8 @@ public class Entity : DrawableGameComponent
 
         base.Update(gameTime);
     }
+
+    public virtual void FixedUpdate(float deltaTime) { }
 
     public override void Initialize()
     {
@@ -110,6 +116,17 @@ public class Entity : DrawableGameComponent
         if (index >= 0)
         {
             Game.Components.RemoveAt(index);
+            IsDestroyed = true;
         }
+    }
+
+    public virtual void UpdatePosition(Vector2 positionChange)
+    {
+        Position += positionChange;
+    }
+
+    public virtual void SetPosition(Vector2 newPosition)
+    {
+        Position = newPosition;
     }
 }

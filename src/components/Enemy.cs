@@ -1,25 +1,26 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
-public class Enemy : Entity
+public class Enemy : Entity, IKnockable
 {
-    private Texture2D hurtTexture;
-    private float hurtTimeSeconds = 0.1f;
-
     public HealthSystem HealthSystem;
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
     public int ScrapValue;
 
+    private Texture2D hurtTexture;
+    private float hurtTimeSeconds = 0.1f;
     private double hurtProgress;
     private double hurtAnimThreshold;
     private int attackDamage = 10;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 lastPosition;
+    private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
@@ -32,7 +33,7 @@ public class Enemy : Entity
         PhysicsSystem = new PhysicsSystem(Game);
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
-        hurtAnimThreshold = .33*HealthSystem.MaxHealth;
+        hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
 
         this.hurtTexture = hurtTexture;
 
@@ -41,16 +42,24 @@ public class Enemy : Entity
 
     public override void Update(GameTime gameTime)
     {
+        if (IsDestroyed) return;
+
+        if (!Game.Components.Contains(this))
+        {
+            // Apparently MonoGame will call Update on a component that has already been
+            // removed from Components. I guess this can happen if something removes a
+            // component from Components in the same frame it would be updated.
+            return;
+        }
+
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
             HQ.Instance.HealthSystem.TakeDamage(attackDamage);
-            EnemySystem.Enemies.Remove(this);
             Destroy();
+            return;
         }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        MovementSystem.UpdateMovement(this, gameTime);
-        PhysicsSystem.UpdatePhysics(this, deltaTime);
 
         var posDiff = Position - lastPosition;
         lastPosition = Position;
@@ -75,9 +84,45 @@ public class Enemy : Entity
         base.Update(gameTime);
     }
 
+    public override void FixedUpdate(float deltaTime)
+    {
+        MovementSystem.UpdateMovement(this, deltaTime);
+        PhysicsSystem.UpdatePhysics(this, deltaTime);
+    }
+
     public override void Draw(GameTime gameTime)
     {
         base.Draw(gameTime);
+    }
+
+    public override void UpdatePosition(Vector2 positionChange)
+    {
+        var newPosition = Position + positionChange;
+
+        if (newPosition.Y >= yKillThreshold)
+        {
+            Destroy();
+            return;
+        }
+
+        var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
+        var newBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(newPosition);
+
+        if (oldBinGridPosition != newBinGridPosition)
+        {
+            var canRemove = EnemySystem.EnemyBins.Remove(this);
+            SetPosition(newPosition);
+
+            if (!canRemove)
+            {
+                throw new InvalidOperationException($"Couldn't remove enemy ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+            }
+
+            EnemySystem.EnemyBins.Add(this);
+            return;
+        }
+
+        SetPosition(newPosition);
     }
 
     public void ApplyKnockback(Vector2 knockback)
@@ -97,6 +142,12 @@ public class Enemy : Entity
         }
     }
 
+    public override void Destroy()
+    {
+        EnemySystem.EnemyBins.Remove(this);
+        base.Destroy();
+    }
+
     public void Knockback(Vector2 direction,float force)
     {
         PhysicsSystem.AddForce(direction*force);
@@ -104,9 +155,12 @@ public class Enemy : Entity
 
     private void OnDeath(Entity diedEntity)
     {
-        EnemySystem.Enemies.Remove(this);
         CurrencyManager.AddBalance(ScrapValue);
-        ScrapSystem.AddScrap(Game, Position);
+        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
+
+        var anim = AnimationSystem.BaseAnimationData;
+        anim.DelaySeconds = float.PositiveInfinity;
+        ScrapSystem.AddCorpse(Game, Position, anim, knockback: Vector2.UnitX * 0.7f);
         Destroy();
     }
 }

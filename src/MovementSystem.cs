@@ -24,9 +24,7 @@ public class MovementSystem
 
     private Game1 game;
     private Vector2 defaultChargeDirection = Vector2.UnitX;
-    private float jumpTimer;
-    private float jumpInterval = 0.5f;
-    private float jumpCheckDistanceFactor = 0.5f;
+    private float climbCheckDistanceFactor = 0.15f;
 
     public MovementData CurrentData { get; private set; }
 
@@ -36,20 +34,8 @@ public class MovementSystem
         CurrentData = data;
     }
 
-    public void UpdateMovement(Entity entity, GameTime gameTime)
+    public void UpdateMovement(Entity entity, float deltaTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        if (jumpTimer > 0f)
-        {
-            jumpTimer -= deltaTime;
-
-            if (jumpTimer <= 0f)
-            {
-                jumpTimer = 0f;
-            }
-        }
-
         switch (CurrentData.Pattern)
         {
             case MovementPattern.Charge:
@@ -58,21 +44,16 @@ public class MovementSystem
         }
     }
 
-    private bool CanAndShouldJump(Entity entity)
+    private (bool, bool) ShouldClimb(Entity entity)
     {
-        if (jumpTimer > 0 || entity is not Enemy) return false;
-
-        var entityBottom = entity.Position + Vector2.UnitY * entity.Size.Y;
-        var groundCheckStartPoint = entityBottom + Vector2.UnitY * (Grid.TileLength / 3);
-
         (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
         var entityTileWidth = Math.Floor(tileWidth);
 
         var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
         var remainderHeight = entity.Size.Y % Grid.TileLength;
         var halfEntityWidth = entity.Size.X / 2;
-        var jumpCheckDistance = halfEntityWidth + jumpCheckDistanceFactor * Grid.TileLength;
-        var shouldJump = false;
+        var climbCheckDistance = halfEntityWidth + climbCheckDistanceFactor * Grid.TileLength;
+        var shouldClimb = false;
 
         for (int i = 0; i <= entityTileHeight; i++)
         {
@@ -86,32 +67,67 @@ public class MovementSystem
 
             var startPos = entity.Position + yOffset;
             var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
-            var jumpCheckPoint = horizontalEntityCenter + defaultChargeDirection * jumpCheckDistance;
+            var climbCheckPoint = horizontalEntityCenter + defaultChargeDirection * climbCheckDistance;
             
-            if (Collision.IsPointInTerrain(jumpCheckPoint, game.Terrain) ||
-                ScrapSystem.GetScrapFromPosition(jumpCheckPoint) is not null)
+            if (Collision.IsPointInTerrain(climbCheckPoint, game.Terrain) ||
+                ScrapSystem.IsPointInCorpse(climbCheckPoint))
             {
-                shouldJump = true;
+                shouldClimb = true;
                 break;
             }
         }
 
-        return shouldJump;
+        // true if the entity has its side next to a wall. will be false if the entity
+        // only has its bottom right most corner next to a wall (e.g. if they already climbed
+        // most of the wall).
+        var shouldClimbWall = shouldClimb;
+
+        var bottomStartPos = entity.Position + Vector2.UnitY * (entity.Size.Y - 1);
+        var centerStartPos = bottomStartPos + Vector2.UnitX * halfEntityWidth;
+        var finalCheckPoint = centerStartPos + defaultChargeDirection * climbCheckDistance;
+        var shouldClimbCorner = false;
+
+        if (Collision.IsPointInTerrain(finalCheckPoint, game.Terrain) ||
+            ScrapSystem.IsPointInCorpse(finalCheckPoint))
+        {
+            shouldClimbCorner = true;
+        }
+
+        return (shouldClimbWall, shouldClimbCorner);
     }
 
     private void HandleCharge(Entity entity, float deltaTime)
     {
         if (CurrentData.CanWalk)
         {
-            if (CanAndShouldJump(entity))
+            // if (CanAndShouldJump(entity))
+            // {
+            //     var enemy = (Enemy)entity;
+            //     enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
+            //     enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
+            //     jumpTimer = jumpInterval;
+            // }
+
+            var (shouldClimbWall, shouldClimbCorner) = ShouldClimb(entity);
+
+            if (shouldClimbWall || shouldClimbCorner)
             {
-                var enemy = (Enemy)entity;
-                enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
-                enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
-                jumpTimer = jumpInterval;
+                if (entity is Enemy)
+                {
+                    ((Enemy)entity).PhysicsSystem.StopMovement();
+                }
+
+                var power = 2f;
+                if (shouldClimbCorner) power += 1f;
+
+                entity.UpdatePosition(-Vector2.UnitY * power);
             }
 
-            entity.Position += defaultChargeDirection * CurrentData.WalkSpeed * deltaTime;
+            var leapMagnitude = 1f;
+
+            if (shouldClimbCorner) leapMagnitude += 1f;
+
+            entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * leapMagnitude);
         }
         // TODO: Implement flying enemy logic and shi
     }

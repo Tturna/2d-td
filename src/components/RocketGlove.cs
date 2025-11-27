@@ -42,7 +42,7 @@ public class RocketGlove : Entity
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var oldPosition = Position;
-        Position += Direction * (PixelsPerSecond * deltaTime);
+        UpdatePosition(Direction * (PixelsPerSecond * deltaTime));
 
         if (hitEnemies.Count >= maxHitEnemies)
         {
@@ -51,9 +51,11 @@ public class RocketGlove : Entity
             Destroy();
         }
 
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
-            if (Collision.AreEntitiesColliding(this,enemy))
+            if (Collision.AreEntitiesColliding(this, enemy))
             {
                 hitEnemies.Add(enemy);
                 enemy.ApplyKnockback(Direction * 4f);
@@ -63,8 +65,7 @@ public class RocketGlove : Entity
 
         Lifetime -= deltaTime;
 
-        if (Collision.IsEntityInTerrain(this, Game.Terrain, out var _) ||
-            Collision.IsEntityInScrap(this, out var _))
+        if (Collision.IsEntityInTerrain(this, Game.Terrain, out var _))
         {
             EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
                 magnitude: knockback, Damage);
