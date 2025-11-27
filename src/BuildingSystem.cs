@@ -14,7 +14,8 @@ public static class BuildingSystem
         Drone,
         Crane,
         Mortar,
-        Hovership
+        Hovership,
+        PunchTrap
     }
 
     private static Game1 game;
@@ -111,6 +112,7 @@ public static class BuildingSystem
             Crane => TowerType.Crane,
             Mortar => TowerType.Mortar,
             Hovership => TowerType.Hovership,
+            PunchTrap => TowerType.PunchTrap,
             _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
         };
     }

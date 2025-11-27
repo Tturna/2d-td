@@ -115,6 +115,7 @@ public class UIComponent : DrawableGameComponent
         CreateTowerBuyButton<Crane>(turretTwoSprite, BuildingSystem.TowerType.Crane);
         CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
         CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
+        CreateTowerBuyButton<PunchTrap>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
 
         var pauseIconTexture = AssetManager.GetTexture("btn_pause");
         var pauseButtonAnimation = new AnimationSystem.AnimationData

@@ -95,6 +95,8 @@ public static class AssetManager
         LoadTexture("mortar_missilesilo_icon", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon");
         LoadTexture("mortar_nuke_icon", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon");
 
+        LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
+
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp
 
         // projectiles
