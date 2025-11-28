@@ -82,7 +82,7 @@ public static class DebugUtility
 
         var statusText = "Debug mode";
         var statusTextWidth = pixelsixFont.MeasureString(statusText) * 2;
-        var corner = new Vector2(Game1.Instance.NativeScreenWidth, 20);
+        var corner = new Vector2(Game1.Instance.NativeScreenWidth, 60);
         var statusPos = corner - Vector2.UnitX * (statusTextWidth.X + 10);
         spriteBatch.DrawString(pixelsixFont,
             statusText,
@@ -136,7 +136,7 @@ public static class DebugUtility
 
         var buttonSprite = AssetManager.GetTexture("btn_square_empty");
         var vsyncButtonPos = new Vector2(game.NativeScreenWidth - buttonSprite.Width - 8,
-            100);
+            140);
         var vsyncButton = new UIEntity(game, vsyncButtonPos, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, buttonSprite);
 

@@ -17,6 +17,7 @@ public class UIComponent : DrawableGameComponent
     private UIEntity turretHologram;
     private UIEntity currencyText;
     private UIEntity waveIndicator;
+    private UIEntity waveCooldownTimer;
     private bool isPauseMenuVisible;
     private bool escHeld;
     private bool isWon;
@@ -103,8 +104,14 @@ public class UIComponent : DrawableGameComponent
 
         waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Wave 0 of 0");
         waveIndicator.Scale = Vector2.One * 2;
-        var waveTextWidth = pixelsixFont.MeasureString("Wave 9 of 9").X * waveIndicator.Scale.X;
+        var waveTextWidth = pixelsixFont.MeasureString("Wave 99 of 99").X * waveIndicator.Scale.X;
         waveIndicator.SetPosition(new Vector2(game.NativeScreenWidth - waveTextWidth, 0));
+
+        waveCooldownTimer = new UIEntity(game, uiElements, pixelsixFont, "Next wave in 00:00");
+        waveCooldownTimer.Scale = Vector2.One * 2;
+        var timerTextWidth = pixelsixFont.MeasureString("Next wave in 88:88").X * waveCooldownTimer.Scale.X;
+        waveCooldownTimer.SetPosition(new Vector2(game.NativeScreenWidth - timerTextWidth,
+            waveIndicator.Size.Y + 4));
 
         var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
         var turretTwoSprite = AssetManager.GetTexture("turretTwo");
@@ -158,6 +165,15 @@ public class UIComponent : DrawableGameComponent
 
         currencyText.Text = $"{CurrencyManager.Balance}";
         waveIndicator.Text = $"Wave {WaveSystem.CurrentWaveIndex + 1} of {WaveSystem.MaxWaveIndex}";
+
+        if (WaveSystem.WaveCooldownLeft > 0)
+        {
+            waveCooldownTimer.Text = $"Next wave in {WaveSystem.WaveCooldownLeft.ToString("#.##")}";
+        }
+        else
+        {
+            waveCooldownTimer.Text = "";
+        }
 
         var kbdState = Keyboard.GetState();
         if (!escHeld && kbdState.IsKeyDown(Keys.Escape))

@@ -57,10 +57,10 @@ public static class WaveSystem
     public static event WaveEndedHandler WaveEnded;
     public static int MaxWaveIndex;
     public static int CurrentWaveIndex;
+    public static float WaveCooldownLeft { get; private set; }
 
     private static bool waveStarted;
     private static float waveCooldown;
-    private static float waveCooldownLeft;
     private const int StartingMaxWaves = 5;
     private const int MaxWaveIncreasePerLevel = 5;
 
@@ -127,13 +127,13 @@ public static class WaveSystem
 
         Console.WriteLine($"Loaded {waves.Count} waves with {formations.Count} formations");
 
-        waveCooldown = 10f;
-        waveCooldownLeft = 0f;
-        CurrentWaveIndex = 0;
-        waveStarted = true;
+        waveCooldown = 15f;
+        WaveCooldownLeft = waveCooldown;
+        CurrentWaveIndex = -1;
+        waveStarted = false;
         var zone1 = new Zone { waves = waves };
         currentZone = zone1;
-        currentWave = currentZone.waves[CurrentWaveIndex];
+        // currentWave = currentZone.waves[CurrentWaveIndex];
 
         MaxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
     }
@@ -148,10 +148,10 @@ public static class WaveSystem
         if (currentWave.formCooldownRemaining > 0f)
             currentWave.formCooldownRemaining -= elapsedSeconds;
 
-        if (waveCooldownLeft > 0f)
-            waveCooldownLeft -= elapsedSeconds;
+        if (WaveCooldownLeft > 0f)
+            WaveCooldownLeft -= elapsedSeconds;
 
-        if (waveCooldownLeft <= 0f && !waveStarted)
+        if (WaveCooldownLeft <= 0f && !waveStarted)
             NextWave();
 
         if (currentWave.formCooldownRemaining <= 0f && waveStarted)
@@ -234,7 +234,7 @@ public static class WaveSystem
     {
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Ended");
         waveStarted = false;
-        waveCooldownLeft = waveCooldown;
+        WaveCooldownLeft = waveCooldown + 3 * CurrentWaveIndex;
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
