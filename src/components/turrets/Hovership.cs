@@ -11,7 +11,8 @@ class Hovership : Entity, ITower
     private Vector2 spawnOffset = new (0, 0);
     private Entity turretHovership;
     private Vector2 turretSpawnAxisCenter;
-    int baseHovershipHangarRange = 25;
+    private static int baseHovershipHangarRange = 25;
+    int realHovershipHangarRange;
     int hoverHeight = 10;
     int damage = 15;
     int baseProjectileAmount = 3;
@@ -62,6 +63,8 @@ class Hovership : Entity, ITower
 
         turretHovership = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));
         turretHovership.DrawLayerDepth = 0.8f;
+
+        realHovershipHangarRange = baseHovershipHangarRange;
     }
 
     public override void Update(GameTime gameTime)
@@ -73,12 +76,12 @@ class Hovership : Entity, ITower
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+            HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BombierBay.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 2);
-            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+            HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.OrbitalLaser.ToString())
         {
@@ -87,17 +90,17 @@ class Hovership : Entity, ITower
         else if (towerCore.CurrentUpgrade.Name == Upgrade.CarpetofFire.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 5);
-            HandleHovershipPosition(deltaTime, baseHovershipHangarRange, hoverHeight);
+            HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientEngines.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, baseHovershipHangarRange + 10, hoverHeight);
+            HandleHovershipPosition(deltaTime + 10, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EMPShip.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount - 2);
-            HandleHovershipPosition(deltaTime, baseHovershipHangarRange + 15, hoverHeight + 10);
+            HandleHovershipPosition(deltaTime + 15, hoverHeight + 10);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FloatingFactory.ToString())
         {
@@ -107,9 +110,9 @@ class Hovership : Entity, ITower
         base.Update(gameTime);
     }
 
-    private void HandleHovershipPosition(float deltaTime, int tileRange, int hoverHeight)
+    private void HandleHovershipPosition(float deltaTime, int hoverHeight)
     {
-        var closestEnemy = towerCore.GetClosestValidEnemy(tileRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(realHovershipHangarRange);
 
         if (closestEnemy is null) return;
 
@@ -253,5 +256,13 @@ class Hovership : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+        throw new NotImplementedException();
+    }
+
+    public static float GetBaseRange() => baseHovershipHangarRange;
+
+    public float GetRange()
+    {
+        return realHovershipHangarRange;
     }
 }

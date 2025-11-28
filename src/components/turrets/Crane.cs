@@ -466,5 +466,10 @@ public class Crane : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+        throw new NotImplementedException();
     }
+
+    public static float GetBaseRange() => 0f;
+
+    public float GetRange() => 0f;
 }

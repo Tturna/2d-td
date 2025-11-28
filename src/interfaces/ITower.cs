@@ -10,4 +10,6 @@ public interface ITower
     public abstract static bool CanPlaceTower(Vector2 targetWorldPosition);
     public abstract static Entity CreateNewInstance(Game game, Vector2 worldPosition);
     public abstract void UpgradeTower(TowerUpgradeNode newUpgrade);
+    public abstract static float GetBaseRange();
+    public abstract float GetRange();
 }

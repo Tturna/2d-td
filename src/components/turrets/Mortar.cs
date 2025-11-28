@@ -397,4 +397,8 @@ public class Mortar : Entity, ITower
         AnimationSystem.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
+
+    public static float GetBaseRange() => 0f;
+
+    public float GetRange() => 0f;
 }

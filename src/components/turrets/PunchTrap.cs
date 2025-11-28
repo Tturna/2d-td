@@ -7,7 +7,7 @@ namespace _2d_td;
 class PunchTrap : Entity, ITower
 {
     private TowerCore towerCore;
-    int tileRange = 2;
+    private static int baseRange = 2;
     Vector2 direction = new Vector2(-1,0);
     float knockback = 2.5f;
     int damage = 10;
@@ -80,43 +80,43 @@ class PunchTrap : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, knockback);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FatFist.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage + 10, tileRange, knockback * 1.5f);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage + 10, knockback * 1.5f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
-            HandleMegaPunch(deltaTime, actionsPerSecond, damage + 20, tileRange, knockback * 1.5f);
+            HandleMegaPunch(deltaTime, actionsPerSecond, damage + 20, knockback * 1.5f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.QuickJabs.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + .167f, damage, tileRange, knockback);
+            HandleBasicShots(deltaTime, actionsPerSecond + .167f, damage, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime, 10f, 10, tileRange, 0f);
+            HandleBasicShots(deltaTime, 10f, 10, 0f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
-            HandleRocketGlove(deltaTime, actionsPerSecond, damage + 50, tileRange, knockback);
+            HandleRocketGlove(deltaTime, actionsPerSecond, damage + 50, knockback);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond+1.5f, damage, tileRange, knockback);
+            HandleBasicShots(deltaTime, actionsPerSecond+1.5f, damage, knockback);
         }
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, float knockback)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        if (actionTimer >= actionInterval && DetectEnemies(tileRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
         {
             Shoot(damage, knockback);
             actionTimer = 0f;
@@ -124,7 +124,7 @@ class PunchTrap : Entity, ITower
         }
     }
 
-    private void HandleMegaPunch(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
+    private void HandleMegaPunch(float deltaTime, float actionsPerSecond, int damage, float knockback)
     {
         var actionInterval = 1f / actionsPerSecond;
 
@@ -137,7 +137,7 @@ class PunchTrap : Entity, ITower
 
         knockback = (int)MathHelper.Lerp(knockback, knockback * 3.5f, chargeRatio);
 
-        if (actionTimer >= actionInterval && DetectEnemies(tileRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
         {
             Shoot(damage, knockback);
             actionTimer = 0f;
@@ -147,12 +147,12 @@ class PunchTrap : Entity, ITower
 
     private void Shoot(int damage, float knockback)
     {
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, tileRange);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseRange);
         var hitCount = 0;
 
         foreach (Enemy enemy in enemyCandidates)
         {
-            if (IsEnemyInRange(enemy, tileRange))
+            if (IsEnemyInRange(enemy, baseRange))
             {
                 hitCount++;
                 enemy.HealthSystem.TakeDamage(damage);
@@ -169,13 +169,13 @@ class PunchTrap : Entity, ITower
         return Collision.IsLineInEntity(pointA, pointB, enemy, out var _,out var _);
     }
 
-    public void HandleRocketGlove(float deltaTime, float actionsPerSecond, int damage, int tileRange, float knockback)
+    public void HandleRocketGlove(float deltaTime, float actionsPerSecond, int damage, float knockback)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        if (actionTimer >= actionInterval && DetectEnemies(tileRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
         {
             RocketGlove rocket = new RocketGlove(Game, Position + direction * 8, knockback);
             rocket.Direction = direction;
@@ -239,5 +239,12 @@ class PunchTrap : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+    }
+
+    public static float GetBaseRange() => baseRange;
+
+    public float GetRange()
+    {
+        return baseRange;
     }
 }

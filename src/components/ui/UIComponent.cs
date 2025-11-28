@@ -25,6 +25,7 @@ public class UIComponent : DrawableGameComponent
     private bool isWon;
     private bool isLost;
     private int buyButtonCount = 0;
+    private float selectedTurretRange;
 
     private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
     private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square_empty");
@@ -126,7 +127,7 @@ public class UIComponent : DrawableGameComponent
         CreateTowerBuyButton<Crane>(turretTwoSprite, BuildingSystem.TowerType.Crane);
         CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
         CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
-        CreateTowerBuyButton<PunchTrap>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
+        CreateTowerBuyButton<PunchTrap>(turretTwoSprite, BuildingSystem.TowerType.PunchTrap);
 
         var pauseIconTexture = AssetManager.GetTexture("btn_pause");
         var pauseButtonAnimation = new AnimationSystem.AnimationData
@@ -203,6 +204,12 @@ public class UIComponent : DrawableGameComponent
             uiElement.DrawCustom(gameTime);
         }
 
+        if (turretHologram is not null)
+        {
+            LineUtility.DrawCircle(game.SpriteBatch, turretHologram.Position + turretHologram.Size / 2,
+                selectedTurretRange, Color.White, resolution: 24);
+        }
+
         base.Draw(gameTime);
     }
 
@@ -212,6 +219,7 @@ public class UIComponent : DrawableGameComponent
         {
             turretHologram.Destroy();
             turretHologram = null;
+            selectedTurretRange = default;
         }
     }
 
@@ -227,6 +235,7 @@ public class UIComponent : DrawableGameComponent
         BuildingSystem.SelectTurret<T>();
         var turretAnimationData = T.GetTowerBaseAnimationData();
         CreateTurretHologram(turretAnimationData);
+        selectedTurretRange = T.GetBaseRange() * Grid.TileLength;
     }
 
     private void TogglePauseMenu(bool isPauseMenuVisible)
