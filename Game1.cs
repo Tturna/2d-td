@@ -156,6 +156,11 @@ public class Game1 : Game
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
             DebugUtility.DrawDebugScreen(SpriteBatch);
+
+            // var mousePoint = InputSystem.GetMouseScreenPosition();
+            // LineUtility.DrawCircle(SpriteBatch, mousePoint, radius: 60f, Color.Red, thickness: 1f,
+            //     resolution: 24);
+
             SpriteBatch.End();
         }
 
