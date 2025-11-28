@@ -52,7 +52,7 @@ public static class WaveSystem
     }
 
     public delegate void WaveEndedHandler();
-    public delegate void LevelWinHandler();
+    public delegate void LevelWinHandler(int zone, int wonLevel);
     public static event LevelWinHandler LevelWin;
     public static event WaveEndedHandler WaveEnded;
     public static int MaxWaveIndex;
@@ -64,7 +64,8 @@ public static class WaveSystem
     private const int StartingMaxWaves = 5;
     private const int MaxWaveIncreasePerLevel = 5;
 
-    // these variables are for the long term malliable script
+    private static int currentZoneNumber;
+    private static int currentLevelNumber;
     private static Zone currentZone;
     private static Wave currentWave;
 
@@ -73,6 +74,8 @@ public static class WaveSystem
     public static void Initialize(Game1 gameRef, int currentZoneNumber, int currentLevelNumber)
     {
         game = gameRef;
+        WaveSystem.currentZoneNumber = currentZoneNumber;
+        WaveSystem.currentLevelNumber = currentLevelNumber;
 
         Console.WriteLine($"Loading zone {currentZoneNumber} enemy data...");
         string formationsPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
@@ -238,7 +241,7 @@ public static class WaveSystem
 
         if (CurrentWaveIndex == MaxWaveIndex - 1)
         {
-            LevelWin?.Invoke();
+            LevelWin?.Invoke(currentZoneNumber, currentLevelNumber);
         }
     }
 

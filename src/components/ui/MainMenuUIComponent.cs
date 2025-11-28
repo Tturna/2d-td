@@ -132,13 +132,20 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            // Create new variable so that the lambda function doesn't create a closure that
-            // captures the "i" iteration variable.
-            var zoneNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
-
             var text = $"{i + 1}";
+
+            if (ProgressionManager.IsZoneUnlocked(i + 1))
+            {
+                // Create new variable so that the lambda function doesn't create a closure that
+                // captures the "i" iteration variable.
+                var zoneNumber = i + 1;
+                btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
+            }
+            else
+            {
+                text += " (x)";
+            }
+
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
@@ -177,11 +184,18 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            var levelNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
-
             var text = $"{i + 1}";
+
+            if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 1))
+            {
+                var levelNumber = i + 1;
+                btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+            }
+            else
+            {
+                text += " (x)";
+            }
+
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;

@@ -296,7 +296,7 @@ public class UIComponent : DrawableGameComponent
         loseScreenElements.Add(exitButtonText);
     }
 
-    private void ShowLevelWinScreen()
+    private void ShowLevelWinScreen(int zone = -1, int wonLevel = -1)
     {
         // prevent showing the win screen if you've already lost
         if (isLost) return;

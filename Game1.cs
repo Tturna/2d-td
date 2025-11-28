@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -206,6 +205,8 @@ public class Game1 : Game
         ui = null;
         mainMenu = null;
         Terrain = null;
+
+        ProgressionManager.Initialize();
 
         switch (loadedScene)
         {
