@@ -51,9 +51,11 @@ public static class WaveSystem
         public List<Wave> waves;
     }
 
+    public delegate void WaveStartedHandler();
     public delegate void WaveEndedHandler();
     public delegate void LevelWinHandler(int zone, int wonLevel);
     public static event LevelWinHandler LevelWin;
+    public static event WaveStartedHandler WaveStarted;
     public static event WaveEndedHandler WaveEnded;
     public static int MaxWaveIndex;
     public static int CurrentWaveIndex;
@@ -247,11 +249,17 @@ public static class WaveSystem
 
     private static void NextWave()
     { 
+        WaveStarted?.Invoke();
         CurrentWaveIndex++;
         currentWave = currentZone.waves[CurrentWaveIndex];
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Started");
         waveStarted = true;
 
         // starts next wave
+    }
+
+    public static void SkipWaveCooldown()
+    {
+        WaveCooldownLeft = 0;
     }
 }

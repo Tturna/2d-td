@@ -18,6 +18,8 @@ public class UIComponent : DrawableGameComponent
     private UIEntity currencyText;
     private UIEntity waveIndicator;
     private UIEntity waveCooldownTimer;
+    private UIEntity waveCooldownSkipButton;
+    private UIEntity waveCooldownSkipText;
     private bool isPauseMenuVisible;
     private bool escHeld;
     private bool isWon;
@@ -86,6 +88,8 @@ public class UIComponent : DrawableGameComponent
     {
         HQ.Instance.HealthSystem.Died += ShowGameOverScreen;
         WaveSystem.LevelWin += ShowLevelWinScreen;
+        WaveSystem.WaveEnded += ShowWaveCooldownSkipButton;
+        WaveSystem.WaveStarted += HideWaveCooldownSkipButton;
 
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
         var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
@@ -356,6 +360,28 @@ public class UIComponent : DrawableGameComponent
 
         winScreenElements.Add(quitButton);
         winScreenElements.Add(exitButtonText);
+    }
+
+    private void ShowWaveCooldownSkipButton()
+    {
+        if (waveCooldownSkipButton is not null) return;
+
+        var pos = new Vector2(game.NativeScreenWidth - buttonFrameSize.X - 4, 50);
+        waveCooldownSkipButton = new UIEntity(game, uiElements, pos, buttonAnimationData);
+        waveCooldownSkipButton.ButtonPressed += () => WaveSystem.SkipWaveCooldown();
+
+        waveCooldownSkipText = new UIEntity(game, uiElements, pixelsixFont, "Skip");
+        var skipTextSize = pixelsixFont.MeasureString("Skip");
+        waveCooldownSkipText.SetPosition(waveCooldownSkipButton.Position + waveCooldownSkipButton.Size / 2
+            - skipTextSize / 2);
+    }
+
+    private void HideWaveCooldownSkipButton()
+    {
+        if (waveCooldownSkipButton is null) return;
+
+        waveCooldownSkipButton.Destroy();
+        waveCooldownSkipText.Destroy();
     }
 
     public void AddUIEntity(UIEntity entity)
