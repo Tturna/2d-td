@@ -184,7 +184,7 @@ public class TurretDetailsPrompt : UIEntity
         var towerTileRange = towerRange * Grid.TileLength;
 
         LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
-            resolution: towerRange * 2);
+            resolution: MathHelper.Max(12, towerRange * 2));
 
         base.DrawCustom(gameTime);
     }
