@@ -100,8 +100,14 @@ public class TowerCore : GameComponent, IClickable
 
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return null;
 
+        var costText = $"-{CurrentUpgrade.LeftChild.Price}";
         CurrentUpgrade = CurrentUpgrade.LeftChild;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
+
+        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return CurrentUpgrade;
     }
 
@@ -114,8 +120,14 @@ public class TowerCore : GameComponent, IClickable
 
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
 
+        var costText = $"-{CurrentUpgrade.RightChild.Price}";
         CurrentUpgrade = CurrentUpgrade.RightChild;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
+
+        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return CurrentUpgrade;
     }
 
