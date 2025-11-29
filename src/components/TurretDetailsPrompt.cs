@@ -28,7 +28,7 @@ public class TurretDetailsPrompt : UIEntity
             UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
         targetTowerEntity = turret;
-        targetTowerInterface = turret as ITower;
+        targetTowerInterface = (ITower)turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var upgradeIndicatorSprite = AssetManager.GetTexture("upgrade_indicator");
