@@ -393,6 +393,12 @@ public class UIComponent : DrawableGameComponent
         waveCooldownSkipText.Destroy();
     }
 
+    public static void SpawnFlyoutText(string text, Vector2 startPosition,
+        Vector2 flyoutVelocity, float lifetime, bool slowdown = true)
+    {
+        new FlyoutText(Instance.game, Instance.uiElements, text, startPosition, flyoutVelocity, lifetime, slowdown);
+    }
+
     public void AddUIEntity(UIEntity entity)
     {
         uiElements.Add(entity);

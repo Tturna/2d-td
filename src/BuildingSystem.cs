@@ -82,6 +82,12 @@ public static class BuildingSystem
         if (!CurrencyManager.TryBuyTower(selectedTowerType)) return false;
 
         var spawnedTurret = createTowerInstanceCallback(game, position);
+
+        var costText = $"-{CurrencyManager.GetTowerPrice(selectedTowerType)}";
+        var costTextPosition = spawnedTurret.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return true;
     }
 
