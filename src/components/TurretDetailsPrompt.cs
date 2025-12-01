@@ -54,8 +54,13 @@ public class TurretDetailsPrompt : UIEntity
 
         sellBtn.ButtonPressed += () =>
         {
-            CurrencyManager.SellTower(turretType);
+            var returnScrap = CurrencyManager.SellTower(turretType);
             targetTowerEntity.Destroy();
+
+            var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
+
+            var indicatorVelocity = -Vector2.UnitY * 25f;
+            UIComponent.SpawnFlyoutText($"+{returnScrap}", indicatorPos, indicatorVelocity, 1f);
         };
 
         if (currentUpgrade.LeftChild is not null)

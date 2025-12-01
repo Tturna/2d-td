@@ -47,9 +47,12 @@ public static class CurrencyManager
         return true;
     }
 
-    public static void SellTower(BuildingSystem.TowerType towerType)
+    public static int SellTower(BuildingSystem.TowerType towerType)
     {
-        Balance += (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+        Balance += returnScrap;
+
+        return returnScrap;
     }
 
     public static bool TryBuyUpgrade(int price)
