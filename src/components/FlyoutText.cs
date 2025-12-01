@@ -9,8 +9,10 @@ public class FlyoutText : UIEntity
     private float originalLifetime;
     private bool shouldSlowdown;
     private Vector2 velocity;
+    private Vector2 targetWorldPosition;
+    private Vector2 addedPosition = Vector2.Zero;
 
-    public FlyoutText(Game1 game, List<UIEntity> uiElements, string text, Vector2 startPosition,
+    public FlyoutText(Game1 game, List<UIEntity> uiElements, string text, Vector2 startWorldPosition,
         Vector2 flyoutVelocity, float lifetime, bool slowdown = true) : base(game, uiElements,
         AssetManager.GetFont("pixelsix"), text)
     {
@@ -18,7 +20,7 @@ public class FlyoutText : UIEntity
         originalLifetime = lifetime;
         shouldSlowdown = slowdown;
         velocity = flyoutVelocity;
-        SetPosition(Camera.WorldToScreenPosition(startPosition));
+        targetWorldPosition = startWorldPosition;
     }
 
     public override void Update(GameTime gameTime)
@@ -33,7 +35,8 @@ public class FlyoutText : UIEntity
             return;
         }
 
-        UpdatePosition(velocity * deltaTime);
+        addedPosition += velocity * deltaTime;
+        SetPosition(Camera.WorldToScreenPosition(targetWorldPosition + addedPosition));
 
         if (shouldSlowdown)
         {
