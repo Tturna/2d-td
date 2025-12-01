@@ -17,6 +17,8 @@ public class Mortar : Entity, ITower
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
 
+    public Vector2 TargetHitpoint { get; private set; }
+
     public delegate void TargetingHandler(Entity mortar);
     public static event TargetingHandler StartTargeting;
     public static event TargetingHandler EndTargeting;
@@ -110,7 +112,8 @@ public class Mortar : Entity, ITower
 
         if (canSetTarget && InputSystem.IsLeftMouseButtonClicked())
         {
-            projectileVelocity = CalculateProjectileVelocity(InputSystem.GetMouseWorldPosition(), deltaTime);
+            TargetHitpoint = InputSystem.GetMouseWorldPosition();
+            projectileVelocity = CalculateProjectileVelocity(TargetHitpoint, deltaTime);
             isTargeting = false;
             EndTargeting?.Invoke(this);
         }

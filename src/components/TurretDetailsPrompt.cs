@@ -22,6 +22,9 @@ public class TurretDetailsPrompt : UIEntity
     private SpriteFont pixelsixFont;
     private List<UIEntity> tooltipEntities = new();
 
+    // TODO: consider if there's a better way to handle showing tower specific elements
+    private bool isMortar;
+
     public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode?> upgradeLeftCallback,
         Func<TowerUpgradeNode?> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
         base(game, position: null, UIComponent.Instance.AddUIEntity,
@@ -119,6 +122,8 @@ public class TurretDetailsPrompt : UIEntity
                 upgradeIndicator.AnimationSystem.NextFrame();
             }
         }
+
+        isMortar = turret is Mortar;
     }
 
     public override void Update(GameTime gameTime)
@@ -190,6 +195,16 @@ public class TurretDetailsPrompt : UIEntity
 
         LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
             resolution: MathHelper.Max(12, towerRange * 2));
+
+        if (isMortar)
+        {
+            var reticleSprite = AssetManager.GetTexture("mortar_reticle");
+            var spriteSize = new Vector2(reticleSprite.Width, reticleSprite.Height);
+            var reticleWorldPos = ((Mortar)targetTowerEntity).TargetHitpoint - spriteSize / 2;
+            var reticlePos = Camera.WorldToScreenPosition(reticleWorldPos);
+
+            Game.SpriteBatch.Draw(reticleSprite, reticlePos, Color.White);
+        }
 
         base.DrawCustom(gameTime);
     }

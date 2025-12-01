@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -16,6 +15,7 @@ public class UIComponent : DrawableGameComponent
     private List<UIEntity> winScreenElements = new();
     private List<UIEntity> loseScreenElements = new();
     private Dictionary<Entity, UIEntity> mortarMissingTargetIndicators = new();
+    private UIEntity mortarReticle;
     private UIEntity turretHologram;
     private UIEntity currencyText;
     private UIEntity waveIndicator;
@@ -28,6 +28,7 @@ public class UIComponent : DrawableGameComponent
     private bool isLost;
     private int buyButtonCount = 0;
     private float selectedTurretRange;
+    private bool shouldUpdateMortarReticle;
 
     private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
     private static Texture2D buttonSprite = AssetManager.GetTexture("btn_square_empty");
@@ -203,6 +204,13 @@ public class UIComponent : DrawableGameComponent
                 + indicatorOffset);
 
             indicator.SetPosition(indicatorPos);
+        }
+
+        if (mortarReticle is not null && shouldUpdateMortarReticle)
+        {
+            var mousePos = InputSystem.GetMouseScreenPosition();
+            var reticlePos = mousePos - mortarReticle.Size / 2;
+            mortarReticle.SetPosition(reticlePos);
         }
 
         base.Update(gameTime);
@@ -416,10 +424,25 @@ public class UIComponent : DrawableGameComponent
             mortarMissingTargetIndicators[mortar].Destroy();
             mortarMissingTargetIndicators.Remove(mortar);
         }
+
+        if (mortarReticle is not null) return;
+
+        var reticleSprite = AssetManager.GetTexture("mortar_reticle");
+        mortarReticle = new UIEntity(game, uiElements, reticleSprite);
+        var mousePos = InputSystem.GetMouseScreenPosition();
+        var reticlePos = mousePos - mortarReticle.Size / 2;
+        mortarReticle.SetPosition(reticlePos);
+        shouldUpdateMortarReticle = true;
     }
 
     private void OnMortarEndTargeting(Entity mortar)
     {
+        if (mortarReticle is not null)
+        {
+            mortarReticle.Destroy();
+            mortarReticle = null;
+            shouldUpdateMortarReticle = false;
+        }
     }
 
     private void OnMortarMissingTargeting(Entity mortar)
