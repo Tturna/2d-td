@@ -131,33 +131,36 @@ public class Mortar : Entity, ITower
             return;
         }
 
-        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        if (WaveSystem.WaveCooldownLeft <= 0)
         {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
-        {
-            HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
-        {
-            HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
-        {
-            HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
-        {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
-        {
-            HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
-        {
-            HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
+            if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
+            {
+                HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
+            {
+                HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
+            {
+                HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
+            {
+                HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
+            }
         }
 
         base.Update(gameTime);
