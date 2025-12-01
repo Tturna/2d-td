@@ -24,7 +24,8 @@ public class TowerCore : GameComponent, IClickable
 
         Turret.Game.Components.Add(this);
 
-        InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
+        InputSystem.LeftClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
+        InputSystem.RightClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition, force: true);
     }
 
     public Enemy? GetClosestValidEnemy(int tileRange)
@@ -55,9 +56,9 @@ public class TowerCore : GameComponent, IClickable
         return closestEnemy;
     }
 
-    public void HandleCloseDetails(Vector2 mouseScreenPosition)
+    public void HandleCloseDetails(Vector2 mouseScreenPosition, bool force = false)
     {
-        if (detailsPrompt is not null && detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition))
+        if (detailsPrompt is not null && (force || detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition)))
         {
             CloseDetailsView();
             detailsClosed = true;
@@ -74,7 +75,7 @@ public class TowerCore : GameComponent, IClickable
         detailsPrompt = null;
     }
 
-    public void OnClick()
+    public void OnLeftClick()
     {
         if (!detailsClosed && detailsPrompt is null)
         {
@@ -85,6 +86,8 @@ public class TowerCore : GameComponent, IClickable
 
         Clicked?.Invoke();
     }
+
+    public void OnRightClick() { }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {

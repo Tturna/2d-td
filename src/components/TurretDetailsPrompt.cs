@@ -204,6 +204,12 @@ public class TurretDetailsPrompt : UIEntity
 
     public bool ShouldCloseDetailsView(Vector2 mouseScreenPosition)
     {
+        if (Collision.IsPointInEntity(Camera.ScreenToWorldPosition(mouseScreenPosition),
+            targetTowerEntity))
+        {
+            return true;
+        }
+
         if (Collision.IsPointInEntity(mouseScreenPosition, this)) return false;
         if (Collision.IsPointInEntity(mouseScreenPosition, sellBtn)) return false;
         if (leftInfoBtn is not null &&

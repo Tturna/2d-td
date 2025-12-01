@@ -117,10 +117,12 @@ public class UIEntity : Entity, IClickable
         ButtonPressed = null;
     }
 
-    public void OnClick()
+    public void OnLeftClick()
     {
         OnButtonPressed();
     }
+
+    public void OnRightClick() { }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {

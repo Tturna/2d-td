@@ -22,7 +22,8 @@ public static class InputSystem
     private static bool collectionModified;
 
     public delegate void ClickedHandler(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition);
-    public static event ClickedHandler Clicked;
+    public static event ClickedHandler LeftClicked;
+    public static event ClickedHandler RightClicked;
 
     public static void Initialize(Game1 game)
     {
@@ -78,7 +79,7 @@ public static class InputSystem
         {
             var mouseScreenPos = InputSystem.GetMouseScreenPosition();
             var mouseWorldPos = InputSystem.GetMouseWorldPosition();
-            OnClicked(mouseScreenPos, mouseWorldPos);
+            OnLeftClicked(mouseScreenPos, mouseWorldPos);
 
             collectionModified = false;
 
@@ -95,7 +96,7 @@ public static class InputSystem
 
                 if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
                 {
-                    clickable.OnClick();
+                    clickable.OnLeftClick();
                 }
 
                 // When a clickable causes a scene change, the components list will change.
@@ -103,11 +104,42 @@ public static class InputSystem
                 if (collectionModified) break;
             }
         }
+
+        if (IsRightMouseButtonClicked())
+        {
+            var mouseScreenPos = InputSystem.GetMouseScreenPosition();
+            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+            OnRightClicked(mouseScreenPos, mouseWorldPos);
+
+            collectionModified = false;
+
+            for (int i = game.Components.Count - 1; i >= 0; i--)
+            {
+                if (game.Components.Count < i + 1) continue;
+
+                var component = game.Components[i];
+                if (component is not IClickable) continue;
+
+                var clickable = (IClickable)component;
+
+                if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
+                {
+                    clickable.OnRightClick();
+                }
+
+                if (collectionModified) break;
+            }
+        }
     }
 
-    private static void OnClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    private static void OnLeftClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {
-        Clicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
+        LeftClicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
+    }
+
+    private static void OnRightClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    {
+        RightClicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
     }
 
     public static Vector2 GetMouseWorldPosition()
