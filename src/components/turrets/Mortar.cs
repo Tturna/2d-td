@@ -17,6 +17,11 @@ public class Mortar : Entity, ITower
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
 
+    public delegate void TargetingHandler(Entity mortar);
+    public static event TargetingHandler StartTargeting;
+    public static event TargetingHandler EndTargeting;
+    public static event TargetingHandler MissingTargeting;
+
     public enum Upgrade
     {
         NoUpgrade,
@@ -43,7 +48,7 @@ public class Mortar : Entity, ITower
         AnimationSystem.AddAnimationState("fire", fireAnimation);
 
         towerCore = new TowerCore(this);
-        towerCore.Clicked += OnClickTower;
+        towerCore.RightClicked += OnRightClickTower;
 
         var bouncingBombIcon = AssetManager.GetTexture("mortar_bouncingbomb_icon");
         var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
@@ -75,6 +80,10 @@ public class Mortar : Entity, ITower
         hellrain.Description = "-2 tile explosion radius.\nFires in a 6-shot barrage\nwith considerable spread.";
 
         towerCore.CurrentUpgrade = defaultUpgrade;
+
+        // notify mainly UIComponent that this new mortar doesn't have a target yet,
+        // so it needs an indicator.
+        MissingTargeting?.Invoke(this);
     }
 
     public override void Initialize()
@@ -88,15 +97,22 @@ public class Mortar : Entity, ITower
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (InputSystem.IsRightMouseButtonClicked())
+        if (canSetTarget && InputSystem.IsRightMouseButtonClicked())
         {
             isTargeting = false;
+            EndTargeting?.Invoke(this);
+
+            if (projectileVelocity == default)
+            {
+                MissingTargeting?.Invoke(this);
+            }
         }
 
         if (canSetTarget && InputSystem.IsLeftMouseButtonClicked())
         {
             projectileVelocity = CalculateProjectileVelocity(InputSystem.GetMouseWorldPosition(), deltaTime);
             isTargeting = false;
+            EndTargeting?.Invoke(this);
         }
 
         // Used to prevent one click from both enabling targeting and setting the target.
@@ -282,9 +298,25 @@ public class Mortar : Entity, ITower
         return new Vector2(vx, vy);
     }
 
-    private void OnClickTower()
+    private void OnRightClickTower()
     {
+        if (!towerCore.detailsClosed) return;
+        if (BuildingSystem.IsPlacingTurret) return;
+
+        if (!isTargeting)
+        {
+            StartTargeting?.Invoke(this);
+        }
+
         isTargeting = true;
+    }
+
+    private void OnAnyMortarTargeting(Entity mortar)
+    {
+        if (mortar == this) return;
+
+        isTargeting = false;
+        canSetTarget = false;
     }
 
     public override void Destroy()

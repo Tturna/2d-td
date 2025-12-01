@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,7 @@ public class UIComponent : DrawableGameComponent
     private List<UIEntity> pauseMenuElements = new();
     private List<UIEntity> winScreenElements = new();
     private List<UIEntity> loseScreenElements = new();
+    private Dictionary<Entity, UIEntity> mortarMissingTargetIndicators = new();
     private UIEntity turretHologram;
     private UIEntity currencyText;
     private UIEntity waveIndicator;
@@ -91,6 +93,9 @@ public class UIComponent : DrawableGameComponent
         WaveSystem.LevelWin += ShowLevelWinScreen;
         WaveSystem.WaveEnded += ShowWaveCooldownSkipButton;
         WaveSystem.WaveStarted += HideWaveCooldownSkipButton;
+        Mortar.StartTargeting += OnMortarStartTargeting;
+        Mortar.EndTargeting += OnMortarEndTargeting;
+        Mortar.MissingTargeting += OnMortarMissingTargeting;
 
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
         var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);
@@ -188,6 +193,17 @@ public class UIComponent : DrawableGameComponent
         }
 
         if (kbdState.IsKeyUp(Keys.Escape)) escHeld = false;
+
+        foreach (var mortarIndicatorPair in mortarMissingTargetIndicators)
+        {
+            var mortar = mortarIndicatorPair.Key;
+            var indicator = mortarIndicatorPair.Value;
+            var indicatorOffset = new Vector2(10, -8);
+            var indicatorPos = Camera.WorldToScreenPosition(mortar.Position + mortar.Size / 2
+                + indicatorOffset);
+
+            indicator.SetPosition(indicatorPos);
+        }
 
         base.Update(gameTime);
     }
@@ -391,6 +407,28 @@ public class UIComponent : DrawableGameComponent
 
         waveCooldownSkipButton.Destroy();
         waveCooldownSkipText.Destroy();
+    }
+
+    private void OnMortarStartTargeting(Entity mortar)
+    {
+        if (mortarMissingTargetIndicators.TryGetValue(mortar, out var indicator))
+        {
+            mortarMissingTargetIndicators[mortar].Destroy();
+            mortarMissingTargetIndicators.Remove(mortar);
+        }
+    }
+
+    private void OnMortarEndTargeting(Entity mortar)
+    {
+    }
+
+    private void OnMortarMissingTargeting(Entity mortar)
+    {
+        var missingTargetIndicator = new UIEntity(game, uiElements, pixelsixFont, "No target!");
+        var indicatorOffset = new Vector2(10, -8);
+        var indicatorPos = Camera.WorldToScreenPosition(mortar.Position + mortar.Size / 2 + indicatorOffset);
+        missingTargetIndicator.SetPosition(indicatorPos);
+        mortarMissingTargetIndicators[mortar] = missingTargetIndicator;
     }
 
     public static void SpawnFlyoutText(string text, Vector2 startPosition,

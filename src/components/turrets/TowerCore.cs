@@ -11,10 +11,11 @@ public class TowerCore : GameComponent, IClickable
     public TowerUpgradeNode CurrentUpgrade { get; set; }
 
     public TurretDetailsPrompt? detailsPrompt;
-    public bool detailsClosed;
+    public bool detailsClosed = true;
 
     public delegate void ClickedHandler();
-    public event ClickedHandler? Clicked;
+    public event ClickedHandler? LeftClicked;
+    public event ClickedHandler? RightClicked;
 
     public TowerCore(Entity turret) : base(turret.Game)
     {
@@ -63,7 +64,7 @@ public class TowerCore : GameComponent, IClickable
             CloseDetailsView();
             detailsClosed = true;
         }
-        else
+        else if (detailsPrompt is not null)
         {
             detailsClosed = false;
         }
@@ -77,17 +78,20 @@ public class TowerCore : GameComponent, IClickable
 
     public void OnLeftClick()
     {
-        if (!detailsClosed && detailsPrompt is null)
+        if (detailsClosed && detailsPrompt is null)
         {
             detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
         }
 
         detailsClosed = false;
 
-        Clicked?.Invoke();
+        LeftClicked?.Invoke();
     }
 
-    public void OnRightClick() { }
+    public void OnRightClick()
+    {
+        RightClicked?.Invoke();
+    }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {
@@ -114,7 +118,7 @@ public class TowerCore : GameComponent, IClickable
         return CurrentUpgrade;
     }
 
-    public TowerUpgradeNode UpgradeRight()
+    public TowerUpgradeNode? UpgradeRight()
     {
         if (CurrentUpgrade.RightChild is null)
         {

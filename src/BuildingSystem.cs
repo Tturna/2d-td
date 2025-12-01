@@ -26,6 +26,7 @@ public static class BuildingSystem
     private static Func<Game, Vector2, Entity> createTowerInstanceCallback;
 
     public static bool CanPlaceTurret { get; private set; }
+    public static bool IsPlacingTurret { get; private set; }
 
     public static void Initialize(Game game)
     {
@@ -97,6 +98,7 @@ public static class BuildingSystem
         selectedTowerType = T.GetTowerType();
         canPlaceTowerCallback = T.CanPlaceTower;
         createTowerInstanceCallback = T.CreateNewInstance;
+        IsPlacingTurret = true;
     }
 
     public static void DeselectTower()
@@ -104,6 +106,7 @@ public static class BuildingSystem
         selectedTowerType = TowerType.None;
         canPlaceTowerCallback = null;
         createTowerInstanceCallback = null;
+        IsPlacingTurret = false;
     }
 
     // TODO: Consider taking this out and adding the ability to get the type of a tower
