@@ -19,6 +19,7 @@ public class Mortar : Entity, ITower
     private Random random = new();
 
     public Vector2 TargetHitpoint { get; private set; }
+    public static bool IsMortarTargeting;
 
     public delegate void TargetingHandler(Entity mortar);
     public static event TargetingHandler StartTargeting;
@@ -103,6 +104,7 @@ public class Mortar : Entity, ITower
         if (canSetTarget && InputSystem.IsRightMouseButtonClicked())
         {
             isTargeting = false;
+            IsMortarTargeting = false;
             EndTargeting?.Invoke(this);
 
             if (projectileVelocity == default)
@@ -116,6 +118,7 @@ public class Mortar : Entity, ITower
             TargetHitpoint = InputSystem.GetMouseWorldPosition();
             projectileVelocity = CalculateProjectileVelocity(TargetHitpoint, deltaTime);
             isTargeting = false;
+            IsMortarTargeting = false;
             EndTargeting?.Invoke(this);
         }
 
@@ -307,6 +310,7 @@ public class Mortar : Entity, ITower
 
     private void OnRightClickTower()
     {
+        if (Mortar.IsMortarTargeting) return;
         if (!towerCore.detailsClosed) return;
         if (BuildingSystem.IsPlacingTower) return;
 
@@ -316,14 +320,7 @@ public class Mortar : Entity, ITower
         }
 
         isTargeting = true;
-    }
-
-    private void OnAnyMortarTargeting(Entity mortar)
-    {
-        if (mortar == this) return;
-
-        isTargeting = false;
-        canSetTarget = false;
+        IsMortarTargeting = true;
     }
 
     public override void Destroy()
