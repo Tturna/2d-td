@@ -154,7 +154,7 @@ class GunTurret : Entity, ITower
             var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
             var direction = enemyCenter - turretHeadAxisCenter;
             direction.Normalize();
-            Shoot(direction, damage: 10);
+            Shoot(direction);
             actionTimer = 0f;
         }
     }
@@ -181,7 +181,7 @@ class GunTurret : Entity, ITower
                 var randomX = random.Next(-12, 12);
                 var randomY = random.Next(-12, 12);
                 var targetDirection = enemyDirection + new Vector2(randomX, randomY);
-                Shoot(targetDirection, damage: 18);
+                Shoot(targetDirection);
             }
 
             actionTimer = 0f;
@@ -236,7 +236,7 @@ class GunTurret : Entity, ITower
             var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
             var direction = enemyCenter - turretHeadAxisCenter;
             direction.Normalize();
-            Shoot(direction, 33);
+            Shoot(direction);
             actionTimer = 0f;
         }
     }
@@ -265,7 +265,7 @@ class GunTurret : Entity, ITower
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Vector2 direction, int damage)
+    private void Shoot(Vector2 direction)
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
@@ -274,7 +274,7 @@ class GunTurret : Entity, ITower
         var bullet = new Projectile(Game, startLocation);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletPixelsPerSecond;
-        bullet.Damage = damage;
+        bullet.Damage = realDamage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
     }
