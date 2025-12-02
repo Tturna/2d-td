@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -13,6 +15,7 @@ public class MainMenuUIComponent : DrawableGameComponent
     private Texture2D playButtonSprite = AssetManager.GetTexture("main_play_button");
     private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
     private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
+    private Stack<Action> menuScreenStack = new();
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -28,6 +31,19 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
+        if (InputSystem.IsKeyTapped(Keys.Escape))
+        {
+            if (menuScreenStack.Count == 0)
+            {
+                LoadMainMenu();
+            }
+            else
+            {
+                var loadPreviousScreen = menuScreenStack.Pop();
+                loadPreviousScreen();
+            }
+        }
+
         base.Update(gameTime);
     }
 
@@ -139,7 +155,11 @@ public class MainMenuUIComponent : DrawableGameComponent
                 // Create new variable so that the lambda function doesn't create a closure that
                 // captures the "i" iteration variable.
                 var zoneNumber = i + 1;
-                btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
+                btn.ButtonPressed += () =>
+                {
+                    menuScreenStack.Push(LoadZoneSelector);
+                    LoadLevelSelector(zoneNumber);
+                };
             }
             else
             {
