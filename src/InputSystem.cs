@@ -224,4 +224,14 @@ public static class InputSystem
 
         return !isHeld;
     }
+
+    /// <summary>
+    /// Force registration of clickables to stop for this frame. Useful if for example a button
+    /// creates a new button in the same place but the new one should not be clicked in the same
+    /// frame.
+    /// </summary>
+    public static void ForceClickableInterrupt()
+    {
+        collectionModified = true;
+    }
 }

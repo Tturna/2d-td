@@ -157,7 +157,11 @@ public class MainMenuUIComponent : DrawableGameComponent
                 var zoneNumber = i + 1;
                 btn.ButtonPressed += () =>
                 {
-                    menuScreenStack.Push(LoadZoneSelector);
+                    if (menuScreenStack.Count == 0 || menuScreenStack.Peek() != LoadZoneSelector)
+                    {
+                        menuScreenStack.Push(LoadZoneSelector);
+                    }
+
                     LoadLevelSelector(zoneNumber);
                 };
             }
@@ -171,6 +175,13 @@ public class MainMenuUIComponent : DrawableGameComponent
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () => LoadMainMenu();
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevelSelector(int selectedZone)
@@ -221,6 +232,17 @@ public class MainMenuUIComponent : DrawableGameComponent
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () =>
+        {
+            LoadZoneSelector();
+            InputSystem.ForceClickableInterrupt();
+        };
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevel(int zone, int level)
