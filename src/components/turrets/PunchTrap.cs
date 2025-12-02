@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -26,7 +27,7 @@ class PunchTrap : Entity, ITower
 
     }
 
-    public PunchTrap(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public PunchTrap(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         //var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base");
 
@@ -204,7 +205,7 @@ class PunchTrap : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("punchtrap_base");
 
@@ -215,6 +216,18 @@ class PunchTrap : Entity, ITower
             frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static Vector2 GetDefaultGridSize()

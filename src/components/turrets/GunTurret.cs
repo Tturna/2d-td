@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +36,7 @@ class GunTurret : Entity, ITower
         RocketShots
     }
 
-    public GunTurret(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public GunTurret(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -287,7 +288,7 @@ class GunTurret : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -298,6 +299,26 @@ class GunTurret : Entity, ITower
             frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseSprite = AssetManager.GetTexture("gunTurretBase");
+        var turretSprite = AssetManager.GetTexture("gunTurretHead");
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, baseSprite);
+        var turretEntity = new UIEntity(Game1.Instance, uiElements, turretSprite);
+
+        const float TurretHeadDrawXOffset = 0.85f;
+        var drawOrigin = new Vector2(turretSprite.Width * TurretHeadDrawXOffset, turretSprite.Height / 2);
+        turretEntity.DrawOrigin = drawOrigin;
+        turretEntity.DrawLayerDepth = 0.6f;
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, new Vector2(2, 0)));
+        list.Add(KeyValuePair.Create(turretEntity, new Vector2(baseSprite.Width * 0.7f, 9f)));
+
+        return list;
     }
 
     public static Vector2 GetDefaultGridSize()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -35,7 +36,7 @@ class Hovership : Entity, ITower
         FloatingFactory
     }
 
-    public Hovership(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public Hovership(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
@@ -221,7 +222,7 @@ class Hovership : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("gunTurretBase");
 
@@ -232,6 +233,18 @@ class Hovership : Entity, ITower
             frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static Vector2 GetDefaultGridSize()

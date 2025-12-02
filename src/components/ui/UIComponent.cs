@@ -16,7 +16,7 @@ public class UIComponent : DrawableGameComponent
     private List<UIEntity> loseScreenElements = new();
     private Dictionary<Entity, UIEntity> mortarMissingTargetIndicators = new();
     private UIEntity mortarReticle;
-    private UIEntity turretHologram;
+    private List<KeyValuePair<UIEntity, Vector2>> towerHologramPieces;
     private UIEntity currencyText;
     private UIEntity waveIndicator;
     private UIEntity waveCooldownTimer;
@@ -27,7 +27,7 @@ public class UIComponent : DrawableGameComponent
     private bool isWon;
     private bool isLost;
     private int buyButtonCount = 0;
-    private float selectedTurretRange;
+    private float selectedTowerRange;
     private bool shouldUpdateMortarReticle;
 
     private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
@@ -53,15 +53,8 @@ public class UIComponent : DrawableGameComponent
         Instance = this;
     }
 
-    private void CreateTowerBuyButton<T>(Texture2D towerIcon, BuildingSystem.TowerType towerType) where T : ITower
+    private void CreateTowerBuyButton<T>(BuildingSystem.TowerType towerType) where T : ITower
     {
-        var priceIcon = AssetManager.GetTexture("icon_scrap_small");
-        var turretIcon = new UIEntity(game, uiElements, towerIcon);
-        var turretButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
-        var turretPriceIcon = new UIEntity(game, uiElements, priceIcon);
-        var turretPriceText = new UIEntity(game, uiElements, pixelsixFont, CurrencyManager.GetTowerPrice(towerType).ToString());
-        turretButton.ButtonPressed += () => SelectTurret<T>();
-
         const float Margin = 20;
         const float Gap = 32;
         const int towers = 6;
@@ -74,15 +67,36 @@ public class UIComponent : DrawableGameComponent
         var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
         var pos = new Vector2(xPos, yPos);
         var buttonCenter = pos + new Vector2(buttonFrameSize.X / 2, buttonFrameSize.Y / 2);
-        var iconPosition = buttonCenter - new Vector2(turretIcon.Size.X / 2, turretIcon.Size.Y / 2);
 
-        turretButton.SetPosition(pos);
-        turretIcon.SetPosition(iconPosition);
-        turretIcon.DrawLayerDepth = 0.7f;
-        turretPriceIcon.SetPosition(turretButton.Position + new Vector2(priceIconOffset.X,
-            turretButton.Size.Y + priceIconOffset.Y));
+        var priceIcon = AssetManager.GetTexture("icon_scrap_small");
+        var towerButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
+        var towerPriceIcon = new UIEntity(game, uiElements, priceIcon);
+        var towerPriceText = new UIEntity(game, uiElements, pixelsixFont, CurrencyManager.GetTowerPrice(towerType).ToString());
+        towerButton.ButtonPressed += () => SelectTower<T>();
 
-        turretPriceText.SetPosition(turretPriceIcon.Position
+        var towerPieces = T.GetUnupgradedPartIcons(uiElements);
+        var baseIcon = towerPieces[0].Key;
+
+        var iconPosition = buttonCenter - new Vector2(baseIcon.Size.X / 2, baseIcon.Size.Y / 2);
+
+        for (int i = 0; i < towerPieces.Count; i++)
+        {
+            var piece = towerPieces[i];
+            var pieceEntity = piece.Key;
+            var offset = piece.Value;
+            pieceEntity.SetPosition(iconPosition + offset);
+
+            if (i == 0)
+            {
+                pieceEntity.DrawLayerDepth = 0.7f;
+            }
+        }
+
+        towerButton.SetPosition(pos);
+        towerPriceIcon.SetPosition(towerButton.Position + new Vector2(priceIconOffset.X,
+            towerButton.Size.Y + priceIconOffset.Y));
+
+        towerPriceText.SetPosition(towerPriceIcon.Position
             + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y));
 
         buyButtonCount++;
@@ -124,16 +138,13 @@ public class UIComponent : DrawableGameComponent
         waveCooldownTimer.SetPosition(new Vector2(game.NativeScreenWidth - timerTextWidth,
             waveIndicator.Size.Y + 4));
 
-        var gunTurretSprite = AssetManager.GetTexture("gunTurretBase");
-        var turretTwoSprite = AssetManager.GetTexture("turretTwo");
-
-        CreateTowerBuyButton<GunTurret>(gunTurretSprite, BuildingSystem.TowerType.GunTurret);
-        CreateTowerBuyButton<Railgun>(turretTwoSprite, BuildingSystem.TowerType.Railgun);
-        CreateTowerBuyButton<Drone>(turretTwoSprite, BuildingSystem.TowerType.Drone);
-        CreateTowerBuyButton<Crane>(turretTwoSprite, BuildingSystem.TowerType.Crane);
-        CreateTowerBuyButton<Mortar>(gunTurretSprite, BuildingSystem.TowerType.Mortar);
-        CreateTowerBuyButton<Hovership>(turretTwoSprite, BuildingSystem.TowerType.Hovership);
-        CreateTowerBuyButton<PunchTrap>(turretTwoSprite, BuildingSystem.TowerType.PunchTrap);
+        CreateTowerBuyButton<GunTurret>(BuildingSystem.TowerType.GunTurret);
+        CreateTowerBuyButton<Railgun>(BuildingSystem.TowerType.Railgun);
+        CreateTowerBuyButton<Drone>(BuildingSystem.TowerType.Drone);
+        CreateTowerBuyButton<Crane>(BuildingSystem.TowerType.Crane);
+        CreateTowerBuyButton<Mortar>(BuildingSystem.TowerType.Mortar);
+        CreateTowerBuyButton<Hovership>(BuildingSystem.TowerType.Hovership);
+        CreateTowerBuyButton<PunchTrap>(BuildingSystem.TowerType.PunchTrap);
 
         var pauseIconTexture = AssetManager.GetTexture("btn_pause");
         var pauseButtonAnimation = new AnimationSystem.AnimationData
@@ -157,20 +168,23 @@ public class UIComponent : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
-        if (turretHologram is not null)
+        if (towerHologramPieces is not null && towerHologramPieces.Count > 0)
         {
             var mouseWorldPos = InputSystem.GetMouseWorldPosition();
             var mouseWorldGridPos = Grid.SnapPositionToGrid(mouseWorldPos);
             var mouseSnappedScreenPos = Camera.WorldToScreenPosition(mouseWorldGridPos);
 
-            turretHologram.SetPosition(mouseSnappedScreenPos);
-            var size = Camera.Scale;
-            turretHologram.Scale = new Vector2(size, size);
+            foreach (var (pieceEntity, offset) in towerHologramPieces)
+            {
+                pieceEntity.SetPosition(mouseSnappedScreenPos + offset);
+                var size = Camera.Scale;
+                pieceEntity.Scale = new Vector2(size, size);
+            }
         }
 
         if (InputSystem.IsRightMouseButtonClicked())
         {
-            RemoveTurretHologram();
+            RemoveTowerHologram();
             BuildingSystem.DeselectTower();
         }
 
@@ -228,38 +242,43 @@ public class UIComponent : DrawableGameComponent
             uiElement.DrawCustom(gameTime);
         }
 
-        if (turretHologram is not null)
+        if (towerHologramPieces is not null && towerHologramPieces.Count > 0)
         {
-            LineUtility.DrawCircle(game.SpriteBatch, turretHologram.Position + turretHologram.Size / 2,
-                selectedTurretRange, Color.White, resolution: 24);
+            var basePiece = towerHologramPieces[0].Key;
+            LineUtility.DrawCircle(game.SpriteBatch, basePiece.Position + basePiece.Size / 2,
+                selectedTowerRange, Color.White, resolution: 24);
         }
 
         base.Draw(gameTime);
     }
 
-    private void RemoveTurretHologram()
+    private void RemoveTowerHologram()
     {
-        if (turretHologram is not null)
+        if (towerHologramPieces is not null && towerHologramPieces.Count > 0)
         {
-            turretHologram.Destroy();
-            turretHologram = null;
-            selectedTurretRange = default;
+            foreach (var (pieceEntity, _) in towerHologramPieces)
+            {
+                pieceEntity.Destroy();
+            }
+
+            selectedTowerRange = default;
+            towerHologramPieces.Clear();
         }
     }
 
-    private void CreateTurretHologram(AnimationSystem.AnimationData animationData)
+    private void CreateTowerHologram(List<KeyValuePair<UIEntity, Vector2>> towerPieceIcons)
     {
-        RemoveTurretHologram();
-
-        turretHologram = new UIEntity(game, uiElements, Vector2.Zero, animationData);
+        RemoveTowerHologram();
+        towerHologramPieces = towerPieceIcons;
     }
 
-    private void SelectTurret<T>() where T : ITower
+    private void SelectTower<T>() where T : ITower
     {
-        BuildingSystem.SelectTurret<T>();
-        var turretAnimationData = T.GetTowerBaseAnimationData();
-        CreateTurretHologram(turretAnimationData);
-        selectedTurretRange = T.GetBaseRange() * Grid.TileLength;
+        BuildingSystem.SelectTower<T>();
+
+        var towerPieceIcons = T.GetUnupgradedPartIcons(uiElements);
+        CreateTowerHologram(towerPieceIcons);
+        selectedTowerRange = T.GetBaseRange() * Grid.TileLength;
     }
 
     private void TogglePauseMenu(bool isPauseMenuVisible)

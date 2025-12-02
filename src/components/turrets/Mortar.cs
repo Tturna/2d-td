@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +36,7 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         var fireSprite = AssetManager.GetTexture("mortar_base_fire");
 
@@ -307,7 +308,7 @@ public class Mortar : Entity, ITower
     private void OnRightClickTower()
     {
         if (!towerCore.detailsClosed) return;
-        if (BuildingSystem.IsPlacingTurret) return;
+        if (BuildingSystem.IsPlacingTower) return;
 
         if (!isTargeting)
         {
@@ -348,7 +349,7 @@ public class Mortar : Entity, ITower
         return new Vector2(2, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("mortar_base_idle");
 
@@ -359,6 +360,18 @@ public class Mortar : Entity, ITower
             frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static BuildingSystem.TowerType GetTowerType()

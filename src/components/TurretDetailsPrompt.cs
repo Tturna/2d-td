@@ -53,7 +53,7 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
             UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
 
-        var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTowerEntity);
+        var turretType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
 
         sellBtn.ButtonPressed += () =>
         {
