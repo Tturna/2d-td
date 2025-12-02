@@ -58,6 +58,26 @@ public static class DebugUtility
         {
             CurrencyManager.AddBalance(10);
         }
+
+        // if (InputSystem.IsKeyTapped(Keys.X))
+        // {
+        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 1);
+        // }
+        //
+        // if (InputSystem.IsKeyTapped(Keys.C))
+        // {
+        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 3);
+        // }
+        //
+        // if (InputSystem.IsKeyTapped(Keys.V))
+        // {
+        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 7);
+        // }
+        //
+        // if (InputSystem.IsKeyTapped(Keys.B))
+        // {
+        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 25);
+        // }
     }
 
     public static void FixedUpdate()
