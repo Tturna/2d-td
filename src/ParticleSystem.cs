@@ -256,4 +256,24 @@ public static class ParticleSystem
                 shouldSlowDown: true, shouldFadeOut: true));
         }
     }
+
+    public static void PlayTowerUpgradeEffect(Vector2 worldPosition)
+    {
+        var color = Color.FromNonPremultiplied(new Vector4(1f, 219f/255f, 163f/255f, 1f));
+
+        for (int i = 0; i < 20; i++)
+        {
+            var x = ((float)rng.NextDouble() - 0.5f) * 2;
+            var y = ((float)rng.NextDouble() - 0.5f) * 2;
+            var velocity = new Vector2(x, y);
+            var offset = velocity;
+            offset.Normalize();
+            offset = offset * Grid.TileLength + offset * 2;
+            velocity *= 0.2f;
+
+            AddParticle(new Particle(worldPosition + offset, velocity, 0.7f, color,
+                shouldSlowDown: true, shouldFadeOut: true));
+        }
+
+    }
 }
