@@ -16,7 +16,23 @@ public class CameraManager : GameComponent
 
     public override void Initialize()
     {
-        Camera.Position = Vector2.One * 400;
+        var initCamPos = new Vector2(400, 400);
+        var failsafe = 0;
+
+        while (!Collision.IsPointInTerrain(initCamPos, game.Terrain))
+        {
+            initCamPos += Vector2.UnitY * Grid.TileLength;
+            failsafe++;
+
+            if (failsafe > 300)
+            {
+                initCamPos = new Vector2(400, 400);
+                break;
+            }
+        }
+
+        initCamPos -= Vector2.UnitY * Grid.TileLength * 8;
+        Camera.Position = initCamPos;
 
         base.Initialize();
     }

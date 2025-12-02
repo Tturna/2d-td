@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +18,14 @@ public class Mortar : Entity, ITower
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
 
+    public Vector2 TargetHitpoint { get; private set; }
+    public static bool IsMortarTargeting;
+
+    public delegate void TargetingHandler(Entity mortar);
+    public static event TargetingHandler StartTargeting;
+    public static event TargetingHandler EndTargeting;
+    public static event TargetingHandler MissingTargeting;
+
     public enum Upgrade
     {
         NoUpgrade,
@@ -28,7 +37,7 @@ public class Mortar : Entity, ITower
         Hellrain
     }
 
-    public Mortar(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public Mortar(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         var fireSprite = AssetManager.GetTexture("mortar_base_fire");
 
@@ -43,7 +52,7 @@ public class Mortar : Entity, ITower
         AnimationSystem.AddAnimationState("fire", fireAnimation);
 
         towerCore = new TowerCore(this);
-        towerCore.Clicked += OnClickTower;
+        towerCore.RightClicked += OnRightClickTower;
 
         var bouncingBombIcon = AssetManager.GetTexture("mortar_bouncingbomb_icon");
         var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
@@ -75,6 +84,10 @@ public class Mortar : Entity, ITower
         hellrain.Description = "-2 tile explosion radius.\nFires in a 6-shot barrage\nwith considerable spread.";
 
         towerCore.CurrentUpgrade = defaultUpgrade;
+
+        // notify mainly UIComponent that this new mortar doesn't have a target yet,
+        // so it needs an indicator.
+        MissingTargeting?.Invoke(this);
     }
 
     public override void Initialize()
@@ -88,15 +101,25 @@ public class Mortar : Entity, ITower
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (InputSystem.IsRightMouseButtonClicked())
+        if (canSetTarget && InputSystem.IsRightMouseButtonClicked())
         {
             isTargeting = false;
+            IsMortarTargeting = false;
+            EndTargeting?.Invoke(this);
+
+            if (projectileVelocity == default)
+            {
+                MissingTargeting?.Invoke(this);
+            }
         }
 
         if (canSetTarget && InputSystem.IsLeftMouseButtonClicked())
         {
-            projectileVelocity = CalculateProjectileVelocity(InputSystem.GetMouseWorldPosition(), deltaTime);
+            TargetHitpoint = InputSystem.GetMouseWorldPosition();
+            projectileVelocity = CalculateProjectileVelocity(TargetHitpoint, deltaTime);
             isTargeting = false;
+            IsMortarTargeting = false;
+            EndTargeting?.Invoke(this);
         }
 
         // Used to prevent one click from both enabling targeting and setting the target.
@@ -115,33 +138,36 @@ public class Mortar : Entity, ITower
             return;
         }
 
-        if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+        if (WaveSystem.WaveCooldownLeft <= 0)
         {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
-        {
-            HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
-        {
-            HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
-        {
-            HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
-        {
-            HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
-        {
-            HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
-        }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
-        {
-            HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
+            if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
+            {
+                HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
+            {
+                HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
+            {
+                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
+            {
+                HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
+            }
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
+            {
+                HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
+            }
         }
 
         base.Update(gameTime);
@@ -282,9 +308,19 @@ public class Mortar : Entity, ITower
         return new Vector2(vx, vy);
     }
 
-    private void OnClickTower()
+    private void OnRightClickTower()
     {
+        if (Mortar.IsMortarTargeting) return;
+        if (!towerCore.detailsClosed) return;
+        if (BuildingSystem.IsPlacingTower) return;
+
+        if (!isTargeting)
+        {
+            StartTargeting?.Invoke(this);
+        }
+
         isTargeting = true;
+        IsMortarTargeting = true;
     }
 
     public override void Destroy()
@@ -310,7 +346,7 @@ public class Mortar : Entity, ITower
         return new Vector2(2, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("mortar_base_idle");
 
@@ -321,6 +357,18 @@ public class Mortar : Entity, ITower
             frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static BuildingSystem.TowerType GetTowerType()
@@ -397,4 +445,8 @@ public class Mortar : Entity, ITower
         AnimationSystem.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
+
+    public static float GetBaseRange() => 0f;
+
+    public float GetRange() => 0f;
 }

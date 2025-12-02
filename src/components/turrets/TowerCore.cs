@@ -11,10 +11,11 @@ public class TowerCore : GameComponent, IClickable
     public TowerUpgradeNode CurrentUpgrade { get; set; }
 
     public TurretDetailsPrompt? detailsPrompt;
-    public bool detailsClosed;
+    public bool detailsClosed = true;
 
     public delegate void ClickedHandler();
-    public event ClickedHandler? Clicked;
+    public event ClickedHandler? LeftClicked;
+    public event ClickedHandler? RightClicked;
 
     public TowerCore(Entity turret) : base(turret.Game)
     {
@@ -24,7 +25,8 @@ public class TowerCore : GameComponent, IClickable
 
         Turret.Game.Components.Add(this);
 
-        InputSystem.Clicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
+        InputSystem.LeftClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
+        InputSystem.RightClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition, force: true);
     }
 
     public Enemy? GetClosestValidEnemy(int tileRange)
@@ -55,14 +57,14 @@ public class TowerCore : GameComponent, IClickable
         return closestEnemy;
     }
 
-    public void HandleCloseDetails(Vector2 mouseScreenPosition)
+    public void HandleCloseDetails(Vector2 mouseScreenPosition, bool force = false)
     {
-        if (detailsPrompt is not null && detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition))
+        if (detailsPrompt is not null && (force || detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition)))
         {
             CloseDetailsView();
             detailsClosed = true;
         }
-        else
+        else if (detailsPrompt is not null)
         {
             detailsClosed = false;
         }
@@ -74,16 +76,21 @@ public class TowerCore : GameComponent, IClickable
         detailsPrompt = null;
     }
 
-    public void OnClick()
+    public void OnLeftClick()
     {
-        if (!detailsClosed && detailsPrompt is null)
+        if (detailsClosed && detailsPrompt is null)
         {
             detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
         }
 
         detailsClosed = false;
 
-        Clicked?.Invoke();
+        LeftClicked?.Invoke();
+    }
+
+    public void OnRightClick()
+    {
+        RightClicked?.Invoke();
     }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
@@ -100,12 +107,18 @@ public class TowerCore : GameComponent, IClickable
 
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return null;
 
+        var costText = $"-{CurrentUpgrade.LeftChild.Price}";
         CurrentUpgrade = CurrentUpgrade.LeftChild;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
+
+        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return CurrentUpgrade;
     }
 
-    public TowerUpgradeNode UpgradeRight()
+    public TowerUpgradeNode? UpgradeRight()
     {
         if (CurrentUpgrade.RightChild is null)
         {
@@ -114,8 +127,14 @@ public class TowerCore : GameComponent, IClickable
 
         if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
 
+        var costText = $"-{CurrentUpgrade.RightChild.Price}";
         CurrentUpgrade = CurrentUpgrade.RightChild;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
+
+        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return CurrentUpgrade;
     }
 

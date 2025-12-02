@@ -51,20 +51,23 @@ public static class WaveSystem
         public List<Wave> waves;
     }
 
+    public delegate void WaveStartedHandler();
     public delegate void WaveEndedHandler();
-    public delegate void LevelWinHandler();
+    public delegate void LevelWinHandler(int zone, int wonLevel);
     public static event LevelWinHandler LevelWin;
+    public static event WaveStartedHandler WaveStarted;
     public static event WaveEndedHandler WaveEnded;
     public static int MaxWaveIndex;
     public static int CurrentWaveIndex;
+    public static float WaveCooldownLeft { get; private set; }
 
     private static bool waveStarted;
     private static float waveCooldown;
-    private static float waveCooldownLeft;
     private const int StartingMaxWaves = 5;
     private const int MaxWaveIncreasePerLevel = 5;
 
-    // these variables are for the long term malliable script
+    private static int currentZoneNumber;
+    private static int currentLevelNumber;
     private static Zone currentZone;
     private static Wave currentWave;
 
@@ -73,6 +76,8 @@ public static class WaveSystem
     public static void Initialize(Game1 gameRef, int currentZoneNumber, int currentLevelNumber)
     {
         game = gameRef;
+        WaveSystem.currentZoneNumber = currentZoneNumber;
+        WaveSystem.currentLevelNumber = currentLevelNumber;
 
         Console.WriteLine($"Loading zone {currentZoneNumber} enemy data...");
         string formationsPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
@@ -124,13 +129,13 @@ public static class WaveSystem
 
         Console.WriteLine($"Loaded {waves.Count} waves with {formations.Count} formations");
 
-        waveCooldown = 10f;
-        waveCooldownLeft = 0f;
-        CurrentWaveIndex = 0;
-        waveStarted = true;
+        waveCooldown = 15f;
+        WaveCooldownLeft = waveCooldown;
+        CurrentWaveIndex = -1;
+        waveStarted = false;
         var zone1 = new Zone { waves = waves };
         currentZone = zone1;
-        currentWave = currentZone.waves[CurrentWaveIndex];
+        // currentWave = currentZone.waves[CurrentWaveIndex];
 
         MaxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
     }
@@ -145,10 +150,10 @@ public static class WaveSystem
         if (currentWave.formCooldownRemaining > 0f)
             currentWave.formCooldownRemaining -= elapsedSeconds;
 
-        if (waveCooldownLeft > 0f)
-            waveCooldownLeft -= elapsedSeconds;
+        if (WaveCooldownLeft > 0f)
+            WaveCooldownLeft -= elapsedSeconds;
 
-        if (waveCooldownLeft <= 0f && !waveStarted)
+        if (WaveCooldownLeft <= 0f && !waveStarted)
             NextWave();
 
         if (currentWave.formCooldownRemaining <= 0f && waveStarted)
@@ -231,24 +236,30 @@ public static class WaveSystem
     {
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Ended");
         waveStarted = false;
-        waveCooldownLeft = waveCooldown;
+        WaveCooldownLeft = waveCooldown + 3 * CurrentWaveIndex;
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
 
         if (CurrentWaveIndex == MaxWaveIndex - 1)
         {
-            LevelWin?.Invoke();
+            LevelWin?.Invoke(currentZoneNumber, currentLevelNumber);
         }
     }
 
     private static void NextWave()
     { 
+        WaveStarted?.Invoke();
         CurrentWaveIndex++;
         currentWave = currentZone.waves[CurrentWaveIndex];
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Started");
         waveStarted = true;
 
         // starts next wave
+    }
+
+    public static void SkipWaveCooldown()
+    {
+        WaveCooldownLeft = 0;
     }
 }

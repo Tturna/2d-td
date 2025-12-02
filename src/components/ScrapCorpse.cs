@@ -7,9 +7,14 @@ namespace _2d_td;
 public class ScrapCorpse : Entity, IKnockable
 {
     public PhysicsSystem PhysicsSystem;
+    public int ScrapValue;
 
-    public ScrapCorpse(Game game, Vector2 position, AnimationSystem.AnimationData animationData) :
-        base(game, position, animationData) { }
+    public ScrapCorpse(Game game, Vector2 position, AnimationSystem.AnimationData animationData,
+        int scrapValue) :
+        base(game, position, animationData)
+    {
+        ScrapValue = scrapValue;
+    }
 
     public override void Initialize()
     {

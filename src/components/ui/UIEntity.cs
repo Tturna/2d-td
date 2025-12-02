@@ -15,6 +15,7 @@ public class UIEntity : Entity, IClickable
     private Func<UIEntity, bool> removeUIEntityCallback;
     private SpriteFont? font;
     public string? Text;
+    public Color TextColor;
 
     public UIEntity(Game game, Vector2? position, Action<UIEntity> addUIEntityCallback,
         Func<UIEntity, bool> removeUIEntityCallback, Texture2D sprite) : base(game, position, sprite)
@@ -41,13 +42,16 @@ public class UIEntity : Entity, IClickable
         this(game, uiEntities.Add, uiEntities.Remove, position, animationData) { }
 
     public UIEntity(Game game, Action<UIEntity> addUIEntityCallback,
-        Func<UIEntity, bool> removeUIEntityCallback, SpriteFont font, string text) :
+        Func<UIEntity, bool> removeUIEntityCallback, SpriteFont font, string text,
+        Color? color = null) :
         base(game, size: font.MeasureString(text))
     {
         addUIEntityCallback(this);
         this.removeUIEntityCallback = removeUIEntityCallback;
         this.font = font;
         Text = text;
+
+        TextColor = color is null ? Color.White : (Color)color;
     }
 
     public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
@@ -88,7 +92,7 @@ public class UIEntity : Entity, IClickable
             Game.SpriteBatch.DrawString(font,
                 Text,
                 Position,
-                Color.White,
+                TextColor,
                 rotation: 0f,
                 origin: DrawOrigin,
                 scale: Scale,
@@ -113,10 +117,12 @@ public class UIEntity : Entity, IClickable
         ButtonPressed = null;
     }
 
-    public void OnClick()
+    public void OnLeftClick()
     {
         OnButtonPressed();
     }
+
+    public void OnRightClick() { }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,18 +15,23 @@ public class TurretDetailsPrompt : UIEntity
     private UIEntity? leftInfoBtn;
     private UIEntity? rightInfoBtn;
     private UIEntity upgradeIndicator;
-    private Entity targetTurret;
+    private Entity targetTowerEntity;
+    private ITower targetTowerInterface;
     private Vector2 upgradeBgSpriteSize, buttonSpriteSize, upgradeIndicatorSpriteSize;
     private int leftUpgradePrice, rightUpgradePrice;
     private SpriteFont pixelsixFont;
     private List<UIEntity> tooltipEntities = new();
+
+    // TODO: consider if there's a better way to handle showing tower specific elements
+    private bool isMortar;
 
     public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode?> upgradeLeftCallback,
         Func<TowerUpgradeNode?> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
         base(game, position: null, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
-        targetTurret = turret;
+        targetTowerEntity = turret;
+        targetTowerInterface = (ITower)turret;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var upgradeIndicatorSprite = AssetManager.GetTexture("upgrade_indicator");
@@ -47,12 +53,17 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
             UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
 
-        var turretType = BuildingSystem.GetTurretTypeFromEntity(targetTurret);
+        var turretType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
 
         sellBtn.ButtonPressed += () =>
         {
-            CurrencyManager.SellTower(turretType);
-            targetTurret.Destroy();
+            var returnScrap = CurrencyManager.SellTower(turretType);
+            targetTowerEntity.Destroy();
+
+            var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
+
+            var indicatorVelocity = -Vector2.UnitY * 25f;
+            UIComponent.SpawnFlyoutText($"+{returnScrap}", indicatorPos, indicatorVelocity, 1f);
         };
 
         if (currentUpgrade.LeftChild is not null)
@@ -111,17 +122,19 @@ public class TurretDetailsPrompt : UIEntity
                 upgradeIndicator.AnimationSystem.NextFrame();
             }
         }
+
+        isMortar = turret is Mortar;
     }
 
     public override void Update(GameTime gameTime)
     {
-        var halfTurretWidth = targetTurret.AnimationSystem!.BaseAnimationData.FrameSize.X / 2;
+        var halfTurretWidth = targetTowerEntity.AnimationSystem!.BaseAnimationData.FrameSize.X / 2;
         var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
         var sellBtnOffset = new Vector2(halfTurretWidth - 64, 40);
         var upgradeIndicatorOffset = new Vector2(upgradeBgSpriteSize.X / 2 - upgradeIndicatorSpriteSize.X / 6, 2);
 
-        var detailsOffsetPosition = targetTurret.Position - detailsPromptOffset;
-        var sellBtnOffsetPosition = targetTurret.Position - sellBtnOffset;
+        var detailsOffsetPosition = targetTowerEntity.Position - detailsPromptOffset;
+        var sellBtnOffsetPosition = targetTowerEntity.Position - sellBtnOffset;
         var upgradeIndicatorOffsetPosition = detailsOffsetPosition + upgradeIndicatorOffset;
 
         var detailsScreenPosition = Camera.WorldToScreenPosition(detailsOffsetPosition);
@@ -175,6 +188,24 @@ public class TurretDetailsPrompt : UIEntity
             Game.SpriteBatch.DrawString(pixelsixFont, rightUpgradePrice.ToString(), pos, Color.White);
         }
 
+        var towerCenter = targetTowerEntity.Position + targetTowerEntity.Size / 2;
+        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
+        var towerRange = (int)targetTowerInterface.GetRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+
+        if (isMortar)
+        {
+            var reticleSprite = AssetManager.GetTexture("mortar_reticle");
+            var spriteSize = new Vector2(reticleSprite.Width, reticleSprite.Height);
+            var reticleWorldPos = ((Mortar)targetTowerEntity).TargetHitpoint - spriteSize / 2;
+            var reticlePos = Camera.WorldToScreenPosition(reticleWorldPos);
+
+            Game.SpriteBatch.Draw(reticleSprite, reticlePos, Color.White);
+        }
+
         base.DrawCustom(gameTime);
     }
 
@@ -193,6 +224,12 @@ public class TurretDetailsPrompt : UIEntity
 
     public bool ShouldCloseDetailsView(Vector2 mouseScreenPosition)
     {
+        if (Collision.IsPointInEntity(Camera.ScreenToWorldPosition(mouseScreenPosition),
+            targetTowerEntity))
+        {
+            return true;
+        }
+
         if (Collision.IsPointInEntity(mouseScreenPosition, this)) return false;
         if (Collision.IsPointInEntity(mouseScreenPosition, sellBtn)) return false;
         if (leftInfoBtn is not null &&

@@ -155,12 +155,11 @@ public class Enemy : Entity, IKnockable
 
     private void OnDeath(Entity diedEntity)
     {
-        CurrencyManager.AddBalance(ScrapValue);
         EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
 
         var anim = AnimationSystem.BaseAnimationData;
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, knockback: Vector2.UnitX * 0.7f);
+        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: Vector2.UnitX * 0.7f);
         Destroy();
     }
 }

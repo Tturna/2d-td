@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,8 @@ class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 11);
-    int tileRange = 18;
+    private static int baseRange = 18;
+    int realRange;
     int damage = 30;
     int pierce = 3;
     float bulletSpeed = 900f;
@@ -26,7 +28,7 @@ class Railgun : Entity, ITower
         GoldenGatling
     }
 
-    public Railgun(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public Railgun(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         var fireAnimationTexture = AssetManager.GetTexture("railgun_base_fire");
 
@@ -66,6 +68,8 @@ class Railgun : Entity, ITower
         GoldenGatling.Description = "+5 shots/s,\n-40 damage\nAfter firing for 2s straight,\ninflicts burn stacks as well.";
 
         towerCore.CurrentUpgrade = defaultNode;
+
+        realRange = baseRange;
     }
 
     public override void Initialize()
@@ -82,40 +86,40 @@ class Railgun : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, pierce);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Momentum.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, tileRange, pierce+3);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, pierce+3);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AntimatterLaser.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+20, tileRange+6, pierce+12);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+20, pierce+12);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.PolishedRound.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+25, tileRange, pierce);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+25, pierce);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Cannonball.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, tileRange, pierce-2);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, pierce-2);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.GoldenGatling.ToString())
         {
             // todo: inflict burn
-            HandleBasicShots(deltaTime, actionsPerSecond+5, 15, tileRange, pierce);
+            HandleBasicShots(deltaTime, actionsPerSecond+5, 15, pierce);
         }
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int tileRange, int pierce)
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int pierce)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        if (actionTimer >= actionInterval && IsEnemyInLine(tileRange))
+        if (actionTimer >= actionInterval && IsEnemyInLine(realRange))
         {
             Shoot(damage, pierce);
             actionTimer = 0f;
@@ -164,7 +168,7 @@ class Railgun : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("railgun_base_idle");
 
@@ -175,6 +179,26 @@ class Railgun : Entity, ITower
             frameSize: new Vector2(sprite.Width / 7, sprite.Height),
             delaySeconds: 0.1f
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseSprite = AssetManager.GetTexture("railgun_base_idle");
+
+        var baseData = new AnimationSystem.AnimationData
+        (
+            texture: baseSprite,
+            frameCount: 1,
+            frameSize: new Vector2(baseSprite.Width / 7, baseSprite.Height),
+            delaySeconds: float.PositiveInfinity
+        );
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, new Vector2(0, 3)));
+
+        return list;
     }
 
     public static Vector2 GetDefaultGridSize()
@@ -210,6 +234,7 @@ class Railgun : Entity, ITower
             newFireTexture = AssetManager.GetTexture("railgun_antimatterlaser_fire");
             newIdleFrameCount = 4;
             newFireFrameCount = 6;
+            realRange = baseRange + 6;
         }
         else if (newUpgrade.Name == Upgrade.Cannonball.ToString())
         {
@@ -258,5 +283,12 @@ class Railgun : Entity, ITower
 
         AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
+    }
+
+    public static float GetBaseRange() => baseRange;
+
+    public float GetRange()
+    {
+        return realRange;
     }
 }

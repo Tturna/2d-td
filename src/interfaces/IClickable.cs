@@ -4,6 +4,7 @@ namespace _2d_td.interfaces;
 
 public interface IClickable
 {
-    public void OnClick();
+    public void OnLeftClick();
+    public void OnRightClick();
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition);
 }

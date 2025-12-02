@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -13,6 +15,7 @@ public class MainMenuUIComponent : DrawableGameComponent
     private Texture2D playButtonSprite = AssetManager.GetTexture("main_play_button");
     private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
     private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
+    private Stack<Action> menuScreenStack = new();
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -28,6 +31,19 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
+        if (InputSystem.IsKeyTapped(Keys.Escape))
+        {
+            if (menuScreenStack.Count == 0)
+            {
+                LoadMainMenu();
+            }
+            else
+            {
+                var loadPreviousScreen = menuScreenStack.Pop();
+                loadPreviousScreen();
+            }
+        }
+
         base.Update(gameTime);
     }
 
@@ -132,18 +148,40 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            // Create new variable so that the lambda function doesn't create a closure that
-            // captures the "i" iteration variable.
-            var zoneNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
-
             var text = $"{i + 1}";
+
+            if (ProgressionManager.IsZoneUnlocked(i + 1))
+            {
+                // Create new variable so that the lambda function doesn't create a closure that
+                // captures the "i" iteration variable.
+                var zoneNumber = i + 1;
+                btn.ButtonPressed += () =>
+                {
+                    if (menuScreenStack.Count == 0 || menuScreenStack.Peek() != LoadZoneSelector)
+                    {
+                        menuScreenStack.Push(LoadZoneSelector);
+                    }
+
+                    LoadLevelSelector(zoneNumber);
+                };
+            }
+            else
+            {
+                text += " (x)";
+            }
+
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () => LoadMainMenu();
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevelSelector(int selectedZone)
@@ -177,16 +215,34 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            var levelNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
-
             var text = $"{i + 1}";
+
+            if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 1))
+            {
+                var levelNumber = i + 1;
+                btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+            }
+            else
+            {
+                text += " (x)";
+            }
+
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
             zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () =>
+        {
+            LoadZoneSelector();
+            InputSystem.ForceClickableInterrupt();
+        };
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevel(int zone, int level)

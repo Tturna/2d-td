@@ -32,7 +32,7 @@ public class Crane : Entity, ITower
         Razorball
     }
 
-    public Crane(Game game, Vector2 position) : base(game, position, GetTowerBaseAnimationData())
+    public Crane(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         var attackSprite = AssetManager.GetTexture("crane_base_attack");
 
@@ -446,7 +446,7 @@ public class Crane : Entity, ITower
         return new Vector2(3, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerBaseAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
         var sprite = AssetManager.GetTexture("crane_base_idle");
 
@@ -459,6 +459,18 @@ public class Crane : Entity, ITower
         );
     }
 
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
+    }
+
     public static BuildingSystem.TowerType GetTowerType()
     {
         return BuildingSystem.TowerType.Crane;
@@ -466,5 +478,10 @@ public class Crane : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+        throw new NotImplementedException();
     }
+
+    public static float GetBaseRange() => 0f;
+
+    public float GetRange() => 0f;
 }

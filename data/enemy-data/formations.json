@@ -4,28 +4,31 @@
         "enemyGroups": [
             { "enemyName": "walker", "spawnCount": 3 }
         ],
-        "cooldown": 2,
+        "cooldown": 4,
         "weight": 2,
-        "spawnCooldown": 2
+        "spawnCooldown": 4
     },
     {
         "formationName": "easyFormation2",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "fridge", "spawnCount": 1 }
+            { "enemyName": "walker", "spawnCount": 2 },
+            { "enemyName": "walker", "spawnCount": 4 }
         ],
-        "cooldown": 3,
-        "weight": 1.7,
-        "spawnCooldown": 3
+        "cooldown": 4,
+        "weight": 2,
+        "spawnCooldown": 4
     },
     {
         "formationName": "easyFormation3",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 4 }
+            { "enemyName": "walker", "spawnCount": 1 },
+            { "enemyName": "walker", "spawnCount": 1 },
+            { "enemyName": "walker", "spawnCount": 1 },
+            { "enemyName": "walker", "spawnCount": 1 }
         ],
-        "cooldown": 2.5,
-        "weight": 1.8,
-        "spawnCooldown": 2
+        "cooldown": 1,
+        "weight": 2,
+        "spawnCooldown": 1
     },
     {
         "formationName": "mediumFormation1",

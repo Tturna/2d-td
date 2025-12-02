@@ -21,11 +21,12 @@ public static class BuildingSystem
     private static Game1 game;
     private static TimeSpan lastGameTime;
     private static TowerType selectedTowerType;
-    private static TimeSpan allowedTurretPlacementTime;
+    private static TimeSpan allowedTowerPlacementTime;
     private static Func<Vector2, bool> canPlaceTowerCallback;
     private static Func<Game, Vector2, Entity> createTowerInstanceCallback;
 
-    public static bool CanPlaceTurret { get; private set; }
+    public static bool CanPlaceTower { get; private set; }
+    public static bool IsPlacingTower { get; private set; }
 
     public static void Initialize(Game game)
     {
@@ -59,38 +60,45 @@ public static class BuildingSystem
             }
         }
 
-        var turretAllowsPlacement = true;
+        var towerAllowsPlacement = true;
 
         if (canPlaceTowerCallback is not null)
         {
-            turretAllowsPlacement = canPlaceTowerCallback(gridMousePosition);
+            towerAllowsPlacement = canPlaceTowerCallback(gridMousePosition);
         }
 
-        CanPlaceTurret = !isColliding &&
-            turretAllowsPlacement &&
-            gameTime.TotalGameTime > allowedTurretPlacementTime &&
+        CanPlaceTower = !isColliding &&
+            towerAllowsPlacement &&
+            gameTime.TotalGameTime > allowedTowerPlacementTime &&
             selectedTowerType != TowerType.None;
 
-        if (InputSystem.IsLeftMouseButtonClicked() && CanPlaceTurret)
+        if (InputSystem.IsLeftMouseButtonClicked() && CanPlaceTower)
         {
-            TrySpawnTurret(gridMousePosition);
+            TrySpawnTower(gridMousePosition);
         }
     }
 
-    private static bool TrySpawnTurret(Vector2 position)
+    private static bool TrySpawnTower(Vector2 position)
     {
         if (!CurrencyManager.TryBuyTower(selectedTowerType)) return false;
 
-        var spawnedTurret = createTowerInstanceCallback(game, position);
+        var spawnedTower = createTowerInstanceCallback(game, position);
+
+        var costText = $"-{CurrencyManager.GetTowerPrice(selectedTowerType)}";
+        var costTextPosition = spawnedTower.Position - Vector2.UnitY * 6;
+        var textVelocity = -Vector2.UnitY * 25f;
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+
         return true;
     }
 
-    public static void SelectTurret<T>() where T : ITower
+    public static void SelectTower<T>() where T : ITower
     {
-        allowedTurretPlacementTime = lastGameTime.Add(TimeSpan.FromMilliseconds(200));
+        allowedTowerPlacementTime = lastGameTime.Add(TimeSpan.FromMilliseconds(200));
         selectedTowerType = T.GetTowerType();
         canPlaceTowerCallback = T.CanPlaceTower;
         createTowerInstanceCallback = T.CreateNewInstance;
+        IsPlacingTower = true;
     }
 
     public static void DeselectTower()
@@ -98,13 +106,14 @@ public static class BuildingSystem
         selectedTowerType = TowerType.None;
         canPlaceTowerCallback = null;
         createTowerInstanceCallback = null;
+        IsPlacingTower = false;
     }
 
     // TODO: Consider taking this out and adding the ability to get the type of a tower
     // in ITower.
-    public static TowerType GetTurretTypeFromEntity(Entity turretEntity)
+    public static TowerType GetTowerTypeFromEntity(Entity towerEntity)
     {
-        return turretEntity switch
+        return towerEntity switch
         {
             GunTurret => TowerType.GunTurret,
             Railgun => TowerType.Railgun,
@@ -113,7 +122,7 @@ public static class BuildingSystem
             Mortar => TowerType.Mortar,
             Hovership => TowerType.Hovership,
             PunchTrap => TowerType.PunchTrap,
-            _ => throw new ArgumentOutOfRangeException(nameof(turretEntity), $"Entity {turretEntity.ToString()} is not a valid turret.")
+            _ => throw new ArgumentOutOfRangeException(nameof(towerEntity), $"Entity {towerEntity.ToString()} is not a valid turret.")
         };
     }
 }

@@ -888,6 +888,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Mortar/mortar_nuke/nuke.png
 
+#begin sprites/Towers/Mortar/mortar_reticle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Mortar/mortar_reticle.png
+
 #begin sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor

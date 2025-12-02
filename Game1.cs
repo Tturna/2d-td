@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -157,6 +156,11 @@ public class Game1 : Game
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
             DebugUtility.DrawDebugScreen(SpriteBatch);
+
+            // var mousePoint = InputSystem.GetMouseScreenPosition();
+            // LineUtility.DrawCircle(SpriteBatch, mousePoint, radius: 60f, Color.Red, thickness: 1f,
+            //     resolution: 24);
+
             SpriteBatch.End();
         }
 
@@ -206,6 +210,8 @@ public class Game1 : Game
         ui = null;
         mainMenu = null;
         Terrain = null;
+
+        ProgressionManager.Initialize();
 
         switch (loadedScene)
         {
