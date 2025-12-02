@@ -243,4 +243,17 @@ public static class ParticleSystem
                 shouldSlowDown: true, depth: 0.9f, slowdownSpeed: 2f + 3f / (size * 2)));
         }
     }
+
+    public static void PlayTowerPlacementEffect(Vector2 worldPosition)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            var x = ((float)rng.NextDouble() - 0.5f) * 2f;
+            var y = ((float)rng.NextDouble() - 0.5f);
+            var velocity = new Vector2(x, y) * 0.7f;
+
+            AddParticle(new Particle(worldPosition, velocity, 0.7f, Color.White,
+                shouldSlowDown: true, shouldFadeOut: true));
+        }
+    }
 }
