@@ -56,6 +56,8 @@ class Drone : Entity, ITower
         realRange = baseRange;
     }
 
+    // TODO: Handle upgraded stats sensibly by using variables and updating them in
+    // UpgradeTower().
     public override void Update(GameTime gameTime)
     {
         turretSpawnAxisCenter = Position + spawnOffset;
@@ -67,24 +69,24 @@ class Drone : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage + 8, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinDrone.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100 + 28, sightAngle - 10f);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle - 10f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
         {
-            // todo: add the effects
-            HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage + 8, sightAngle);
+            // TODO: add the effects
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         } 
 
         base.Update(gameTime);

@@ -68,12 +68,14 @@ class Hovership : Entity, ITower
         realHovershipHangarRange = baseHovershipHangarRange;
     }
 
+    // TODO: Handle upgraded stats sensibly by using variables and updating them in
+    // UpgradeTower().
     public override void Update(GameTime gameTime)
     {
         turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // todo: add the effects for a lot of these upgrades
+        // TODO: add the effects for a lot of these upgrades
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
@@ -81,7 +83,7 @@ class Hovership : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BombierBay.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 2);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
             HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.OrbitalLaser.ToString())
@@ -90,18 +92,18 @@ class Hovership : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.CarpetofFire.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount + 5);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
             HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientEngines.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime + 10, hoverHeight);
+            HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EMPShip.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount - 2);
-            HandleHovershipPosition(deltaTime + 15, hoverHeight + 10);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
+            HandleHovershipPosition(deltaTime, hoverHeight);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FloatingFactory.ToString())
         {
