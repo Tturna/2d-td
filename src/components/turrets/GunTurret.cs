@@ -280,6 +280,7 @@ class GunTurret : Entity, ITower
         bullet.Damage = realDamage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
+        bullet.TrailColor = Color.Red;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
     }
