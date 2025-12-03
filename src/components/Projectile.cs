@@ -15,8 +15,12 @@ class Projectile : Entity
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
+    public Color TrailColor = Color.White;
+
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
+    private float trailParticleInterval = 0.005f;
+    private float trailParticleTimer;
 
     // this constructor is simple so that the turrets can edit the property
     // of bullet themself
@@ -58,7 +62,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
@@ -66,7 +70,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
@@ -74,7 +78,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
             }
@@ -144,6 +148,17 @@ class Projectile : Entity
         if (bulletToDelete || Lifetime <= 0f)
         {
             Destroy();
+        }
+
+        if (trailParticleTimer < trailParticleInterval)
+        {
+            trailParticleTimer += deltaTime;
+        }
+
+        if (trailParticleTimer >= trailParticleInterval)
+        {
+            trailParticleTimer = 0;
+            ParticleSystem.PlayFloater(Position, TrailColor, Direction);
         }
 
         base.Update(gameTime);

@@ -83,6 +83,8 @@ public class MortarShell : Entity
         var collided = physics.UpdatePhysics(this, deltaTime);
 
         if (lifeTime <= 0 || collided) DestroyShell(oldVelocity);
+
+        ParticleSystem.PlayFloater(Position, Color.White, oldVelocity);
     }
 
     public void DestroyShell(Vector2 previousVelocity)

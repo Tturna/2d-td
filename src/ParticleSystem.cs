@@ -277,7 +277,7 @@ public static class ParticleSystem
 
     }
 
-    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction, int size)
+    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction)
     {
         direction.Normalize();
         var perpendicular = new Vector2(direction.Y, -direction.X);
@@ -294,5 +294,19 @@ public static class ParticleSystem
             AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
                 shouldSlowDown: true, shouldFadeOut: true));
         }
+    }
+
+    public static void PlayFloater(Vector2 worldPosition, Color color, Vector2? momentumDirection = null)
+    {
+        var direction = ((float)rng.NextDouble() - 0.5f) * 2f;
+        var velocity = Vector2.UnitY * direction * 0.15f;
+
+        if (momentumDirection is not null)
+        {
+            velocity += (Vector2)momentumDirection * 0.2f;
+        }
+
+        AddParticle(new Particle(worldPosition, velocity, 0.5f, color,
+            shouldSlowDown: true, shouldFadeOut: true));
     }
 }

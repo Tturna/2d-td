@@ -21,6 +21,11 @@ public class Entity : DrawableGameComponent
 
     protected bool IsDestroyed = false;
 
+    protected Vector2 preStretchScale;
+    protected Vector2 stretchScale;
+    protected float stretchDuration;
+    protected float stretchDurationLeft;
+
     public Entity(Game game, Vector2? position = null, Texture2D? sprite = null, Vector2 size = default) : base(game)
     {
         this.Game = (Game1)game;
@@ -60,25 +65,42 @@ public class Entity : DrawableGameComponent
         Game.Components.Add(this);
     }
 
+    public override void Initialize()
+    {
+        preStretchScale = Scale;
+        base.Initialize();
+    }
+
     public override void Update(GameTime gameTime)
     {
         if (IsDestroyed) return;
 
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         if (AnimationSystem is not null)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             AnimationSystem.UpdateAnimation(deltaTime);
+        }
+
+        if (stretchDurationLeft > 0)
+        {
+            stretchDurationLeft -= deltaTime;
+
+            if (stretchDurationLeft <= 0)
+            {
+                Scale = preStretchScale;
+            }
+            else
+            {
+                var normalDuration = stretchDurationLeft / stretchDuration;
+                Scale = Vector2.Lerp(stretchScale, preStretchScale, 1f - normalDuration);
+            }
         }
 
         base.Update(gameTime);
     }
 
     public virtual void FixedUpdate(float deltaTime) { }
-
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
 
     protected override void LoadContent()
     {
@@ -89,7 +111,7 @@ public class Entity : DrawableGameComponent
     {
         if (AnimationSystem is not null)
         {
-            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawLayerDepth);
+            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, Scale, DrawLayerDepth);
         }
         else if (Sprite is null) return;
         else
@@ -128,5 +150,13 @@ public class Entity : DrawableGameComponent
     public virtual void SetPosition(Vector2 newPosition)
     {
         Position = newPosition;
+    }
+
+    public virtual void StretchImpact(Vector2 scale, float duration)
+    {
+        Scale = preStretchScale;
+        stretchScale = scale;
+        stretchDuration = duration;
+        stretchDurationLeft = duration;
     }
 }

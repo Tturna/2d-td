@@ -62,5 +62,6 @@ public static class EffectUtility
         }
 
         ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
+        CameraManager.Instance.ShakeCamera(0.75f, 0.1f);
     }
 }

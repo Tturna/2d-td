@@ -195,7 +195,7 @@ public class AnimationSystem
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotationRadians = 0f,
-        Vector2 drawOrigin = default, float drawLayerDepth = 0.9f)
+        Vector2 drawOrigin = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
         Texture2D texture = currentAnimationData.Texture;
@@ -212,13 +212,19 @@ public class AnimationSystem
             sourceRect = new Rectangle(x, y, (int)currentAnimationData.FrameSize.X, (int)currentAnimationData.FrameSize.Y);
         }
 
+        var usedScale = scale == null ? Vector2.One : (Vector2)scale;
+        var scaleDiff = Vector2.One - usedScale;
+        var sizeRect = sourceRect is not null ? (Rectangle)sourceRect : texture.Bounds;
+        var size = new Vector2(sizeRect.Width, sizeRect.Height);
+        var offset = scaleDiff * size;
+
         spriteBatch.Draw(texture,
-                position,
+                position + offset,
                 sourceRectangle: sourceRect,
                 Color.White,
                 rotation: rotationRadians,
                 origin: drawOrigin,
-                scale: Vector2.One,
+                scale: usedScale,
                 effects: SpriteEffects.None,
                 layerDepth: drawLayerDepth);
     }
