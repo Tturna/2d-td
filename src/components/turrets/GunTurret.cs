@@ -201,9 +201,11 @@ class GunTurret : Entity, ITower
 
         var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
-        if (aimAccuracy < 0.05f)
+        if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHead!.Position + turretHead.Size / 2,
+            closestEnemy.Position, closestEnemy, out var entryPoint, out var _))
         {
-            photonCannonTargetDistance = (turretHead!.Position - closestEnemy.Position).Length();
+            var diff = turretHead!.Position - entryPoint;
+            photonCannonTargetDistance = diff.Length();
 
             if (actionTimer >= actionInterval)
             {
@@ -211,6 +213,7 @@ class GunTurret : Entity, ITower
                 var damage = (int)(60 * actionInterval);
                 closestEnemy.HealthSystem.TakeDamage(damage);
                 actionTimer = 0f;
+                ParticleSystem.PlayImpactEffect(entryPoint, diff);
             }
         }
     }

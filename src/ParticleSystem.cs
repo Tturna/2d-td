@@ -277,7 +277,7 @@ public static class ParticleSystem
 
     }
 
-    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction, int size)
+    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction)
     {
         direction.Normalize();
         var perpendicular = new Vector2(direction.Y, -direction.X);

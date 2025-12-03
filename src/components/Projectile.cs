@@ -58,7 +58,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
@@ -66,7 +66,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
@@ -74,7 +74,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
                     }
                 }
             }
