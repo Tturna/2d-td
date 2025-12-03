@@ -56,17 +56,26 @@ class Projectile : Entity
                 if (Collision.IsLineInEntity(oldPosition, Position, enemy,
                     out Vector2 entryPoint, out Vector2 exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                    }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
                     Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                    }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
                 Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction, 1);
+                    }
                 }
             }
             else

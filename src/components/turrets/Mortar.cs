@@ -257,7 +257,7 @@ public class Mortar : Entity, ITower
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
     {
         EffectUtility.Explode(shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
-            magnitude: 5f, damage);
+            magnitude: 10f, damage);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount,

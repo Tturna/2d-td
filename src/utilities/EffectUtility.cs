@@ -60,5 +60,7 @@ public static class EffectUtility
 
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
+
+        ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
     }
 }

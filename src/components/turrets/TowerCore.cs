@@ -114,6 +114,7 @@ public class TowerCore : GameComponent, IClickable
         var costTextPosition = Turret.Position - Vector2.UnitY * 6;
         var textVelocity = -Vector2.UnitY * 25f;
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+        ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
 
         return CurrentUpgrade;
     }
@@ -134,6 +135,7 @@ public class TowerCore : GameComponent, IClickable
         var costTextPosition = Turret.Position - Vector2.UnitY * 6;
         var textVelocity = -Vector2.UnitY * 25f;
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+        ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
 
         return CurrentUpgrade;
     }

@@ -89,6 +89,10 @@ public static class BuildingSystem
         var textVelocity = -Vector2.UnitY * 25f;
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
 
+        var particlesPosition = spawnedTower.Position + spawnedTower.Size / 2 +
+            Vector2.UnitY * spawnedTower.Size.Y / 2;
+        ParticleSystem.PlayTowerPlacementEffect(particlesPosition);
+
         return true;
     }
 

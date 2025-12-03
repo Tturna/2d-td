@@ -53,6 +53,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
         renderTarget = new(GraphicsDevice, NativeScreenWidth, NativeScreenHeight);
 
         AssetManager.Initialize(Content);
@@ -60,16 +61,14 @@ public class Game1 : Game
         // Load here to prevent components from trying to access assets before they're loaded.
         AssetManager.LoadAllAssets();
         Camera.Initialize(this);
+        ParticleSystem.Initialize(this);
 
         SceneManager.LoadMainMenu();
 
         base.Initialize();
     }
 
-    protected override void LoadContent()
-    {
-        SpriteBatch = new SpriteBatch(GraphicsDevice);
-    }
+    protected override void LoadContent() { }
 
     protected override void Update(GameTime gameTime)
     {
@@ -100,6 +99,8 @@ public class Game1 : Game
             {
                 DebugUtility.FixedUpdate();
             }
+
+            ParticleSystem.FixedUpdate();
 
             physicsTimer -= FixedDeltaTime;
         }
@@ -148,6 +149,8 @@ public class Game1 : Game
         DebugUtility.ResetLines();
 
         SpriteBatch.End();
+
+        ParticleSystem.DrawParticles(SpriteBatch, translation);
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
         if (ui is not null)
