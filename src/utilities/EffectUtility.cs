@@ -35,7 +35,6 @@ public static class EffectUtility
 
             enemy.HealthSystem.TakeDamage((int)(damage * effectStrength));
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
-            ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
         }
 
         var corpses = ScrapSystem.Corpses.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
@@ -61,5 +60,7 @@ public static class EffectUtility
 
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
+
+        ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
     }
 }
