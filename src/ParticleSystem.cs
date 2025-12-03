@@ -276,4 +276,23 @@ public static class ParticleSystem
         }
 
     }
+
+    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction, int size)
+    {
+        direction.Normalize();
+        var perpendicular = new Vector2(direction.Y, -direction.X);
+
+        for (int i = 0; i < rng.Next(3, 8); i++)
+        {
+            var outwardsMagnitude = (float)rng.NextDouble() * 0.5f + 0.5f;
+            var sidewaysMagnitude = ((float)rng.NextDouble() - 0.5f);
+            var velocity = direction * outwardsMagnitude + perpendicular * sidewaysMagnitude;
+            var maxLifetime = 0.35f;
+            var minLifetime = 0.1f;
+            var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+
+            AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+                shouldSlowDown: true, shouldFadeOut: true));
+        }
+    }
 }
