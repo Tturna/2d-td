@@ -111,6 +111,7 @@ public class UIComponent : DrawableGameComponent
         Mortar.StartTargeting += OnMortarStartTargeting;
         Mortar.EndTargeting += OnMortarEndTargeting;
         Mortar.MissingTargeting += OnMortarMissingTargeting;
+        CurrencyManager.CurrencyAdded += _ => currencyText.StretchImpact(new Vector2(1.5f, 1.5f), 0.2f);
 
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
         var scrapIcon = new UIEntity(game, uiElements, scrapIconTexture);

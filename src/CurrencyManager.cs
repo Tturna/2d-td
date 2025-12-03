@@ -5,6 +5,9 @@ namespace _2d_td;
 
 public static class CurrencyManager
 {
+    public delegate void CurrencyAddedHandler(int amount);
+    public static event CurrencyAddedHandler CurrencyAdded;
+
     private static Dictionary<BuildingSystem.TowerType, int> towerPriceMap = new()
     {
         { BuildingSystem.TowerType.GunTurret, 20 },
@@ -50,7 +53,7 @@ public static class CurrencyManager
     public static int SellTower(BuildingSystem.TowerType towerType)
     {
         var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
-        Balance += returnScrap;
+        AddBalance(returnScrap);
 
         return returnScrap;
     }
@@ -69,5 +72,6 @@ public static class CurrencyManager
     public static void AddBalance(int amount)
     {
         Balance += amount;
+        CurrencyAdded?.Invoke(amount);
     }
 }

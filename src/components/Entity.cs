@@ -65,6 +65,12 @@ public class Entity : DrawableGameComponent
         Game.Components.Add(this);
     }
 
+    public override void Initialize()
+    {
+        preStretchScale = Scale;
+        base.Initialize();
+    }
+
     public override void Update(GameTime gameTime)
     {
         if (IsDestroyed) return;
@@ -95,11 +101,6 @@ public class Entity : DrawableGameComponent
     }
 
     public virtual void FixedUpdate(float deltaTime) { }
-
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
 
     protected override void LoadContent()
     {
@@ -153,7 +154,7 @@ public class Entity : DrawableGameComponent
 
     public virtual void StretchImpact(Vector2 scale, float duration)
     {
-        preStretchScale = Scale;
+        Scale = preStretchScale;
         stretchScale = scale;
         stretchDuration = duration;
         stretchDurationLeft = duration;
