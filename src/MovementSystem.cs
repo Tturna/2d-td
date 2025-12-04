@@ -8,7 +8,7 @@ public class MovementSystem
     public enum MovementPattern
     {
         Charge,
-        JumpForward
+        BounceForward
     }
 
     public struct MovementData
@@ -40,8 +40,8 @@ public class MovementSystem
             case MovementPattern.Charge:
                 HandleCharge(entity, deltaTime);
                 break;
-            case MovementPattern.JumpForward:
-                HandleJumpForward(entity, deltaTime);
+            case MovementPattern.BounceForward:
+                HandleBounceForward(entity, deltaTime);
                 break;
         }
     }
@@ -135,13 +135,24 @@ public class MovementSystem
         // TODO: Implement flying enemy logic and shi
     }
 
-    private void HandleJumpForward(Entity entity, float deltaTime)
+    private void HandleBounceForward(Entity entity, float deltaTime)
     {
-        if (Collision.IsEntityInTerrain(entity, game.Terrain, out var _))
+        if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
-            var enemy = (Enemy)entity;
-            enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
-            enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed);
+            // This whole dot product checking prevents the bouncer from getting stuck on ceiling corners.
+            var roughCollisionPoint = Grid.TileToWorldPosition(collidedTilePositions[0]);
+            var diff = roughCollisionPoint - entity.Position + entity.Size / 2;
+            var dir = diff;
+            dir.Normalize();
+            var dot = Vector2.Dot(dir, -Vector2.UnitY);
+
+            if (MathF.Abs(dot) > 0.5f)
+            {
+                var bounceDir = diff.Y <= 0 ? 1 : -1;
+                var enemy = (Enemy)entity;
+                enemy.PhysicsSystem.AddForce(Vector2.UnitY * bounceDir * CurrentData.JumpForce);
+                enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed);
+            }
         }
 
         entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);

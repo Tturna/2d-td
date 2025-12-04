@@ -63,7 +63,7 @@ public static class EnemySystem
     {
         var movementData = new MovementSystem.MovementData
         {
-            Pattern = MovementSystem.MovementPattern.JumpForward,
+            Pattern = MovementSystem.MovementPattern.BounceForward,
             CanWalk = true,
             WalkSpeed = 0.4f,
             JumpForce = 8f
