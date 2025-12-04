@@ -135,7 +135,7 @@ public class Enemy : Entity, IKnockable
             hurtProgress = 0;
         }
 
-        StretchImpact(new Vector2(1.3f, 0.7f), 0.1f);
+        StretchImpact(new Vector2(1.8f, 0.4f), 0.1f);
     }
 
     public override void Destroy()

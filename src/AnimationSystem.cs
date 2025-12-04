@@ -212,11 +212,14 @@ public class AnimationSystem
             sourceRect = new Rectangle(x, y, (int)currentAnimationData.FrameSize.X, (int)currentAnimationData.FrameSize.Y);
         }
 
-        var usedScale = scale == null ? Vector2.One : (Vector2)scale;
-        var scaleDiff = Vector2.One - usedScale;
-        var sizeRect = sourceRect is not null ? (Rectangle)sourceRect : texture.Bounds;
-        var size = new Vector2(sizeRect.Width, sizeRect.Height);
-        var offset = scaleDiff * size;
+        var usedScale = scale is null ? Vector2.One : (Vector2)scale;
+
+        // TODO: Use offset if scaling entities whose origin is not in the center.
+        // var scaleDiff = Vector2.One - usedScale;
+        // var sizeRect = sourceRect is not null ? (Rectangle)sourceRect : texture.Bounds;
+        // var size = new Vector2(sizeRect.Width, sizeRect.Height);
+        // var offset = scaleDiff * size;
+        var offset = Vector2.Zero;
 
         spriteBatch.Draw(texture,
                 position + offset + drawOffset,
