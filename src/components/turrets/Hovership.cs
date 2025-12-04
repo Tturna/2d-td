@@ -36,7 +36,7 @@ class Hovership : Entity, ITower
         FloatingFactory
     }
 
-    public Hovership(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
+    public Hovership(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("gunTurretBase"))
     {
         towerCore = new TowerCore(this);
 
@@ -62,7 +62,7 @@ class Hovership : Entity, ITower
 
         towerCore.CurrentUpgrade = defaultNode;
 
-        turretHovership = new Entity(Game, position, AssetManager.GetTexture("gunTurretHead"));
+        turretHovership = new Entity(Game, position, GetUnupgradedBaseAnimationData());
         turretHovership.DrawLayerDepth = 0.8f;
 
         realHovershipHangarRange = baseHovershipHangarRange;
@@ -226,20 +226,28 @@ class Hovership : Entity, ITower
 
     public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("gunTurretBase");
+        var sprite = AssetManager.GetTexture("hovership_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
-            frameSize: new Vector2(sprite.Width, sprite.Height),
-            delaySeconds: 0
+            frameCount: 3,
+            frameSize: new Vector2(sprite.Width / 3, sprite.Height),
+            delaySeconds: 0.1f
         );
     }
 
     public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
     {
-        var baseData = GetUnupgradedBaseAnimationData();
+        var baseSprite = AssetManager.GetTexture("hovership_base_idle");
+
+        var baseData = new AnimationSystem.AnimationData
+        (
+            texture: baseSprite,
+            frameCount: 1,
+            frameSize: new Vector2(baseSprite.Width / 3, baseSprite.Height),
+            delaySeconds: float.PositiveInfinity
+        );
 
         var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
 

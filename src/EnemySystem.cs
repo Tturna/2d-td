@@ -10,8 +10,9 @@ public static class EnemySystem
 
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
     {
-        { "walker", SpawnWalkerEnemy },
-        { "fridge", SpawnFridgeEnemy }
+        { "node", SpawnNodeEnemy },
+        { "bouncer", SpawnBouncerEnemy },
+        { "meganode", SpawnMeganodeEnemy }
     };
 
     public static void Initialize(Game1 game)
@@ -28,7 +29,7 @@ public static class EnemySystem
 
     public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
-    public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
+    public static Enemy SpawnNodeEnemy(Game game, Vector2 position)
     {
         var movementData = new MovementSystem.MovementData
         {
@@ -38,26 +39,53 @@ public static class EnemySystem
             JumpForce = 7f
         };
 
-        var texture = AssetManager.GetTexture("goon");
-        var hurtTexture = AssetManager.GetTexture("goon_hit");
-        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+        var texture = AssetManager.GetTexture("node");
+        var frameSize = new Vector2(texture.Width, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData
         (
             texture: texture,
-            frameCount: 8,
+            frameCount: 1,
             frameSize: frameSize,
-            delaySeconds: 0.1f
+            delaySeconds: float.PositiveInfinity
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 100, scrapValue: 1);
         EnemyBins.Add(enemy);
 
         return enemy;
     }
 
-    public static Enemy SpawnFridgeEnemy(Game game, Vector2 position)
+    public static Enemy SpawnBouncerEnemy(Game game, Vector2 position)
+    {
+        var movementData = new MovementSystem.MovementData
+        {
+            Pattern = MovementSystem.MovementPattern.Charge,
+            CanWalk = true,
+            WalkSpeed = 0.35f,
+            JumpForce = 7f
+        };
+
+        var texture = AssetManager.GetTexture("bouncer");
+        var frameSize = new Vector2(texture.Width, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        (
+            texture: texture,
+            frameCount: 1,
+            frameSize: frameSize,
+            delaySeconds: float.PositiveInfinity
+        );
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
+            health: 100, scrapValue: 1);
+        EnemyBins.Add(enemy);
+
+        return enemy;
+    }
+
+    public static Enemy SpawnMeganodeEnemy(Game game, Vector2 position)
     {
         var movementData = new MovementSystem.MovementData
         {
@@ -67,19 +95,18 @@ public static class EnemySystem
             JumpForce = 6f
         };
 
-        var texture = AssetManager.GetTexture("fridge");
-        var hurtTexture = AssetManager.GetTexture("fridge_hit");
-        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+        var texture = AssetManager.GetTexture("meganode");
+        var frameSize = new Vector2(texture.Width, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData
         (
             texture: texture,
-            frameCount: 8,
+            frameCount: 1,
             frameSize: frameSize,
-            delaySeconds: 0.1f
+            delaySeconds: float.PositiveInfinity
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 300, scrapValue: 5);
         EnemyBins.Add(enemy);
 

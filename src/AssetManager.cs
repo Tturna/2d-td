@@ -96,6 +96,14 @@ public static class AssetManager
         LoadTexture("mortar_missilesilo_icon", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon");
         LoadTexture("mortar_nuke_icon", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon");
 
+        LoadTexture("hovership_base_idle", "sprites/Towers/Hovership/hovership_base/hovership_base_idle");
+        LoadTexture("hovership_bombierbay_idle", "sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle");
+        LoadTexture("hovership_carpetoffire_idle", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle");
+        LoadTexture("hovership_efficientengines_idle", "sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle");
+        LoadTexture("hovership_emp_idle", "sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle");
+        LoadTexture("hovership_orbitallaser_idle", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle");
+        LoadTexture("hovership_ufo_idle", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle");
+
         LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
 
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp
@@ -107,10 +115,9 @@ public static class AssetManager
         LoadTexture("purptiles", "sprites/tiles/purptiles");
 
         // enemies
-        LoadTexture("goon", "sprites/enemies/goon/goon_walk");
-        LoadTexture("goon_hit", "sprites/enemies/goon/goon_hurtframe");
-        LoadTexture("fridge", "sprites/enemies/fridge/fridge_walk");
-        LoadTexture("fridge_hit", "sprites/enemies/fridge/fridge_hurtframe");
+        LoadTexture("node", "sprites/Enemies/Node/node_body");
+        LoadTexture("bouncer", "sprites/Enemies/Bouncer/bouncer_body");
+        LoadTexture("meganode", "sprites/Enemies/Meganode/meganode_body");
 
         // environment
         LoadTexture("tree", "sprites/tree"); // temp

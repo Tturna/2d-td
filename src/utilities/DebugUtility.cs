@@ -41,12 +41,12 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
-            EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
+            EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
         if (InputSystem.IsKeyDown(Keys.R))
         {
-            EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
+            EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
         if (InputSystem.IsKeyTapped(Keys.Q))

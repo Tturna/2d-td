@@ -1,7 +1,6 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -12,8 +11,6 @@ public class Enemy : Entity, IKnockable
     public MovementSystem MovementSystem;
     public int ScrapValue;
 
-    private Texture2D hurtTexture;
-    private float hurtTimeSeconds = 0.1f;
     private double hurtProgress;
     private double hurtAnimThreshold;
     private int attackDamage = 10;
@@ -23,7 +20,7 @@ public class Enemy : Entity, IKnockable
     private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
-        AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
+        AnimationSystem.AnimationData animationData, int health,
         int scrapValue) : base(game, position, animationData)
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: health);
@@ -34,8 +31,6 @@ public class Enemy : Entity, IKnockable
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
-
-        this.hurtTexture = hurtTexture;
 
         selfDestructTimer = selfDestructTime;
     }
@@ -137,7 +132,6 @@ public class Enemy : Entity, IKnockable
         hurtProgress += amount;
         if (hurtProgress >= hurtAnimThreshold)
         {
-            AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
             hurtProgress = 0;
         }
 

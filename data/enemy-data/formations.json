@@ -2,7 +2,7 @@
     {
         "formationName": "easyFormation1",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 3 }
+            { "enemyName": "node", "spawnCount": 3 }
         ],
         "cooldown": 4,
         "weight": 2,
@@ -11,8 +11,8 @@
     {
         "formationName": "easyFormation2",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 2 },
-            { "enemyName": "walker", "spawnCount": 4 }
+            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "node", "spawnCount": 4 }
         ],
         "cooldown": 4,
         "weight": 2,
@@ -21,10 +21,10 @@
     {
         "formationName": "easyFormation3",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "walker", "spawnCount": 1 }
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 2,
@@ -33,9 +33,9 @@
     {
         "formationName": "mediumFormation1",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 2 },
-            { "enemyName": "fridge", "spawnCount": 1 },
-            { "enemyName": "walker", "spawnCount": 2 }
+            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "meganode", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 2 }
         ],
         "cooldown": 3.5,
         "weight": 1.3,
@@ -44,8 +44,8 @@
     {
         "formationName": "mediumFormation2",
         "enemyGroups": [
-            { "enemyName": "fridge", "spawnCount": 1 },
-            { "enemyName": "walker", "spawnCount": 3 }
+            { "enemyName": "meganode", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 3 }
         ],
         "cooldown": 2,
         "weight": 1.5,
@@ -54,7 +54,7 @@
     {
         "formationName": "mediumFormation3",
         "enemyGroups": [
-            { "enemyName": "fridge", "spawnCount": 2 }
+            { "enemyName": "meganode", "spawnCount": 2 }
         ],
         "cooldown": 1,
         "weight": 1.2,
@@ -63,9 +63,9 @@
     {
         "formationName": "hardFormation1",
         "enemyGroups": [
-            { "enemyName": "fridge", "spawnCount": 2 },
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "fridge", "spawnCount": 1 }
+            { "enemyName": "meganode", "spawnCount": 2 },
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "meganode", "spawnCount": 1 }
         ],
         "cooldown": 3,
         "weight": 1,
@@ -74,7 +74,7 @@
     {
         "formationName": "hardFormation2",
         "enemyGroups": [
-            { "enemyName": "fridge", "spawnCount": 3 }
+            { "enemyName": "meganode", "spawnCount": 3 }
         ],
         "cooldown": 1,
         "weight": 0.8,
@@ -83,10 +83,10 @@
     {
         "formationName": "hardFormation3",
         "enemyGroups": [
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "fridge", "spawnCount": 2 },
-            { "enemyName": "walker", "spawnCount": 1 },
-            { "enemyName": "fridge", "spawnCount": 1 }
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "meganode", "spawnCount": 2 },
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "meganode", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 0.9,

@@ -180,7 +180,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/big_gradient.png
 
-#begin sprites/enemies/fridge/fridge_hurtframe.png
+#begin sprites/Enemies/Archive/Fridge/fridge_hurtframe.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -190,9 +190,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/enemies/fridge/fridge_hurtframe.png
+/build:sprites/Enemies/Archive/Fridge/fridge_hurtframe.png
 
-#begin sprites/enemies/fridge/fridge_walk.png
+#begin sprites/Enemies/Archive/Fridge/fridge_walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -202,9 +202,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/enemies/fridge/fridge_walk.png
+/build:sprites/Enemies/Archive/Fridge/fridge_walk.png
 
-#begin sprites/enemies/goon/goon_hurtframe.png
+#begin sprites/Enemies/Archive/Goon/goon_hurtframe.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -214,9 +214,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/enemies/goon/goon_hurtframe.png
+/build:sprites/Enemies/Archive/Goon/goon_hurtframe.png
 
-#begin sprites/enemies/goon/goon_walk.png
+#begin sprites/Enemies/Archive/Goon/goon_walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -226,7 +226,43 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/enemies/goon/goon_walk.png
+/build:sprites/Enemies/Archive/Goon/goon_walk.png
+
+#begin sprites/Enemies/Bouncer/bouncer_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Enemies/Bouncer/bouncer_body.png
+
+#begin sprites/Enemies/Meganode/meganode_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Enemies/Meganode/meganode_body.png
+
+#begin sprites/Enemies/Node/node_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Enemies/Node/node_body.png
 
 #begin sprites/enemy.png
 /importer:TextureImporter
@@ -239,6 +275,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/enemy.png
+
+#begin sprites/enemyhit_mockup.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/enemyhit_mockup.gif
 
 #begin sprites/Foreground Objects/Generic/smog_1.png
 /importer:TextureImporter
@@ -347,6 +395,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/gunTurretHead.png
+
+#begin sprites/map_mockup.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/map_mockup.gif
 
 #begin sprites/Midground Objects/Zone 1/deadtree_1.png
 /importer:TextureImporter
@@ -468,6 +528,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Tiles/blacktiles.png
 
+#begin sprites/Tiles/metaltiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Tiles/metaltiles.png
+
 #begin sprites/tiles/purptiles.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -479,6 +551,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/tiles/purptiles.png
+
+#begin sprites/Tiles/scaffoldtiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Tiles/scaffoldtiles.png
 
 #begin sprites/tileset.png
 /importer:TextureImporter
@@ -551,6 +635,90 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_base/drone_base_idle.png
+
+#begin sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
+
+#begin sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
+
+#begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
+
+#begin sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
+
+#begin sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
+
+#begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
+
+#begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
 
 #begin sprites/Towers/Mortar/mortar_base/mortar_base_fire.png
 /importer:TextureImporter
