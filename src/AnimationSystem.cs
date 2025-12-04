@@ -195,7 +195,7 @@ public class AnimationSystem
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotationRadians = 0f,
-        Vector2 drawOrigin = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
+        Vector2 drawOrigin = default, Vector2 drawOffset = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
         Texture2D texture = currentAnimationData.Texture;
@@ -219,7 +219,7 @@ public class AnimationSystem
         var offset = scaleDiff * size;
 
         spriteBatch.Draw(texture,
-                position + offset,
+                position + offset + drawOffset,
                 sourceRectangle: sourceRect,
                 Color.White,
                 rotation: rotationRadians,

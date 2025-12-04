@@ -128,6 +128,7 @@ public class MovementSystem
             if (shouldClimbCorner) leapMagnitude += 1f;
 
             entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * leapMagnitude);
+            entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
         }
         // TODO: Implement flying enemy logic and shi
     }
