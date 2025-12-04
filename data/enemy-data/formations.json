@@ -91,5 +91,38 @@
         "cooldown": 1,
         "weight": 0.9,
         "spawnCooldown": 5
+    },
+    {
+        "formationName": "bossFormation1",
+        "enemyGroups": [
+            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "bouncer", "spawnCount": 1 },
+            { "enemyName": "meganode", "spawnCount": 1 }
+        ],
+        "cooldown": 1,
+        "weight": 1,
+        "spawnCooldown": 5
+    },
+    {
+        "formationName": "bossFormation2",
+        "enemyGroups": [
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "bouncer", "spawnCount": 2 },
+            { "enemyName": "meganode", "spawnCount": 1 }
+        ],
+        "cooldown": 1,
+        "weight": 1,
+        "spawnCooldown": 5
+    },
+    {
+        "formationName": "bossFormation3",
+        "enemyGroups": [
+            { "enemyName": "node", "spawnCount": 3 },
+            { "enemyName": "bouncer", "spawnCount": 2 },
+            { "enemyName": "meganode", "spawnCount": 1 }
+        ],
+        "cooldown": 1,
+        "weight": 1,
+        "spawnCooldown": 5
     }
 ]

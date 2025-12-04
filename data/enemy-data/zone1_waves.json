@@ -200,7 +200,7 @@
         [
             "hardFormation2",
             "mediumFormation3",
-            "hardFormation1",
+            "bossFormation1",
             "easyFormation1"
         ],
         "maxFormations": 9
@@ -233,7 +233,7 @@
         "formations":
         [
             "hardFormation1",
-            "hardFormation3",
+            "bossFormation2",
             "mediumFormation3",
             "easyFormation1"
         ],
@@ -245,7 +245,7 @@
             "hardFormation2",
             "hardFormation1",
             "mediumFormation3",
-            "hardFormation3"
+            "bossFormation3"
         ],
         "maxFormations": 10
     },
@@ -253,9 +253,9 @@
         "formations":
         [
             "hardFormation3",
-            "hardFormation2",
+            "bossFormation2",
             "hardFormation1",
-            "mediumFormation2"
+            "bossFormation2"
         ],
         "maxFormations": 10
     }

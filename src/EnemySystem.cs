@@ -114,6 +114,8 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 300, scrapValue: 5);
+        enemy.DrawOffset = enemy.Size / 2;
+        enemy.DrawOrigin = enemy.Size / 2;
         EnemyBins.Add(enemy);
 
         return enemy;
