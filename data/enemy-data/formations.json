@@ -34,7 +34,7 @@
         "formationName": "mediumFormation1",
         "enemyGroups": [
             { "enemyName": "node", "spawnCount": 2 },
-            { "enemyName": "meganode", "spawnCount": 1 },
+            { "enemyName": "bouncer", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 2 }
         ],
         "cooldown": 3.5,
@@ -44,7 +44,7 @@
     {
         "formationName": "mediumFormation2",
         "enemyGroups": [
-            { "enemyName": "meganode", "spawnCount": 1 },
+            { "enemyName": "bouncer", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 3 }
         ],
         "cooldown": 2,
@@ -54,7 +54,7 @@
     {
         "formationName": "mediumFormation3",
         "enemyGroups": [
-            { "enemyName": "meganode", "spawnCount": 2 }
+            { "enemyName": "bouncer", "spawnCount": 2 }
         ],
         "cooldown": 1,
         "weight": 1.2,
@@ -63,9 +63,9 @@
     {
         "formationName": "hardFormation1",
         "enemyGroups": [
-            { "enemyName": "meganode", "spawnCount": 2 },
+            { "enemyName": "bouncer", "spawnCount": 2 },
             { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "meganode", "spawnCount": 1 }
+            { "enemyName": "bouncer", "spawnCount": 1 }
         ],
         "cooldown": 3,
         "weight": 1,
@@ -74,7 +74,7 @@
     {
         "formationName": "hardFormation2",
         "enemyGroups": [
-            { "enemyName": "meganode", "spawnCount": 3 }
+            { "enemyName": "bouncer", "spawnCount": 3 }
         ],
         "cooldown": 1,
         "weight": 0.8,
@@ -84,9 +84,9 @@
         "formationName": "hardFormation3",
         "enemyGroups": [
             { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "meganode", "spawnCount": 2 },
+            { "enemyName": "bouncer", "spawnCount": 2 },
             { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "meganode", "spawnCount": 1 }
+            { "enemyName": "bouncer", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 0.9,

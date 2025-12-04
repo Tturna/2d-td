@@ -44,9 +44,9 @@ public static class DebugUtility
             EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
-        if (InputSystem.IsKeyDown(Keys.R))
+        if (InputSystem.IsKeyTapped(Keys.R))
         {
-            EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
+            EnemySystem.SpawnBouncerEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
         if (InputSystem.IsKeyTapped(Keys.Q))

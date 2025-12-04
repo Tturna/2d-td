@@ -63,10 +63,10 @@ public static class EnemySystem
     {
         var movementData = new MovementSystem.MovementData
         {
-            Pattern = MovementSystem.MovementPattern.Charge,
+            Pattern = MovementSystem.MovementPattern.JumpForward,
             CanWalk = true,
-            WalkSpeed = 0.35f,
-            JumpForce = 7f
+            WalkSpeed = 0.4f,
+            JumpForce = 8f
         };
 
         var texture = AssetManager.GetTexture("bouncer");
@@ -82,6 +82,10 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 100, scrapValue: 1);
+        enemy.DrawOffset = enemy.Size / 2;
+        enemy.DrawOrigin = enemy.Size / 2;
+        enemy.PhysicsSystem.LocalGravity = 0.3f;
+        enemy.PhysicsSystem.DragFactor = 0.02f;
         EnemyBins.Add(enemy);
 
         return enemy;

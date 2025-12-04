@@ -7,9 +7,8 @@ public class MovementSystem
 {
     public enum MovementPattern
     {
-        Charge
-        // Add more if an enemy should do something other than charge to the right side of
-        // the screen
+        Charge,
+        JumpForward
     }
 
     public struct MovementData
@@ -40,6 +39,9 @@ public class MovementSystem
         {
             case MovementPattern.Charge:
                 HandleCharge(entity, deltaTime);
+                break;
+            case MovementPattern.JumpForward:
+                HandleJumpForward(entity, deltaTime);
                 break;
         }
     }
@@ -131,5 +133,18 @@ public class MovementSystem
             entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
         }
         // TODO: Implement flying enemy logic and shi
+    }
+
+    private void HandleJumpForward(Entity entity, float deltaTime)
+    {
+        if (Collision.IsEntityInTerrain(entity, game.Terrain, out var _))
+        {
+            var enemy = (Enemy)entity;
+            enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
+            enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed);
+        }
+
+        entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);
+        entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
     }
 }
