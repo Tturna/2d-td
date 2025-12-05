@@ -10,20 +10,32 @@ namespace _2d_td;
 class Hovership : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 0);
     private Entity turretHovership;
-    private Vector2 turretSpawnAxisCenter;
-    private static int baseHovershipHangarRange = 25;
-    private int realHovershipHangarRange;
-    private int hoverHeight = 10;
-    private int damage = 15;
+    private Vector2 bombSpawnOffset = new Vector2(0, 8);
+    private int baseTargetHoverTileHeight = 10;
+    private int realTargetHoverTileHeight;
+    private static int baseTileRange = 20;
+    private int realTileRange;
+    private int baseDamage = 15;
     private int baseProjectileAmount = 3;
+    private int realProjectileAmount;
+    private int spawnedBombsDuringBarrage;
     private float hovershipSpeed = 50f;
-    private float bulletSpeed = 400f;
     private float actionsPerSecond = 1f;
     private float actionTimer;
-    private float sightAngle = 30f;
+    private float bombSpawnInterval = 0.3f;
+    private float bombSpawnTimer;
     private Texture2D bombSprite;
+    private bool isOverEnemy;
+
+    private float orbitalLaserBuildupTimer;
+    private float orbitalLaserFireTime = 4f;
+    private float orbitalLaserFireTimer;
+    private float orbitalLaserDamageInterval = 1f / 12f;
+    private float orbitalLaserDamageTimer;
+    private AnimationSystem.AnimationData currentOrbitalLaserAnimationData;
+    private Entity? orbitalLaserBeam;
+    private Entity? orbitalLaserImpact;
 
     private Random random = new();
 
@@ -71,155 +83,230 @@ class Hovership : Entity, ITower
 
         UpdatePosition(Vector2.UnitY * Grid.TileLength);
 
-        realHovershipHangarRange = baseHovershipHangarRange;
+        realTileRange = baseTileRange;
+        realProjectileAmount = baseProjectileAmount;
+
+        realTargetHoverTileHeight = baseTargetHoverTileHeight;
     }
 
     // TODO: Handle upgraded stats sensibly by using variables and updating them in
     // UpgradeTower().
     public override void Update(GameTime gameTime)
     {
-        turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // TODO: add the effects for a lot of these upgrades
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, hoverHeight);
+            HandleBasicShots(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BombierBay.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, hoverHeight);
+            HandleBasicShots(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.OrbitalLaser.ToString())
         {
-
+            HandleOrbitalLaser(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.CarpetofFire.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, hoverHeight);
+            HandleBasicShots(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientEngines.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, hoverHeight);
+            HandleBasicShots(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.EMPShip.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
-            HandleHovershipPosition(deltaTime, hoverHeight);
+            HandleBasicShots(deltaTime);
+            HandleHovershipPosition(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.UFO.ToString())
         {
-
+            HandleUFO();
+            HandleHovershipPosition(deltaTime);
         } 
 
         base.Update(gameTime);
     }
 
-    private void HandleHovershipPosition(float deltaTime, int hoverHeight)
+    public override void Draw(GameTime gameTime)
     {
-        var closestEnemy = towerCore.GetClosestValidEnemy(realHovershipHangarRange);
+        base.Draw(gameTime);
+    }
 
-        if (closestEnemy is null)
+    private void HandleHovershipPosition(float deltaTime)
+    {
+        var rightmostEnemy = GetRightmostEnemy();
+
+        if (rightmostEnemy is null)
         {
+            isOverEnemy = false;
             return;
         }
 
-        var target = closestEnemy.Position - Vector2.UnitY * (hoverHeight-2) * Grid.TileLength;
-        var difference = target - turretHovership.Position;
-        difference.Normalize();
+        var centeredTarget = rightmostEnemy.Position + rightmostEnemy.Size / 2 - turretHovership.Size / 2;
+        var finalTarget = centeredTarget - Vector2.UnitY * (realTargetHoverTileHeight * Grid.TileLength);
+        var difference = finalTarget - turretHovership.Position;
+        var distance = difference.Length();
 
-        turretHovership.UpdatePosition(difference * hovershipSpeed * deltaTime);
-        turretSpawnAxisCenter = turretHovership.Position + spawnOffset;
+        isOverEnemy = distance < Grid.TileLength;
+
+        if (distance > 1f)
+        {
+            difference.Normalize();
+            turretHovership.UpdatePosition(difference * hovershipSpeed * deltaTime);
+        }
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, int projectileAmount)
+    private void HandleBasicShots(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
         actionTimer += deltaTime;
 
-        var closestEnemy = GetValidEnemy(range, sightAngle);
-
-        if (closestEnemy is null) return;
-
         if (actionTimer >= actionInterval)
         {
-            for (int i = 0; i < projectileAmount; i++)
-            {
-                var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
-                var enemyDirection = enemyCenter - turretSpawnAxisCenter;
-                var randomXDirection = random.Next(-12, 12);
-                var randomY = random.Next(-12, 12);
-                var targetDirection = enemyDirection + new Vector2(randomXDirection, randomY);
-                targetDirection.Normalize();
+            bombSpawnTimer += deltaTime;
+        }
 
-                var randomXPosition = random.Next(-8, 8);
-                var newPosition = turretSpawnAxisCenter + Vector2.UnitX * randomXPosition;
-                Shoot(damage, targetDirection, newPosition);
+        if (isOverEnemy && actionTimer >= actionInterval && bombSpawnTimer >= bombSpawnInterval)
+        {
+            spawnedBombsDuringBarrage++;
+            var randomXPosition = random.Next(-8, 8);
+            var spawnPoint = turretHovership.Position + Size / 2 + bombSpawnOffset + Vector2.UnitX * randomXPosition;
+            Shoot(Vector2.UnitY, spawnPoint);
+            bombSpawnTimer = 0f;
+
+            if (spawnedBombsDuringBarrage >= realProjectileAmount)
+            {
                 actionTimer = 0f;
+                spawnedBombsDuringBarrage = 0;
             }
         }
     }
 
-    private void Shoot(int damage, Vector2 direction, Vector2 position)
+    private void HandleOrbitalLaser(float deltaTime)
     {
-        var bullet = new Projectile(Game, position);
-        bullet.Direction = direction;
-        bullet.BulletPixelsPerSecond = bulletSpeed;
-        bullet.Damage = damage;
-        bullet.Lifetime = 1f;
-        bullet.BulletLength = 20f;
-        bullet.BulletWidth = 8f;
-        bullet.ExplosionTileRadius = 4;
-        bullet.Sprite = bombSprite;
+        var actionInterval = 1f / actionsPerSecond;
+        actionTimer += deltaTime;
+
+        if (actionTimer < actionInterval) return;
+
+        if (orbitalLaserBuildupTimer <= 0)
+        {
+            currentOrbitalLaserAnimationData = turretHovership.AnimationSystem!.ToggleAnimationState("buildup");
+        }
+
+        if (orbitalLaserBuildupTimer < currentOrbitalLaserAnimationData.DelaySeconds * currentOrbitalLaserAnimationData.FrameCount)
+        {
+            orbitalLaserBuildupTimer += deltaTime;
+            return;
+        }
+
+        if (orbitalLaserFireTimer <= 0)
+        {
+            turretHovership.AnimationSystem!.ToggleAnimationState("firing");
+        }
+
+        if (orbitalLaserFireTimer < orbitalLaserFireTime)
+        {
+            orbitalLaserFireTimer += deltaTime;
+
+            var shipCenterBottom = turretHovership.Position + new Vector2(turretHovership.Size.X / 2, turretHovership.Size.Y);
+            var beamPos = shipCenterBottom - Vector2.UnitX * (orbitalLaserBeam!.Size.X / 2);
+            var maxBeamLength = realTargetHoverTileHeight * 2 * Grid.TileLength;
+
+            orbitalLaserBeam!.SetPosition(beamPos);
+            orbitalLaserBeam.Scale = new Vector2(1, maxBeamLength);
+
+            var beamEndPoint = shipCenterBottom + Vector2.UnitY * maxBeamLength;
+
+            if (Collision.IsLineInTerrain(shipCenterBottom, beamEndPoint, out var entryPoint, out var _))
+            {
+                orbitalLaserImpact!.SetPosition(entryPoint - orbitalLaserImpact.Size + Vector2.UnitX * orbitalLaserImpact.Size.X / 2);
+                orbitalLaserImpact.Scale = Vector2.One;
+                beamEndPoint = entryPoint;
+            }
+            else
+            {
+                orbitalLaserImpact!.Scale = Vector2.Zero;
+            }
+
+            if (orbitalLaserDamageTimer < orbitalLaserDamageInterval)
+            {
+                orbitalLaserDamageTimer += deltaTime;
+                return;
+            }
+
+            var beamLength = Vector2.Distance(shipCenterBottom, beamEndPoint);
+            var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(shipCenterBottom,
+                BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
+
+            foreach (var enemy in enemyCandidates)
+            {
+                if (Collision.AABB(enemy.Position.X, enemy.Position.Y, enemy.Size.X, enemy.Size.Y,
+                    beamPos.X, beamPos.Y, orbitalLaserBeam.Size.X, beamLength))
+                {
+                    // 300 damage over 4s
+                    var damage = (int)(300f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
+                    enemy.HealthSystem.TakeDamage(damage);
+                }
+            }
+
+            orbitalLaserDamageTimer = 0f;
+            return;
+        }
+
+        turretHovership.AnimationSystem!.ToggleAnimationState(null);
+        orbitalLaserBeam!.Scale = Vector2.Zero;
+        orbitalLaserImpact!.Scale = Vector2.Zero;
+        actionTimer = 0f;
+        orbitalLaserBuildupTimer = 0f;
+        orbitalLaserFireTimer = 0f;
+        orbitalLaserDamageTimer = 0f;
     }
 
-    private Enemy? GetValidEnemy(int tileRange, float attackAngleInDegrees)
+    private void HandleUFO()
     {
-        Enemy? closestEnemy = null;
-        float closestDistance = float.PositiveInfinity;
-        var attackAngleInRadians = (float)(attackAngleInDegrees * Math.PI / 180.0);
-        var halfAttackAngle = attackAngleInRadians / 2.0f;
+        throw new NotImplementedException();
+    }
 
-        // Define the direction the tower is facing
-        var towerDirectionAngle = (float)Math.PI/2f; // in radians, assuming it faces down.
-        var range = tileRange * Grid.TileLength;
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(
-            turretSpawnAxisCenter, range);
+    private void Shoot(Vector2 direction, Vector2 position)
+    {
+        var bomb = new MortarShell(Game);
+        bomb.Sprite = bombSprite;
+        bomb.SetPosition(position);
+        bomb.physics.DragFactor = 0f;
+        bomb.physics.LocalGravity = 0.125f;
+        bomb.Destroyed += _ => EffectUtility.Explode(bomb.Position, radius: 4 * Grid.TileLength,
+            magnitude: 10f, damage: baseDamage);
+    }
+
+    private Enemy? GetRightmostEnemy()
+    {
+        Enemy? rightmostEnemy = null;
+
+        var range = realTileRange * Grid.TileLength;
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position + Size / 2, range);
 
         foreach (Enemy enemy in enemyCandidates)
         {
-            var distanceToEnemy = Vector2.Distance(turretSpawnAxisCenter, enemy.Position);
+            var distanceToEnemy = Vector2.Distance(Position + Size / 2, enemy.Position + enemy.Size / 2);
+
             if (distanceToEnemy > range)
                 continue;
-            var enemyCenter = enemy.Position + enemy.Size / 2;
-            var deltaX = enemyCenter.X - turretSpawnAxisCenter.X;
-            var deltaY = enemyCenter.Y - turretSpawnAxisCenter.Y;
-            var enemyAngle = (float)Math.Atan2(deltaY, deltaX);
 
-            var angleDifference = Math.Abs(enemyAngle - towerDirectionAngle);
-            // Normalize the angle difference to be within -PI and PI.
-            if (angleDifference > Math.PI)
+            if (rightmostEnemy is null || enemy.Position.X > rightmostEnemy.Position.X)
             {
-                angleDifference = (float)(2 * Math.PI - angleDifference);
-            }
-
-            if (angleDifference > halfAttackAngle)
-            {
-                continue;
-            }
-            if (distanceToEnemy < closestDistance)
-            {
-                var towerCenter = turretSpawnAxisCenter + Size / 2;
-                if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
-                closestDistance = distanceToEnemy;
-                closestEnemy = enemy;
+                rightmostEnemy = enemy;
             }
         }
-        return closestEnemy;
+
+        return rightmostEnemy;
     }
 
     public override void Destroy()
@@ -310,6 +397,8 @@ class Hovership : Entity, ITower
             newPlatformFrameCount = 2;
             // offset platform because its sprite changes size
             UpdatePosition(-Vector2.UnitY * 2);
+
+            realProjectileAmount += 2;
         }
         else if (newUpgrade.Name == Upgrade.EfficientEngines.ToString())
         {
@@ -318,6 +407,8 @@ class Hovership : Entity, ITower
             newIdleFrameCount = 3;
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY * 2);
+
+            realTileRange += 20;
         }
         else if (newUpgrade.Name == Upgrade.OrbitalLaser.ToString())
         {
@@ -326,6 +417,42 @@ class Hovership : Entity, ITower
             newIdleFrameCount = 8;
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY * 8);
+            actionsPerSecond = 1f / 8f;
+
+            var attackBuildupTexture = AssetManager.GetTexture("hovership_orbitallaser_attack");
+            var attackBuildupAnimation = new AnimationSystem.AnimationData(
+                texture: attackBuildupTexture,
+                frameCount: 5,
+                frameSize: new Vector2(attackBuildupTexture.Width / 5, attackBuildupTexture.Height),
+                delaySeconds: 0.1f);
+
+            var firingTexture = AssetManager.GetTexture("hovership_orbitallaser_firing");
+            var firingAnimation = new AnimationSystem.AnimationData(
+                texture: firingTexture,
+                frameCount: 2,
+                frameSize: new Vector2(firingTexture.Width / 2, firingTexture.Height),
+                delaySeconds: 0.1f);
+
+            turretHovership.AnimationSystem!.AddAnimationState("buildup", attackBuildupAnimation);
+            turretHovership.AnimationSystem!.AddAnimationState("firing", firingAnimation);
+
+            var beamTexture = AssetManager.GetTexture("hovership_orbitallaser_beam");
+            var beamData = new AnimationSystem.AnimationData(
+                texture: beamTexture,
+                frameCount: 2,
+                frameSize: new Vector2(beamTexture.Width / 2, beamTexture.Height),
+                delaySeconds: 0.1f);
+
+            var impactTexture = AssetManager.GetTexture("hovership_orbitallaser_impact");
+            var impactData = new AnimationSystem.AnimationData(
+                texture: impactTexture,
+                frameCount: 2,
+                frameSize: new Vector2(impactTexture.Width / 2, impactTexture.Height),
+                delaySeconds: 0.1f);
+
+            orbitalLaserBeam = new Entity(Game, Vector2.Zero, beamData);
+            orbitalLaserImpact = new Entity(Game, Vector2.Zero, impactData);
+            orbitalLaserImpact.DrawLayerDepth = 0.7f;
         }
         else if (newUpgrade.Name == Upgrade.CarpetofFire.ToString())
         {
@@ -335,6 +462,8 @@ class Hovership : Entity, ITower
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY);
             bombSprite = AssetManager.GetTexture("hovership_carpetoffire_bomb");
+
+            realProjectileAmount += 3;
         }
         else if (newUpgrade.Name == Upgrade.EMPShip.ToString())
         {
@@ -344,6 +473,9 @@ class Hovership : Entity, ITower
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY * 4);
             bombSprite = AssetManager.GetTexture("hovership_emp_bomb");
+
+            realProjectileAmount -= 2;
+            realTargetHoverTileHeight += 10;
         }
         else
         {
@@ -373,12 +505,10 @@ class Hovership : Entity, ITower
         turretHovership!.AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem!.ChangeAnimationState(null, newPlatformAnimation);
 
+        var newSize = new Vector2(newIdleAnimation.FrameSize.X, newIdleAnimation.FrameSize.Y);
+        turretHovership.Size = newSize;
     }
 
-    public static float GetBaseRange() => baseHovershipHangarRange;
-
-    public float GetRange()
-    {
-        return realHovershipHangarRange;
-    }
+    public static float GetBaseRange() => baseTileRange;
+    public float GetRange() => realTileRange;
 }

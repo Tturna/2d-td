@@ -6,7 +6,7 @@ namespace _2d_td;
 
 public static class Collision
 {
-    private static bool AABB(float xPos1, float yPos1, float xSize1, float ySize1,
+    public static bool AABB(float xPos1, float yPos1, float xSize1, float ySize1,
                              float xPos2, float yPos2, float xSize2, float ySize2)
     {
         if (xPos1 < xPos2 + xSize2 &&
