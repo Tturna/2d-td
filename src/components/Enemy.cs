@@ -106,7 +106,7 @@ public class Enemy : Entity, IKnockable
         if (oldBinGridPosition != newBinGridPosition)
         {
             var canRemove = EnemySystem.EnemyBins.Remove(this);
-            SetPosition(newPosition);
+            SetPosition(newPosition, force: true);
 
             if (!canRemove)
             {
@@ -117,7 +117,32 @@ public class Enemy : Entity, IKnockable
             return;
         }
 
-        SetPosition(newPosition);
+        SetPosition(newPosition, force: true);
+    }
+
+    public override void SetPosition(Vector2 newPosition, bool force = false)
+    {
+        if (!force)
+        {
+            var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
+            var newBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(newPosition);
+
+            if (oldBinGridPosition != newBinGridPosition)
+            {
+                var canRemove = EnemySystem.EnemyBins.Remove(this);
+                SetPosition(newPosition, force: true);
+
+                if (!canRemove)
+                {
+                    throw new InvalidOperationException($"Couldn't remove enemy ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                }
+
+                EnemySystem.EnemyBins.Add(this);
+                return;
+            }
+        }
+
+        base.SetPosition(newPosition, force);
     }
 
     public void ApplyKnockback(Vector2 knockback)

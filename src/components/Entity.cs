@@ -148,7 +148,7 @@ public class Entity : DrawableGameComponent
         Position += positionChange;
     }
 
-    public virtual void SetPosition(Vector2 newPosition)
+    public virtual void SetPosition(Vector2 newPosition, bool force = false)
     {
         Position = newPosition;
     }

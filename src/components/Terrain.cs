@@ -79,6 +79,11 @@ public class Terrain : DrawableGameComponent
         }
     }
 
+    public Vector2 GetFirstTilePosition()
+    {
+        return tiles.Keys.First() * Grid.TileLength + levelOffset;
+    }
+
     public Vector2 GetLastTilePosition()
     {
         return tiles.Keys.Last() * Grid.TileLength + levelOffset;
