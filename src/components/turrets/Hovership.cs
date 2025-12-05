@@ -20,7 +20,8 @@ class Hovership : Entity, ITower
     private int baseProjectileAmount = 3;
     private int realProjectileAmount;
     private int spawnedBombsDuringBarrage;
-    private float hovershipSpeed = 50f;
+    private float baseHovershipSpeed = 50f;
+    private float realHovershipSpeed;
     private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bombSpawnInterval = 0.3f;
@@ -95,8 +96,8 @@ class Hovership : Entity, ITower
 
         realTileRange = baseTileRange;
         realProjectileAmount = baseProjectileAmount;
-
         realTargetHoverTileHeight = baseTargetHoverTileHeight;
+        realHovershipSpeed = baseHovershipSpeed;
 
         WaveSystem.WaveEnded += () => shouldReturnToBase = true;
     }
@@ -170,6 +171,7 @@ class Hovership : Entity, ITower
             if (rightmostEnemy is null)
             {
                 isOverEnemy = false;
+                turretHovership.RotationRadians = MathHelper.Lerp(turretHovership.RotationRadians, 0f, deltaTime * 10f);
                 return;
             }
 
@@ -180,18 +182,28 @@ class Hovership : Entity, ITower
 
         if (!shouldReturnToBase)
         {
-            finalTarget -= Vector2.UnitY * (realTargetHoverTileHeight * Grid.TileLength);
+            var rawHeight = ufoCarriedEnemies.Count > 0 ? realTargetHoverTileHeight * 5 : realTargetHoverTileHeight;
+            finalTarget -= Vector2.UnitY * (rawHeight * Grid.TileLength);
         }
 
         var difference = finalTarget - turretHovership.Position;
         var distance = difference.Length();
+        var direction = difference;
+        direction.Normalize();
 
         isOverEnemy = distance < Grid.TileLength;
 
         if (distance > 1f)
         {
             difference.Normalize();
-            turretHovership.UpdatePosition(difference * hovershipSpeed * deltaTime);
+            turretHovership.UpdatePosition(difference * realHovershipSpeed * deltaTime);
+
+            // don't tilt when ufo mode because tractor beam looks trash
+            if (ufoTractorBeam is null)
+            {
+                var targetRotation = direction.X * MathHelper.PiOver4 * MathHelper.Min(distance * 0.1f, 0.5f);
+                turretHovership.RotationRadians = MathHelper.Lerp(turretHovership.RotationRadians, targetRotation, deltaTime * 10f);
+            }
         }
         else if (shouldReturnToBase)
         {
@@ -294,8 +306,8 @@ class Hovership : Entity, ITower
                 if (Collision.AABB(enemy.Position.X, enemy.Position.Y, enemy.Size.X, enemy.Size.Y,
                     beamPos.X, beamPos.Y, orbitalLaserBeam.Size.X, beamLength))
                 {
-                    // 300 damage over 4s
-                    var damage = (int)(300f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
+                    // 900 damage over 4s
+                    var damage = (int)(900f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
                     enemy.HealthSystem.TakeDamage(damage);
                 }
             }
@@ -357,7 +369,7 @@ class Hovership : Entity, ITower
             foreach (var (enemy, relativePosition) in ufoCarriedEnemies)
             {
                 enemy.PhysicsSystem.StopMovement();
-                enemy.SetPosition(Vector2.Lerp(enemy.Position, ufoTractorBeam.Position + relativePosition, deltaTime * 3.5f));
+                enemy.SetPosition(Vector2.Lerp(enemy.Position, ufoTractorBeam.Position + relativePosition, deltaTime * 5f));
 
                 if (!Collision.AreEntitiesColliding(enemy, ufoTractorBeam))
                 {
@@ -501,6 +513,7 @@ class Hovership : Entity, ITower
             UpdatePosition(-Vector2.UnitY * 2);
 
             realTileRange += 20;
+            realHovershipSpeed = baseHovershipSpeed * 2;
         }
         else if (newUpgrade.Name == Upgrade.OrbitalLaser.ToString())
         {
@@ -586,6 +599,7 @@ class Hovership : Entity, ITower
 
             ufoTractorBeam = new Entity(Game, Vector2.Zero, beamData);
             realTargetHoverTileHeight = (int)MathF.Ceiling(ufoTractorBeam.Size.Y / Grid.TileLength);
+            turretHovership.RotationRadians = 0f;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
