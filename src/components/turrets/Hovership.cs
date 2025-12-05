@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -33,10 +34,10 @@ class Hovership : Entity, ITower
         CarpetofFire,
         EfficientEngines,
         EMPShip,
-        FloatingFactory
+        UFO
     }
 
-    public Hovership(Game game, Vector2 position) : base(game, position, AssetManager.GetTexture("gunTurretBase"))
+    public Hovership(Game game, Vector2 position) : base(game, position, GetUnupgradedPlatformAnimation())
     {
         towerCore = new TowerCore(this);
 
@@ -47,8 +48,8 @@ class Hovership : Entity, ITower
         var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), tempIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
         var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), tempIcon, price: 110);
-        var FloatingFactory = new TowerUpgradeNode(Upgrade.FloatingFactory.ToString(), tempIcon, price: 150);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), tempIcon, price: 15, leftChild: EMPShip, rightChild: FloatingFactory);
+        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), tempIcon, price: 200);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), tempIcon, price: 15, leftChild: EMPShip, rightChild: UFO);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
@@ -58,12 +59,14 @@ class Hovership : Entity, ITower
         OrbitalLaser.Description = "-0.85 shots/s\nInstead of bombs,\nfires a massive orbital laser\nthat deals 300 damage\nover 4s.\nUnlimited pierce";
         CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
         EMPShip.Description = "-2 projectiles.\n+10 tile hover height.\n+5 tile area of effect\nNow Shocks enemies for 5s.";
-        FloatingFactory.Description = "Drops 2 ground troops which run\nat enemies, stalling them and\nattacking for 20 DPS.\nTroops drop worthless scrap on death.";
+        UFO.Description = "Sucks up to 5 bots up toward it and\ndrops them back at the entrance.\nWhile held, they take 10 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
 
         turretHovership = new Entity(Game, position, GetUnupgradedBaseAnimationData());
         turretHovership.DrawLayerDepth = 0.8f;
+
+        UpdatePosition(Vector2.UnitY * Grid.TileLength);
 
         realHovershipHangarRange = baseHovershipHangarRange;
     }
@@ -105,7 +108,7 @@ class Hovership : Entity, ITower
             HandleBasicShots(deltaTime, actionsPerSecond, damage, hoverHeight, baseProjectileAmount);
             HandleHovershipPosition(deltaTime, hoverHeight);
         }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.FloatingFactory.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.UFO.ToString())
         {
 
         } 
@@ -117,7 +120,10 @@ class Hovership : Entity, ITower
     {
         var closestEnemy = towerCore.GetClosestValidEnemy(realHovershipHangarRange);
 
-        if (closestEnemy is null) return;
+        if (closestEnemy is null)
+        {
+            return;
+        }
 
         var target = closestEnemy.Position - Vector2.UnitY * (hoverHeight-2) * Grid.TileLength;
         var difference = target - turretHovership.Position;
@@ -257,9 +263,20 @@ class Hovership : Entity, ITower
         return list;
     }
 
+    private static AnimationSystem.AnimationData GetUnupgradedPlatformAnimation()
+    {
+        var sprite = AssetManager.GetTexture("hovership_base_platform");
+
+        return new AnimationSystem.AnimationData(
+            texture: sprite,
+            frameCount: 2,
+            frameSize: new Vector2(sprite.Width / 2, sprite.Height),
+            delaySeconds: 0.5f);
+    }
+
     public static Vector2 GetDefaultGridSize()
     {
-        return new Vector2(2, 2);
+        return new Vector2(4, 2);
     }
 
     public static BuildingSystem.TowerType GetTowerType()
@@ -279,7 +296,80 @@ class Hovership : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
-        throw new NotImplementedException();
+        Texture2D newIdleTexture;
+        Texture2D newPlatformTexture;
+        var newIdleFrameCount = 1;
+        var newPlatformFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.BombierBay.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_bombierbay_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_bombierbay_platform");
+            newIdleFrameCount = 3;
+            newPlatformFrameCount = 2;
+            // offset platform because its sprite changes size
+            UpdatePosition(-Vector2.UnitY * 2);
+        }
+        else if (newUpgrade.Name == Upgrade.EfficientEngines.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_efficientengines_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_efficientengines_platform");
+            newIdleFrameCount = 3;
+            newPlatformFrameCount = 2;
+            UpdatePosition(-Vector2.UnitY * 2);
+        }
+        else if (newUpgrade.Name == Upgrade.OrbitalLaser.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_orbitallaser_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_orbitallaser_platform");
+            newIdleFrameCount = 8;
+            newPlatformFrameCount = 2;
+            UpdatePosition(-Vector2.UnitY * 8);
+        }
+        else if (newUpgrade.Name == Upgrade.CarpetofFire.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_carpetoffire_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_carpetoffire_platform");
+            newIdleFrameCount = 4;
+            newPlatformFrameCount = 2;
+            UpdatePosition(-Vector2.UnitY);
+        }
+        else if (newUpgrade.Name == Upgrade.EMPShip.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_emp_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_emp_platform");
+            newIdleFrameCount = 4;
+            newPlatformFrameCount = 2;
+            UpdatePosition(-Vector2.UnitY * 4);
+        }
+        else
+        {
+            newIdleTexture = AssetManager.GetTexture("hovership_ufo_idle");
+            newPlatformTexture = AssetManager.GetTexture("hovership_ufo_platform");
+            newIdleFrameCount = 3;
+            newPlatformFrameCount = 2;
+            UpdatePosition(Vector2.UnitY * 5);
+        }
+
+        var newIdleAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newIdleTexture,
+            frameCount: newIdleFrameCount,
+            frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        var newPlatformAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newPlatformTexture,
+            frameCount: newPlatformFrameCount,
+            frameSize: new Vector2(newPlatformTexture.Width / newPlatformFrameCount, newPlatformTexture.Height),
+            delaySeconds: 0.5f
+        );
+
+        turretHovership!.AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem!.ChangeAnimationState(null, newPlatformAnimation);
+
     }
 
     public static float GetBaseRange() => baseHovershipHangarRange;

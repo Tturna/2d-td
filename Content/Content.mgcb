@@ -648,6 +648,30 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
 
+#begin sprites/Towers/Hovership/hovership_base/hovership_base_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_base/hovership_base_platform.png
+
+#begin sprites/Towers/Hovership/hovership_base/hovership_bomb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_base/hovership_bomb.png
+
 #begin sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -659,6 +683,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
+
+#begin sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform.png
+
+#begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb.png
 
 #begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
 /importer:TextureImporter
@@ -672,6 +720,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
 
+#begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform.png
+
 #begin sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -683,6 +743,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
+
+#begin sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform.png
+
+#begin sprites/Towers/Hovership/hovership_EMP/EMPbomb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_EMP/EMPbomb.png
 
 #begin sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
 /importer:TextureImporter
@@ -696,6 +780,42 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
 
+#begin sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform.png
+
+#begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack.png
+
+#begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing.png
+
 #begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -708,6 +828,42 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
 
+#begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform.png
+
+#begin sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact.png
+
+#begin sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam.png
+
 #begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -719,6 +875,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
+
+#begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform.png
+
+#begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam.png
 
 #begin sprites/Towers/Mortar/mortar_base/mortar_base_fire.png
 /importer:TextureImporter
@@ -1464,6 +1644,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Turret/turret_base/turret_gun_base.png
 
+#begin sprites/Towers/Turret/turret_botshot/botshot_pellet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_botshot/botshot_pellet.png
+
 #begin sprites/Towers/Turret/turret_botshot/turret_botshot_body.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1655,6 +1847,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon.png
+
+#begin sprites/Towers/Turret/turret_rocketshot/rocket.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_rocketshot/rocket.png
 
 #begin sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body.png
 /importer:TextureImporter

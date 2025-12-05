@@ -97,12 +97,27 @@ public static class AssetManager
         LoadTexture("mortar_nuke_icon", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon");
 
         LoadTexture("hovership_base_idle", "sprites/Towers/Hovership/hovership_base/hovership_base_idle");
+        LoadTexture("hovership_base_platform", "sprites/Towers/Hovership/hovership_base/hovership_base_platform");
+        LoadTexture("hovership_base_bomb", "sprites/Towers/Hovership/hovership_base/hovership_bomb");
         LoadTexture("hovership_bombierbay_idle", "sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle");
+        LoadTexture("hovership_bombierbay_platform", "sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform");
         LoadTexture("hovership_carpetoffire_idle", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle");
+        LoadTexture("hovership_carpetoffire_platform", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform");
+        LoadTexture("hovership_carpetoffire_bomb", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb");
         LoadTexture("hovership_efficientengines_idle", "sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle");
+        LoadTexture("hovership_efficientengines_platform", "sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform");
         LoadTexture("hovership_emp_idle", "sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle");
+        LoadTexture("hovership_emp_platform", "sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform");
+        LoadTexture("hovership_emp_bomb", "sprites/Towers/Hovership/hovership_EMP/EMPbomb");
         LoadTexture("hovership_orbitallaser_idle", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle");
+        LoadTexture("hovership_orbitallaser_attack", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack");
+        LoadTexture("hovership_orbitallaser_firing", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing");
+        LoadTexture("hovership_orbitallaser_platform", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform");
+        LoadTexture("hovership_orbitallaser_beam", "sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam");
+        LoadTexture("hovership_orbitallaser_impact", "sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact");
         LoadTexture("hovership_ufo_idle", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle");
+        LoadTexture("hovership_ufo_platform", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform");
+        LoadTexture("hovership_ufo_tractorbeam", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam");
 
         LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
 
