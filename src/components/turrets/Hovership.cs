@@ -37,6 +37,10 @@ class Hovership : Entity, ITower
     private Entity? orbitalLaserBeam;
     private Entity? orbitalLaserImpact;
 
+    private Entity? ufoTractorBeam;
+    // stores pairs of enemy and its random relative position in the tractor beam while flying
+    private List<KeyValuePair<Enemy, Vector2>> ufoCarriedEnemies = new();
+
     private Random random = new();
 
     public enum Upgrade
@@ -132,7 +136,7 @@ class Hovership : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.UFO.ToString())
         {
-            HandleUFO();
+            HandleUFO(deltaTime);
             HandleHovershipPosition(deltaTime);
         } 
 
@@ -146,15 +150,42 @@ class Hovership : Entity, ITower
 
     private void HandleHovershipPosition(float deltaTime)
     {
-        var rightmostEnemy = GetRightmostEnemy();
+        var centeredTarget = Vector2.Zero;
 
-        if (rightmostEnemy is null)
+        if (ufoCarriedEnemies.Count > 0)
         {
-            isOverEnemy = false;
-            return;
+            var failsafe = 0;
+
+            while (!Collision.IsPointInTerrain(centeredTarget, Game.Terrain))
+            {
+                centeredTarget += Vector2.UnitY * Grid.TileLength;
+                failsafe++;
+
+                if (failsafe >= 50)
+                {
+                    centeredTarget = Vector2.Zero;
+                    break;
+                }
+            }
+
+            if (centeredTarget != Vector2.Zero)
+            {
+                centeredTarget -= Vector2.UnitY * realTargetHoverTileHeight * Grid.TileLength;
+            }
+        }
+        else
+        {
+            var rightmostEnemy = GetRightmostEnemy();
+
+            if (rightmostEnemy is null)
+            {
+                isOverEnemy = false;
+                return;
+            }
+
+            centeredTarget = rightmostEnemy.Position + rightmostEnemy.Size / 2 - turretHovership.Size / 2;
         }
 
-        var centeredTarget = rightmostEnemy.Position + rightmostEnemy.Size / 2 - turretHovership.Size / 2;
         var finalTarget = centeredTarget - Vector2.UnitY * (realTargetHoverTileHeight * Grid.TileLength);
         var difference = finalTarget - turretHovership.Position;
         var distance = difference.Length();
@@ -165,6 +196,11 @@ class Hovership : Entity, ITower
         {
             difference.Normalize();
             turretHovership.UpdatePosition(difference * hovershipSpeed * deltaTime);
+        }
+        else if (ufoCarriedEnemies.Count > 0)
+        {
+            ufoCarriedEnemies.Clear();
+            actionTimer = 0f;
         }
     }
 
@@ -275,9 +311,55 @@ class Hovership : Entity, ITower
         orbitalLaserDamageTimer = 0f;
     }
 
-    private void HandleUFO()
+    private void HandleUFO(float deltaTime)
     {
-        throw new NotImplementedException();
+        var actionInterval = 1f / actionsPerSecond;
+        actionTimer += deltaTime;
+
+        if (actionTimer < actionInterval) return;
+
+        var shipCenterBottom = turretHovership.Position + new Vector2(turretHovership.Size.X / 2, turretHovership.Size.Y);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(shipCenterBottom,
+            BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
+
+        ufoTractorBeam!.Scale = Vector2.One;
+        ufoTractorBeam.SetPosition(shipCenterBottom - Vector2.UnitX * (ufoTractorBeam.Size.X / 2));
+        var beamVisible = false;
+
+        if (ufoCarriedEnemies.Count < 5)
+        {
+            foreach (var enemy in enemyCandidates)
+            {
+                if (Collision.AreEntitiesColliding(enemy, ufoTractorBeam))
+                {
+                    beamVisible = true;
+
+                    var rx = ((float)random.NextDouble() - 0.5f) * 2f * (ufoTractorBeam.Size.X / 2);
+                    var ry = ((float)random.NextDouble() - 0.5f) * 2f * (ufoTractorBeam.Size.Y / 2);
+                    var randomRelativePosition = new Vector2(rx, ry);
+                    ufoCarriedEnemies.Add(KeyValuePair.Create(enemy, randomRelativePosition));
+
+                    if (ufoCarriedEnemies.Count >= 5) break;
+                }
+            }
+        }
+        else if (ufoCarriedEnemies.Count > 0)
+        {
+            beamVisible = true;
+        }
+
+        if (!beamVisible)
+        {
+            ufoTractorBeam.Scale = Vector2.Zero;
+        }
+        else
+        {
+            foreach (var (enemy, relativePosition) in ufoCarriedEnemies)
+            {
+                enemy.PhysicsSystem.StopMovement();
+                enemy.SetPosition(ufoTractorBeam.Position + relativePosition);
+            }
+        }
     }
 
     private void Shoot(Vector2 direction, Vector2 position)
@@ -489,6 +571,16 @@ class Hovership : Entity, ITower
             newIdleFrameCount = 3;
             newPlatformFrameCount = 2;
             UpdatePosition(Vector2.UnitY * 5);
+
+            var beamTexture = AssetManager.GetTexture("hovership_ufo_tractorbeam");
+            var beamData = new AnimationSystem.AnimationData(
+                texture: beamTexture,
+                frameCount: 4,
+                frameSize: new Vector2(beamTexture.Width / 4, beamTexture.Height),
+                delaySeconds: 0.1f);
+
+            ufoTractorBeam = new Entity(Game, Vector2.Zero, beamData);
+            realTargetHoverTileHeight = (int)MathF.Ceiling(ufoTractorBeam.Size.Y / Grid.TileLength);
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
