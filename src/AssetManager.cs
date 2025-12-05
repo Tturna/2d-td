@@ -119,6 +119,13 @@ public static class AssetManager
         LoadTexture("hovership_ufo_platform", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform");
         LoadTexture("hovership_ufo_tractorbeam", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam");
 
+        LoadTexture("hovership_bombierbay_icon", "sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon");
+        LoadTexture("hovership_carpetoffire_icon", "sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon");
+        LoadTexture("hovership_efficientengines_icon", "sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon");
+        LoadTexture("hovership_emp_icon", "sprites/Towers/Hovership/hovership_EMP/EMP_icon");
+        LoadTexture("hovership_orbitallaser_icon", "sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon");
+        LoadTexture("hovership_ufo_icon", "sprites/Towers/Hovership/hovership_UFO/UFO_icon");
+
         LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
 
         LoadTexture("turretTwo", "sprites/turretTwo"); // temp

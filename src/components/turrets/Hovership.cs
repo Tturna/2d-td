@@ -54,15 +54,20 @@ class Hovership : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+        var orbitalLaserIcon = AssetManager.GetTexture("hovership_orbitallaser_icon");
+        var carpetOfFireIcon = AssetManager.GetTexture("hovership_carpetoffire_icon");
+        var bombierBayIcon = AssetManager.GetTexture("hovership_bombierbay_icon");
+        var empShipIcon = AssetManager.GetTexture("hovership_emp_icon");
+        var ufoIcon = AssetManager.GetTexture("hovership_ufo_icon");
+        var efficientEnginesIcon = AssetManager.GetTexture("hovership_efficientengines_icon");
 
-        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), tempIcon, price: 160);
-        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), tempIcon, price: 120);
-        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), tempIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), orbitalLaserIcon, price: 160);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), carpetOfFireIcon, price: 120);
+        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), bombierBayIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), tempIcon, price: 110);
-        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), tempIcon, price: 200);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), tempIcon, price: 15, leftChild: EMPShip, rightChild: UFO);
+        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), empShipIcon, price: 110);
+        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), ufoIcon, price: 200);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), efficientEnginesIcon, price: 15, leftChild: EMPShip, rightChild: UFO);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
