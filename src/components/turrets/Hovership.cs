@@ -42,6 +42,8 @@ class Hovership : Entity, ITower
     private Entity? ufoTractorBeam;
     // stores pairs of enemy and its random relative position in the tractor beam while flying
     private Dictionary<Enemy, Vector2> ufoCarriedEnemies = new();
+    private float ufoSeekTime = 3f;
+    private float ufoSeekTimer;
 
     private Random random = new();
 
@@ -155,8 +157,9 @@ class Hovership : Entity, ITower
     private void HandleHovershipPosition(float deltaTime)
     {
         var centeredTarget = Vector2.Zero;
+        var isUfoSeekDone = ufoCarriedEnemies.Count >= 5 || (ufoSeekTimer > ufoSeekTime && ufoCarriedEnemies.Count > 0);
 
-        if (ufoCarriedEnemies.Count > 0)
+        if (isUfoSeekDone)
         {
             centeredTarget = Game.Terrain.GetFirstTilePosition();
         }
@@ -182,7 +185,7 @@ class Hovership : Entity, ITower
 
         if (!shouldReturnToBase)
         {
-            var rawHeight = ufoCarriedEnemies.Count > 0 ? realTargetHoverTileHeight * 5 : realTargetHoverTileHeight;
+            var rawHeight = isUfoSeekDone ? realTargetHoverTileHeight * 5 : realTargetHoverTileHeight;
             finalTarget -= Vector2.UnitY * (rawHeight * Grid.TileLength);
         }
 
@@ -209,12 +212,13 @@ class Hovership : Entity, ITower
         {
             shouldReturnToBase = false;
         }
-        else if (ufoCarriedEnemies.Count > 0)
+        else if (isUfoSeekDone)
         {
             ufoCarriedEnemies.Clear();
             actionTimer = 0f;
             ufoTractorBeam!.Scale = Vector2.Zero;
             shouldReturnToBase = true;
+            ufoSeekTimer = 0f;
         }
     }
 
@@ -340,8 +344,10 @@ class Hovership : Entity, ITower
         ufoTractorBeam.SetPosition(shipCenterBottom - Vector2.UnitX * (ufoTractorBeam.Size.X / 2));
         var beamVisible = ufoCarriedEnemies.Count > 0;
 
-        if (ufoCarriedEnemies.Count < 5)
+        if (ufoSeekTimer < ufoSeekTime && ufoCarriedEnemies.Count < 5)
         {
+            ufoSeekTimer += deltaTime;
+
             foreach (var enemy in enemyCandidates)
             {
                 if (ufoCarriedEnemies.ContainsKey(enemy)) continue;
@@ -366,6 +372,8 @@ class Hovership : Entity, ITower
         }
         else
         {
+            List<Enemy> toRemove = new();
+
             foreach (var (enemy, relativePosition) in ufoCarriedEnemies)
             {
                 enemy.PhysicsSystem.StopMovement();
@@ -373,8 +381,19 @@ class Hovership : Entity, ITower
 
                 if (!Collision.AreEntitiesColliding(enemy, ufoTractorBeam))
                 {
-                    ufoCarriedEnemies.Remove(enemy);
+                    toRemove.Add(enemy);
+
+                    if (ufoCarriedEnemies.Count == toRemove.Count)
+                    {
+                        ufoSeekTimer = 0f;
+                        break;
+                    }
                 }
+            }
+
+            foreach (var enemy in toRemove)
+            {
+                ufoCarriedEnemies.Remove(enemy);
             }
         }
     }
@@ -399,6 +418,8 @@ class Hovership : Entity, ITower
 
         foreach (Enemy enemy in enemyCandidates)
         {
+            if (ufoCarriedEnemies.ContainsKey(enemy)) continue;
+
             var distanceToEnemy = Vector2.Distance(Position + Size / 2, enemy.Position + enemy.Size / 2);
 
             if (distanceToEnemy > range)
