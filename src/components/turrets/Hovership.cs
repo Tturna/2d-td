@@ -14,15 +14,16 @@ class Hovership : Entity, ITower
     private Entity turretHovership;
     private Vector2 turretSpawnAxisCenter;
     private static int baseHovershipHangarRange = 25;
-    int realHovershipHangarRange;
-    int hoverHeight = 10;
-    int damage = 15;
-    int baseProjectileAmount = 3;
-    float hovershipSpeed = 50f;
-    float bulletSpeed = 400f;
-    float actionsPerSecond = 1f;
-    float actionTimer;
-    float sightAngle = 30f;
+    private int realHovershipHangarRange;
+    private int hoverHeight = 10;
+    private int damage = 15;
+    private int baseProjectileAmount = 3;
+    private float hovershipSpeed = 50f;
+    private float bulletSpeed = 400f;
+    private float actionsPerSecond = 1f;
+    private float actionTimer;
+    private float sightAngle = 30f;
+    private Texture2D bombSprite;
 
     private Random random = new();
 
@@ -65,6 +66,8 @@ class Hovership : Entity, ITower
 
         turretHovership = new Entity(Game, position, GetUnupgradedBaseAnimationData());
         turretHovership.DrawLayerDepth = 0.8f;
+
+        bombSprite = AssetManager.GetTexture("hovership_base_bomb");
 
         UpdatePosition(Vector2.UnitY * Grid.TileLength);
 
@@ -136,13 +139,11 @@ class Hovership : Entity, ITower
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, int projectileAmount)
     {
         var actionInterval = 1f / actionsPerSecond;
-
         actionTimer += deltaTime;
 
         var closestEnemy = GetValidEnemy(range, sightAngle);
 
         if (closestEnemy is null) return;
-
 
         if (actionTimer >= actionInterval)
         {
@@ -173,7 +174,7 @@ class Hovership : Entity, ITower
         bullet.BulletLength = 20f;
         bullet.BulletWidth = 8f;
         bullet.ExplosionTileRadius = 4;
-        bullet.Sprite = AssetManager.GetTexture("tempprojectile");
+        bullet.Sprite = bombSprite;
     }
 
     private Enemy? GetValidEnemy(int tileRange, float attackAngleInDegrees)
@@ -333,6 +334,7 @@ class Hovership : Entity, ITower
             newIdleFrameCount = 4;
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY);
+            bombSprite = AssetManager.GetTexture("hovership_carpetoffire_bomb");
         }
         else if (newUpgrade.Name == Upgrade.EMPShip.ToString())
         {
@@ -341,6 +343,7 @@ class Hovership : Entity, ITower
             newIdleFrameCount = 4;
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY * 4);
+            bombSprite = AssetManager.GetTexture("hovership_emp_bomb");
         }
         else
         {
