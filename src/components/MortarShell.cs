@@ -12,6 +12,7 @@ public class MortarShell : Entity
 
     public PhysicsSystem physics;
     public bool Homing;
+    public float RotationOffset;
 
     private Enemy? closestEnemy;
     private Vector2? differenceToClosestEnemy;

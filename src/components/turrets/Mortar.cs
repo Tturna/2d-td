@@ -17,6 +17,8 @@ public class Mortar : Entity, ITower
 
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
+    private Texture2D projectileSprite = AssetManager.GetTexture("mortar_base_shell");
+    private float projectileRotationOffset = MathHelper.Pi;
 
     public Vector2 TargetHitpoint { get; private set; }
     public static bool IsMortarTargeting;
@@ -58,8 +60,7 @@ public class Mortar : Entity, ITower
         var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
         var bigBombIcon = AssetManager.GetTexture("mortar_heavyshells_icon");
         var missileSiloIcon = AssetManager.GetTexture("mortar_missilesilo_icon");
-        // var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
-        var hellRainIcon = AssetManager.GetTexture("gunTurret_botshot_icon"); // temp
+        var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
         var efficientReloadIcon = AssetManager.GetTexture("mortar_efficientreload_icon");
 
         var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 80);
@@ -154,7 +155,7 @@ public class Mortar : Entity, ITower
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
             {
-                HandleBouncingBomb(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
+                HandleBasicShot(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
             {
@@ -182,6 +183,9 @@ public class Mortar : Entity, ITower
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
+        shell.Sprite = projectileSprite;
+        shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+        shell.RotationOffset = projectileRotationOffset;
 
         shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
 
@@ -199,6 +203,9 @@ public class Mortar : Entity, ITower
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
+        shell.Sprite = projectileSprite;
+        shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+        shell.RotationOffset = projectileRotationOffset;
 
         HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3, deltaTime);
 
@@ -218,6 +225,9 @@ public class Mortar : Entity, ITower
             shell.SetPosition(Position + Vector2.UnitX * xOffset);
             shell.physics.LocalGravity = 0f;
             shell.Homing = true;
+            shell.Sprite = projectileSprite;
+            shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+            shell.RotationOffset = projectileRotationOffset;
 
             var randomX = (float)random.NextDouble() * 2f - 1f;
             shell.physics.AddForce(-Vector2.UnitY * 4f + Vector2.UnitX * randomX);
@@ -240,6 +250,9 @@ public class Mortar : Entity, ITower
             shell.SetPosition(Position);
             shell.physics.LocalGravity = projectileGravity;
             shell.physics.DragFactor = 0f;
+            shell.Sprite = projectileSprite;
+            shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+            shell.RotationOffset = projectileRotationOffset;
 
             var randomX = (float)random.NextDouble() * 2f - 1f;
             var randomY = (float)random.NextDouble() * 1f - 0.5f;
@@ -279,6 +292,9 @@ public class Mortar : Entity, ITower
             newShell.physics.LocalGravity = projectileGravity;
             newShell.physics.DragFactor = 0f;
             newShell.physics.AddForce(newVelocity);
+            newShell.Sprite = shell.Sprite;
+            newShell.Size = shell.Size;
+            newShell.RotationOffset = shell.RotationOffset;
 
             HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
             HandleBouncingHit(newShell, damage, explosionTileRadius, bounceCount - 1, deltaTime);
@@ -389,6 +405,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_bouncingbomb_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
+            projectileSprite = AssetManager.GetTexture("mortar_bouncingbomb_shell");
         }
         else if (newUpgrade.Name == Upgrade.EfficientReload.ToString())
         {
@@ -403,6 +420,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_heavyshells_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 5;
+            projectileSprite = AssetManager.GetTexture("mortar_heavyshells_shell");
         }
         else if (newUpgrade.Name == Upgrade.Hellrain.ToString())
         {
@@ -410,6 +428,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_hellrain_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 7;
+            projectileSprite = AssetManager.GetTexture("mortar_hellrain_shell");
         }
         else if (newUpgrade.Name == Upgrade.MissileSilo.ToString())
         {
@@ -417,6 +436,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_missilesilo_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 4;
+            projectileSprite = AssetManager.GetTexture("mortar_missilesilo_shell");
         }
         else
         {
@@ -424,6 +444,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_nuke_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 7;
+            projectileSprite = AssetManager.GetTexture("mortar_nuke_shell");
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
