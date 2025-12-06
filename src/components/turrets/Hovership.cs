@@ -178,7 +178,8 @@ class Hovership : Entity, ITower
                 return;
             }
 
-            centeredTarget = rightmostEnemy.Position + rightmostEnemy.Size / 2 - turretHovership.Size / 2;
+            var targetOffset = ufoTractorBeam is null && orbitalLaserBeam is null ? Vector2.UnitX * 2 * Grid.TileLength : Vector2.Zero;
+            centeredTarget = rightmostEnemy.Position + targetOffset + rightmostEnemy.Size / 2 - turretHovership.Size / 2;
         }
 
         var finalTarget = centeredTarget;
@@ -201,8 +202,8 @@ class Hovership : Entity, ITower
             difference.Normalize();
             turretHovership.UpdatePosition(difference * realHovershipSpeed * deltaTime);
 
-            // don't tilt when ufo mode because tractor beam looks trash
-            if (ufoTractorBeam is null)
+            // don't tilt when in ufo or orbital laser mode because the beams looks trash
+            if (ufoTractorBeam is null && orbitalLaserBeam is null)
             {
                 var targetRotation = direction.X * MathHelper.PiOver4 * MathHelper.Min(distance * 0.1f, 0.5f);
                 turretHovership.RotationRadians = MathHelper.Lerp(turretHovership.RotationRadians, targetRotation, deltaTime * 10f);
