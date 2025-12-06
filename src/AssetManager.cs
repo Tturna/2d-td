@@ -57,12 +57,18 @@ public static class AssetManager
 
         LoadTexture("railgun_base_idle", "sprites/Towers/Railgun/railgun_base/railgun_base_idle");
         LoadTexture("railgun_base_fire", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
+        LoadTexture("railgun_base_bullet", "sprites/Towers/Railgun/railgun_base/railgunbullet");
         LoadTexture("railgun_antimatterlaser_idle", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle");
         LoadTexture("railgun_antimatterlaser_fire", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire");
+        LoadTexture("railgun_antimatterlaser_bullet", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast");
+        LoadTexture("railgun_antimatterlaser_muzzleflash", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash");
         LoadTexture("railgun_cannonball_idle", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle");
         LoadTexture("railgun_cannonball_fire", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire");
+        LoadTexture("railgun_cannonball_bullet", "sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile");
         LoadTexture("railgun_goldengatling_idle", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle");
         LoadTexture("railgun_goldengatling_fire", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing");
+        LoadTexture("railgun_goldengatling_bullet", "sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile");
+        LoadTexture("railgun_goldengatling_bullet_flaming", "sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming");
         LoadTexture("railgun_polishedrounds_idle", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle");
         LoadTexture("railgun_polishedrounds_fire", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire");
         LoadTexture("railgun_tungstenshells_idle", "sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle");
