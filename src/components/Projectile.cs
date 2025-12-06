@@ -16,6 +16,7 @@ class Projectile : Entity
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
     public Color TrailColor = Color.White;
+    public float RotationOffset;
 
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
@@ -166,7 +167,7 @@ class Projectile : Entity
 
     public override void Draw(GameTime gameTime)
     {
-        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X) + RotationOffset;
         DrawOrigin = new Vector2(BulletLength / 2, BulletWidth / 2);
 
         var bulletStart = Position - Direction * BulletLength / 2f;

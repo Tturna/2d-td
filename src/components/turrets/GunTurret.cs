@@ -23,6 +23,8 @@ class GunTurret : Entity, ITower
     private float bulletPixelsPerSecond = 360f;
     private float muzzleOffsetFactor = 20f;
     private float turretSmoothSpeed = 5f;
+    private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
+    private float projectileRotationOffset;
 
     private Random random = new();
 
@@ -281,6 +283,9 @@ class GunTurret : Entity, ITower
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
         bullet.TrailColor = Color.Red;
+        bullet.Sprite = projectileSprite;
+        bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+        bullet.RotationOffset = projectileRotationOffset;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
     }
@@ -358,6 +363,7 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
             realRange = baseRange - 2;
             realDamage = baseDamage + 8;
+            projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
@@ -370,6 +376,8 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
             realRange = baseRange + 8;
             realDamage = baseDamage + 23;
+            projectileSprite = AssetManager.GetTexture("gunTurret_rocketshots_rocket");
+            projectileRotationOffset = MathHelper.Pi; // rotate 180 degrees
         }
         else if (newUpgrade.Name == Upgrade.DoubleGun.ToString())
         {
@@ -380,6 +388,7 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
             realRange = baseRange + 4;
             realDamage = baseDamage + 3;
+            projectileSprite = AssetManager.GetTexture("gunTurret_improvedbarrel_bullet");
         }
 
         var newBaseAnimation = new AnimationSystem.AnimationData

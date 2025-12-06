@@ -34,14 +34,20 @@ public static class AssetManager
         // towers
         LoadTexture("gunTurretBase", "sprites/Towers/Turret/turret_base/turret_body_base");
         LoadTexture("gunTurretHead", "sprites/Towers/Turret/turret_base/turret_gun_base");
+        LoadTexture("gunTurret_base_bullet", "sprites/Towers/Turret/turret_base/turret_bullet_base");
         LoadTexture("gunTurret_botshot_body", "sprites/Towers/Turret/turret_botshot/turret_botshot_body");
         LoadTexture("gunTurret_botshot_gun", "sprites/Towers/Turret/turret_botshot/turret_botshot_gun");
+        LoadTexture("gunTurret_botshot_bullet", "sprites/Towers/Turret/turret_botshot/botshot_pellet");
         LoadTexture("gunTurret_doublegun_gun", "sprites/Towers/Turret/turret_doublegun/turret_gun_10");
         LoadTexture("gunTurret_improvedbarrel_gun", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun");
+        LoadTexture("gunTurret_improvedbarrel_bullet", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet");
         LoadTexture("gunTurret_photoncannon_body", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body");
         LoadTexture("gunTurret_photoncannon_gun", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun");
+        LoadTexture("gunTurret_photoncannon_laser", "sprites/Towers/Turret/turret_photoncannon/photonlaser");
+        LoadTexture("laser_particle", "sprites/Towers/Turret/turret_photoncannon/laserparticle");
         LoadTexture("gunTurret_rocketshots_body", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body");
         LoadTexture("gunTurret_rocketshots_gun", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun");
+        LoadTexture("gunTurret_rocketshots_rocket", "sprites/Towers/Turret/turret_rocketshot/rocket");
 
         LoadTexture("gunTurret_botshot_icon", "sprites/Towers/Turret/turret_botshot/turret_botshot_icon");
         LoadTexture("gunTurret_doublegun_icon", "sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon");
