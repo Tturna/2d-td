@@ -30,6 +30,8 @@ class GunTurret : Entity, ITower
     private Entity muzzleFlash;
     private float muzzleFlashTimer;
 
+    private Entity? photonCannonBeam;
+
     private Random random = new();
 
     public enum Upgrade
@@ -161,7 +163,7 @@ class GunTurret : Entity, ITower
                 var dirY = Math.Cos(rad);
                 var dir = new Vector2((float)dirX, (float)dirY);
                 var target = turretHead!.Position + dir * photonCannonTargetDistance;
-                LineUtility.DrawLine(Game.SpriteBatch, turretHead!.Position + dir * 16, target, Color.Red, thickness: 2f);
+                photonCannonBeam!.Scale = new Vector2(photonCannonTargetDistance, 1);
             }
         }
     }
@@ -224,16 +226,21 @@ class GunTurret : Entity, ITower
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
+        photonCannonBeam!.Scale = Vector2.Zero;
 
         if (closestEnemy is null) return;
 
         var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
-        if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHead!.Position + turretHead.Size / 2,
-            closestEnemy.Position, closestEnemy, out var entryPoint, out var _))
+        if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHeadAxisCenter,
+            closestEnemy.Position + closestEnemy.Size / 2, closestEnemy, out var entryPoint, out var _))
         {
-            var diff = turretHead!.Position - entryPoint;
-            photonCannonTargetDistance = diff.Length();
+            var diff = entryPoint - turretHeadAxisCenter;
+            var direction = diff;
+            direction.Normalize();
+            photonCannonTargetDistance = diff.Length() - muzzleOffsetFactor;
+            photonCannonBeam.SetPosition(turretHeadAxisCenter + direction * muzzleOffsetFactor);
+            photonCannonBeam.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
 
             if (actionTimer >= actionInterval)
             {
@@ -303,7 +310,6 @@ class GunTurret : Entity, ITower
         var startLocation = turretHeadAxisCenter + muzzleOffset;
 
         muzzleFlash.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
-
         muzzleFlash.Scale = Vector2.One;
         muzzleFlash.SetPosition(startLocation);
         muzzleFlashTimer = 0;
@@ -401,6 +407,16 @@ class GunTurret : Entity, ITower
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_photoncannon_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_photoncannon_gun");
+
+            var beamSprite = AssetManager.GetTexture("gunTurret_photoncannon_laser");
+            var beamAnimation = new AnimationSystem.AnimationData(
+                texture: beamSprite,
+                frameCount: 2,
+                frameSize: new Vector2(beamSprite.Width / 2, beamSprite.Height),
+                delaySeconds: 0.2f);
+
+            photonCannonBeam = new Entity(Game, Vector2.Zero, beamAnimation);
+            photonCannonBeam.DrawOrigin = new Vector2(beamSprite.Width / 2, beamSprite.Height / 2);
         }
         else if (newUpgrade.Name == Upgrade.RocketShots.ToString())
         {
