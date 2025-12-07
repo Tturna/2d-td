@@ -248,7 +248,7 @@ class GunTurret : Entity, ITower
                 var damage = (int)(60 * actionInterval);
                 closestEnemy.HealthSystem.TakeDamage(damage);
                 actionTimer = 0f;
-                ParticleSystem.PlayImpactEffect(entryPoint, diff);
+                ParticleSystem.PlayPhotonLaserImpact(entryPoint);
             }
         }
     }
