@@ -149,10 +149,10 @@ public static class AssetManager
 
         LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
 
-        LoadTexture("turretTwo", "sprites/turretTwo"); // temp
-
-        // projectiles
-        LoadTexture("tempprojectile", "sprites/projectiles/railguntemp"); // temp
+        // effects
+        LoadTexture("muzzleflash_small", "sprites/Generic Effects/muzzleflash_small");
+        LoadTexture("muzzleflash_medium", "sprites/Generic Effects/muzzleflash_medium");
+        LoadTexture("muzzleflash_large", "sprites/Generic Effects/muzzleflash_large");
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");

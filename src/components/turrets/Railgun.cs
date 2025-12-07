@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -19,6 +20,10 @@ class Railgun : Entity, ITower
     private float actionTimer;
     private Texture2D projectileSprite = AssetManager.GetTexture("railgun_base_bullet");
     private float projectileRotationOffset = MathHelper.Pi;
+
+    private Texture2D muzzleFlashSprite = AssetManager.GetTexture("muzzleflash_small");
+    private Entity muzzleFlash;
+    private float muzzleFlashTimer;
 
     public enum Upgrade
     {
@@ -72,6 +77,17 @@ class Railgun : Entity, ITower
         towerCore.CurrentUpgrade = defaultNode;
 
         realRange = baseRange;
+
+        var muzzleFlashAnimation = new AnimationSystem.AnimationData(
+            texture: muzzleFlashSprite,
+            frameCount: 2,
+            frameSize: new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height),
+            delaySeconds: 0.05f);
+
+        muzzleFlash = new Entity(Game, Vector2.Zero, muzzleFlashAnimation);
+        muzzleFlash.Scale = Vector2.Zero;
+        // set origin to base of muzzle flash. width is / 2 because the sprite has two animation frames.
+        muzzleFlash.DrawOrigin = new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height / 2);
     }
 
     public override void Initialize()
@@ -112,6 +128,17 @@ class Railgun : Entity, ITower
             HandleBasicShots(deltaTime, actionsPerSecond+5, 15, pierce);
         }
 
+        if (muzzleFlash.Scale != Vector2.Zero)
+        {
+            muzzleFlashTimer += deltaTime;
+            var mfdata = muzzleFlash.AnimationSystem!.BaseAnimationData;
+
+            if (muzzleFlashTimer >= mfdata.FrameCount * mfdata.DelaySeconds)
+            {
+                muzzleFlash.Scale = Vector2.Zero;
+            }
+        }
+
         base.Update(gameTime);
     }
 
@@ -132,6 +159,13 @@ class Railgun : Entity, ITower
     private void Shoot(int damage, int pierce)
     {
         var direction = new Vector2(-1, 0);
+
+        muzzleFlash.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
+        muzzleFlash.Scale = Vector2.One;
+        muzzleFlash.SetPosition(Position + spawnOffset);
+        muzzleFlashTimer = 0;
+        muzzleFlash.AnimationSystem!.ToggleAnimationState(null); // reset animation progress
+
         var bullet = new Projectile(Game, Position + spawnOffset);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
@@ -240,6 +274,15 @@ class Railgun : Entity, ITower
             newFireFrameCount = 6;
             realRange = baseRange + 6;
             projectileSprite = AssetManager.GetTexture("railgun_antimatterlaser_bullet");
+            muzzleFlashSprite = AssetManager.GetTexture("railgun_antimatterlaser_muzzleflash");
+
+            var newMuzzleFlashAnimation = new AnimationSystem.AnimationData(
+                texture: muzzleFlashSprite,
+                frameCount: 2,
+                frameSize: new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height),
+                delaySeconds: 0.05f);
+
+            muzzleFlash.AnimationSystem!.ChangeAnimationState(null, newMuzzleFlashAnimation);
         }
         else if (newUpgrade.Name == Upgrade.Cannonball.ToString())
         {

@@ -21,10 +21,14 @@ class GunTurret : Entity, ITower
     private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bulletPixelsPerSecond = 360f;
-    private float muzzleOffsetFactor = 20f;
+    private float muzzleOffsetFactor = 14f;
     private float turretSmoothSpeed = 5f;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
     private float projectileRotationOffset;
+
+    private Texture2D muzzleFlashSprite = AssetManager.GetTexture("muzzleflash_small");
+    private Entity muzzleFlash;
+    private float muzzleFlashTimer;
 
     private Random random = new();
 
@@ -67,6 +71,17 @@ class GunTurret : Entity, ITower
         towerCore.CurrentUpgrade = defaultNode;
         realRange = baseRange;
         realDamage = baseDamage;
+
+        var muzzleFlashAnimation = new AnimationSystem.AnimationData(
+            texture: muzzleFlashSprite,
+            frameCount: 2,
+            frameSize: new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height),
+            delaySeconds: 0.05f);
+
+        muzzleFlash = new Entity(Game, Vector2.Zero, muzzleFlashAnimation);
+        muzzleFlash.Scale = Vector2.Zero;
+        // set origin to base of muzzle flash. width is / 2 because the sprite has two animation frames.
+        muzzleFlash.DrawOrigin = new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height / 2);
     }
 
     public override void Initialize()
@@ -117,6 +132,17 @@ class GunTurret : Entity, ITower
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
         {
             HandleRocketShots(deltaTime);
+        }
+
+        if (muzzleFlash.Scale != Vector2.Zero)
+        {
+            muzzleFlashTimer += deltaTime;
+            var mfdata = muzzleFlash.AnimationSystem!.BaseAnimationData;
+
+            if (muzzleFlashTimer >= mfdata.FrameCount * mfdata.DelaySeconds)
+            {
+                muzzleFlash.Scale = Vector2.Zero;
+            }
         }
 
         base.Update(gameTime);
@@ -274,7 +300,14 @@ class GunTurret : Entity, ITower
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
-        var startLocation = turretHeadAxisCenter+muzzleOffset;
+        var startLocation = turretHeadAxisCenter + muzzleOffset;
+
+        muzzleFlash.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
+
+        muzzleFlash.Scale = Vector2.One;
+        muzzleFlash.SetPosition(startLocation);
+        muzzleFlashTimer = 0;
+        muzzleFlash.AnimationSystem!.ToggleAnimationState(null); // reset animation progress
 
         var bullet = new Projectile(Game, startLocation);
         bullet.Direction = direction;
@@ -282,7 +315,6 @@ class GunTurret : Entity, ITower
         bullet.Damage = realDamage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
-        bullet.TrailColor = Color.Red;
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
