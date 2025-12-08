@@ -17,10 +17,10 @@ class Projectile : Entity
     public int ExplosionTileRadius = 0;
     public Color TrailColor = Color.White;
     public float RotationOffset;
+    public float TrailParticleInterval = 0.01f;
 
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
-    private float trailParticleInterval = 0.005f;
     private float trailParticleTimer;
 
     // this constructor is simple so that the turrets can edit the property
@@ -63,7 +63,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
@@ -71,7 +71,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
                     }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
@@ -79,7 +79,7 @@ class Projectile : Entity
                 {
                     if (hitEnemies.Add(enemy))
                     {
-                        ParticleSystem.PlayImpactEffect(entryPoint, -Direction);
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
                     }
                 }
             }
@@ -151,15 +151,19 @@ class Projectile : Entity
             Destroy();
         }
 
-        if (trailParticleTimer < trailParticleInterval)
+        if (trailParticleTimer < TrailParticleInterval)
         {
             trailParticleTimer += deltaTime;
         }
 
-        if (trailParticleTimer >= trailParticleInterval)
+        while (trailParticleTimer >= TrailParticleInterval)
         {
-            trailParticleTimer = 0;
-            ParticleSystem.PlayFloater(Position, TrailColor, Direction);
+            trailParticleTimer -= TrailParticleInterval;
+
+            if (trailParticleTimer < 0) trailParticleTimer = 0;
+
+            var pos = Position - Direction * trailParticleTimer * BulletPixelsPerSecond;
+            ParticleSystem.PlayFloater(pos, TrailColor, Direction);
         }
 
         base.Update(gameTime);

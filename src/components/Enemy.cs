@@ -1,6 +1,7 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -19,6 +20,13 @@ public class Enemy : Entity, IKnockable
     private Vector2 lastPosition;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
 
+    private static Texture2D explosionSprite = AssetManager.GetTexture("death_explosion_small");
+    private AnimationSystem.AnimationData deathExplosionAnimation = new AnimationSystem.AnimationData(
+        texture: explosionSprite,
+        frameCount: 6,
+        frameSize: new Vector2(explosionSprite.Width / 6, explosionSprite.Height),
+        delaySeconds: 0.05f);
+
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, int health,
         int scrapValue) : base(game, position, animationData)
@@ -31,7 +39,6 @@ public class Enemy : Entity, IKnockable
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
-
         selfDestructTimer = selfDestructTime;
     }
 
@@ -76,6 +83,8 @@ public class Enemy : Entity, IKnockable
             }
         }
 
+        HealthSystem.UpdateHealthBarGraphics(deltaTime);
+
         base.Update(gameTime);
     }
 
@@ -87,6 +96,7 @@ public class Enemy : Entity, IKnockable
 
     public override void Draw(GameTime gameTime)
     {
+        HealthSystem.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
         base.Draw(gameTime);
     }
 
@@ -161,6 +171,9 @@ public class Enemy : Entity, IKnockable
         }
 
         StretchImpact(new Vector2(1.8f, 0.4f), 0.1f);
+        ParticleSystem.PlayBotchunkExplosion(Position + Size / 2);
+        UIComponent.SpawnFlyoutText(amount.ToString(), Position - Vector2.UnitY * (Size.Y + 2), -Vector2.UnitY * 12, lifetime: 1f,
+            color: Color.FromNonPremultiplied(new Vector4(249f/255f, 72f/255f, 88f/255f, 1f)));
     }
 
     public override void Destroy()
@@ -176,11 +189,18 @@ public class Enemy : Entity, IKnockable
 
     private void OnDeath(Entity diedEntity)
     {
-        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
+        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
+            animation: deathExplosionAnimation);
 
-        var anim = AnimationSystem.BaseAnimationData;
+        var corpseSprite = AssetManager.GetTexture("node_corpse");
+        var anim = new AnimationSystem.AnimationData(
+            texture: corpseSprite,
+            frameCount: 1,
+            frameSize: new Vector2(corpseSprite.Width, corpseSprite.Height),
+            delaySeconds: float.PositiveInfinity);
+
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: Vector2.UnitX * 0.7f);
+        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX * 2);
         Destroy();
     }
 }

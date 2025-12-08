@@ -11,9 +11,10 @@ public class FlyoutText : UIEntity
     private Vector2 velocity;
     private Vector2 targetWorldPosition;
     private Vector2 addedPosition = Vector2.Zero;
+    private Color color;
 
     public FlyoutText(Game1 game, List<UIEntity> uiElements, string text, Vector2 startWorldPosition,
-        Vector2 flyoutVelocity, float lifetime, bool slowdown = true) : base(game, uiElements,
+        Vector2 flyoutVelocity, float lifetime, Color color, bool slowdown = true) : base(game, uiElements,
         AssetManager.GetFont("pixelsix"), text)
     {
         lifetimeLeft = lifetime;
@@ -21,6 +22,7 @@ public class FlyoutText : UIEntity
         shouldSlowdown = slowdown;
         velocity = flyoutVelocity;
         targetWorldPosition = startWorldPosition;
+        this.color = color;
     }
 
     public override void Update(GameTime gameTime)
@@ -44,7 +46,8 @@ public class FlyoutText : UIEntity
         }
 
         var normalLifetime = lifetimeLeft / originalLifetime;
-        TextColor = Color.FromNonPremultiplied(new Vector4(1f, 1f, 1f, normalLifetime));
+        var reverseLifetime = 1f - normalLifetime;
+        TextColor = Color.Lerp(color, Color.Transparent, reverseLifetime);
 
         base.Update(gameTime);
     }

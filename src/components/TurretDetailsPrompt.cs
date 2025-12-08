@@ -63,7 +63,8 @@ public class TurretDetailsPrompt : UIEntity
             var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
 
             var indicatorVelocity = -Vector2.UnitY * 25f;
-            UIComponent.SpawnFlyoutText($"+{returnScrap}", indicatorPos, indicatorVelocity, 1f);
+            UIComponent.SpawnFlyoutText($"+{returnScrap}", indicatorPos, indicatorVelocity, 1f,
+                color: Color.White);
         };
 
         if (currentUpgrade.LeftChild is not null)

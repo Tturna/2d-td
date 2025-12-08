@@ -20,7 +20,7 @@ class GunTurret : Entity, ITower
     private int realDamage;
     private float actionsPerSecond = 1f;
     private float actionTimer;
-    private float bulletPixelsPerSecond = 360f;
+    private float bulletPixelsPerSecond = 850f;
     private float muzzleOffsetFactor = 14f;
     private float turretSmoothSpeed = 5f;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
@@ -324,6 +324,8 @@ class GunTurret : Entity, ITower
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
+        bullet.TrailParticleInterval = 0.003f;
+        bullet.TrailColor = Color.Silver;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
     }

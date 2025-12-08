@@ -38,7 +38,8 @@ public static class ScrapSystem
             {
                 var corpse = corpseAddOrder!.Pop();
                 CurrencyManager.AddBalance(corpse.ScrapValue);
-                UIComponent.SpawnFlyoutText($"+{corpse.ScrapValue}", corpse.Position, -Vector2.UnitY * 25f, 1f);
+                UIComponent.SpawnFlyoutText($"+{corpse.ScrapValue}", corpse.Position, -Vector2.UnitY * 25f,
+                    lifetime: 1f, color: Color.White);
                 corpse.Destroy();
 
                 if (Corpses.TotalValueCount == 0)
@@ -60,6 +61,7 @@ public static class ScrapSystem
 
         if (knockback is not null) {
             corpse.PhysicsSystem.AddForce((Vector2)knockback);
+            corpse.PhysicsSystem.AddForce(-Vector2.UnitY * 0.5f);
         }
 
         Corpses!.Add(corpse);

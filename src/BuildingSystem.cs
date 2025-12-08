@@ -87,7 +87,8 @@ public static class BuildingSystem
         var costText = $"-{CurrencyManager.GetTowerPrice(selectedTowerType)}";
         var costTextPosition = spawnedTower.Position - Vector2.UnitY * 6;
         var textVelocity = -Vector2.UnitY * 25f;
-        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f);
+        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
+            color: Color.White);
 
         var particlesPosition = spawnedTower.Position + spawnedTower.Size / 2 +
             Vector2.UnitY * spawnedTower.Size.Y / 2;
