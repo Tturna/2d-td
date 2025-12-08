@@ -39,7 +39,6 @@ public class Enemy : Entity, IKnockable
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
-
         selfDestructTimer = selfDestructTime;
     }
 
@@ -84,6 +83,8 @@ public class Enemy : Entity, IKnockable
             }
         }
 
+        HealthSystem.UpdateHealthBarGraphics(deltaTime);
+
         base.Update(gameTime);
     }
 
@@ -95,6 +96,7 @@ public class Enemy : Entity, IKnockable
 
     public override void Draw(GameTime gameTime)
     {
+        HealthSystem.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
         base.Draw(gameTime);
     }
 
@@ -198,7 +200,7 @@ public class Enemy : Entity, IKnockable
             delaySeconds: float.PositiveInfinity);
 
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX);
+        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX * 2);
         Destroy();
     }
 }
