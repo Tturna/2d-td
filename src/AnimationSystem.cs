@@ -194,8 +194,9 @@ public class AnimationSystem
         overrideTimer = durationSeconds;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotationRadians = 0f,
-        Vector2 drawOrigin = default, Vector2 drawOffset = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
+    public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color,
+        float rotationRadians = 0f, Vector2 drawOrigin = default, Vector2 drawOffset = default,
+        Vector2? scale = null, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
         Texture2D texture = CurrentAnimationData.Texture;
@@ -224,7 +225,7 @@ public class AnimationSystem
         spriteBatch.Draw(texture,
                 position + offset + drawOffset,
                 sourceRectangle: sourceRect,
-                Color.White,
+                color,
                 rotation: rotationRadians,
                 origin: drawOrigin,
                 scale: usedScale,

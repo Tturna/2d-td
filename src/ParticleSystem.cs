@@ -207,23 +207,28 @@ public static class ParticleSystem
             }
 
             var sprite = particle.Sprite ?? pixelSprite;
-            var drawOrigin = new Vector2(sprite!.Width / 2, sprite.Height / 2);
 
             if (particle.AnimationSystem is not null)
             {
-                particle.AnimationSystem.Draw(spriteBatch, particle.Position, drawOrigin: drawOrigin,
-                    drawLayerDepth: particle.Depth);
+                var frameSize = particle.AnimationSystem.BaseAnimationData.FrameSize;
+                var drawOrigin = frameSize / 2;
+                particle.AnimationSystem.Draw(spriteBatch, particle.Position, color, drawOrigin: drawOrigin,
+                    drawLayerDepth: particle.Depth, rotationRadians: particle.RotationRadians);
             }
+            else
+            {
+                var drawOrigin = new Vector2(sprite!.Width / 2, sprite.Height / 2);
 
-            spriteBatch.Draw(sprite,
-                particle.Position,
-                sourceRectangle: null,
-                color,
-                rotation: particle.RotationRadians,
-                origin: drawOrigin,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: particle.Depth);
+                spriteBatch.Draw(sprite,
+                    particle.Position,
+                    sourceRectangle: null,
+                    color,
+                    rotation: particle.RotationRadians,
+                    origin: drawOrigin,
+                    scale: Vector2.One,
+                    effects: SpriteEffects.None,
+                    layerDepth: particle.Depth);
+            }
         }
 
         spriteBatch.End();
@@ -412,6 +417,33 @@ public static class ParticleSystem
 
             AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
                 shouldSlowDown: true, shouldFadeOut: true, sprite: sprite, hasGravity: true,
+                rotationSpeed: rotationSpeed));
+        }
+    }
+
+    public static void PlayShotSmokeEffect(Vector2 worldPosition)
+    {
+        for (int i = 0; i < rng.Next(3, 8); i++)
+        {
+            var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
+            var rx = MathF.Cos(randomAngleRadians);
+            var ry = MathF.Sin(randomAngleRadians);
+            var randomUnitVector = new Vector2(rx, ry);
+            var velocity = randomUnitVector;
+            var maxLifetime = 0.4f;
+            var minLifetime = 0.2f;
+            var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+            var rotationSpeed = ((float)rng.NextDouble() - 0.5f);
+
+            var smokeSprite = AssetManager.GetTexture("smoke");
+            var animation = new AnimationSystem.AnimationData(
+                texture: smokeSprite,
+                frameCount: 5,
+                frameSize: new Vector2(smokeSprite.Width / 5, smokeSprite.Height),
+                delaySeconds: lifetime / 5);
+
+            AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+                shouldSlowDown: true, shouldFadeOut: true, animation: animation,
                 rotationSpeed: rotationSpeed));
         }
     }

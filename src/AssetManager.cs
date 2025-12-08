@@ -162,6 +162,7 @@ public static class AssetManager
         LoadTexture("botchunk4", "sprites/Particles/botchunk4");
         LoadTexture("botchunk5", "sprites/Particles/botchunk5");
         LoadTexture("botchunk6", "sprites/Particles/botchunk6");
+        LoadTexture("smoke", "sprites/Particles/smoke");
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
