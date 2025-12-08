@@ -9,13 +9,7 @@ public class HQ : Entity
     private int startingHealth = 50;
     public static HQ Instance;
     
-    private static Texture2D GetHQSprite(SpriteBatch spriteBatch)
-    {
-        var texture = TextureUtility.GetBlankTexture(spriteBatch, 4 * Grid.TileLength, 4 * Grid.TileLength, Color.White);
-        return texture;
-    }
-
-    public HQ(Game1 game, Vector2 position) : base(game, position: position, sprite: GetHQSprite(game.SpriteBatch))
+    public HQ(Game1 game, Vector2 position) : base(game, position, GetHQSprite())
     {
         HealthSystem = new HealthSystem(this, startingHealth);
 
@@ -30,5 +24,10 @@ public class HQ : Entity
         // };
 
         Instance = this;
+    }
+
+    private static Texture2D GetHQSprite()
+    {
+        return AssetManager.GetTexture("hq");
     }
 }

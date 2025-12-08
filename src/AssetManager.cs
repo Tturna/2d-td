@@ -165,6 +165,7 @@ public static class AssetManager
         LoadTexture("meganode", "sprites/Enemies/Meganode/meganode_body");
 
         // environment
+        LoadTexture("hq", "sprites/Misc/HQ");
         LoadTexture("tree", "sprites/tree"); // temp
         LoadTexture("mountain", "sprites/mountain"); // temp
         LoadTexture("big_gradient", "sprites/big_gradient"); // temp
