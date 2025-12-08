@@ -155,6 +155,13 @@ public static class AssetManager
         LoadTexture("muzzleflash_large", "sprites/Generic Effects/muzzleflash_large");
         LoadTexture("explosion_small", "sprites/Generic Effects/explosion_small");
         LoadTexture("explosion_large", "sprites/Generic Effects/explosion_large");
+        LoadTexture("death_explosion_small", "sprites/Enemy Juice Effects/enemy_deathexplosion_small");
+        LoadTexture("botchunk1", "sprites/Particles/botchunk1");
+        LoadTexture("botchunk2", "sprites/Particles/botchunk2");
+        LoadTexture("botchunk3", "sprites/Particles/botchunk3");
+        LoadTexture("botchunk4", "sprites/Particles/botchunk4");
+        LoadTexture("botchunk5", "sprites/Particles/botchunk5");
+        LoadTexture("botchunk6", "sprites/Particles/botchunk6");
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");

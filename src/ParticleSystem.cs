@@ -54,15 +54,18 @@ public static class ParticleSystem
         public bool ShouldFadeOut;
         public bool ShouldFadeColor;
         public bool ShouldSlowDown;
+        public bool HasGravity;
         public Color Color;
         public ColorFade? ColorFade;
         public float Depth;
         public float SlowdownSpeed;
+        public float RotationSpeed;
+        public float RotationRadians;
 
         public Particle(Vector2 position, Vector2 velocity, float lifetime, Color color,
             Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
-            bool shouldFadeOut = true, bool shouldSlowDown = false, float depth = 1f,
-            float slowdownSpeed = 4f)
+            bool shouldFadeOut = true, bool shouldSlowDown = false, bool hasGravity = false,
+            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0)
         {
             Sprite = sprite;
             Position = position;
@@ -71,9 +74,11 @@ public static class ParticleSystem
             LifetimeLeft = lifetime;
             ShouldFadeOut = shouldFadeOut;
             ShouldSlowDown = shouldSlowDown;
+            HasGravity = hasGravity;
             Color = color;
             Depth = depth;
             SlowdownSpeed = slowdownSpeed;
+            RotationSpeed = rotationSpeed;
 
             if (animation is not null)
             {
@@ -83,8 +88,8 @@ public static class ParticleSystem
 
         public Particle(Vector2 position, Vector2 velocity, float lifetime, ColorFade fade,
             Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
-            bool shouldFadeOut = true, bool shouldSlowDown = false, float depth = 1f,
-            float slowdownSpeed = 4f)
+            bool shouldFadeOut = true, bool shouldSlowDown = false, bool hasGravity = false,
+            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0f)
         {
             Sprite = sprite;
             Position = position;
@@ -93,10 +98,12 @@ public static class ParticleSystem
             LifetimeLeft = lifetime;
             ShouldFadeOut = shouldFadeOut;
             ShouldSlowDown = shouldSlowDown;
+            HasGravity = hasGravity;
             SlowdownSpeed = slowdownSpeed;
             Depth = depth;
             ColorFade = fade;
             ShouldFadeColor = true;
+            RotationSpeed = rotationSpeed;
 
             if (animation is not null)
             {
@@ -112,6 +119,15 @@ public static class ParticleSystem
     private static Stack<int> deathIndexStack = new();
     private static int nextMaxIndex;
     private const int MaxParticles = 10000;
+    private static Texture2D[] botchunks =
+    {
+        AssetManager.GetTexture("botchunk1"),
+        AssetManager.GetTexture("botchunk2"),
+        AssetManager.GetTexture("botchunk3"),
+        AssetManager.GetTexture("botchunk4"),
+        AssetManager.GetTexture("botchunk5"),
+        AssetManager.GetTexture("botchunk6")
+    };
 
     public static void Initialize(Game1 game)
     {
@@ -139,11 +155,18 @@ public static class ParticleSystem
                 continue;
             }
 
+            if (particle.HasGravity)
+            {
+                var gravityMagnitude = 0.125f;
+                particle.Velocity += Vector2.UnitY * gravityMagnitude;
+            }
+
             var slowdownThreshold = 0.8f;
             var normalLifetime = particle.LifetimeLeft / particle.MaxLifetime;
             var slowdownFactor = normalLifetime < slowdownThreshold ? deltaTime * particle.SlowdownSpeed : 0f;
             particle.Velocity = Vector2.Lerp(particle.Velocity, Vector2.Zero, slowdownFactor);
             particle.Position += particle.Velocity;
+            particle.RotationRadians += particle.RotationSpeed;
 
             if (particle.AnimationSystem is not null)
             {
@@ -196,7 +219,7 @@ public static class ParticleSystem
                 particle.Position,
                 sourceRectangle: null,
                 color,
-                rotation: 0,
+                rotation: particle.RotationRadians,
                 origin: drawOrigin,
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
@@ -307,7 +330,7 @@ public static class ParticleSystem
 
     }
 
-    public static void PlayImpactEffect(Vector2 worldPosition, Vector2 direction)
+    public static void PlaySparkEffect(Vector2 worldPosition, Vector2 direction)
     {
         direction.Normalize();
         var perpendicular = new Vector2(direction.Y, -direction.X);
@@ -315,13 +338,14 @@ public static class ParticleSystem
         for (int i = 0; i < rng.Next(3, 8); i++)
         {
             var outwardsMagnitude = (float)rng.NextDouble() * 0.5f + 0.5f;
-            var sidewaysMagnitude = ((float)rng.NextDouble() - 0.5f);
+            var sidewaysMagnitude = ((float)rng.NextDouble() - 0.5f) * 2;
             var velocity = direction * outwardsMagnitude + perpendicular * sidewaysMagnitude;
             var maxLifetime = 0.35f;
             var minLifetime = 0.1f;
             var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+            var yellow = Color.FromNonPremultiplied(new Vector4(1f, 1f, 27f/255f, 1f));
 
-            AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+            AddParticle(new Particle(worldPosition, velocity, lifetime, yellow,
                 shouldSlowDown: true, shouldFadeOut: true));
         }
     }
@@ -358,5 +382,37 @@ public static class ParticleSystem
 
         AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
             animation: animation, shouldSlowDown: true, shouldFadeOut: true));
+    }
+
+    public static void PlayBotchunkExplosion(Vector2 worldPosition)
+    {
+        for (int i = 0; i < rng.Next(3, 8); i++)
+        {
+            // Set max angle degrees to 270 (3 * pi / 2 radians).
+            var maxSectorRadians = MathHelper.PiOver2 * 3;
+            // Pick random angle from between 0 to 270 degrees.
+            var randomAngleRadians = (float)rng.NextDouble() * maxSectorRadians;
+            // Rotate random angle sector so that it never picks angles facing down
+            // (45 degree dead zone downwards).
+            var directedRadians = randomAngleRadians + MathHelper.PiOver4 * 3;
+            var rx = MathF.Cos(directedRadians);
+            var ry = MathF.Sin(directedRadians);
+            var randomUnitVector = new Vector2(rx, ry);
+
+            var upwardsDot = Vector2.Dot(randomUnitVector, -Vector2.UnitY);
+            var upwardsVelocityOffsetMagnitude = MathHelper.Max(upwardsDot, -0.2f) + 0.2f;
+            var randomMagnitude = ((float)rng.NextDouble() * 1.5f) + 0.5f; // 0.5 to 2.0
+
+            var velocity = randomUnitVector * (randomMagnitude * upwardsVelocityOffsetMagnitude);
+            var maxLifetime = 0.4f;
+            var minLifetime = 0.2f;
+            var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+            var sprite = botchunks[rng.Next(0, botchunks.Length)];
+            var rotationSpeed = ((float)rng.NextDouble() - 0.5f) * 2;
+
+            AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+                shouldSlowDown: true, shouldFadeOut: true, sprite: sprite, hasGravity: true,
+                rotationSpeed: rotationSpeed));
+        }
     }
 }

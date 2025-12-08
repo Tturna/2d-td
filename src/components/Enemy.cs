@@ -1,6 +1,7 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -18,6 +19,13 @@ public class Enemy : Entity, IKnockable
     private float selfDestructTimer;
     private Vector2 lastPosition;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
+
+    private static Texture2D explosionSprite = AssetManager.GetTexture("death_explosion_small");
+    private AnimationSystem.AnimationData deathExplosionAnimation = new AnimationSystem.AnimationData(
+        texture: explosionSprite,
+        frameCount: 6,
+        frameSize: new Vector2(explosionSprite.Width / 6, explosionSprite.Height),
+        delaySeconds: 0.05f);
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
         AnimationSystem.AnimationData animationData, int health,
@@ -161,6 +169,7 @@ public class Enemy : Entity, IKnockable
         }
 
         StretchImpact(new Vector2(1.8f, 0.4f), 0.1f);
+        ParticleSystem.PlayBotchunkExplosion(Position + Size / 2);
     }
 
     public override void Destroy()
@@ -176,7 +185,8 @@ public class Enemy : Entity, IKnockable
 
     private void OnDeath(Entity diedEntity)
     {
-        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0);
+        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
+            animation: deathExplosionAnimation);
 
         var anim = AnimationSystem.BaseAnimationData;
         anim.DelaySeconds = float.PositiveInfinity;
