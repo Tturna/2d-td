@@ -168,6 +168,7 @@ public static class AssetManager
 
         // enemies
         LoadTexture("node", "sprites/Enemies/Node/node_body");
+        LoadTexture("node_corpse", "sprites/Enemies/Node/node_corpse");
         LoadTexture("bouncer", "sprites/Enemies/Bouncer/bouncer_body");
         LoadTexture("meganode", "sprites/Enemies/Meganode/meganode_body");
 

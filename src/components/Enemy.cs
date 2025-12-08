@@ -190,9 +190,15 @@ public class Enemy : Entity, IKnockable
         EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
             animation: deathExplosionAnimation);
 
-        var anim = AnimationSystem.BaseAnimationData;
+        var corpseSprite = AssetManager.GetTexture("node_corpse");
+        var anim = new AnimationSystem.AnimationData(
+            texture: corpseSprite,
+            frameCount: 1,
+            frameSize: new Vector2(corpseSprite.Width, corpseSprite.Height),
+            delaySeconds: float.PositiveInfinity);
+
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: Vector2.UnitX * 0.7f);
+        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX);
         Destroy();
     }
 }
