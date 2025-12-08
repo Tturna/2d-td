@@ -140,7 +140,7 @@ public class Mortar : Entity, ITower
             return;
         }
 
-        // if (WaveSystem.WaveCooldownLeft <= 0)
+        if (WaveSystem.WaveCooldownLeft <= 0)
         {
             if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
             {
