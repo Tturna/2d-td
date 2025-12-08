@@ -360,7 +360,7 @@ public static class ParticleSystem
             velocity += (Vector2)momentumDirection * 0.2f;
         }
 
-        AddParticle(new Particle(worldPosition, velocity, 0.5f, color,
+        AddParticle(new Particle(worldPosition, velocity, lifetime: 0.3f, color,
             shouldSlowDown: true, shouldFadeOut: true));
     }
 
