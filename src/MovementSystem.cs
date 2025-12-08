@@ -152,6 +152,7 @@ public class MovementSystem
                 var enemy = (Enemy)entity;
                 enemy.PhysicsSystem.AddForce(Vector2.UnitY * bounceDir * CurrentData.JumpForce);
                 enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed);
+                entity.StretchImpact(new Vector2(1.5f, 0.5f), 0.2f);
             }
         }
 
