@@ -61,7 +61,8 @@ public static class DebugUtility
 
         // if (InputSystem.IsKeyTapped(Keys.X))
         // {
-        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 1);
+        //     EffectUtility.Explode(InputSystem.GetMouseWorldPosition(), 4, 10, 0);
+        //     // ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 1);
         // }
         //
         // if (InputSystem.IsKeyTapped(Keys.C))

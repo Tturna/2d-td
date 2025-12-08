@@ -153,6 +153,8 @@ public static class AssetManager
         LoadTexture("muzzleflash_small", "sprites/Generic Effects/muzzleflash_small");
         LoadTexture("muzzleflash_medium", "sprites/Generic Effects/muzzleflash_medium");
         LoadTexture("muzzleflash_large", "sprites/Generic Effects/muzzleflash_large");
+        LoadTexture("explosion_small", "sprites/Generic Effects/explosion_small");
+        LoadTexture("explosion_large", "sprites/Generic Effects/explosion_large");
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
