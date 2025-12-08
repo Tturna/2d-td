@@ -19,6 +19,7 @@ public class Mortar : Entity, ITower
     private Random random = new();
     private Texture2D projectileSprite = AssetManager.GetTexture("mortar_base_shell");
     private float projectileRotationOffset = MathHelper.Pi;
+    private AnimationSystem.AnimationData? explosionAnimation;
 
     public Vector2 TargetHitpoint { get; private set; }
     public static bool IsMortarTargeting;
@@ -270,7 +271,7 @@ public class Mortar : Entity, ITower
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
     {
         EffectUtility.Explode(shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
-            magnitude: 10f, damage);
+            magnitude: 10f, damage, animation: explosionAnimation);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount,
@@ -406,6 +407,15 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
             projectileSprite = AssetManager.GetTexture("mortar_bouncingbomb_shell");
+
+            var newExplosionSprite = AssetManager.GetTexture("mortar_bouncingbomb_explosion");
+            var newExplosionAnimation = new AnimationSystem.AnimationData(
+                texture: newExplosionSprite,
+                frameCount: 7,
+                frameSize: new Vector2(newExplosionSprite.Width / 7, newExplosionSprite.Height),
+                delaySeconds: 0.075f);
+
+            explosionAnimation = newExplosionAnimation;
         }
         else if (newUpgrade.Name == Upgrade.EfficientReload.ToString())
         {
@@ -429,6 +439,15 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 7;
             projectileSprite = AssetManager.GetTexture("mortar_hellrain_shell");
+
+            var newExplosionSprite = AssetManager.GetTexture("mortar_hellrain_explosion");
+            var newExplosionAnimation = new AnimationSystem.AnimationData(
+                texture: newExplosionSprite,
+                frameCount: 4,
+                frameSize: new Vector2(newExplosionSprite.Width / 4, newExplosionSprite.Height),
+                delaySeconds: 0.075f);
+
+            explosionAnimation = newExplosionAnimation;
         }
         else if (newUpgrade.Name == Upgrade.MissileSilo.ToString())
         {
@@ -445,6 +464,15 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 7;
             projectileSprite = AssetManager.GetTexture("mortar_nuke_shell");
+
+            var newExplosionSprite = AssetManager.GetTexture("mortar_nuke_explosion");
+            var newExplosionAnimation = new AnimationSystem.AnimationData(
+                texture: newExplosionSprite,
+                frameCount: 11,
+                frameSize: new Vector2(newExplosionSprite.Width / 11, newExplosionSprite.Height),
+                delaySeconds: 0.1f);
+
+            explosionAnimation = newExplosionAnimation;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData

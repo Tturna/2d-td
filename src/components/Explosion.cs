@@ -6,11 +6,14 @@ public class Explosion : Entity
 {
     private float lifetimeLeft;
 
-    public Explosion(Game1 game, Vector2 worldPosition) : base(game, worldPosition, GetExplosionAnimation())
+    public Explosion(Game1 game, Vector2 worldPosition, AnimationSystem.AnimationData animation)
+        : base(game, worldPosition, animation)
     {
         lifetimeLeft = AnimationSystem.BaseAnimationData.DelaySeconds * AnimationSystem.BaseAnimationData.FrameCount;
         DrawOrigin = AnimationSystem.BaseAnimationData.FrameSize / 2;
     }
+
+    public Explosion(Game1 game, Vector2 worldPosition) : this(game, worldPosition, GetExplosionAnimation()) { }
 
     public override void Update(GameTime gameTime)
     {
