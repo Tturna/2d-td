@@ -7,9 +7,8 @@ public class MovementSystem
 {
     public enum MovementPattern
     {
-        Charge
-        // Add more if an enemy should do something other than charge to the right side of
-        // the screen
+        Charge,
+        BounceForward
     }
 
     public struct MovementData
@@ -40,6 +39,9 @@ public class MovementSystem
         {
             case MovementPattern.Charge:
                 HandleCharge(entity, deltaTime);
+                break;
+            case MovementPattern.BounceForward:
+                HandleBounceForward(entity, deltaTime);
                 break;
         }
     }
@@ -128,7 +130,33 @@ public class MovementSystem
             if (shouldClimbCorner) leapMagnitude += 1f;
 
             entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * leapMagnitude);
+            entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
         }
         // TODO: Implement flying enemy logic and shi
+    }
+
+    private void HandleBounceForward(Entity entity, float deltaTime)
+    {
+        if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
+        {
+            // This whole dot product checking prevents the bouncer from getting stuck on ceiling corners.
+            var roughCollisionPoint = Grid.TileToWorldPosition(collidedTilePositions[0]);
+            var diff = roughCollisionPoint - entity.Position + entity.Size / 2;
+            var dir = diff;
+            dir.Normalize();
+            var dot = Vector2.Dot(dir, -Vector2.UnitY);
+
+            if (MathF.Abs(dot) > 0.5f)
+            {
+                var bounceDir = diff.Y <= 0 ? 1 : -1;
+                var enemy = (Enemy)entity;
+                enemy.PhysicsSystem.AddForce(Vector2.UnitY * bounceDir * CurrentData.JumpForce);
+                enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed);
+                entity.StretchImpact(new Vector2(1.5f, 0.5f), 0.2f);
+            }
+        }
+
+        entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);
+        entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
     }
 }

@@ -30,9 +30,9 @@ public class AnimationSystem
     }
 
     public AnimationData BaseAnimationData { get; private set; }
+    public AnimationData CurrentAnimationData { get; private set; }
 
     private Dictionary<string, AnimationData>? altAnimationStates;
-    private AnimationData currentAnimationData;
     private const string BaseStateName = "base";
     private string? currentStateName;
     private string? oneShotPreviousState;
@@ -48,7 +48,7 @@ public class AnimationSystem
     {
         BaseAnimationData = baseAnimationData;
         this.frameTimer = BaseAnimationData.DelaySeconds;
-        currentAnimationData = BaseAnimationData;
+        CurrentAnimationData = BaseAnimationData;
         currentStateName = BaseStateName;
     }
 
@@ -101,10 +101,10 @@ public class AnimationSystem
 
         if (stateName is null || stateName == BaseStateName)
         {
-            currentAnimationData = BaseAnimationData;
+            CurrentAnimationData = BaseAnimationData;
             currentStateName = BaseStateName;
-            frameTimer = currentAnimationData.DelaySeconds;
-            return currentAnimationData;
+            frameTimer = CurrentAnimationData.DelaySeconds;
+            return CurrentAnimationData;
         }
 
         if (altAnimationStates is null)
@@ -117,11 +117,11 @@ public class AnimationSystem
             throw new KeyNotFoundException($"Animation state {stateName} not added.");
         }
 
-        currentAnimationData = animationData;
+        CurrentAnimationData = animationData;
         currentStateName = stateName;
-        frameTimer = currentAnimationData.DelaySeconds;
+        frameTimer = CurrentAnimationData.DelaySeconds;
 
-        return currentAnimationData;
+        return CurrentAnimationData;
     }
 
     /// <summary>
@@ -184,8 +184,8 @@ public class AnimationSystem
 
     public void NextFrame()
     {
-        frameTimer = currentAnimationData.DelaySeconds;
-        currentFrame = (currentFrame + 1) % currentAnimationData.FrameCount;
+        frameTimer = CurrentAnimationData.DelaySeconds;
+        currentFrame = (currentFrame + 1) % CurrentAnimationData.FrameCount;
     }
 
     public void OverrideTexture(Texture2D texture, float durationSeconds)
@@ -195,10 +195,10 @@ public class AnimationSystem
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotationRadians = 0f,
-        Vector2 drawOrigin = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
+        Vector2 drawOrigin = default, Vector2 drawOffset = default, Vector2? scale = null, float drawLayerDepth = 0.9f)
     {
         Rectangle? sourceRect = null;
-        Texture2D texture = currentAnimationData.Texture;
+        Texture2D texture = CurrentAnimationData.Texture;
 
         if (overrideTimer > 0f && overrideTexture is not null)
         {
@@ -206,20 +206,23 @@ public class AnimationSystem
         }
         else
         {
-            var xPosHorizontal = currentAnimationData.FrameSize.X * currentFrame;
-            var x = (int)Math.Floor(xPosHorizontal % currentAnimationData.Texture.Width);
-            var y = (int)(Math.Floor(xPosHorizontal / currentAnimationData.Texture.Width) * currentAnimationData.FrameSize.Y);
-            sourceRect = new Rectangle(x, y, (int)currentAnimationData.FrameSize.X, (int)currentAnimationData.FrameSize.Y);
+            var xPosHorizontal = CurrentAnimationData.FrameSize.X * currentFrame;
+            var x = (int)Math.Floor(xPosHorizontal % CurrentAnimationData.Texture.Width);
+            var y = (int)(Math.Floor(xPosHorizontal / CurrentAnimationData.Texture.Width) * CurrentAnimationData.FrameSize.Y);
+            sourceRect = new Rectangle(x, y, (int)CurrentAnimationData.FrameSize.X, (int)CurrentAnimationData.FrameSize.Y);
         }
 
-        var usedScale = scale == null ? Vector2.One : (Vector2)scale;
-        var scaleDiff = Vector2.One - usedScale;
-        var sizeRect = sourceRect is not null ? (Rectangle)sourceRect : texture.Bounds;
-        var size = new Vector2(sizeRect.Width, sizeRect.Height);
-        var offset = scaleDiff * size;
+        var usedScale = scale is null ? Vector2.One : (Vector2)scale;
+
+        // TODO: Use offset if scaling entities whose origin is not in the center.
+        // var scaleDiff = Vector2.One - usedScale;
+        // var sizeRect = sourceRect is not null ? (Rectangle)sourceRect : texture.Bounds;
+        // var size = new Vector2(sizeRect.Width, sizeRect.Height);
+        // var offset = scaleDiff * size;
+        var offset = Vector2.Zero;
 
         spriteBatch.Draw(texture,
-                position + offset,
+                position + offset + drawOffset,
                 sourceRectangle: sourceRect,
                 Color.White,
                 rotation: rotationRadians,

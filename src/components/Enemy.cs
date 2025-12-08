@@ -1,7 +1,6 @@
 using System;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
@@ -12,8 +11,6 @@ public class Enemy : Entity, IKnockable
     public MovementSystem MovementSystem;
     public int ScrapValue;
 
-    private Texture2D hurtTexture;
-    private float hurtTimeSeconds = 0.1f;
     private double hurtProgress;
     private double hurtAnimThreshold;
     private int attackDamage = 10;
@@ -23,7 +20,7 @@ public class Enemy : Entity, IKnockable
     private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     public Enemy(Game game, Vector2 position, Vector2 size, MovementSystem.MovementData movementData,
-        AnimationSystem.AnimationData animationData, Texture2D hurtTexture, int health,
+        AnimationSystem.AnimationData animationData, int health,
         int scrapValue) : base(game, position, animationData)
     {
         HealthSystem = new HealthSystem(owner: this, initialHealth: health);
@@ -34,8 +31,6 @@ public class Enemy : Entity, IKnockable
         MovementSystem = new MovementSystem(Game, movementData);
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
-
-        this.hurtTexture = hurtTexture;
 
         selfDestructTimer = selfDestructTime;
     }
@@ -111,7 +106,7 @@ public class Enemy : Entity, IKnockable
         if (oldBinGridPosition != newBinGridPosition)
         {
             var canRemove = EnemySystem.EnemyBins.Remove(this);
-            SetPosition(newPosition);
+            SetPosition(newPosition, force: true);
 
             if (!canRemove)
             {
@@ -122,7 +117,32 @@ public class Enemy : Entity, IKnockable
             return;
         }
 
-        SetPosition(newPosition);
+        SetPosition(newPosition, force: true);
+    }
+
+    public override void SetPosition(Vector2 newPosition, bool force = false)
+    {
+        if (!force)
+        {
+            var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
+            var newBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(newPosition);
+
+            if (oldBinGridPosition != newBinGridPosition)
+            {
+                var canRemove = EnemySystem.EnemyBins.Remove(this);
+                SetPosition(newPosition, force: true);
+
+                if (!canRemove)
+                {
+                    throw new InvalidOperationException($"Couldn't remove enemy ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                }
+
+                EnemySystem.EnemyBins.Add(this);
+                return;
+            }
+        }
+
+        base.SetPosition(newPosition, force);
     }
 
     public void ApplyKnockback(Vector2 knockback)
@@ -137,11 +157,10 @@ public class Enemy : Entity, IKnockable
         hurtProgress += amount;
         if (hurtProgress >= hurtAnimThreshold)
         {
-            AnimationSystem.OverrideTexture(hurtTexture, hurtTimeSeconds);
             hurtProgress = 0;
         }
 
-        StretchImpact(new Vector2(1.3f, 0.7f), 0.1f);
+        StretchImpact(new Vector2(1.8f, 0.4f), 0.1f);
     }
 
     public override void Destroy()

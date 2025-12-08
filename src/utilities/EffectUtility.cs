@@ -10,7 +10,7 @@ public static class EffectUtility
     /// entities further from the explosion.
     /// </summary>
     public static void Explode(Vector2 worldPosition, float radius, float magnitude, int damage,
-        bool useEffectFalloff = true)
+        bool useEffectFalloff = true, AnimationSystem.AnimationData? animation = null)
     {
         var enemies = EnemySystem.EnemyBins.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
 
@@ -63,5 +63,14 @@ public static class EffectUtility
 
         ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
         CameraManager.Instance.ShakeCamera(0.75f, 0.1f);
+
+        if (animation is not null)
+        {
+            new Explosion(Game1.Instance, worldPosition, animation: (AnimationSystem.AnimationData)animation);
+        }
+        else
+        {
+            new Explosion(Game1.Instance, worldPosition);
+        }
     }
 }

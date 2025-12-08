@@ -227,9 +227,12 @@ public class Game1 : Game
                 Terrain = new Terrain(this, CurrentZone, CurrentLevel);
 
                 Components.Add(Terrain);
-                //hqPosition will need to be flexible for each level
-                var hqPosition = Terrain.GetLastTilePosition() - new Vector2(0,23*Grid.TileLength);
-                var hq = new HQ(this,hqPosition);
+
+                var hq = new HQ(this, Vector2.Zero);
+                var lastTilePosition = Terrain.GetRightMostTopTileWorldPosition();
+                var hqPosition = lastTilePosition - hq.Size;
+                hq.SetPosition(hqPosition);
+
                 EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);

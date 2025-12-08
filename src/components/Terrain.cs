@@ -15,6 +15,8 @@ public class Terrain : DrawableGameComponent
     private Dictionary<Vector2, int> tiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
 
+    private Vector2 topRightMostTile;
+
     public Terrain(Game game, int zone, int level, string tilesetName = "purptiles",
         int tilesetWidth = 12, int tilesetHeight = 4) : base(game)
     {
@@ -62,6 +64,11 @@ public class Terrain : DrawableGameComponent
 
                     var tilePosition = new Vector2(col, row);
                     tiles[tilePosition] = tileId;
+
+                    if (col > topRightMostTile.X)
+                    {
+                        topRightMostTile = tilePosition;
+                    }
                 }
 
                 line = levelReader.ReadLine();
@@ -79,9 +86,14 @@ public class Terrain : DrawableGameComponent
         }
     }
 
-    public Vector2 GetLastTilePosition()
+    public Vector2 GetRightMostTopTileWorldPosition()
     {
-        return tiles.Keys.Last() * Grid.TileLength + levelOffset;
+        return topRightMostTile * Grid.TileLength + levelOffset;
+    }
+
+    public Vector2 GetFirstTilePosition()
+    {
+        return tiles.Keys.First() * Grid.TileLength + levelOffset;
     }
 
     public bool TileExistsAtPosition(Vector2 worldPosition)

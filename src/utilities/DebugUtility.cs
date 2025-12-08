@@ -41,12 +41,12 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
-            EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
+            EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
-        if (InputSystem.IsKeyDown(Keys.R))
+        if (InputSystem.IsKeyTapped(Keys.R))
         {
-            EnemySystem.SpawnWalkerEnemy(game, InputSystem.GetMouseWorldPosition());
+            EnemySystem.SpawnBouncerEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
         if (InputSystem.IsKeyTapped(Keys.Q))
@@ -61,7 +61,8 @@ public static class DebugUtility
 
         // if (InputSystem.IsKeyTapped(Keys.X))
         // {
-        //     ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 1);
+        //     EffectUtility.Explode(InputSystem.GetMouseWorldPosition(), 4, 10, 0);
+        //     // ParticleSystem.PlayExplosion(InputSystem.GetMouseWorldPosition(), 1);
         // }
         //
         // if (InputSystem.IsKeyTapped(Keys.C))

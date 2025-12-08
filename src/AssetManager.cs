@@ -34,14 +34,20 @@ public static class AssetManager
         // towers
         LoadTexture("gunTurretBase", "sprites/Towers/Turret/turret_base/turret_body_base");
         LoadTexture("gunTurretHead", "sprites/Towers/Turret/turret_base/turret_gun_base");
+        LoadTexture("gunTurret_base_bullet", "sprites/Towers/Turret/turret_base/turret_bullet_base");
         LoadTexture("gunTurret_botshot_body", "sprites/Towers/Turret/turret_botshot/turret_botshot_body");
         LoadTexture("gunTurret_botshot_gun", "sprites/Towers/Turret/turret_botshot/turret_botshot_gun");
+        LoadTexture("gunTurret_botshot_bullet", "sprites/Towers/Turret/turret_botshot/botshot_pellet");
         LoadTexture("gunTurret_doublegun_gun", "sprites/Towers/Turret/turret_doublegun/turret_gun_10");
         LoadTexture("gunTurret_improvedbarrel_gun", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun");
+        LoadTexture("gunTurret_improvedbarrel_bullet", "sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet");
         LoadTexture("gunTurret_photoncannon_body", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body");
         LoadTexture("gunTurret_photoncannon_gun", "sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun");
+        LoadTexture("gunTurret_photoncannon_laser", "sprites/Towers/Turret/turret_photoncannon/photonlaser");
+        LoadTexture("laser_particle", "sprites/Towers/Turret/turret_photoncannon/laserparticle");
         LoadTexture("gunTurret_rocketshots_body", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body");
         LoadTexture("gunTurret_rocketshots_gun", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun");
+        LoadTexture("gunTurret_rocketshots_rocket", "sprites/Towers/Turret/turret_rocketshot/rocket");
 
         LoadTexture("gunTurret_botshot_icon", "sprites/Towers/Turret/turret_botshot/turret_botshot_icon");
         LoadTexture("gunTurret_doublegun_icon", "sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon");
@@ -51,12 +57,18 @@ public static class AssetManager
 
         LoadTexture("railgun_base_idle", "sprites/Towers/Railgun/railgun_base/railgun_base_idle");
         LoadTexture("railgun_base_fire", "sprites/Towers/Railgun/railgun_base/railgun_base_fire");
+        LoadTexture("railgun_base_bullet", "sprites/Towers/Railgun/railgun_base/railgunbullet");
         LoadTexture("railgun_antimatterlaser_idle", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle");
         LoadTexture("railgun_antimatterlaser_fire", "sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire");
+        LoadTexture("railgun_antimatterlaser_bullet", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast");
+        LoadTexture("railgun_antimatterlaser_muzzleflash", "sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash");
         LoadTexture("railgun_cannonball_idle", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle");
         LoadTexture("railgun_cannonball_fire", "sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire");
+        LoadTexture("railgun_cannonball_bullet", "sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile");
         LoadTexture("railgun_goldengatling_idle", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle");
         LoadTexture("railgun_goldengatling_fire", "sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing");
+        LoadTexture("railgun_goldengatling_bullet", "sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile");
+        LoadTexture("railgun_goldengatling_bullet_flaming", "sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming");
         LoadTexture("railgun_polishedrounds_idle", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle");
         LoadTexture("railgun_polishedrounds_fire", "sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire");
         LoadTexture("railgun_tungstenshells_idle", "sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle");
@@ -75,44 +87,85 @@ public static class AssetManager
 
         LoadTexture("mortar_base_idle", "sprites/Towers/Mortar/mortar_base/mortar_base_idle");
         LoadTexture("mortar_base_fire", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
+        LoadTexture("mortar_base_shell", "sprites/Towers/Mortar/mortar_base/mortarshell");
         LoadTexture("mortar_bouncingbomb_idle", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle");
         LoadTexture("mortar_bouncingbomb_fire", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire");
+        LoadTexture("mortar_bouncingbomb_shell", "sprites/Towers/Mortar/mortar_bouncing_bomb/bouncing_bomb");
+        LoadTexture("mortar_bouncingbomb_explosion", "sprites/Towers/Mortar/mortar_bouncing_bomb/explosion_bouncingbomb");
         LoadTexture("mortar_efficientreload_idle", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle");
         LoadTexture("mortar_efficientreload_fire", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire");
         LoadTexture("mortar_heavyshells_idle", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle");
         LoadTexture("mortar_heavyshells_fire", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire");
+        LoadTexture("mortar_heavyshells_shell", "sprites/Towers/Mortar/mortar_heavyshells/heavyshell");
         LoadTexture("mortar_hellrain_idle", "sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle");
         LoadTexture("mortar_hellrain_fire", "sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire");
+        LoadTexture("mortar_hellrain_shell", "sprites/Towers/Mortar/mortar_hellrain/rainmissile");
+        LoadTexture("mortar_hellrain_explosion", "sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion");
         LoadTexture("mortar_missilesilo_idle", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle");
         LoadTexture("mortar_missilesilo_fire", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire");
+        LoadTexture("mortar_missilesilo_shell", "sprites/Towers/Mortar/mortar_missilesilo/ballisticmissile");
         LoadTexture("mortar_nuke_idle", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle");
         LoadTexture("mortar_nuke_fire", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire");
+        LoadTexture("mortar_nuke_shell", "sprites/Towers/Mortar/mortar_nuke/nuke");
+        LoadTexture("mortar_nuke_explosion", "sprites/Towers/Mortar/mortar_nuke/nuclear_explosion");
         LoadTexture("mortar_reticle", "sprites/Towers/Mortar/mortar_reticle");
 
         LoadTexture("mortar_bouncingbomb_icon", "sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon");
         LoadTexture("mortar_efficientreload_icon", "sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon");
         LoadTexture("mortar_heavyshells_icon", "sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon");
-        // hellrain icon missing?
+        LoadTexture("mortar_hellrain_icon", "sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_icon");
         LoadTexture("mortar_missilesilo_icon", "sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon");
         LoadTexture("mortar_nuke_icon", "sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon");
 
+        LoadTexture("hovership_base_idle", "sprites/Towers/Hovership/hovership_base/hovership_base_idle");
+        LoadTexture("hovership_base_platform", "sprites/Towers/Hovership/hovership_base/hovership_base_platform");
+        LoadTexture("hovership_base_bomb", "sprites/Towers/Hovership/hovership_base/hovership_bomb");
+        LoadTexture("hovership_bombierbay_idle", "sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle");
+        LoadTexture("hovership_bombierbay_platform", "sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform");
+        LoadTexture("hovership_carpetoffire_idle", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle");
+        LoadTexture("hovership_carpetoffire_platform", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform");
+        LoadTexture("hovership_carpetoffire_bomb", "sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb");
+        LoadTexture("hovership_efficientengines_idle", "sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle");
+        LoadTexture("hovership_efficientengines_platform", "sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform");
+        LoadTexture("hovership_emp_idle", "sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle");
+        LoadTexture("hovership_emp_platform", "sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform");
+        LoadTexture("hovership_emp_bomb", "sprites/Towers/Hovership/hovership_EMP/EMPbomb");
+        LoadTexture("hovership_orbitallaser_idle", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle");
+        LoadTexture("hovership_orbitallaser_attack", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack");
+        LoadTexture("hovership_orbitallaser_firing", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing");
+        LoadTexture("hovership_orbitallaser_platform", "sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform");
+        LoadTexture("hovership_orbitallaser_beam", "sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam");
+        LoadTexture("hovership_orbitallaser_impact", "sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact");
+        LoadTexture("hovership_ufo_idle", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle");
+        LoadTexture("hovership_ufo_platform", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform");
+        LoadTexture("hovership_ufo_tractorbeam", "sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam");
+
+        LoadTexture("hovership_bombierbay_icon", "sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon");
+        LoadTexture("hovership_carpetoffire_icon", "sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon");
+        LoadTexture("hovership_efficientengines_icon", "sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon");
+        LoadTexture("hovership_emp_icon", "sprites/Towers/Hovership/hovership_EMP/EMP_icon");
+        LoadTexture("hovership_orbitallaser_icon", "sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon");
+        LoadTexture("hovership_ufo_icon", "sprites/Towers/Hovership/hovership_UFO/UFO_icon");
+
         LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
 
-        LoadTexture("turretTwo", "sprites/turretTwo"); // temp
-
-        // projectiles
-        LoadTexture("tempprojectile", "sprites/projectiles/railguntemp"); // temp
+        // effects
+        LoadTexture("muzzleflash_small", "sprites/Generic Effects/muzzleflash_small");
+        LoadTexture("muzzleflash_medium", "sprites/Generic Effects/muzzleflash_medium");
+        LoadTexture("muzzleflash_large", "sprites/Generic Effects/muzzleflash_large");
+        LoadTexture("explosion_small", "sprites/Generic Effects/explosion_small");
+        LoadTexture("explosion_large", "sprites/Generic Effects/explosion_large");
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
 
         // enemies
-        LoadTexture("goon", "sprites/enemies/goon/goon_walk");
-        LoadTexture("goon_hit", "sprites/enemies/goon/goon_hurtframe");
-        LoadTexture("fridge", "sprites/enemies/fridge/fridge_walk");
-        LoadTexture("fridge_hit", "sprites/enemies/fridge/fridge_hurtframe");
+        LoadTexture("node", "sprites/Enemies/Node/node_body");
+        LoadTexture("bouncer", "sprites/Enemies/Bouncer/bouncer_body");
+        LoadTexture("meganode", "sprites/Enemies/Meganode/meganode_body");
 
         // environment
+        LoadTexture("hq", "sprites/Misc/HQ");
         LoadTexture("tree", "sprites/tree"); // temp
         LoadTexture("mountain", "sprites/mountain"); // temp
         LoadTexture("big_gradient", "sprites/big_gradient"); // temp

@@ -21,8 +21,16 @@ class GunTurret : Entity, ITower
     private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bulletPixelsPerSecond = 360f;
-    private float muzzleOffsetFactor = 20f;
+    private float muzzleOffsetFactor = 14f;
     private float turretSmoothSpeed = 5f;
+    private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
+    private float projectileRotationOffset;
+
+    private Texture2D muzzleFlashSprite = AssetManager.GetTexture("muzzleflash_small");
+    private Entity muzzleFlash;
+    private float muzzleFlashTimer;
+
+    private Entity? photonCannonBeam;
 
     private Random random = new();
 
@@ -65,6 +73,17 @@ class GunTurret : Entity, ITower
         towerCore.CurrentUpgrade = defaultNode;
         realRange = baseRange;
         realDamage = baseDamage;
+
+        var muzzleFlashAnimation = new AnimationSystem.AnimationData(
+            texture: muzzleFlashSprite,
+            frameCount: 2,
+            frameSize: new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height),
+            delaySeconds: 0.05f);
+
+        muzzleFlash = new Entity(Game, Vector2.Zero, muzzleFlashAnimation);
+        muzzleFlash.Scale = Vector2.Zero;
+        // set origin to base of muzzle flash. width is / 2 because the sprite has two animation frames.
+        muzzleFlash.DrawOrigin = new Vector2(muzzleFlashSprite.Width / 2, muzzleFlashSprite.Height / 2);
     }
 
     public override void Initialize()
@@ -117,6 +136,17 @@ class GunTurret : Entity, ITower
             HandleRocketShots(deltaTime);
         }
 
+        if (muzzleFlash.Scale != Vector2.Zero)
+        {
+            muzzleFlashTimer += deltaTime;
+            var mfdata = muzzleFlash.AnimationSystem!.BaseAnimationData;
+
+            if (muzzleFlashTimer >= mfdata.FrameCount * mfdata.DelaySeconds)
+            {
+                muzzleFlash.Scale = Vector2.Zero;
+            }
+        }
+
         base.Update(gameTime);
     }
 
@@ -133,7 +163,7 @@ class GunTurret : Entity, ITower
                 var dirY = Math.Cos(rad);
                 var dir = new Vector2((float)dirX, (float)dirY);
                 var target = turretHead!.Position + dir * photonCannonTargetDistance;
-                LineUtility.DrawLine(Game.SpriteBatch, turretHead!.Position + dir * 16, target, Color.Red, thickness: 2f);
+                photonCannonBeam!.Scale = new Vector2(photonCannonTargetDistance, 1);
             }
         }
     }
@@ -196,16 +226,21 @@ class GunTurret : Entity, ITower
 
         actionTimer += deltaTime;
         photonCannonTargetDistance = 0f;
+        photonCannonBeam!.Scale = Vector2.Zero;
 
         if (closestEnemy is null) return;
 
         var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
-        if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHead!.Position + turretHead.Size / 2,
-            closestEnemy.Position, closestEnemy, out var entryPoint, out var _))
+        if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHeadAxisCenter,
+            closestEnemy.Position + closestEnemy.Size / 2, closestEnemy, out var entryPoint, out var _))
         {
-            var diff = turretHead!.Position - entryPoint;
-            photonCannonTargetDistance = diff.Length();
+            var diff = entryPoint - turretHeadAxisCenter;
+            var direction = diff;
+            direction.Normalize();
+            photonCannonTargetDistance = diff.Length() - muzzleOffsetFactor;
+            photonCannonBeam.SetPosition(turretHeadAxisCenter + direction * muzzleOffsetFactor);
+            photonCannonBeam.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
 
             if (actionTimer >= actionInterval)
             {
@@ -213,7 +248,7 @@ class GunTurret : Entity, ITower
                 var damage = (int)(60 * actionInterval);
                 closestEnemy.HealthSystem.TakeDamage(damage);
                 actionTimer = 0f;
-                ParticleSystem.PlayImpactEffect(entryPoint, diff);
+                ParticleSystem.PlayPhotonLaserImpact(entryPoint);
             }
         }
     }
@@ -272,7 +307,13 @@ class GunTurret : Entity, ITower
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
-        var startLocation = turretHeadAxisCenter+muzzleOffset;
+        var startLocation = turretHeadAxisCenter + muzzleOffset;
+
+        muzzleFlash.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
+        muzzleFlash.Scale = Vector2.One;
+        muzzleFlash.SetPosition(startLocation);
+        muzzleFlashTimer = 0;
+        muzzleFlash.AnimationSystem!.ToggleAnimationState(null); // reset animation progress
 
         var bullet = new Projectile(Game, startLocation);
         bullet.Direction = direction;
@@ -280,7 +321,9 @@ class GunTurret : Entity, ITower
         bullet.Damage = realDamage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
-        bullet.TrailColor = Color.Red;
+        bullet.Sprite = projectileSprite;
+        bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
+        bullet.RotationOffset = projectileRotationOffset;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
     }
@@ -358,11 +401,22 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
             realRange = baseRange - 2;
             realDamage = baseDamage + 8;
+            projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_photoncannon_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_photoncannon_gun");
+
+            var beamSprite = AssetManager.GetTexture("gunTurret_photoncannon_laser");
+            var beamAnimation = new AnimationSystem.AnimationData(
+                texture: beamSprite,
+                frameCount: 2,
+                frameSize: new Vector2(beamSprite.Width / 2, beamSprite.Height),
+                delaySeconds: 0.2f);
+
+            photonCannonBeam = new Entity(Game, Vector2.Zero, beamAnimation);
+            photonCannonBeam.DrawOrigin = new Vector2(beamSprite.Width / 2, beamSprite.Height / 2);
         }
         else if (newUpgrade.Name == Upgrade.RocketShots.ToString())
         {
@@ -370,6 +424,8 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
             realRange = baseRange + 8;
             realDamage = baseDamage + 23;
+            projectileSprite = AssetManager.GetTexture("gunTurret_rocketshots_rocket");
+            projectileRotationOffset = MathHelper.Pi; // rotate 180 degrees
         }
         else if (newUpgrade.Name == Upgrade.DoubleGun.ToString())
         {
@@ -380,6 +436,7 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
             realRange = baseRange + 4;
             realDamage = baseDamage + 3;
+            projectileSprite = AssetManager.GetTexture("gunTurret_improvedbarrel_bullet");
         }
 
         var newBaseAnimation = new AnimationSystem.AnimationData

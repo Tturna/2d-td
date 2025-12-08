@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2d_td;
 
+#nullable enable
 public static class ParticleSystem
 {
     private record class ColorFade
@@ -44,6 +45,8 @@ public static class ParticleSystem
 
     private record class Particle
     {
+        public Texture2D? Sprite;
+        public AnimationSystem? AnimationSystem;
         public Vector2 Position;
         public Vector2 Velocity;
         public float MaxLifetime;
@@ -52,14 +55,16 @@ public static class ParticleSystem
         public bool ShouldFadeColor;
         public bool ShouldSlowDown;
         public Color Color;
-        public ColorFade ColorFade;
+        public ColorFade? ColorFade;
         public float Depth;
         public float SlowdownSpeed;
 
         public Particle(Vector2 position, Vector2 velocity, float lifetime, Color color,
+            Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
             bool shouldFadeOut = true, bool shouldSlowDown = false, float depth = 1f,
             float slowdownSpeed = 4f)
         {
+            Sprite = sprite;
             Position = position;
             Velocity = velocity;
             MaxLifetime = lifetime;
@@ -69,12 +74,19 @@ public static class ParticleSystem
             Color = color;
             Depth = depth;
             SlowdownSpeed = slowdownSpeed;
+
+            if (animation is not null)
+            {
+                AnimationSystem = new AnimationSystem((AnimationSystem.AnimationData)animation);
+            }
         }
 
         public Particle(Vector2 position, Vector2 velocity, float lifetime, ColorFade fade,
+            Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
             bool shouldFadeOut = true, bool shouldSlowDown = false, float depth = 1f,
             float slowdownSpeed = 4f)
         {
+            Sprite = sprite;
             Position = position;
             Velocity = velocity;
             MaxLifetime = lifetime;
@@ -85,13 +97,18 @@ public static class ParticleSystem
             Depth = depth;
             ColorFade = fade;
             ShouldFadeColor = true;
+
+            if (animation is not null)
+            {
+                AnimationSystem = new AnimationSystem((AnimationSystem.AnimationData)animation);
+            }
         }
     }
 
-    private static Game1 game;
-    private static Texture2D pixelSprite;
-    private static Random rng;
-    private static Particle[] particles;
+    private static Game1 game = null!;
+    private static Texture2D pixelSprite = null!;
+    private static Random rng = new();
+    private static Particle?[] particles = null!;
     private static Stack<int> deathIndexStack = new();
     private static int nextMaxIndex;
     private const int MaxParticles = 10000;
@@ -100,7 +117,6 @@ public static class ParticleSystem
     {
         ParticleSystem.game = game;
         pixelSprite = TextureUtility.GetBlankTexture(game.SpriteBatch, 1, 1, Color.White);
-        rng = new();
         particles = new Particle[MaxParticles];
     }
 
@@ -110,7 +126,7 @@ public static class ParticleSystem
 
         for (int i = 0; i < MaxParticles; i++)
         {
-            var particle = particles[i];
+            var particle = particles![i];
 
             if (particle is null) continue;
 
@@ -128,6 +144,11 @@ public static class ParticleSystem
             var slowdownFactor = normalLifetime < slowdownThreshold ? deltaTime * particle.SlowdownSpeed : 0f;
             particle.Velocity = Vector2.Lerp(particle.Velocity, Vector2.Zero, slowdownFactor);
             particle.Position += particle.Velocity;
+
+            if (particle.AnimationSystem is not null)
+            {
+                particle.AnimationSystem.UpdateAnimation(deltaTime);
+            }
         }
     }
 
@@ -138,7 +159,7 @@ public static class ParticleSystem
 
         for (int i = 0; i < MaxParticles; i++)
         {
-            var particle = particles[i];
+            var particle = particles![i];
 
             if (particle is null) continue;
 
@@ -150,7 +171,7 @@ public static class ParticleSystem
 
                 if (particle.ShouldFadeColor)
                 {
-                    color = particle.ColorFade.Evaluate(1f - x);
+                    color = particle.ColorFade!.Evaluate(1f - x);
                 }
 
                 if (particle.ShouldFadeOut)
@@ -162,12 +183,21 @@ public static class ParticleSystem
                 }
             }
 
-            spriteBatch.Draw(pixelSprite,
+            var sprite = particle.Sprite ?? pixelSprite;
+            var drawOrigin = new Vector2(sprite!.Width / 2, sprite.Height / 2);
+
+            if (particle.AnimationSystem is not null)
+            {
+                particle.AnimationSystem.Draw(spriteBatch, particle.Position, drawOrigin: drawOrigin,
+                    drawLayerDepth: particle.Depth);
+            }
+
+            spriteBatch.Draw(sprite,
                 particle.Position,
                 sourceRectangle: null,
                 color,
                 rotation: 0,
-                origin: Vector2.Zero,
+                origin: drawOrigin,
                 scale: Vector2.One,
                 effects: SpriteEffects.None,
                 layerDepth: particle.Depth);
@@ -308,5 +338,25 @@ public static class ParticleSystem
 
         AddParticle(new Particle(worldPosition, velocity, 0.5f, color,
             shouldSlowDown: true, shouldFadeOut: true));
+    }
+
+    public static void PlayPhotonLaserImpact(Vector2 worldPosition)
+    {
+        var spriteSheet = AssetManager.GetTexture("laser_particle");
+        var animation = new AnimationSystem.AnimationData(
+            texture: spriteSheet,
+            frameCount: 4,
+            frameSize: new Vector2(spriteSheet.Width / 4, spriteSheet.Height),
+            delaySeconds: 0.1f);
+
+        var rx = ((float)rng.NextDouble() - 0.5f) * 2;
+        var ry = ((float)rng.NextDouble() - 0.5f) * 2;
+        var randomDirection = new Vector2(rx, ry);
+        randomDirection.Normalize();
+        var velocity = randomDirection * 0.5f;
+        var lifetime = animation.FrameCount * animation.DelaySeconds;
+
+        AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+            animation: animation, shouldSlowDown: true, shouldFadeOut: true));
     }
 }

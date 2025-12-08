@@ -13,6 +13,7 @@ public class Entity : DrawableGameComponent
     public float RotationRadians { get; set; }
     public Vector2 Size { get; set; }
     public Vector2 DrawOrigin { get; set; } = Vector2.Zero;
+    public Vector2 DrawOffset { get; set; } = Vector2.Zero;
     public Vector2 Scale { get; set; } = Vector2.One;
     // 1 = back, 0 = front
     public float DrawLayerDepth { get; set; } = 0.9f;
@@ -111,13 +112,13 @@ public class Entity : DrawableGameComponent
     {
         if (AnimationSystem is not null)
         {
-            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, Scale, DrawLayerDepth);
+            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawOffset, Scale, DrawLayerDepth);
         }
         else if (Sprite is null) return;
         else
         {
             Game.SpriteBatch.Draw(Sprite,
-                    Position,
+                    Position + DrawOffset,
                     sourceRectangle: null,
                     Color.White,
                     rotation: RotationRadians,
@@ -147,9 +148,24 @@ public class Entity : DrawableGameComponent
         Position += positionChange;
     }
 
-    public virtual void SetPosition(Vector2 newPosition)
+    public virtual void SetPosition(Vector2 newPosition, bool force = false)
     {
         Position = newPosition;
+    }
+
+    public virtual void Rotate(float radians)
+    {
+        RotationRadians += radians;
+
+        while (RotationRadians >= MathHelper.Tau)
+        {
+            RotationRadians -= MathHelper.Tau;
+        }
+
+        while (RotationRadians < 0)
+        {
+            RotationRadians += MathHelper.Tau;
+        }
     }
 
     public virtual void StretchImpact(Vector2 scale, float duration)
