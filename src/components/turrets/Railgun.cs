@@ -283,6 +283,8 @@ class Railgun : Entity, ITower
                 delaySeconds: 0.05f);
 
             muzzleFlash.AnimationSystem!.ChangeAnimationState(null, newMuzzleFlashAnimation);
+
+            UpdatePosition(-Vector2.UnitY * 3);
         }
         else if (newUpgrade.Name == Upgrade.Cannonball.ToString())
         {
@@ -291,6 +293,8 @@ class Railgun : Entity, ITower
             newIdleFrameCount = 6;
             newFireFrameCount = 7;
             projectileSprite = AssetManager.GetTexture("railgun_cannonball_bullet");
+
+            UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.GoldenGatling.ToString())
         {
@@ -299,6 +303,8 @@ class Railgun : Entity, ITower
             newIdleFrameCount = 3;
             newFireFrameCount = 2;
             projectileSprite = AssetManager.GetTexture("railgun_goldengatling_bullet");
+
+            UpdatePosition(-Vector2.UnitY * 5);
         }
         else if (newUpgrade.Name == Upgrade.PolishedRound.ToString())
         {
