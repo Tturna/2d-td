@@ -29,6 +29,19 @@ public class TowerCore : GameComponent, IClickable
         InputSystem.RightClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition, force: true);
     }
 
+    public override void Update(GameTime gameTime)
+    {
+        // Set draw origin to bot right instead of top left and offset tower drawing
+        // so that variable idle and fire animation frame sizes don't make the tower look like
+        // it's shifting as it changes animations.
+        var currentAnimationData = Turret.AnimationSystem!.CurrentAnimationData;
+        var baseAnimationData = Turret.AnimationSystem!.BaseAnimationData;
+        Turret.DrawOrigin = currentAnimationData.FrameSize;
+        Turret.DrawOffset = baseAnimationData.FrameSize;
+
+        base.Update(gameTime);
+    }
+
     public Enemy? GetClosestValidEnemy(int tileRange)
     {
         Enemy? closestEnemy = null;
