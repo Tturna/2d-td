@@ -85,7 +85,15 @@ public class MortarShell : Entity
 
         if (lifeTime <= 0 || collided) DestroyShell(oldVelocity);
 
-        ParticleSystem.PlayFloater(Position, Color.White, oldVelocity);
+        var velodir = oldVelocity;
+        velodir.Normalize();
+        RotationRadians = MathF.Atan2(velodir.Y, velodir.X) + MathHelper.Pi;
+
+        var backCornerPos = Position + -velodir * Size.X;
+        var veloperpendicular = new Vector2(velodir.Y, -velodir.X);
+        var backCenter = backCornerPos + veloperpendicular * (Size.Y / 2);
+
+        ParticleSystem.PlayFloater(backCenter, Color.White, oldVelocity);
     }
 
     public void DestroyShell(Vector2 previousVelocity)
