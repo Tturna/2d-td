@@ -475,9 +475,10 @@ public class UIComponent : DrawableGameComponent
     }
 
     public static void SpawnFlyoutText(string text, Vector2 startPosition,
-        Vector2 flyoutVelocity, float lifetime, bool slowdown = true)
+        Vector2 flyoutVelocity, float lifetime, Color color, bool slowdown = true)
     {
-        new FlyoutText(Instance.game, Instance.uiElements, text, startPosition, flyoutVelocity, lifetime, slowdown);
+        new FlyoutText(Instance.game, Instance.uiElements, text, startPosition, flyoutVelocity,
+            lifetime, color, slowdown);
     }
 
     public void AddUIEntity(UIEntity entity)
