@@ -200,7 +200,7 @@ public class Enemy : Entity, IKnockable
             delaySeconds: float.PositiveInfinity);
 
         anim.DelaySeconds = float.PositiveInfinity;
-        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX * 2);
+        ScrapSystem.AddCorpse(Game, Position, anim, ScrapValue, knockback: -Vector2.UnitX);
         Destroy();
     }
 }

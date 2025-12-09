@@ -14,12 +14,13 @@ public class ScrapCorpse : Entity, IKnockable
         base(game, position, animationData)
     {
         ScrapValue = scrapValue;
+        PhysicsSystem = new PhysicsSystem(Game);
+        PhysicsSystem.StopMovement();
+        PhysicsSystem.LocalGravity = 0.25f;
     }
 
     public override void Initialize()
     {
-        PhysicsSystem = new PhysicsSystem(Game);
-        PhysicsSystem.StopMovement();
         base.Initialize();
     }
 
@@ -31,7 +32,7 @@ public class ScrapCorpse : Entity, IKnockable
     public override void FixedUpdate(float deltaTime)
     {
         if (IsDestroyed) return;
-        if (EnemySystem.EnemyBins.TotalValueCount == 0) return;
+        if (ScrapSystem.Corpses.TotalValueCount == 0) return;
 
         PhysicsSystem.UpdatePhysics(this, deltaTime);
     }

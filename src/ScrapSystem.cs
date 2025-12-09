@@ -60,8 +60,10 @@ public static class ScrapSystem
         var corpse = new ScrapCorpse(game, position, animation, scrapValue);
 
         if (knockback is not null) {
-            corpse.PhysicsSystem.AddForce((Vector2)knockback);
-            corpse.PhysicsSystem.AddForce(-Vector2.UnitY * 0.5f);
+            var kb = (Vector2)knockback;
+            corpse.UpdatePosition(kb); // jerk the corpse a lil
+            corpse.PhysicsSystem.AddForce(kb);
+            corpse.PhysicsSystem.AddForce(-Vector2.UnitY);
         }
 
         Corpses!.Add(corpse);
