@@ -17,6 +17,9 @@ public class ScrapCorpse : Entity, IKnockable
         PhysicsSystem = new PhysicsSystem(Game);
         PhysicsSystem.StopMovement();
         PhysicsSystem.LocalGravity = 0.25f;
+
+        DrawOrigin = Size / 2;
+        DrawOffset = Size / 2;
     }
 
     public override void Initialize()
@@ -26,6 +29,10 @@ public class ScrapCorpse : Entity, IKnockable
 
     public override void Update(GameTime gameTime)
     {
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var velX = PhysicsSystem.Velocity.X;
+        Rotate(velX * 10 * deltaTime);
+
         base.Update(gameTime);
     }
 
