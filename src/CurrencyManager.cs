@@ -57,9 +57,10 @@ public static class CurrencyManager
         return true;
     }
 
-    public static int SellTower(BuildingSystem.TowerType towerType)
+    public static int SellTower(BuildingSystem.TowerType towerType, bool isBroken)
     {
-        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+        var priceDivisor = isBroken ? 4 : 2;
+        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / priceDivisor);
         AddBalance(returnScrap);
 
         return returnScrap;
