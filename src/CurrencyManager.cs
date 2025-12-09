@@ -40,12 +40,19 @@ public static class CurrencyManager
     {
         var price = GetTowerPrice(towerType);
 
-        if (Balance < price)
-        {
-            return false;
-        }
+        if (Balance < price) return false;
 
         // TODO: Track bought towers?
+        Balance -= price;
+        return true;
+    }
+
+    public static bool TryRepairTower(BuildingSystem.TowerType towerType)
+    {
+        var price = GetTowerPrice(towerType) / 2;
+
+        if (Balance < price) return false;
+
         Balance -= price;
         return true;
     }

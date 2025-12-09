@@ -149,7 +149,8 @@ public class TowerCore : GameComponent, IClickable
     {
         if (detailsClosed && detailsPrompt is null)
         {
-            detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
+            detailsPrompt = new TurretDetailsPrompt(Turret.Game, turret: Turret, core: this,
+                UpgradeLeft, UpgradeRight, CurrentUpgrade);
         }
 
         detailsClosed = false;
