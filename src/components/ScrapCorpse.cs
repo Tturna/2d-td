@@ -48,7 +48,7 @@ public class ScrapCorpse : Entity, IKnockable
         if (oldBinGridPosition != newBinGridPosition)
         {
             var canRemove = ScrapSystem.Corpses.Remove(this);
-            SetPosition(newPosition);
+            SetPosition(newPosition, force: true);
 
             if (!canRemove)
             {
@@ -62,7 +62,32 @@ public class ScrapCorpse : Entity, IKnockable
             return;
         }
 
-        SetPosition(newPosition);
+        SetPosition(newPosition, force: true);
+    }
+
+    public override void SetPosition(Vector2 newPosition, bool force = false)
+    {
+        if (!force)
+        {
+            var oldBinGridPosition = ScrapSystem.Corpses.WorldToGridPosition(Position);
+            var newBinGridPosition = ScrapSystem.Corpses.WorldToGridPosition(newPosition);
+
+            if (oldBinGridPosition != newBinGridPosition)
+            {
+                var canRemove = ScrapSystem.Corpses.Remove(this);
+                SetPosition(newPosition, force: true);
+
+                if (!canRemove)
+                {
+                    throw new InvalidOperationException($"Couldn't remove enemy ({this}) from bin grid. Either it doesn't exist or its state in the grid is wrong.");
+                }
+
+                ScrapSystem.Corpses.Add(this);
+                return;
+            }
+        }
+
+        base.SetPosition(newPosition, force);
     }
 
     public override void Destroy()
