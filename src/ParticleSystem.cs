@@ -423,6 +423,8 @@ public static class ParticleSystem
 
     public static void PlayShotSmokeEffect(Vector2 worldPosition)
     {
+        var color = Color.FromNonPremultiplied(new Vector4(1f, 1f, 1f, 0.7f));
+
         for (int i = 0; i < rng.Next(3, 8); i++)
         {
             var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
@@ -442,7 +444,7 @@ public static class ParticleSystem
                 frameSize: new Vector2(smokeSprite.Width / 5, smokeSprite.Height),
                 delaySeconds: lifetime / 5);
 
-            AddParticle(new Particle(worldPosition, velocity, lifetime, Color.White,
+            AddParticle(new Particle(worldPosition, velocity, lifetime, color,
                 shouldSlowDown: true, shouldFadeOut: true, animation: animation,
                 rotationSpeed: rotationSpeed));
         }

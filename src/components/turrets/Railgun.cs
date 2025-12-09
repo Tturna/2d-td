@@ -177,6 +177,8 @@ class Railgun : Entity, ITower
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
+
+        ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
     public bool IsEnemyInLine(int tileRange)
