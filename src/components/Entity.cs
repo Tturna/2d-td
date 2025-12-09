@@ -112,7 +112,8 @@ public class Entity : DrawableGameComponent
     {
         if (AnimationSystem is not null)
         {
-            AnimationSystem.Draw(Game.SpriteBatch, Position, RotationRadians, DrawOrigin, DrawOffset, Scale, DrawLayerDepth);
+            AnimationSystem.Draw(Game.SpriteBatch, Position, Color.White, RotationRadians,
+                DrawOrigin, DrawOffset, Scale, DrawLayerDepth);
         }
         else if (Sprite is null) return;
         else

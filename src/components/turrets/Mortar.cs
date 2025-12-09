@@ -14,6 +14,7 @@ public class Mortar : Entity, ITower
     private bool isTargeting, canSetTarget;
     private Vector2 projectileVelocity;
     private float projectileGravity = 0.12f;
+    private Vector2 spawnOffset = new Vector2(-4, -4);
 
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
@@ -180,7 +181,7 @@ public class Mortar : Entity, ITower
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.SetPosition(Position);
+        shell.SetPosition(Position + spawnOffset);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
@@ -193,6 +194,7 @@ public class Mortar : Entity, ITower
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
+        ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
     private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
@@ -200,7 +202,7 @@ public class Mortar : Entity, ITower
         if (projectileVelocity == default) return;
 
         var shell = new MortarShell(Game);
-        shell.SetPosition(Position);
+        shell.SetPosition(Position + spawnOffset);
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
@@ -213,6 +215,7 @@ public class Mortar : Entity, ITower
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
+        ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
     private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
@@ -239,6 +242,7 @@ public class Mortar : Entity, ITower
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
+        ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
     private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
@@ -266,6 +270,7 @@ public class Mortar : Entity, ITower
         actionTimer = 1f / actionsPerSecond;
 
         AnimationSystem.OneShotAnimationState("fire");
+        ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)

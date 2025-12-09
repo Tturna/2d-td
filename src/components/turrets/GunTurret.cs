@@ -328,6 +328,7 @@ class GunTurret : Entity, ITower
         bullet.TrailColor = Color.Silver;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
+        ParticleSystem.PlayShotSmokeEffect(startLocation);
     }
 
     public override void Destroy()
