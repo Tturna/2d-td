@@ -35,6 +35,12 @@ public class TowerCore : GameComponent, IClickable
 
         InputSystem.LeftClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
         InputSystem.RightClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition, force: true);
+
+        WaveSystem.WaveEnded += () =>
+        {
+            enemiesThatDamagedTurret.Clear();
+            Health.ResetHealth();
+        };
     }
 
     public override void Update(GameTime gameTime)
@@ -71,12 +77,11 @@ public class TowerCore : GameComponent, IClickable
             if (!enemiesThatDamagedTurret.Contains(enemy) && Collision.AreEntitiesColliding(enemy, Turret))
             {
                 enemiesThatDamagedTurret.Add(enemy);
-                Console.WriteLine($"{Turret} took {enemy.AttackDamage} damage");
                 Health.TakeDamage(enemy.AttackDamage);
 
                 if (Health.CurrentHealth <= 0)
                 {
-                    Console.WriteLine($"{Turret} broke!");
+                    // tower broke
                 }
             }
         }

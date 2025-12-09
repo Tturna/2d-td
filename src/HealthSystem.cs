@@ -86,6 +86,11 @@ public class HealthSystem
         }
     }
 
+    public void ResetHealth()
+    {
+        CurrentHealth = MaxHealth;
+    }
+
     private void OnDied(Entity diedEntity)
     {
         Died?.Invoke(diedEntity);
