@@ -78,6 +78,11 @@ public class TowerCore : GameComponent, IClickable
             {
                 enemiesThatDamagedTurret.Add(enemy);
                 Health.TakeDamage(enemy.AttackDamage);
+                ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
+                var flyoutPosition = Turret.Position;
+                var flyoutVelocity = -Vector2.UnitY * 50;
+                UIComponent.SpawnFlyoutText($"{enemy.AttackDamage}", flyoutPosition, flyoutVelocity,
+                    lifetime: 1f, color: Color.White);
 
                 if (Health.CurrentHealth <= 0)
                 {
