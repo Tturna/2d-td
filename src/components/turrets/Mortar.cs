@@ -102,6 +102,8 @@ public class Mortar : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        if (towerCore.Health.CurrentHealth <= 0) return;
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (canSetTarget && InputSystem.IsRightMouseButtonClicked())

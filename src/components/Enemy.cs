@@ -11,10 +11,10 @@ public class Enemy : Entity, IKnockable
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
     public int ScrapValue;
+    public int AttackDamage = 10;
 
     private double hurtProgress;
     private double hurtAnimThreshold;
-    private int attackDamage = 10;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 lastPosition;
@@ -56,7 +56,7 @@ public class Enemy : Entity, IKnockable
 
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
-            HQ.Instance.HealthSystem.TakeDamage(attackDamage);
+            HQ.Instance.HealthSystem.TakeDamage(AttackDamage);
             Destroy();
             return;
         }

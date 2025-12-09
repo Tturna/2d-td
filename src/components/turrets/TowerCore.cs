@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -9,6 +10,7 @@ public class TowerCore : GameComponent, IClickable
 {
     public Entity Turret { get; private set; }
     public TowerUpgradeNode CurrentUpgrade { get; set; }
+    public HealthSystem Health { get; private set; }
 
     public TurretDetailsPrompt? detailsPrompt;
     public bool detailsClosed = true;
@@ -17,9 +19,15 @@ public class TowerCore : GameComponent, IClickable
     public event ClickedHandler? LeftClicked;
     public event ClickedHandler? RightClicked;
 
+    private HashSet<Enemy> enemiesThatDamagedTurret = new();
+    private float brokenParticleInterval = 0.2f;
+    private float brokenParticleTimer;
+
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
+        Health = new HealthSystem(Turret, initialHealth: 100);
+        Health.Died += OnDeath;
         CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
 
@@ -31,6 +39,22 @@ public class TowerCore : GameComponent, IClickable
 
     public override void Update(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (Health.CurrentHealth <= 0)
+        {
+            brokenParticleTimer += deltaTime;
+
+            if (brokenParticleTimer >= brokenParticleInterval)
+            {
+                brokenParticleTimer = 0;
+                ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
+                ParticleSystem.PlaySingleSmokeParticle(Turret.Position + Turret.Size / 2, -Vector2.UnitY);
+            }
+
+            return;
+        }
+
         // Set draw origin to bot right instead of top left and offset tower drawing
         // so that variable idle and fire animation frame sizes don't make the tower look like
         // it's shifting as it changes animations.
@@ -39,7 +63,29 @@ public class TowerCore : GameComponent, IClickable
         Turret.DrawOrigin = currentAnimationData.FrameSize;
         Turret.DrawOffset = baseAnimationData.FrameSize;
 
+        // turret damage
+        var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Turret.Position + Turret.Size / 2);
+
+        foreach (var enemy in enemyCandidates)
+        {
+            if (!enemiesThatDamagedTurret.Contains(enemy) && Collision.AreEntitiesColliding(enemy, Turret))
+            {
+                enemiesThatDamagedTurret.Add(enemy);
+                Console.WriteLine($"{Turret} took {enemy.AttackDamage} damage");
+                Health.TakeDamage(enemy.AttackDamage);
+
+                if (Health.CurrentHealth <= 0)
+                {
+                    Console.WriteLine($"{Turret} broke!");
+                }
+            }
+        }
+
         base.Update(gameTime);
+    }
+
+    private void OnDeath(Entity diedEntity)
+    {
     }
 
     public Enemy? GetClosestValidEnemy(int tileRange)

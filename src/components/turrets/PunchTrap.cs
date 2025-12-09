@@ -77,6 +77,8 @@ class PunchTrap : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        if (towerCore.Health.CurrentHealth <= 0) return;
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
