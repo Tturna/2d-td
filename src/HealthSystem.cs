@@ -142,7 +142,9 @@ public class HealthSystem
 
     public void SetMaxHealth(int newMax)
     {
+        var diff = newMax - MaxHealth;
         MaxHealth = newMax;
+        CurrentHealth += diff;
     }
 
     public void SetHealthBarBackgroundColor(Color color)
