@@ -118,6 +118,13 @@ public class Crane : Entity, ITower
         base.Update(gameTime);
     }
 
+    public override void Draw(GameTime gameTime)
+    {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
+        base.Draw(gameTime);
+    }
+
     private List<Enemy> GetEnemiesInRange(float extraRange = 0f, bool getOnlyFirst = false, bool useHashSet = false)
     {
         List<Enemy> enemies = new();
@@ -486,4 +493,6 @@ public class Crane : Entity, ITower
     public static float GetBaseRange() => 0f;
 
     public float GetRange() => 0f;
+
+    public TowerCore GetTowerCore() => towerCore;
 }

@@ -20,4 +20,5 @@ public interface ITower
     public abstract void UpgradeTower(TowerUpgradeNode newUpgrade);
     public abstract static float GetBaseRange();
     public abstract float GetRange();
+    public abstract TowerCore GetTowerCore();
 }

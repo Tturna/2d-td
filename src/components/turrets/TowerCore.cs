@@ -41,11 +41,20 @@ public class TowerCore : GameComponent, IClickable
             enemiesThatDamagedTurret.Clear();
             Health.ResetHealth();
         };
+
+        var towerHealIndicatorColor = Color.FromNonPremultiplied(new Vector4(162f/255f, 1f, 63f/255f, 1f));
+        Health.Healed += (Entity healedEntity, int amount) =>
+        {
+            UIComponent.SpawnFlyoutText($"+{amount}", Turret.Position, -Vector2.UnitY * 25f,
+                1f, towerHealIndicatorColor);
+        };
     }
 
     public override void Update(GameTime gameTime)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        Health.UpdateHealthBarGraphics(deltaTime);
 
         if (Health.CurrentHealth <= 0)
         {

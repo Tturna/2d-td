@@ -15,9 +15,14 @@ public class HealthSystem
     public delegate void DamagedHandler(Entity damagedEntity, int amount);
     public event DamagedHandler Damaged;
 
+    public delegate void HealedHandler(Entity healedEntity, int amount);
+    public event HealedHandler Healed;
+
     private Texture2D pixelSprite;
-    private Color backgroundBarColor = Color.FromNonPremultiplied(new Vector4(48f/255f, 8f/255f, 35f/255, 1f));
-    private Color foregroundBarColor = Color.FromNonPremultiplied(new Vector4(249f/255f, 72f/255f, 88f/255, 1f));
+    private Color normalBackgroundBarColor = Color.FromNonPremultiplied(new Vector4(48f/255f, 8f/255f, 35f/255, 1f));
+    private Color normalForegroundBarColor = Color.FromNonPremultiplied(new Vector4(249f/255f, 72f/255f, 88f/255, 1f));
+    private Color repairBackgroundBarColor = Color.FromNonPremultiplied(new Vector4(22f/255f, 35f/255f, 31f/255f, 1f));
+    private Color repairForegroundBarColor = Color.FromNonPremultiplied(new Vector4(162f/255f, 1f, 63f/255f, 1f));
     private const int healthBarWidth = 8;
     private float healthBarFlashTime = 0.075f;
     private float healthBarFlashTimer;
@@ -45,18 +50,35 @@ public class HealthSystem
     {
         if (CurrentHealth >= MaxHealth) return;
 
+        var bgColor = CurrentHealth <= 0 ? repairBackgroundBarColor : normalBackgroundBarColor;
+        var fgColor = CurrentHealth <= 0 ? repairForegroundBarColor : normalForegroundBarColor;
+
+        float fillAmount = 0f;
+
+        if (CurrentHealth > 0)
+        {
+            fillAmount = (float)CurrentHealth / (float)MaxHealth;
+        }
+        else
+        {
+            // Assume tower repair requires healing half of max health.
+            fillAmount = 1f + ((float)CurrentHealth / ((float)MaxHealth / 2));
+        }
+
+        var foregroundBarWidth = fillAmount * (float)healthBarWidth;
+
         // background bar
         Game1.Instance.SpriteBatch.Draw(pixelSprite,
             position: worldPosition - Vector2.UnitX * (healthBarWidth / 2),
             sourceRectangle: null,
-            color: backgroundBarColor,
+            color: normalBackgroundBarColor,
             rotation: 0,
             origin: Vector2.Zero,
             scale: new Vector2(healthBarWidth, 1),
             effects: SpriteEffects.None,
             layerDepth: 0.7f);
 
-        var fgColor = healthBarFlashTimer > 0 ? Color.White : foregroundBarColor;
+        fgColor = healthBarFlashTimer > 0 ? Color.White : fgColor;
 
         // actual health bar
         Game1.Instance.SpriteBatch.Draw(pixelSprite,
@@ -65,7 +87,7 @@ public class HealthSystem
             color: fgColor,
             rotation: 0,
             origin: Vector2.Zero,
-            scale: new Vector2((float)CurrentHealth / (float)MaxHealth * (float)healthBarWidth, 1),
+            scale: new Vector2(foregroundBarWidth, 1),
             effects: SpriteEffects.None,
             layerDepth: 0.6f);
     }
@@ -83,6 +105,20 @@ public class HealthSystem
             CurrentHealth = 0;
 
             OnDied(Owner);
+        }
+    }
+
+    public void Heal(int amount)
+    {
+        if (CurrentHealth >= MaxHealth) return;
+
+        CurrentHealth += amount;
+        OnHealed(Owner, amount);
+        healthBarFlashTimer = healthBarFlashTime;
+
+        if (CurrentHealth > MaxHealth)
+        {
+            CurrentHealth = MaxHealth;
         }
     }
 
@@ -104,6 +140,16 @@ public class HealthSystem
         CurrentHealth = MaxHealth;
     }
 
+    public void SetHealthBarBackgroundColor(Color color)
+    {
+        normalBackgroundBarColor = color;
+    }
+
+    public void SetHealthBarForegroundColor(Color color)
+    {
+        normalForegroundBarColor = color;
+    }
+
     private void OnDied(Entity diedEntity)
     {
         Died?.Invoke(diedEntity);
@@ -112,5 +158,10 @@ public class HealthSystem
     private void OnDamaged(Entity damagedEntity, int amount)
     {
         Damaged?.Invoke(damagedEntity, amount);
+    }
+
+    private void OnHealed(Entity healedEntity, int amount)
+    {
+        Healed?.Invoke(healedEntity, amount);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -57,6 +58,28 @@ public static class DebugUtility
         if (InputSystem.IsKeyTapped(Keys.T))
         {
             CurrencyManager.AddBalance(10);
+        }
+
+        if (InputSystem.IsKeyTapped(Keys.H))
+        {
+            var mousePos = InputSystem.GetMouseWorldPosition();
+            var radius = 40;
+            var components = new GameComponent[game.Components.Count];
+            game.Components.CopyTo(components, 0);
+
+            foreach (var component in components)
+            {
+                if (component is not ITower) continue;
+
+                var tower = (ITower)component;
+                var core = tower.GetTowerCore();
+
+                var distance = Vector2.Distance(mousePos, core.Turret.Position + core.Turret.Size / 2);
+
+                if (distance > radius) continue;
+
+                core.Health.Heal(10);
+            }
         }
 
         // if (InputSystem.IsKeyTapped(Keys.X))

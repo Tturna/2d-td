@@ -178,6 +178,13 @@ public class Mortar : Entity, ITower
         base.Update(gameTime);
     }
 
+    public override void Draw(GameTime gameTime)
+    {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
+        base.Draw(gameTime);
+    }
+
     private void HandleBasicShot(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
     {
         if (projectileVelocity == default) return;
@@ -505,4 +512,6 @@ public class Mortar : Entity, ITower
     public static float GetBaseRange() => 0f;
 
     public float GetRange() => 0f;
+
+    public TowerCore GetTowerCore() => towerCore;
 }
