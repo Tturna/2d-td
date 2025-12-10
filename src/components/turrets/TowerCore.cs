@@ -179,48 +179,38 @@ public class TowerCore : GameComponent, IClickable
         return Collision.IsPointInEntity(mouseWorldPosition, Turret);
     }
 
-    public TowerUpgradeNode? UpgradeLeft()
+    private TowerUpgradeNode? GenericUpgrade(TowerUpgradeNode? childUpgrade)
     {
-        if (CurrentUpgrade.LeftChild is null)
+        if (childUpgrade is null)
         {
             throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return null;
+        if (!CurrencyManager.TryBuyUpgrade(childUpgrade.Price)) return null;
 
-        var costText = $"-{CurrentUpgrade.LeftChild.Price}";
-        CurrentUpgrade = CurrentUpgrade.LeftChild;
+        var costText = $"-{childUpgrade.Price}";
+        CurrentUpgrade = childUpgrade;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
 
         var costTextPosition = Turret.Position - Vector2.UnitY * 6;
         var textVelocity = -Vector2.UnitY * 25f;
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
-            color: Color.White);
+                color: Color.White);
         ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
+
+        Health.SetMaxHealth(Health.MaxHealth + 50);
 
         return CurrentUpgrade;
     }
 
+    public TowerUpgradeNode? UpgradeLeft()
+    {
+        return GenericUpgrade(CurrentUpgrade.LeftChild);
+    }
+
     public TowerUpgradeNode? UpgradeRight()
     {
-        if (CurrentUpgrade.RightChild is null)
-        {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
-        }
-
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
-
-        var costText = $"-{CurrentUpgrade.RightChild.Price}";
-        CurrentUpgrade = CurrentUpgrade.RightChild;
-        ((ITower)Turret).UpgradeTower(CurrentUpgrade);
-
-        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
-        var textVelocity = -Vector2.UnitY * 25f;
-        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
-            color: Color.White);
-        ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
-
-        return CurrentUpgrade;
+        return GenericUpgrade(CurrentUpgrade.RightChild);
     }
 
     public static bool DefaultCanPlaceTower(Vector2 towerGridSize, Vector2 targetWorldPosition)

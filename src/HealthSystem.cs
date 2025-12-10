@@ -140,6 +140,11 @@ public class HealthSystem
         CurrentHealth = MaxHealth;
     }
 
+    public void SetMaxHealth(int newMax)
+    {
+        MaxHealth = newMax;
+    }
+
     public void SetHealthBarBackgroundColor(Color color)
     {
         normalBackgroundBarColor = color;
