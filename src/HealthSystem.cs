@@ -71,7 +71,7 @@ public class HealthSystem
         Game1.Instance.SpriteBatch.Draw(pixelSprite,
             position: worldPosition - Vector2.UnitX * (healthBarWidth / 2),
             sourceRectangle: null,
-            color: normalBackgroundBarColor,
+            color: bgColor,
             rotation: 0,
             origin: Vector2.Zero,
             scale: new Vector2(healthBarWidth, 1),
