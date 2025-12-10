@@ -146,7 +146,10 @@ public class Game1 : Game
             LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color, thickness: 1f);
         }
 
-        DebugUtility.ResetLines();
+        if (!isPaused)
+        {
+            DebugUtility.ResetLines();
+        }
 
         SpriteBatch.End();
 

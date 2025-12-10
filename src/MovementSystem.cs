@@ -48,6 +48,9 @@ public class MovementSystem
 
     private (bool, bool) ShouldClimb(Entity entity)
     {
+        // TODO: Consider using one vertical line check in front of the enemy instead of
+        // multiple points.
+
         (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
         var entityTileWidth = Math.Floor(tileWidth);
 
@@ -105,6 +108,15 @@ public class MovementSystem
             ScrapSystem.IsPointInCorpse(finalCheckPoint))
         {
             shouldClimbCorner = true;
+        }
+
+        foreach (var tower in BuildingSystem.Towers)
+        {
+            if (Collision.IsPointInEntity(finalCheckPoint, tower))
+            {
+                shouldClimbCorner = true;
+                break;
+            }
         }
 
         return (shouldClimbWall, shouldClimbCorner);
