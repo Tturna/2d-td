@@ -87,6 +87,8 @@ public class TowerCore : GameComponent, IClickable
                 if (Health.CurrentHealth <= 0)
                 {
                     // tower broke
+                    // set health to negative so realtime repairs take some effort
+                    Health.SetHealth(-Health.MaxHealth / 2, force: true);
                 }
             }
         }

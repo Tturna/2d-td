@@ -86,6 +86,19 @@ public class HealthSystem
         }
     }
 
+    public bool SetHealth(int health, bool force = false)
+    {
+        if (force)
+        {
+            CurrentHealth = health;
+            return true;
+        }
+
+        var newHealth = MathHelper.Clamp(health, 0, MaxHealth);
+        CurrentHealth = newHealth;
+        return newHealth == health;
+    }
+
     public void ResetHealth()
     {
         CurrentHealth = MaxHealth;
