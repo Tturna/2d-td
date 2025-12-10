@@ -56,7 +56,7 @@ public class Enemy : Entity, IKnockable
 
         if (Collision.AreEntitiesColliding(this, HQ.Instance))
         {
-            HQ.Instance.HealthSystem.TakeDamage(AttackDamage);
+            HQ.Instance.HealthSystem.TakeDamage(this, AttackDamage);
             Destroy();
             return;
         }
@@ -77,7 +77,7 @@ public class Enemy : Entity, IKnockable
 
             if (selfDestructTimer <= 0)
             {
-                EffectUtility.Explode(Position, radius: 3 * Grid.TileLength, magnitude: 20f,
+                EffectUtility.Explode(this, Position, radius: 3 * Grid.TileLength, magnitude: 20f,
                     damage: 10);
                 OnDeath(this);
             }
@@ -162,7 +162,7 @@ public class Enemy : Entity, IKnockable
         selfDestructTimer = selfDestructTime;
     }
 
-    private void OnDamaged(Entity damagedEntity, int amount)
+    private void OnDamaged(Entity source, Entity damagedEntity, int amount)
     {
         hurtProgress += amount;
         if (hurtProgress >= hurtAnimThreshold)
@@ -189,7 +189,7 @@ public class Enemy : Entity, IKnockable
 
     private void OnDeath(Entity diedEntity)
     {
-        EffectUtility.Explode(Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
+        EffectUtility.Explode(this, Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
             animation: deathExplosionAnimation);
 
         var corpseSprite = AssetManager.GetTexture("node_corpse");

@@ -22,10 +22,15 @@ class Projectile : Entity
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
     private float trailParticleTimer;
+    private Entity ownerEntity; // what spawned/owns this projectile
 
     // this constructor is simple so that the turrets can edit the property
     // of bullet themself
-    public Projectile(Game game, Vector2 startLocation) : base(game, startLocation, null, Vector2.One) { }
+    public Projectile(Game game, Entity source, Vector2 startLocation) :
+        base(game, startLocation, null, Vector2.One)
+    {
+        ownerEntity = source;
+    }
 
     public override void Update(GameTime gameTime)
     {
@@ -116,7 +121,7 @@ class Projectile : Entity
                 knockbackDirection.Normalize();
                 var knockback = knockbackDirection * (Damage / 15);
 
-                enemy.HealthSystem.TakeDamage(Damage);
+                enemy.HealthSystem.TakeDamage(ownerEntity, Damage);
                 enemy.ApplyKnockback(knockback);
                 damagedEnemies.Add(enemy);
 
@@ -133,7 +138,7 @@ class Projectile : Entity
         }
         else if (shouldExplode == true)
         {
-            EffectUtility.Explode(Position, ExplosionTileRadius * Grid.TileLength,
+            EffectUtility.Explode(this, Position, ExplosionTileRadius * Grid.TileLength,
                 magnitude: 5f, Damage);
 
             if (Pierce > 0)

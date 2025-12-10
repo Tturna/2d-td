@@ -19,7 +19,7 @@ public class TowerCore : GameComponent, IClickable
     public event ClickedHandler? LeftClicked;
     public event ClickedHandler? RightClicked;
 
-    private HashSet<Enemy> enemiesThatDamagedTurret = new();
+    private HashSet<Entity> enemiesThatDamagedTurret = new();
     private float brokenParticleInterval = 0.2f;
     private float brokenParticleTimer;
 
@@ -27,7 +27,6 @@ public class TowerCore : GameComponent, IClickable
     {
         Turret = turret;
         Health = new HealthSystem(Turret, initialHealth: 100);
-        Health.Died += OnDeath;
         CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
 
@@ -78,35 +77,28 @@ public class TowerCore : GameComponent, IClickable
         Turret.DrawOrigin = currentAnimationData.FrameSize;
         Turret.DrawOffset = baseAnimationData.FrameSize;
 
-        // turret damage
-        var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Turret.Position + Turret.Size / 2);
-
-        foreach (var enemy in enemyCandidates)
-        {
-            if (!enemiesThatDamagedTurret.Contains(enemy) && Collision.AreEntitiesColliding(enemy, Turret))
-            {
-                enemiesThatDamagedTurret.Add(enemy);
-                Health.TakeDamage(enemy.AttackDamage);
-                ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
-                var flyoutPosition = Turret.Position;
-                var flyoutVelocity = -Vector2.UnitY * 50;
-                UIComponent.SpawnFlyoutText($"{enemy.AttackDamage}", flyoutPosition, flyoutVelocity,
-                    lifetime: 1f, color: Color.White);
-
-                if (Health.CurrentHealth <= 0)
-                {
-                    // tower broke
-                    // set health to negative so realtime repairs take some effort
-                    Health.SetHealth(-Health.MaxHealth / 2, force: true);
-                }
-            }
-        }
-
         base.Update(gameTime);
     }
 
-    private void OnDeath(Entity diedEntity)
+    public void TryTakeDamage(Entity source, int amount)
     {
+        if (enemiesThatDamagedTurret.Contains(source)) return;
+        if (Health.CurrentHealth <= -Health.MaxHealth / 2) return;
+
+        enemiesThatDamagedTurret.Add(source);
+        Health.TakeDamage(source, amount);
+        ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
+        var flyoutPosition = Turret.Position;
+        var flyoutVelocity = -Vector2.UnitY * 50;
+        UIComponent.SpawnFlyoutText($"{amount}", flyoutPosition, flyoutVelocity,
+            lifetime: 1f, color: Color.White);
+
+        if (Health.CurrentHealth <= 0)
+        {
+            // tower broke
+            // set health to negative so realtime repairs take some effort
+            Health.SetHealth(-Health.MaxHealth / 2, force: true);
+        }
     }
 
     public Enemy? GetClosestValidEnemy(int tileRange)

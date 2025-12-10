@@ -317,7 +317,7 @@ class Hovership : Entity, ITower
                 {
                     // 900 damage over 4s
                     var damage = (int)(900f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
-                    enemy.HealthSystem.TakeDamage(damage);
+                    enemy.HealthSystem.TakeDamage(this, damage);
                 }
             }
 
@@ -410,7 +410,7 @@ class Hovership : Entity, ITower
         bomb.SetPosition(position);
         bomb.physics.DragFactor = 0f;
         bomb.physics.LocalGravity = 0.125f;
-        bomb.Destroyed += _ => EffectUtility.Explode(bomb.Position, radius: 4 * Grid.TileLength,
+        bomb.Destroyed += _ => EffectUtility.Explode(this, bomb.Position, radius: 4 * Grid.TileLength,
             magnitude: 10f, damage: baseDamage);
     }
 

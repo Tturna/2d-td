@@ -165,7 +165,7 @@ class PunchTrap : Entity, ITower
             if (IsEnemyInRange(enemy, baseRange))
             {
                 hitCount++;
-                enemy.HealthSystem.TakeDamage(damage);
+                enemy.HealthSystem.TakeDamage(this, damage);
                 enemy.Knockback(direction,knockback);
             }
         }

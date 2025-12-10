@@ -164,7 +164,7 @@ public class Crane : Entity, ITower
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(this, damage);
         }
     }
 
@@ -174,7 +174,7 @@ public class Crane : Entity, ITower
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(this, damage);
         }
     }
 

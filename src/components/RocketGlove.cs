@@ -34,7 +34,7 @@ public class RocketGlove : Entity
     {
         if (Lifetime <= 0f)
         {
-            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+            EffectUtility.Explode(this, Position + Direction, ExplosionTileRadius * Grid.TileLength,
                 magnitude: knockback, Damage);
             Destroy();
             return;
@@ -46,7 +46,7 @@ public class RocketGlove : Entity
 
         if (hitEnemies.Count >= maxHitEnemies)
         {
-            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+            EffectUtility.Explode(this, Position + Direction, ExplosionTileRadius * Grid.TileLength,
                 magnitude: knockback, Damage);
             Destroy();
         }
@@ -67,7 +67,7 @@ public class RocketGlove : Entity
 
         if (Collision.IsEntityInTerrain(this, Game.Terrain, out var _))
         {
-            EffectUtility.Explode(Position + Direction, ExplosionTileRadius * Grid.TileLength,
+            EffectUtility.Explode(this, Position + Direction, ExplosionTileRadius * Grid.TileLength,
                 magnitude: knockback, Damage);
             Destroy();
         }

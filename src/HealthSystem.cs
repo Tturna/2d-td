@@ -12,7 +12,7 @@ public class HealthSystem
     public delegate void DiedHandler(Entity diedEntity);
     public event DiedHandler Died;
 
-    public delegate void DamagedHandler(Entity damagedEntity, int amount);
+    public delegate void DamagedHandler(Entity source, Entity damagedEntity, int amount);
     public event DamagedHandler Damaged;
 
     public delegate void HealedHandler(Entity healedEntity, int amount);
@@ -92,12 +92,12 @@ public class HealthSystem
             layerDepth: 0.6f);
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(Entity source, int amount)
     {
         if (CurrentHealth == 0) return;
 
         CurrentHealth -= amount;
-        OnDamaged(Owner, amount);
+        OnDamaged(source, Owner, amount);
         healthBarFlashTimer = healthBarFlashTime;
 
         if (CurrentHealth <= 0)
@@ -162,9 +162,9 @@ public class HealthSystem
         Died?.Invoke(diedEntity);
     }
 
-    private void OnDamaged(Entity damagedEntity, int amount)
+    private void OnDamaged(Entity source, Entity damagedEntity, int amount)
     {
-        Damaged?.Invoke(damagedEntity, amount);
+        Damaged?.Invoke(source, damagedEntity, amount);
     }
 
     private void OnHealed(Entity healedEntity, int amount)
