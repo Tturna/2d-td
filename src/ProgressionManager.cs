@@ -56,4 +56,17 @@ public static class ProgressionManager
             lastUnlockedLevel = level;
         }
     }
+
+    public static void UnlockNextLevel()
+    {
+        if (lastUnlockedZone == 5 && lastUnlockedLevel == 5) return;
+
+        lastUnlockedLevel++;
+
+        if (lastUnlockedLevel > 5)
+        {
+            lastUnlockedLevel = 1;
+            lastUnlockedZone++;
+        }
+    }
 }
