@@ -69,6 +69,15 @@ public class PhysicsSystem
             ResolveEntitiesCollision(entity, corpse);
         }
 
+        // Collide with towers
+        foreach (var tower in BuildingSystem.Towers)
+        {
+            if (!Collision.AreEntitiesColliding(entity, tower)) continue;
+
+            collided = true;
+            ResolveEntitiesCollision(entity, tower);
+        }
+
         return collided;
     }
 

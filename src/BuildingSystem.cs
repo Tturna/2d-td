@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -27,6 +28,7 @@ public static class BuildingSystem
 
     public static bool CanPlaceTower { get; private set; }
     public static bool IsPlacingTower { get; private set; }
+    public static List<Entity> Towers { get; private set; } = new();
 
     public static void Initialize(Game game)
     {
@@ -83,6 +85,7 @@ public static class BuildingSystem
         if (!CurrencyManager.TryBuyTower(selectedTowerType)) return false;
 
         var spawnedTower = createTowerInstanceCallback(game, position);
+        Towers.Add(spawnedTower);
 
         var costText = $"-{CurrencyManager.GetTowerPrice(selectedTowerType)}";
         var costTextPosition = spawnedTower.Position - Vector2.UnitY * 6;

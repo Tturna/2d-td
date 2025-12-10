@@ -77,6 +77,18 @@ public class MovementSystem
                 shouldClimb = true;
                 break;
             }
+
+            // climb over towers
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (Collision.IsPointInEntity(climbCheckPoint, tower))
+                {
+                    shouldClimb = true;
+                    break;
+                }
+            }
+
+            if (shouldClimb) break;
         }
 
         // true if the entity has its side next to a wall. will be false if the entity

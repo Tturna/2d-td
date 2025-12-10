@@ -1,4 +1,5 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -140,6 +141,12 @@ public class Entity : DrawableGameComponent
         if (index >= 0)
         {
             Game.Components.RemoveAt(index);
+            
+            if (this is ITower)
+            {
+                BuildingSystem.Towers.Remove(this);
+            }
+
             IsDestroyed = true;
         }
     }
