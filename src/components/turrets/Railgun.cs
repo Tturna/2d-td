@@ -175,7 +175,7 @@ class Railgun : Entity, ITower
         muzzleFlashTimer = 0;
         muzzleFlash.AnimationSystem!.ToggleAnimationState(null); // reset animation progress
 
-        var bullet = new Projectile(Game, Position + spawnOffset);
+        var bullet = new Projectile(Game, this, Position + spawnOffset);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;

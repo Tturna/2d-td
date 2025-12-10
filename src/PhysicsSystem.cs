@@ -1,4 +1,5 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -9,6 +10,7 @@ public class PhysicsSystem
     public float LocalGravity { get; set; } = 0.8f;
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
+    public bool ignoreTowerCollision = false;
 
     public PhysicsSystem(Game1 game)
     {
@@ -67,6 +69,26 @@ public class PhysicsSystem
 
             collided = true;
             ResolveEntitiesCollision(entity, corpse);
+        }
+
+        // TODO: Consider spatial partitioning for towers (for example by checking collision
+        // the other way around where towers check nearby enemy bins).
+        if (!ignoreTowerCollision)
+        {
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (!Collision.AreEntitiesColliding(entity, tower)) continue;
+
+                collided = true;
+                ResolveEntitiesCollision(entity, tower);
+
+                if (entity is Enemy)
+                {
+                    var core = ((ITower)tower).GetTowerCore();
+                    var enemy = (Enemy)entity;
+                    core.TryTakeDamage(enemy, enemy.AttackDamage);
+                }
+            }
         }
 
         return collided;

@@ -9,8 +9,8 @@ public static class EffectUtility
     /// Pass useEffectFalloff = false to prevent damage and knockback from being reduced for
     /// entities further from the explosion.
     /// </summary>
-    public static void Explode(Vector2 worldPosition, float radius, float magnitude, int damage,
-        bool useEffectFalloff = true, AnimationSystem.AnimationData? animation = null)
+    public static void Explode(Entity source, Vector2 worldPosition, float radius, float magnitude,
+        int damage, bool useEffectFalloff = true, AnimationSystem.AnimationData? animation = null)
     {
         var enemies = EnemySystem.EnemyBins.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
 
@@ -33,7 +33,7 @@ public static class EffectUtility
                 effectStrength = MathHelper.Max(1f - rawMagnitude, 0.2f);
             }
 
-            enemy.HealthSystem.TakeDamage((int)(damage * effectStrength));
+            enemy.HealthSystem.TakeDamage(source, (int)(damage * effectStrength));
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 

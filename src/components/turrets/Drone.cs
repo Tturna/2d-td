@@ -121,7 +121,7 @@ class Drone : Entity, ITower
 
     private void Shoot(int damage, Vector2 direction)
     {
-        var bullet = new Projectile(Game, turretSpawnAxisCenter);
+        var bullet = new Projectile(Game, this, turretSpawnAxisCenter);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;

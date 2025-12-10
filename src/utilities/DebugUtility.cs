@@ -115,6 +115,17 @@ public static class DebugUtility
         LineSet.Add((lineTuple.Item1, lineTuple.Item2, color));
     }
 
+    public static void DrawDebugX(Vector2 worldPosition, Color color, int width = 4)
+    {
+        var unit = Vector2.One * width;
+        var a1 = worldPosition - unit / 2;
+        var a2 = worldPosition + unit / 2;
+        var b1 = worldPosition + new Vector2(-width / 2, width / 2);
+        var b2 = worldPosition + new Vector2(width / 2, -width / 2);
+        LineSet.Add((a1, a2, color));
+        LineSet.Add((b1, b2, color));
+    }
+
     public static void DrawDebugScreen(SpriteBatch spriteBatch)
     {
         if (!debugEnabled) return;

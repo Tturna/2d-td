@@ -250,7 +250,7 @@ class GunTurret : Entity, ITower
             {
                 // 60 DPS
                 var damage = (int)(60 * actionInterval);
-                closestEnemy.HealthSystem.TakeDamage(damage);
+                closestEnemy.HealthSystem.TakeDamage(this, damage);
                 actionTimer = 0f;
                 ParticleSystem.PlayPhotonLaserImpact(entryPoint);
             }
@@ -319,7 +319,7 @@ class GunTurret : Entity, ITower
         muzzleFlashTimer = 0;
         muzzleFlash.AnimationSystem!.ToggleAnimationState(null); // reset animation progress
 
-        var bullet = new Projectile(Game, startLocation);
+        var bullet = new Projectile(Game, this, startLocation);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletPixelsPerSecond;
         bullet.Damage = realDamage;
