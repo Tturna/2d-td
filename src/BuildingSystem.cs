@@ -33,6 +33,7 @@ public static class BuildingSystem
     public static void Initialize(Game game)
     {
         BuildingSystem.game = (Game1)game;
+        Towers = new();
     }
 
     public static void Update(GameTime gameTime)

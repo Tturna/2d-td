@@ -194,6 +194,7 @@ public class Mortar : Entity, ITower
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
+        shell.physics.ignoreTowerCollision = true;
         shell.Sprite = projectileSprite;
         shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         shell.RotationOffset = projectileRotationOffset;
@@ -215,6 +216,7 @@ public class Mortar : Entity, ITower
         shell.physics.LocalGravity = projectileGravity;
         shell.physics.DragFactor = 0f;
         shell.physics.AddForce(projectileVelocity);
+        shell.physics.ignoreTowerCollision = true;
         shell.Sprite = projectileSprite;
         shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         shell.RotationOffset = projectileRotationOffset;
@@ -237,6 +239,7 @@ public class Mortar : Entity, ITower
             var xOffset = i * Grid.TileLength;
             shell.SetPosition(Position + Vector2.UnitX * xOffset);
             shell.physics.LocalGravity = 0f;
+            shell.physics.ignoreTowerCollision = true;
             shell.Homing = true;
             shell.Sprite = projectileSprite;
             shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
@@ -264,6 +267,7 @@ public class Mortar : Entity, ITower
             shell.SetPosition(Position);
             shell.physics.LocalGravity = projectileGravity;
             shell.physics.DragFactor = 0f;
+            shell.physics.ignoreTowerCollision = true;
             shell.Sprite = projectileSprite;
             shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
             shell.RotationOffset = projectileRotationOffset;
@@ -307,6 +311,7 @@ public class Mortar : Entity, ITower
             newShell.physics.LocalGravity = projectileGravity;
             newShell.physics.DragFactor = 0f;
             newShell.physics.AddForce(newVelocity);
+            newShell.physics.ignoreTowerCollision = true;
             newShell.Sprite = shell.Sprite;
             newShell.Size = shell.Size;
             newShell.RotationOffset = shell.RotationOffset;
