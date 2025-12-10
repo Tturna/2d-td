@@ -77,6 +77,8 @@ class PunchTrap : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        if (towerCore.Health.CurrentHealth <= 0) return;
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
@@ -109,6 +111,13 @@ class PunchTrap : Entity, ITower
         }
 
         base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
+        base.Draw(gameTime);
     }
 
     private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, float knockback)
@@ -260,4 +269,6 @@ class PunchTrap : Entity, ITower
     {
         return baseRange;
     }
+
+    public TowerCore GetTowerCore() => towerCore;
 }

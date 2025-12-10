@@ -108,6 +108,8 @@ class GunTurret : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        if (towerCore.Health.CurrentHealth <= 0) return;
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
@@ -152,6 +154,8 @@ class GunTurret : Entity, ITower
 
     public override void Draw(GameTime gameTime)
     {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
         base.Draw(gameTime);
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
@@ -459,4 +463,6 @@ class GunTurret : Entity, ITower
     {
         return realRange;
     }
+
+    public TowerCore GetTowerCore() => towerCore;
 }

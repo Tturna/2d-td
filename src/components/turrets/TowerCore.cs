@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -9,6 +10,7 @@ public class TowerCore : GameComponent, IClickable
 {
     public Entity Turret { get; private set; }
     public TowerUpgradeNode CurrentUpgrade { get; set; }
+    public HealthSystem Health { get; private set; }
 
     public TurretDetailsPrompt? detailsPrompt;
     public bool detailsClosed = true;
@@ -17,9 +19,15 @@ public class TowerCore : GameComponent, IClickable
     public event ClickedHandler? LeftClicked;
     public event ClickedHandler? RightClicked;
 
+    private HashSet<Enemy> enemiesThatDamagedTurret = new();
+    private float brokenParticleInterval = 0.2f;
+    private float brokenParticleTimer;
+
     public TowerCore(Entity turret) : base(turret.Game)
     {
         Turret = turret;
+        Health = new HealthSystem(Turret, initialHealth: 100);
+        Health.Died += OnDeath;
         CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
 
@@ -27,10 +35,41 @@ public class TowerCore : GameComponent, IClickable
 
         InputSystem.LeftClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition);
         InputSystem.RightClicked += (mouseScreenPosition, _) => HandleCloseDetails(mouseScreenPosition, force: true);
+
+        WaveSystem.WaveEnded += () =>
+        {
+            enemiesThatDamagedTurret.Clear();
+            Health.ResetHealth();
+        };
+
+        var towerHealIndicatorColor = Color.FromNonPremultiplied(new Vector4(162f/255f, 1f, 63f/255f, 1f));
+        Health.Healed += (Entity healedEntity, int amount) =>
+        {
+            UIComponent.SpawnFlyoutText($"+{amount}", Turret.Position, -Vector2.UnitY * 25f,
+                1f, towerHealIndicatorColor);
+        };
     }
 
     public override void Update(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        Health.UpdateHealthBarGraphics(deltaTime);
+
+        if (Health.CurrentHealth <= 0)
+        {
+            brokenParticleTimer += deltaTime;
+
+            if (brokenParticleTimer >= brokenParticleInterval)
+            {
+                brokenParticleTimer = 0;
+                ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
+                ParticleSystem.PlaySingleSmokeParticle(Turret.Position + Turret.Size / 2, -Vector2.UnitY);
+            }
+
+            return;
+        }
+
         // Set draw origin to bot right instead of top left and offset tower drawing
         // so that variable idle and fire animation frame sizes don't make the tower look like
         // it's shifting as it changes animations.
@@ -39,7 +78,35 @@ public class TowerCore : GameComponent, IClickable
         Turret.DrawOrigin = currentAnimationData.FrameSize;
         Turret.DrawOffset = baseAnimationData.FrameSize;
 
+        // turret damage
+        var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Turret.Position + Turret.Size / 2);
+
+        foreach (var enemy in enemyCandidates)
+        {
+            if (!enemiesThatDamagedTurret.Contains(enemy) && Collision.AreEntitiesColliding(enemy, Turret))
+            {
+                enemiesThatDamagedTurret.Add(enemy);
+                Health.TakeDamage(enemy.AttackDamage);
+                ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
+                var flyoutPosition = Turret.Position;
+                var flyoutVelocity = -Vector2.UnitY * 50;
+                UIComponent.SpawnFlyoutText($"{enemy.AttackDamage}", flyoutPosition, flyoutVelocity,
+                    lifetime: 1f, color: Color.White);
+
+                if (Health.CurrentHealth <= 0)
+                {
+                    // tower broke
+                    // set health to negative so realtime repairs take some effort
+                    Health.SetHealth(-Health.MaxHealth / 2, force: true);
+                }
+            }
+        }
+
         base.Update(gameTime);
+    }
+
+    private void OnDeath(Entity diedEntity)
+    {
     }
 
     public Enemy? GetClosestValidEnemy(int tileRange)
@@ -93,7 +160,8 @@ public class TowerCore : GameComponent, IClickable
     {
         if (detailsClosed && detailsPrompt is null)
         {
-            detailsPrompt = new TurretDetailsPrompt(Turret.Game, Turret, UpgradeLeft, UpgradeRight, CurrentUpgrade);
+            detailsPrompt = new TurretDetailsPrompt(Turret.Game, turret: Turret, core: this,
+                UpgradeLeft, UpgradeRight, CurrentUpgrade);
         }
 
         detailsClosed = false;
@@ -111,48 +179,38 @@ public class TowerCore : GameComponent, IClickable
         return Collision.IsPointInEntity(mouseWorldPosition, Turret);
     }
 
-    public TowerUpgradeNode? UpgradeLeft()
+    private TowerUpgradeNode? GenericUpgrade(TowerUpgradeNode? childUpgrade)
     {
-        if (CurrentUpgrade.LeftChild is null)
+        if (childUpgrade is null)
         {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have the given child node.");
         }
 
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.LeftChild.Price)) return null;
+        if (!CurrencyManager.TryBuyUpgrade(childUpgrade.Price)) return null;
 
-        var costText = $"-{CurrentUpgrade.LeftChild.Price}";
-        CurrentUpgrade = CurrentUpgrade.LeftChild;
+        var costText = $"-{childUpgrade.Price}";
+        CurrentUpgrade = childUpgrade;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);
 
         var costTextPosition = Turret.Position - Vector2.UnitY * 6;
         var textVelocity = -Vector2.UnitY * 25f;
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
-            color: Color.White);
+                color: Color.White);
         ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
+
+        Health.SetMaxHealth(Health.MaxHealth + 50);
 
         return CurrentUpgrade;
     }
 
+    public TowerUpgradeNode? UpgradeLeft()
+    {
+        return GenericUpgrade(CurrentUpgrade.LeftChild);
+    }
+
     public TowerUpgradeNode? UpgradeRight()
     {
-        if (CurrentUpgrade.RightChild is null)
-        {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a right child node.");
-        }
-
-        if (!CurrencyManager.TryBuyUpgrade(CurrentUpgrade.RightChild.Price)) return CurrentUpgrade;
-
-        var costText = $"-{CurrentUpgrade.RightChild.Price}";
-        CurrentUpgrade = CurrentUpgrade.RightChild;
-        ((ITower)Turret).UpgradeTower(CurrentUpgrade);
-
-        var costTextPosition = Turret.Position - Vector2.UnitY * 6;
-        var textVelocity = -Vector2.UnitY * 25f;
-        UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
-            color: Color.White);
-        ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
-
-        return CurrentUpgrade;
+        return GenericUpgrade(CurrentUpgrade.RightChild);
     }
 
     public static bool DefaultCanPlaceTower(Vector2 towerGridSize, Vector2 targetWorldPosition)

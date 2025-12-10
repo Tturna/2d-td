@@ -40,19 +40,27 @@ public static class CurrencyManager
     {
         var price = GetTowerPrice(towerType);
 
-        if (Balance < price)
-        {
-            return false;
-        }
+        if (Balance < price) return false;
 
         // TODO: Track bought towers?
         Balance -= price;
         return true;
     }
 
-    public static int SellTower(BuildingSystem.TowerType towerType)
+    public static bool TryRepairTower(BuildingSystem.TowerType towerType)
     {
-        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+        var price = GetTowerPrice(towerType) / 2;
+
+        if (Balance < price) return false;
+
+        Balance -= price;
+        return true;
+    }
+
+    public static int SellTower(BuildingSystem.TowerType towerType, bool isBroken)
+    {
+        var priceDivisor = isBroken ? 4 : 2;
+        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / priceDivisor);
         AddBalance(returnScrap);
 
         return returnScrap;

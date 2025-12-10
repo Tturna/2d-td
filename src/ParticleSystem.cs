@@ -61,11 +61,13 @@ public static class ParticleSystem
         public float SlowdownSpeed;
         public float RotationSpeed;
         public float RotationRadians;
+        public Action<Particle>? UpdateFunction;
 
         public Particle(Vector2 position, Vector2 velocity, float lifetime, Color color,
             Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
             bool shouldFadeOut = true, bool shouldSlowDown = false, bool hasGravity = false,
-            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0)
+            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0,
+            Action<Particle>? updateFunction = null)
         {
             Sprite = sprite;
             Position = position;
@@ -79,6 +81,7 @@ public static class ParticleSystem
             Depth = depth;
             SlowdownSpeed = slowdownSpeed;
             RotationSpeed = rotationSpeed;
+            UpdateFunction = updateFunction;
 
             if (animation is not null)
             {
@@ -89,7 +92,8 @@ public static class ParticleSystem
         public Particle(Vector2 position, Vector2 velocity, float lifetime, ColorFade fade,
             Texture2D? sprite = null, AnimationSystem.AnimationData? animation = null,
             bool shouldFadeOut = true, bool shouldSlowDown = false, bool hasGravity = false,
-            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0f)
+            float depth = 1f, float slowdownSpeed = 4f, float rotationSpeed = 0f,
+            Action<Particle>? updateFunction = null)
         {
             Sprite = sprite;
             Position = position;
@@ -104,6 +108,7 @@ public static class ParticleSystem
             ColorFade = fade;
             ShouldFadeColor = true;
             RotationSpeed = rotationSpeed;
+            UpdateFunction = updateFunction;
 
             if (animation is not null)
             {
@@ -153,6 +158,11 @@ public static class ParticleSystem
                 particles[i] = null;
                 deathIndexStack.Push(i);
                 continue;
+            }
+
+            if (particle.UpdateFunction is not null)
+            {
+                particle.UpdateFunction(particle);
             }
 
             if (particle.HasGravity)
@@ -447,6 +457,72 @@ public static class ParticleSystem
             AddParticle(new Particle(worldPosition, velocity, lifetime, color,
                 shouldSlowDown: true, shouldFadeOut: true, animation: animation,
                 rotationSpeed: rotationSpeed));
+        }
+    }
+
+    public static void PlaySingleSmokeParticle(Vector2 worldPosition, Vector2? direction = null)
+    {
+        var color = Color.FromNonPremultiplied(new Vector4(1f, 1f, 1f, 0.7f));
+
+        var particleDirection = Vector2.Zero;
+
+        if (direction is null)
+        {
+            var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
+            var rx = MathF.Cos(randomAngleRadians);
+            var ry = MathF.Sin(randomAngleRadians);
+            particleDirection = new Vector2(rx, ry);
+        }
+        else
+        {
+            particleDirection = (Vector2)direction;
+        }
+
+        var perpendicular = new Vector2(particleDirection.Y, -particleDirection.X);
+        var perpendicularMagnitude = ((float)rng.NextDouble() - 0.5f);
+        var velocity = particleDirection + perpendicular * perpendicularMagnitude;
+        var maxLifetime = 2f;
+        var minLifetime = 0.5f;
+        var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+        var rotationSpeed = ((float)rng.NextDouble() - 0.5f) * 0.5f;
+
+        var smokeSprite = AssetManager.GetTexture("smoke");
+        var animation = new AnimationSystem.AnimationData(
+            texture: smokeSprite,
+            frameCount: 5,
+            frameSize: new Vector2(smokeSprite.Width / 5, smokeSprite.Height),
+            delaySeconds: lifetime / 5);
+
+        AddParticle(new Particle(worldPosition, velocity, lifetime, color,
+            shouldSlowDown: true, shouldFadeOut: true, animation: animation,
+            rotationSpeed: rotationSpeed));
+    }
+
+    public static void PlayBrokenTowerEffect(Vector2 worldPosition)
+    {
+        for (int i = 0; i < rng.Next(3, 8); i++)
+        {
+            var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
+            var rx = MathF.Cos(randomAngleRadians);
+            var ry = MathF.Sin(randomAngleRadians);
+            var randomUnitVector = new Vector2(rx, ry);
+            var posOffset = randomUnitVector * 4;
+            var maxLifetime = 0.4f;
+            var minLifetime = 0.2f;
+            var lifetime = (float)rng.NextDouble() * (maxLifetime - minLifetime) + minLifetime;
+
+            var updateVelocity = (Particle particle) =>
+            {
+                var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
+                var rx = MathF.Cos(randomAngleRadians);
+                var ry = MathF.Sin(randomAngleRadians);
+                var randomUnitVector = new Vector2(rx, ry);
+                particle.Velocity = randomUnitVector * 1.5f;
+            };
+
+            AddParticle(new Particle(worldPosition + posOffset, velocity: Vector2.Zero,
+                lifetime: lifetime, color: Color.White, shouldSlowDown: false, shouldFadeOut: false,
+                updateFunction: updateVelocity));
         }
     }
 }

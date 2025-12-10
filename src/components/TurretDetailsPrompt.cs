@@ -10,6 +10,7 @@ namespace _2d_td;
 public class TurretDetailsPrompt : UIEntity
 {
     private UIEntity sellBtn;
+    private UIEntity? repairBtn;
     private UIEntity? leftUpgradeBtn;
     private UIEntity? rightUpgradeBtn;
     private UIEntity? leftInfoBtn;
@@ -21,13 +22,14 @@ public class TurretDetailsPrompt : UIEntity
     private int leftUpgradePrice, rightUpgradePrice;
     private SpriteFont pixelsixFont;
     private List<UIEntity> tooltipEntities = new();
+    private BuildingSystem.TowerType towerType;
 
     // TODO: consider if there's a better way to handle showing tower specific elements
     private bool isMortar;
 
-    public TurretDetailsPrompt(Game game, Entity turret, Func<TowerUpgradeNode?> upgradeLeftCallback,
-        Func<TowerUpgradeNode?> upgradeRightCallback, TowerUpgradeNode currentUpgrade) :
-        base(game, position: null, UIComponent.Instance.AddUIEntity,
+    public TurretDetailsPrompt(Game game, Entity turret, TowerCore core,
+        Func<TowerUpgradeNode?> upgradeLeftCallback, Func<TowerUpgradeNode?> upgradeRightCallback,
+        TowerUpgradeNode currentUpgrade) : base(game, position: null, UIComponent.Instance.AddUIEntity,
             UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("upgradebg"))
     {
         targetTowerEntity = turret;
@@ -53,11 +55,11 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
             UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
 
-        var turretType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
+        towerType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
 
         sellBtn.ButtonPressed += () =>
         {
-            var returnScrap = CurrencyManager.SellTower(turretType);
+            var returnScrap = CurrencyManager.SellTower(towerType, isBroken: core.Health.CurrentHealth <= 0);
             targetTowerEntity.Destroy();
 
             var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
@@ -124,6 +126,28 @@ public class TurretDetailsPrompt : UIEntity
             }
         }
 
+        if (core.Health.CurrentHealth <= 0)
+        {
+            repairBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
+                UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
+
+            repairBtn.ButtonPressed += () =>
+            {
+                if (CurrencyManager.TryRepairTower(towerType))
+                {
+                    core.Health.ResetHealth();
+                    var repairPrice = CurrencyManager.GetTowerPrice(towerType) / 2;
+                    var indicatorPos = turret.Position;
+                    var indicatorVelocity = -Vector2.UnitY * 25f;
+                    UIComponent.SpawnFlyoutText($"-{repairPrice}", indicatorPos, indicatorVelocity, 1f,
+                        color: Color.White);
+
+                    repairBtn.Destroy();
+                    repairBtn = null;
+                }
+            };
+        }
+
         isMortar = turret is Mortar;
     }
 
@@ -166,6 +190,11 @@ public class TurretDetailsPrompt : UIEntity
             rightInfoBtn!.SetPosition(rightUpgradeBtn.Position + Vector2.UnitX * (rightUpgradeBtn.Size.X + InfoButtonMargin));
         }
 
+        if (repairBtn is not null)
+        {
+            repairBtn.SetPosition(sellBtnScreenPosition + Vector2.UnitY * 40);
+        }
+
         base.Update(gameTime);
     }
 
@@ -187,6 +216,16 @@ public class TurretDetailsPrompt : UIEntity
             var upgradeBtnWidth = rightUpgradeBtn.Size.X;
             var pos = rightUpgradeBtn.Position + new Vector2(upgradeBtnWidth + PriceMargin, PriceYOffset);
             Game.SpriteBatch.DrawString(pixelsixFont, rightUpgradePrice.ToString(), pos, Color.White);
+        }
+
+        if (repairBtn is not null)
+        {
+            var repairPrice = CurrencyManager.GetTowerPrice(towerType) / 2;
+            var repairText = $"Repair ({repairPrice})";
+            var textSize = pixelsixFont.MeasureString(repairText);
+            var buttonCenter = repairBtn.Position + repairBtn.Size / 2;
+            var textPosition = buttonCenter - textSize / 2;
+            Game.SpriteBatch.DrawString(pixelsixFont, repairText, textPosition, Color.White);
         }
 
         var towerCenter = targetTowerEntity.Position + targetTowerEntity.Size / 2;
@@ -213,6 +252,7 @@ public class TurretDetailsPrompt : UIEntity
     public override void Destroy()
     {
         sellBtn.Destroy();
+        repairBtn?.Destroy();
         leftUpgradeBtn?.Destroy();
         rightUpgradeBtn?.Destroy();
         upgradeIndicator.Destroy();
@@ -233,6 +273,8 @@ public class TurretDetailsPrompt : UIEntity
 
         if (Collision.IsPointInEntity(mouseScreenPosition, this)) return false;
         if (Collision.IsPointInEntity(mouseScreenPosition, sellBtn)) return false;
+        if (repairBtn is not null &&
+            Collision.IsPointInEntity(mouseScreenPosition, repairBtn)) return false;
         if (leftInfoBtn is not null &&
             Collision.IsPointInEntity(mouseScreenPosition, leftInfoBtn)) return false;
         if (rightInfoBtn is not null &&
