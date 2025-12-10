@@ -183,7 +183,7 @@ public class TowerCore : GameComponent, IClickable
     {
         if (childUpgrade is null)
         {
-            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have a left child node.");
+            throw new InvalidOperationException($"Node {CurrentUpgrade.Name} does not have the given child node.");
         }
 
         if (!CurrencyManager.TryBuyUpgrade(childUpgrade.Price)) return null;
