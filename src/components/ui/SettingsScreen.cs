@@ -12,6 +12,7 @@ public class SettingsScreen : UIEntity
 
     private Slider masterVolumeSlider;
     private Slider sfxVolumeSlider;
+    private UIEntity fullscreenButton;
     private UIEntity backButton;
 
     public delegate void OnDestroyedHandler();
@@ -45,6 +46,14 @@ public class SettingsScreen : UIEntity
             delaySeconds: 0.5f
         );
 
+        var fullscreenButtonPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 7);
+        fullscreenButton = new UIEntity(game, uiEntities, fullscreenButtonPosition, buttonAnimationData);
+        fullscreenButton.ButtonPressed += () =>
+        {
+            game.Graphics.IsFullScreen = !game.Graphics.IsFullScreen;
+            game.Graphics.ApplyChanges();
+        };
+
         var backButtonPosition = Position + new Vector2(margin, Size.Y - buttonSprite.Height - margin);
         backButton = new UIEntity(game, uiEntities, backButtonPosition, buttonAnimationData);
         backButton.ButtonPressed += () => Destroy();
@@ -55,6 +64,7 @@ public class SettingsScreen : UIEntity
         SavingSystem.SaveGame();
         masterVolumeSlider.Destroy();
         sfxVolumeSlider.Destroy();
+        fullscreenButton.Destroy();
         backButton.Destroy();
         OnDestroyed?.Invoke();
 
@@ -66,19 +76,29 @@ public class SettingsScreen : UIEntity
         var settingsTextPos = Position + new Vector2(margin);
         var masterVolumeTextPos = Position + new Vector2(margin, margin * 3);
         var sfxVolumeTextPos = Position + new Vector2(margin, margin * 5);
+        var fullscreenTogglePos = Position + new Vector2(margin, margin * 7);
 
         game.SpriteBatch.DrawString(game.DefaultFont, "Settings", settingsTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Master volume", masterVolumeTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Effects volume", sfxVolumeTextPos, Color.White);
+        game.SpriteBatch.DrawString(game.DefaultFont, "Fullscreen", fullscreenTogglePos, Color.White);
 
         var valueTextOrigin = masterVolumeTextPos + Vector2.UnitX * (textAreaWidth + 80 + margin * 3);
         var masterVolumeValuePos = valueTextOrigin;
         var sfxVolumeValuePos = valueTextOrigin + new Vector2(0, margin * 2);
+        var fullscreenTextPos = valueTextOrigin + new Vector2(0, margin * 4);
+        var fullscreenText = game.Graphics.IsFullScreen ? "Enabled" : "Disabled";
+        var fullscreenToggleTextSize = game.DefaultFont.MeasureString("Toggle");
+        var fullscreenToggleTextPos = fullscreenButton.Position + fullscreenButton.Size / 2 - fullscreenToggleTextSize / 2;
 
         game.SpriteBatch.DrawString(game.DefaultFont, ((int)(masterVolumeSlider.Value * 100)).ToString(),
             masterVolumeValuePos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, ((int)(sfxVolumeSlider.Value * 100)).ToString(),
             sfxVolumeValuePos, Color.White);
+        game.SpriteBatch.DrawString(game.DefaultFont, "Toggle",
+            fullscreenToggleTextPos, Color.White);
+        game.SpriteBatch.DrawString(game.DefaultFont, fullscreenText,
+            fullscreenTextPos, Color.White);
 
         var saveTextSize = game.DefaultFont.MeasureString("Save");
         var saveTextPos = backButton.Position + backButton.Size / 2 - saveTextSize / 2;
