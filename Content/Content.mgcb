@@ -36,6 +36,12 @@
 /processorParam:TextureFormat=Color
 /build:fonts/pixelsix/pixelsix_bitmap.png
 
+#begin sound/explosion/explosion.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/explosion/explosion.mp3
+
 #begin sprites/2dtd_palatte.png
 /importer:TextureImporter
 /processor:TextureProcessor
