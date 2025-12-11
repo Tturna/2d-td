@@ -226,6 +226,9 @@ public static class AssetManager
 
         // sounds
         LoadSound("explosion", "sound/explosion/explosion"); // temp
+        LoadSound("placeDown", "sound/turret/placeDown"); // temp
+        LoadSound("shoot", "sound/turret/shoot"); // temp
+        LoadSound("upgrade", "sound/turret/upgrade"); // temp
     }
 
     public static Texture2D GetTexture(string name)

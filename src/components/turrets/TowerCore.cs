@@ -189,6 +189,7 @@ public class TowerCore : GameComponent, IClickable
         UIComponent.SpawnFlyoutText(costText, costTextPosition, textVelocity, lifetime: 1f,
                 color: Color.White);
         ParticleSystem.PlayTowerUpgradeEffect(Turret.Position + Turret.Size / 2);
+        SoundSystem.PlaySound("upgrade");
 
         Health.SetMaxHealth(Health.MaxHealth + 50);
 

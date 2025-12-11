@@ -97,6 +97,7 @@ public static class BuildingSystem
         var particlesPosition = spawnedTower.Position + spawnedTower.Size / 2 +
             Vector2.UnitY * spawnedTower.Size.Y / 2;
         ParticleSystem.PlayTowerPlacementEffect(particlesPosition);
+        SoundSystem.PlaySound("placeDown");
 
         return true;
     }
