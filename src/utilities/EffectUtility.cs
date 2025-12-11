@@ -61,6 +61,7 @@ public static class EffectUtility
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
+        SoundSystem.PlaySound("explosion");
         ParticleSystem.PlayExplosion(worldPosition, (int)magnitude / 10);
         CameraManager.Instance.ShakeCamera(0.75f, 0.1f);
 

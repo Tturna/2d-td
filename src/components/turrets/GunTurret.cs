@@ -333,6 +333,7 @@ class GunTurret : Entity, ITower
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
         ParticleSystem.PlayShotSmokeEffect(startLocation);
+        SoundSystem.PlaySound("shoot");
     }
 
     public override void Destroy()

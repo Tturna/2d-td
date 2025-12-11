@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace _2d_td;
 
@@ -9,6 +10,7 @@ public static class AssetManager
     private static ContentManager _content;
     private static Dictionary<string, Texture2D> _textures = new();
     private static Dictionary<string, SpriteFont> _fonts = new();
+    private static Dictionary<string, SoundEffect> _soundEffects = new();
 
     public static void Initialize(ContentManager contentManager)
     {
@@ -25,6 +27,12 @@ public static class AssetManager
     {
         var path = contentPath is not null ? contentPath : name;
         _fonts.Add(name, _content.Load<SpriteFont>(path));
+    }
+
+    public static void LoadSound(string name, string contentPath = null)
+    {
+        var path = contentPath is not null ? contentPath : name;
+        _soundEffects.Add(name, _content.Load<SoundEffect>(path));
     }
 
     // TODO: Split asset loading once there are different levels and zones.
@@ -212,6 +220,12 @@ public static class AssetManager
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
+
+        // sounds
+        LoadSound("explosion", "sound/explosion/explosion"); // temp
+        LoadSound("placeDown", "sound/turret/placeDown"); // temp
+        LoadSound("shoot", "sound/turret/shoot"); // temp
+        LoadSound("upgrade", "sound/turret/upgrade"); // temp
     }
 
     public static Texture2D GetTexture(string name)
@@ -235,6 +249,18 @@ public static class AssetManager
         else
         {
             throw new KeyNotFoundException($"Font '{name}' not found");
+        }
+    }
+
+    public static SoundEffect GetSound(string name)
+    {
+        if (_soundEffects.TryGetValue(name, out var sound))
+        {
+            return sound;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Sound '{name}' not found");
         }
     }
 }
