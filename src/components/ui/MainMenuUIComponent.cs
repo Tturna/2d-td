@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
+#nullable enable
 public class MainMenuUIComponent : DrawableGameComponent
 {
     private Game1 game;
@@ -16,6 +17,7 @@ public class MainMenuUIComponent : DrawableGameComponent
     private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
     private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
     private Stack<Action> menuScreenStack = new();
+    private SettingsScreen? settingsScreen;
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -35,6 +37,11 @@ public class MainMenuUIComponent : DrawableGameComponent
         {
             if (menuScreenStack.Count == 0)
             {
+                if (settingsScreen is not null)
+                {
+                    settingsScreen.Destroy();
+                }
+
                 LoadMainMenu();
             }
             else
@@ -115,6 +122,10 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         playButton.ButtonPressed += () => LoadZoneSelector();
         exitButton.ButtonPressed += () => game.Exit();
+        settingsButton.ButtonPressed += () =>
+        {
+            settingsScreen = new SettingsScreen(game, uiEntities);
+        };
     }
 
     private void LoadZoneSelector()

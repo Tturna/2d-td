@@ -8,6 +8,7 @@ public static class SoundSystem
     {
         var sound = AssetManager.GetSound(name);
         var instance = sound.CreateInstance();
+        instance.Volume = SettingsSystem.GetTotalSFXVolume();
         instance.Play();
         return instance;
     }
