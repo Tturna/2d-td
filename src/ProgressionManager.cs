@@ -2,8 +2,8 @@ namespace _2d_td;
 
 public static class ProgressionManager
 {
-    private static int lastUnlockedZone = 1;
-    private static int lastUnlockedLevel = 1;
+    public static int LastUnlockedZone { get; private set; } = 1;
+    public static int LastUnlockedLevel { get; private set; } = 1;
     private static bool initialized;
 
     public static void Initialize()
@@ -16,12 +16,12 @@ public static class ProgressionManager
 
     public static bool IsZoneUnlocked(int zone)
     {
-        return zone <= lastUnlockedZone;
+        return zone <= LastUnlockedZone;
     }
 
     public static bool IsLevelUnlocked(int zone, int level)
     {
-        return IsZoneUnlocked(zone) && level <= lastUnlockedLevel;
+        return IsZoneUnlocked(zone) && level <= LastUnlockedLevel;
     }
 
     private static void OnLevelWin(int zone, int wonLevel)
@@ -46,14 +46,31 @@ public static class ProgressionManager
 
     public static void UnlockLevel(int zone, int level)
     {
-        if (zone > lastUnlockedZone)
+        if (zone > LastUnlockedZone)
         {
-            lastUnlockedZone = zone;
-            lastUnlockedLevel = level;
+            LastUnlockedZone = zone;
+            LastUnlockedLevel = level;
         }
-        else if (zone == lastUnlockedZone && level > lastUnlockedLevel)
+        else if (zone == LastUnlockedZone && level > LastUnlockedLevel)
         {
-            lastUnlockedLevel = level;
+            LastUnlockedLevel = level;
         }
+
+        SavingSystem.SaveGame();
+    }
+
+    public static void UnlockNextLevel()
+    {
+        if (LastUnlockedZone == 5 && LastUnlockedLevel == 5) return;
+
+        LastUnlockedLevel++;
+
+        if (LastUnlockedLevel > 5)
+        {
+            LastUnlockedLevel = 1;
+            LastUnlockedZone++;
+        }
+
+        SavingSystem.SaveGame();
     }
 }

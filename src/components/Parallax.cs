@@ -106,7 +106,7 @@ public class Parallax : DrawableGameComponent
         var bigGradient = new ParallaxObject(
             pos: new Vector2(-1000, -500),
             layer: 0f,
-            sprite: "big_gradient",
+            sprite: "zone1_backdrop",
             movement: Vector2.Zero);
 
         _objects.Add(bigGradient);

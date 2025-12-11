@@ -16,6 +16,7 @@ public class Game1 : Game
     public int CurrentZone { get; private set; }
     public int CurrentLevel { get; private set; }
     public const float FixedDeltaTime = 1f / 60f;
+    public SpriteFont DefaultFont;
 
     private UIComponent ui;
     private MainMenuUIComponent mainMenu;
@@ -56,14 +57,18 @@ public class Game1 : Game
         SpriteBatch = new SpriteBatch(GraphicsDevice);
         renderTarget = new(GraphicsDevice, NativeScreenWidth, NativeScreenHeight);
 
-        AssetManager.Initialize(Content);
-        InputSystem.Initialize(this);
         // Load here to prevent components from trying to access assets before they're loaded.
+        AssetManager.Initialize(Content);
         AssetManager.LoadAllAssets();
+        DefaultFont = AssetManager.GetFont("pixelsix");
+
+        InputSystem.Initialize(this);
         Camera.Initialize(this);
         ParticleSystem.Initialize(this);
 
         SceneManager.LoadMainMenu();
+
+        SavingSystem.LoadGame();
 
         base.Initialize();
     }
@@ -175,6 +180,10 @@ public class Game1 : Game
             SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
+
+            var infoPos = new Vector2(10, NativeScreenHeight - 40);
+            SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
+
             SpriteBatch.End();
         }
 

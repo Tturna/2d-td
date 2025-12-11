@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,9 +14,28 @@ public static class DebugUtility
     public static HashSet<(Vector2, Vector2, Color)> LineSet { get; private set; } = new();
 
     private static bool debugEnabled;
+    private static bool consoleOpen;
     private static SpriteFont? pixelsixFont;
     private static FpsUtility? fpsUtility;
     private static List<UIEntity>? debugButtons;
+    private static StringBuilder consoleInputStringBuilder = new();
+    private static string previousCommandOutput = "";
+
+    private static Dictionary<string, Func<string>> consoleCommandFunctionMap = new()
+    {
+        { "unlocknextlevel", () =>
+            {
+                ProgressionManager.UnlockNextLevel();
+                return "Unlocked";
+            }
+        },
+        { "unlockalllevels", () =>
+            {
+                ProgressionManager.UnlockLevel(5, 5);
+                return "Unlocked";
+            }
+        }
+    };
 
     public static void Update(Game1 game, GameTime gameTime)
     {
@@ -39,6 +59,11 @@ public static class DebugUtility
         if (fpsUtility is null) fpsUtility = new FpsUtility();
 
         fpsUtility.Update(gameTime);
+
+        if (InputSystem.IsKeyTapped(Keys.J))
+        {
+            ToggleCommandConsole();
+        }
 
         if (InputSystem.IsKeyTapped(Keys.E))
         {
@@ -165,6 +190,30 @@ public static class DebugUtility
         var corpsesTextWidth = (int)pixelsixFont.MeasureString(corpsesText).X;
         var corpsesTextPos = new Vector2(Game1.Instance.NativeScreenWidth - corpsesTextWidth - 8, enemiesTextPos.Y + 10);
         spriteBatch.DrawString(pixelsixFont, corpsesText, corpsesTextPos, Color.White);
+
+        if (consoleOpen)
+        {
+            var consoleInputText = consoleInputStringBuilder.ToString();
+            var consoleTextPosition = new Vector2(10, Game1.Instance.NativeScreenHeight - 32);
+            var consoleInputPosition = consoleTextPosition + Vector2.UnitY * 8;
+            spriteBatch.DrawString(pixelsixFont, "Console:", consoleTextPosition, Color.White);
+
+            try
+            {
+                spriteBatch.DrawString(pixelsixFont, consoleInputText, consoleInputPosition, Color.White);
+            }
+            catch (ArgumentException)
+            {
+                var lastChar = consoleInputStringBuilder[consoleInputStringBuilder.Length - 1];
+                Console.WriteLine($"Character {lastChar} cannot be resolved by font.");
+                consoleInputStringBuilder.Remove(consoleInputStringBuilder.Length - 1, 1);
+            }
+        }
+        else if (previousCommandOutput.Length > 0)
+        {
+            var consoleTextPosition = new Vector2(10, Game1.Instance.NativeScreenHeight - 32);
+            spriteBatch.DrawString(pixelsixFont, previousCommandOutput, consoleTextPosition, Color.White);
+        }
     }
 
     public static void ResetLines()
@@ -229,5 +278,61 @@ public static class DebugUtility
         }
 
         debugButtons.Clear();
+    }
+
+    private static void ToggleCommandConsole()
+    {
+        consoleOpen = !consoleOpen;
+
+        if (consoleOpen)
+        {
+            Game1.Instance.Window.TextInput += OnInput;
+        }
+        else
+        {
+            Game1.Instance.Window.TextInput -= OnInput;
+        }
+    }
+
+    private static void OnInput(object sender, TextInputEventArgs args)
+    {
+        var key = args.Key;
+        var character = args.Character;
+
+        if (key == Keys.Escape)
+        {
+            previousCommandOutput = "";
+            consoleInputStringBuilder.Clear();
+            ToggleCommandConsole();
+            return;
+        }
+
+        if (key == Keys.Back && consoleInputStringBuilder.Length > 0)
+        {
+            consoleInputStringBuilder.Remove(consoleInputStringBuilder.Length - 1, 1);
+            return;
+        }
+
+        if (key != Keys.Enter)
+        {
+            consoleInputStringBuilder.Append(character);
+            return;
+        }
+
+        var inputString = consoleInputStringBuilder.ToString();
+
+        if (consoleCommandFunctionMap.TryGetValue(inputString, out var function))
+        {
+            previousCommandOutput = function();
+            consoleInputStringBuilder.Clear();
+            ToggleCommandConsole();
+        }
+        else
+        {
+            previousCommandOutput = $"Invalid command: \"{inputString}\"";
+            Console.WriteLine(previousCommandOutput);
+            consoleInputStringBuilder.Clear();
+            ToggleCommandConsole();
+        }
     }
 }

@@ -183,15 +183,13 @@ public static class AssetManager
 
         // environment
         LoadTexture("hq", "sprites/Misc/HQ");
-        LoadTexture("tree", "sprites/tree"); // temp
-        LoadTexture("mountain", "sprites/mountain"); // temp
-        LoadTexture("big_gradient", "sprites/big_gradient"); // temp
 
         // - zone1 bg moving objects
         LoadTexture("cloud_z1_1", "sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_1");
         LoadTexture("cloud_z1_2", "sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Background Objects/Zone 1/Moving Objects/roboship_1");
         // - zone1 bg
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/zone1_backdrop");
         LoadTexture("skyscraper_ruins_1", "sprites/Background Objects/Zone 1/skyscraper_ruins_1");
         LoadTexture("skyscraper_ruins_2", "sprites/Background Objects/Zone 1/skyscraper_ruins_2");
 
@@ -221,7 +219,6 @@ public static class AssetManager
         LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
 
         // fonts
-        LoadFont("default", "fonts/default_font");
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
 
         // sounds
