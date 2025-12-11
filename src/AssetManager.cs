@@ -181,6 +181,7 @@ public static class AssetManager
         LoadTexture("cloud_z1_2", "sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Background Objects/Zone 1/Moving Objects/roboship_1");
         // - zone1 bg
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/zone1_backdrop");
         LoadTexture("skyscraper_ruins_1", "sprites/Background Objects/Zone 1/skyscraper_ruins_1");
         LoadTexture("skyscraper_ruins_2", "sprites/Background Objects/Zone 1/skyscraper_ruins_2");
 
