@@ -68,6 +68,8 @@ public class Game1 : Game
 
         SceneManager.LoadMainMenu();
 
+        SavingSystem.LoadGame();
+
         base.Initialize();
     }
 
