@@ -17,12 +17,12 @@ public class Game1 : Game
     public int CurrentLevel { get; private set; }
     public const float FixedDeltaTime = 1f / 60f;
     public SpriteFont DefaultFont;
+    public bool IsPaused;
 
     private UIComponent ui;
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
-    private bool isPaused;
     private float physicsTimer;
 
     public static Game1 Instance { get; private set; }
@@ -79,11 +79,15 @@ public class Game1 : Game
     {
         InputSystem.Update();
 
-        if (isPaused)
+        if (IsPaused)
         {
             if (ui is not null) ui.Update(gameTime);
             if (mainMenu is not null) mainMenu.Update(gameTime);
-            if (SceneManager.CurrentScene == SceneManager.Scene.Game) DebugUtility.Update(this, gameTime);
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game)
+            {
+                DebugUtility.Update(this, gameTime);
+            }
+
             return;
         }
 
@@ -151,7 +155,7 @@ public class Game1 : Game
             LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color, thickness: 1f);
         }
 
-        if (!isPaused)
+        if (!IsPaused)
         {
             DebugUtility.ResetLines();
         }
@@ -274,6 +278,6 @@ public class Game1 : Game
 
     public void SetPauseState(bool isPaused)
     {
-        this.isPaused = isPaused;
+        this.IsPaused = isPaused;
     }
 }

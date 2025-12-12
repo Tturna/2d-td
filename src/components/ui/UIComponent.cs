@@ -22,6 +22,7 @@ public class UIComponent : DrawableGameComponent
     private UIEntity waveCooldownTimer;
     private UIEntity waveCooldownSkipButton;
     private UIEntity waveCooldownSkipText;
+    private SettingsScreen settingsScreen;
     private bool isPauseMenuVisible;
     private bool escHeld;
     private bool isWon;
@@ -205,7 +206,16 @@ public class UIComponent : DrawableGameComponent
         if (!escHeld && kbdState.IsKeyDown(Keys.Escape))
         {
             escHeld = true;
-            TogglePauseMenu(!isPauseMenuVisible);
+
+            if (settingsScreen is null)
+            {
+                TogglePauseMenu(!isPauseMenuVisible);
+            }
+            else
+            {
+                settingsScreen.Destroy();
+                settingsScreen = null;
+            }
         }
 
         if (kbdState.IsKeyUp(Keys.Escape)) escHeld = false;
@@ -226,6 +236,15 @@ public class UIComponent : DrawableGameComponent
             var mousePos = InputSystem.GetMouseScreenPosition();
             var reticlePos = mousePos - mortarReticle.Size / 2;
             mortarReticle.SetPosition(reticlePos);
+        }
+
+        if (game.IsPaused)
+        {
+            for (int i = uiElements.Count - 1; i >= 0; i--)
+            {
+                var element = uiElements[i];
+                element.Update(gameTime);
+            }
         }
 
         base.Update(gameTime);
@@ -294,6 +313,8 @@ public class UIComponent : DrawableGameComponent
                 element.Destroy();
             }
 
+            settingsScreen?.Destroy();
+            settingsScreen = null;
             pauseMenuElements.Clear();
 
             if (isWon)
@@ -323,25 +344,52 @@ public class UIComponent : DrawableGameComponent
 
         loseScreenElements.Clear();
 
-        var playButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
-        var resumeButton = new UIEntity(game, uiElements, playButtonPos, buttonAnimationData);
+        var resumeButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
+        var resumeButton = new UIEntity(game, uiElements, resumeButtonPos, buttonAnimationData);
 
-        var exitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
+        var settingsButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2 + 30);
+        var settingsButton = new UIEntity(game, uiElements, settingsButtonPos, buttonAnimationData);
+
+        var exitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 40);
         var exitButton = new UIEntity(game, uiElements, exitButtonPos, buttonAnimationData);
 
         resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
+        settingsButton.ButtonPressed += () =>
+        {
+            if (settingsScreen is null)
+            {
+                settingsScreen = new SettingsScreen(game, uiElements);
+
+                foreach (var element in pauseMenuElements)
+                {
+                    element.Destroy();
+                }
+
+                pauseMenuElements.Clear();
+                settingsScreen.OnDestroyed += () =>
+                {
+                    TogglePauseMenu(true);
+                    settingsScreen = null;
+                };
+            }
+        };
         exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
         var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
+        var settingsButtonText = new UIEntity(game, uiElements, pixelsixFont, "Settings");
         var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        resumeButtonText.SetPosition(playButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2);
+        resumeButtonText.SetPosition(resumeButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2);
+        settingsButtonText.SetPosition(settingsButtonPos + settingsButton.Size / 2 - settingsButtonText.Size / 2);
         exitButtonText.SetPosition(exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2);
         resumeButtonText.DrawLayerDepth = 0.8f;
+        settingsButtonText.DrawLayerDepth = 0.8f;
         exitButtonText.DrawLayerDepth = 0.8f;
 
         pauseMenuElements.Add(resumeButton);
+        pauseMenuElements.Add(settingsButton);
         pauseMenuElements.Add(exitButton);
         pauseMenuElements.Add(resumeButtonText);
+        pauseMenuElements.Add(settingsButtonText);
         pauseMenuElements.Add(exitButtonText);
     }
 

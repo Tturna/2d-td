@@ -10,6 +10,8 @@ public static class SavingSystem
     {
         public int UnlockedZone { get; set; }
         public int UnlockedLevel { get; set; }
+        public float MasterVolume { get; set; }
+        public float SfxVolume { get; set; }
     }
 
     public static void SaveGame()
@@ -34,6 +36,9 @@ public static class SavingSystem
         var saveData = new SaveData();
         saveData.UnlockedZone = ProgressionManager.LastUnlockedZone;
         saveData.UnlockedLevel = ProgressionManager.LastUnlockedLevel;
+        saveData.MasterVolume = SettingsSystem.MasterVolume;
+        saveData.SfxVolume = SettingsSystem.RawSoundEffectVolume;
+
         var saveJson = JsonSerializer.Serialize(saveData);
         File.WriteAllText(savePath, saveJson);
 
@@ -54,6 +59,8 @@ public static class SavingSystem
         var saveData = JsonSerializer.Deserialize<SaveData>(saveJson);
 
         ProgressionManager.UnlockLevel(saveData.UnlockedZone, saveData.UnlockedLevel);
+        SettingsSystem.MasterVolume = saveData.MasterVolume;
+        SettingsSystem.RawSoundEffectVolume = saveData.SfxVolume;
 
         Console.WriteLine("Save loaded");
     }
