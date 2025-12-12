@@ -143,7 +143,7 @@ public class MovementSystem
                     ((Enemy)entity).PhysicsSystem.StopMovement();
                 }
 
-                var power = 2f;
+                var power = 0.7f;
                 if (shouldClimbCorner) power += 1f;
 
                 entity.UpdatePosition(-Vector2.UnitY * power);
