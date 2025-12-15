@@ -58,6 +58,8 @@ public static class ScrapSystem
         int scrapValue, Vector2? knockback = null)
     {
         var corpse = new ScrapCorpse(game, position, animation, scrapValue);
+        corpse.Size -= Vector2.One * 2;
+        corpse.DrawOffset -= Vector2.One;
 
         if (knockback is not null) {
             var kb = (Vector2)knockback;
