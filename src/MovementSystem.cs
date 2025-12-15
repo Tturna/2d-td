@@ -146,7 +146,29 @@ public class MovementSystem
                 var power = 0.7f;
                 if (shouldClimbCorner) power += 1f;
 
-                entity.UpdatePosition(-Vector2.UnitY * power);
+                var climbVelocity = -Vector2.UnitY * power;
+                entity.UpdatePosition(climbVelocity);
+
+                // if climbing into enemies or corpses, make them move
+                var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+
+                foreach (var enemy in enemyCandidates)
+                {
+                    if (entity == enemy) continue;
+                    if (!Collision.AreEntitiesColliding(entity, enemy)) continue;
+
+                    enemy.UpdatePosition(climbVelocity);
+                }
+
+                var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+
+                foreach (var corpse in corpseCandidates)
+                {
+                    if (entity == corpse) continue;
+                    if (!Collision.AreEntitiesColliding(entity, corpse)) continue;
+
+                    corpse.UpdatePosition(climbVelocity);
+                }
             }
 
             var leapMagnitude = 1f;
