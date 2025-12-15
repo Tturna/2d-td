@@ -97,6 +97,30 @@ public class ScrapCorpse : Entity, IKnockable
         base.SetPosition(newPosition, force);
     }
 
+    public void ClimbUp(Vector2 climbVelocity)
+    {
+        UpdatePosition(climbVelocity);
+
+        var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position + Size / 2);
+
+        foreach (var enemy in enemyCandidates)
+        {
+            if (!Collision.AreEntitiesColliding(this, enemy)) continue;
+
+            enemy.UpdatePosition(climbVelocity);
+        }
+
+        var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(Position + Size / 2);
+
+        foreach (var corpse in corpseCandidates)
+        {
+            if (this == corpse) continue;
+            if (!Collision.AreEntitiesColliding(this, corpse)) continue;
+
+            corpse.UpdatePosition(climbVelocity);
+        }
+    }
+
     public override void Destroy()
     {
         ScrapSystem.Corpses.Remove(this);
