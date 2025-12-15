@@ -167,7 +167,7 @@ public class MovementSystem
                     if (entity == corpse) continue;
                     if (!Collision.AreEntitiesColliding(entity, corpse)) continue;
 
-                    corpse.UpdatePosition(climbVelocity);
+                    corpse.ClimbUp(climbVelocity);
                 }
             }
 

@@ -100,6 +100,7 @@ public class ScrapCorpse : Entity, IKnockable
     public void ClimbUp(Vector2 climbVelocity)
     {
         UpdatePosition(climbVelocity);
+        PhysicsSystem.AddForce(Vector2.UnitX * (climbVelocity.Y / 2));
 
         var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position + Size / 2);
 
