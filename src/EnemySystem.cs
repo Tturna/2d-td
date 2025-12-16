@@ -55,6 +55,7 @@ public static class EnemySystem
         enemy.Size -= Vector2.One * 2;
         enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.5f;
 
         EnemyBins.Add(enemy);
 

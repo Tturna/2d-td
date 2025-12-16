@@ -34,6 +34,12 @@ public static class EffectUtility
             }
 
             enemy.HealthSystem.TakeDamage(source, (int)(damage * effectStrength));
+
+            if (blastDirection.Y > -1)
+            {
+                blastDirection = new Vector2(blastDirection.X , -1);
+            }
+
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
