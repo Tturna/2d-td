@@ -18,6 +18,7 @@ public class Entity : DrawableGameComponent
     public Vector2 Scale { get; set; } = Vector2.One;
     // 1 = back, 0 = front
     public float DrawLayerDepth { get; set; } = 0.9f;
+    public Color Color = Color.White;
     public Texture2D? Sprite { get; set; }
     public AnimationSystem? AnimationSystem;
 
@@ -113,7 +114,7 @@ public class Entity : DrawableGameComponent
     {
         if (AnimationSystem is not null)
         {
-            AnimationSystem.Draw(Game.SpriteBatch, Position, Color.White, RotationRadians,
+            AnimationSystem.Draw(Game.SpriteBatch, Position, Color, RotationRadians,
                 DrawOrigin, DrawOffset, Scale, DrawLayerDepth);
         }
         else if (Sprite is null) return;
@@ -122,7 +123,7 @@ public class Entity : DrawableGameComponent
             Game.SpriteBatch.Draw(Sprite,
                     Position + DrawOffset,
                     sourceRectangle: null,
-                    Color.White,
+                    Color,
                     rotation: RotationRadians,
                     origin: DrawOrigin,
                     scale: Scale,

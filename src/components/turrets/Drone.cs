@@ -161,6 +161,13 @@ class Drone : Entity, ITower
 
         if (artificerExplosionTimer > 0)
         {
+            var animData = artificerExplosion!.AnimationSystem!.BaseAnimationData;
+            var totalLifetime = animData.FrameCount * animData.DelaySeconds;
+            var normalReverseLifetime = artificerExplosionTimer / totalLifetime;
+            var x = 1f - MathF.Pow(1f - normalReverseLifetime, 3f); // ease out cubic
+            var color = Color.FromNonPremultiplied(new Vector4(1f, 1f, 1f, x));
+            artificerExplosion.Color = color;
+                
             artificerExplosionTimer -= deltaTime;
 
             if (artificerExplosionTimer <= 0)
@@ -184,7 +191,9 @@ class Drone : Entity, ITower
                         frameSize: new Vector2(explosionTexture.Width / 5, explosionTexture.Height),
                         delaySeconds: 0.075f);
 
-                artificerExplosion = new Entity(Game, Position + Size / 2 - explosionAnimation.FrameSize / 2, explosionAnimation);
+                var explosionSize = explosionAnimation.FrameSize * 1.5f;
+                artificerExplosion = new Entity(Game, Position + Size / 2 - explosionSize / 2, explosionAnimation);
+                artificerExplosion.Scale = Vector2.One * 1.5f;
                 artificerExplosionTimer = explosionAnimation.FrameCount * explosionAnimation.DelaySeconds;
 
                 var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position + Size / 2, realTileRange * Grid.TileLength);
