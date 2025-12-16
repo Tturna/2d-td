@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -10,7 +11,8 @@ class Drone : Entity, ITower
     private TowerCore towerCore;
     private Vector2 spawnOffset = new (0, 11);
     private Vector2 turretSpawnAxisCenter;
-    int baseRange = 10;
+    private static int baseRange = 10;
+    int realRange;
     int damage = 10;
     float bulletSpeed = 400f;
     float actionsPerSecond = 2f;
@@ -27,23 +29,35 @@ class Drone : Entity, ITower
         UAV,
     }
 
-    public Drone(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Drone(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
         towerCore = new TowerCore(this);
 
-        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), price: 75);
-        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), price: 25, leftChild: FlyingArsenal);
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), price: 70);
-        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), price: 60);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), price: 15, leftChild: AssassinDrone, rightChild: UAV);
+        var FlyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), tempIcon, price: 75);
+        var AdvancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), tempIcon, price: 25, leftChild: FlyingArsenal);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var AssassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), tempIcon, price: 70);
+        var UAV = new TowerUpgradeNode(Upgrade.UAV.ToString(), tempIcon, price: 60);
+        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), tempIcon, price: 15, leftChild: AssassinDrone, rightChild: UAV);
+
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: AdvancedWeaponry, rightChild: ImprovedRadar);
 
+        AdvancedWeaponry.Description = "+10 damage,\n+ 0.5 shots/s";
+        ImprovedRadar.Description = "+8 range";
+        FlyingArsenal.Description = "+20 damage,\n+1 shots/s";
+        AssassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+100 damage";
+        UAV.Description = "-1.5 shots/s\nShoots a radar shot that makes\nenemies take 50% more damage\nfor X seconds. Other towers\nin range gain +4 range.";
+
         towerCore.CurrentUpgrade = defaultNode;
+
+        realRange = baseRange;
     }
 
+    // TODO: Handle upgraded stats sensibly by using variables and updating them in
+    // UpgradeTower().
     public override void Update(GameTime gameTime)
     {
         turretSpawnAxisCenter = Position + spawnOffset;
@@ -51,40 +65,47 @@ class Drone : Entity, ITower
         
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AdvancedWeaponry.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + 0.5f, damage + 10, baseRange, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FlyingArsenal.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + 1.5f, damage + 30, baseRange, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedRadar.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, baseRange + 8, sightAngle);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.AssassinDrone.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond - 1, damage + 100, baseRange + 28, sightAngle - 10f);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle - 10f);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.UAV.ToString())
         {
-            // todo: add the effects
-            HandleBasicShots(deltaTime, actionsPerSecond - 1.5f, damage, baseRange + 8, sightAngle);
+            // TODO: add the effects
+            HandleBasicShots(deltaTime, actionsPerSecond, damage, sightAngle);
         } 
 
         base.Update(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, int range, float attackAngle)
+    public override void Draw(GameTime gameTime)
+    {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
+        base.Draw(gameTime);
+    }
+
+    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, float attackAngle)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        var closestEnemy = GetValidEnemy(range, attackAngle);
+        var closestEnemy = GetValidEnemy(realRange, attackAngle);
 
         if (closestEnemy is null) return;
 
@@ -100,7 +121,7 @@ class Drone : Entity, ITower
 
     private void Shoot(int damage, Vector2 direction)
     {
-        var bullet = new Projectile(Game, turretSpawnAxisCenter);
+        var bullet = new Projectile(Game, this, turretSpawnAxisCenter);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletSpeed;
         bullet.Damage = damage;
@@ -119,10 +140,14 @@ class Drone : Entity, ITower
 
         // Define the direction the tower is facing
         var towerDirectionAngle = (float)Math.PI; // in radians, assuming it faces left.
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var range = tileRange * Grid.TileLength;
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(
+            turretSpawnAxisCenter, range);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             var distanceToEnemy = Vector2.Distance(turretSpawnAxisCenter, enemy.Position);
-            if (distanceToEnemy > tileRange * Grid.TileLength)
+            if (distanceToEnemy > range)
                 continue;
             var enemyCenter = enemy.Position + enemy.Size / 2;
             var deltaX = enemyCenter.X - turretSpawnAxisCenter.X;
@@ -159,17 +184,37 @@ class Drone : Entity, ITower
         base.Destroy();
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("drone");
+        var sprite = AssetManager.GetTexture("drone_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
-            frameCount: 1,
+            frameCount: 4,
             frameSize: new Vector2(sprite.Width / 4, sprite.Height),
-            delaySeconds: 0
+            delaySeconds: 0.1f
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseSprite = AssetManager.GetTexture("drone_base_idle");
+
+        var baseData = new AnimationSystem.AnimationData
+        (
+            texture: baseSprite,
+            frameCount: 1,
+            frameSize: new Vector2(baseSprite.Width / 4, baseSprite.Height),
+            delaySeconds: float.PositiveInfinity
+        );
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static Vector2 GetDefaultGridSize()
@@ -235,4 +280,18 @@ class Drone : Entity, ITower
     {
         return new Drone(game, worldPosition);
     }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static float GetBaseRange() => baseRange;
+
+    public float GetRange()
+    {
+        return realRange;
+    }
+
+    public TowerCore GetTowerCore() => towerCore;
 }

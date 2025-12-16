@@ -2,6 +2,21 @@
     {
         "formations":
         [
+            "easyFormation1"
+        ],
+        "maxFormations": 3
+    },
+    {
+        "formations":
+        [
+            "easyFormation1",
+            "easyFormation3"
+        ],
+        "maxFormations": 4
+    },
+    {
+        "formations":
+        [
             "easyFormation1",
             "easyFormation2",
             "easyFormation3"
@@ -13,36 +28,15 @@
         [
             "easyFormation1",
             "easyFormation2",
-            "mediumFormation2",
-            "mediumFormation3"
-        ],
-        "maxFormations": 7
-    },
-    {
-        "formations":
-        [
-            "easyFormation1",
-            "easyFormation3",
-            "mediumFormation2"
-        ],
-        "maxFormations": 5
-    },
-    {
-        "formations":
-        [
-            "easyFormation2",
-            "mediumFormation1",
-            "easyFormation3",
-            "mediumFormation3"
+            "easyFormation3"
         ],
         "maxFormations": 6
     },
     {
         "formations":
         [
-            "mediumFormation1",
+            "easyFormation1",
             "easyFormation2",
-            "mediumFormation2",
             "easyFormation3"
         ],
         "maxFormations": 7
@@ -54,10 +48,8 @@
         "formations":
         [
             "easyFormation1",
-            "mediumFormation2",
-            "easyFormation3",
-            "mediumFormation3",
-            "easyFormation2"
+            "easyFormation2",
+            "easyFormation3"
         ],
         "maxFormations": 6
     },
@@ -65,41 +57,38 @@
         "formations":
         [
             "mediumFormation1",
+            "easyFormation1",
+            "easyFormation2"
+        ],
+        "maxFormations": 5
+    },
+    {
+        "formations":
+        [
+            "easyFormation3",
+            "mediumFormation2",
+            "easyFormation2"
+        ],
+        "maxFormations": 6
+    },
+    {
+        "formations":
+        [
             "mediumFormation3",
             "easyFormation1",
             "easyFormation2",
-            "mediumFormation2"
-        ],
-        "maxFormations": 7
-    },
-    {
-        "formations":
-        [
-            "easyFormation3",
-            "mediumFormation2",
-            "mediumFormation1",
-            "easyFormation2"
+            "easyFormation3"
         ],
         "maxFormations": 6
     },
     {
         "formations":
         [
-            "mediumFormation3",
+            "mediumFormation2",
+            "mediumFormation1",
             "easyFormation1",
-            "mediumFormation2",
-            "easyFormation3",
-            "mediumFormation1"
-        ],
-        "maxFormations": 8
-    },
-    {
-        "formations":
-        [
-            "mediumFormation2",
-            "hardFormation1",
-            "easyFormation3",
-            "mediumFormation3"
+            "easyFormation2",
+            "easyFormation3"
         ],
         "maxFormations": 7
     },
@@ -211,7 +200,7 @@
         [
             "hardFormation2",
             "mediumFormation3",
-            "hardFormation1",
+            "bossFormation1",
             "easyFormation1"
         ],
         "maxFormations": 9
@@ -244,7 +233,7 @@
         "formations":
         [
             "hardFormation1",
-            "hardFormation3",
+            "bossFormation2",
             "mediumFormation3",
             "easyFormation1"
         ],
@@ -256,7 +245,7 @@
             "hardFormation2",
             "hardFormation1",
             "mediumFormation3",
-            "hardFormation3"
+            "bossFormation3"
         ],
         "maxFormations": 10
     },
@@ -264,9 +253,9 @@
         "formations":
         [
             "hardFormation3",
-            "hardFormation2",
+            "bossFormation2",
             "hardFormation1",
-            "mediumFormation2"
+            "bossFormation2"
         ],
         "maxFormations": 10
     }

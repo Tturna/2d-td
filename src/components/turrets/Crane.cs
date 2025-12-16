@@ -32,33 +32,56 @@ public class Crane : Entity, ITower
         Razorball
     }
 
-    public Crane(Game game, Vector2 position) : base(game, position, GetTowerAnimationData())
+    public Crane(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
+        var attackSprite = AssetManager.GetTexture("crane_base_attack");
+
+        var attackAnimation = new AnimationSystem.AnimationData
+        (
+            texture: attackSprite,
+            frameCount: 5,
+            frameSize: new Vector2(attackSprite.Width / 5, attackSprite.Height),
+            delaySeconds: 0.1f
+        );
+
+        // base constructor defines animation system
+        AnimationSystem!.AddAnimationState("attack", attackAnimation);
+
         towerCore = new TowerCore(this);
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), price: 85);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), price: 70);
-        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), price: 25,
+        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), tempIcon, price: 85);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), tempIcon, price: 70);
+        var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), tempIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), price: 50);
-        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), price: 15,
+        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), tempIcon, price: 50);
+        var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), tempIcon, price: 15,
             leftChild: razorball);
 
-        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), price: 0,
+        var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBall, rightChild: chargedLifts);
+
+        bigBall.Description = "+20 damage\nIncreased ball size ";
+        chargedLifts.Description = "-1s lift time";
+        explosivePayload.Description = "Ball explodes instantly\non contact with an enemy,\ndealing 120 damage in a\n6 tile radius.";
+        crusher.Description = "0.2 shots/sec\n+50 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
+        razorball.Description = "Ball passes through enemies,\ndealing 50 DPS to all\ntouching the blade.\nReeled up after 1.5s.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
 
     public override void Initialize()
     {
-        Position -= Vector2.UnitY * 3;
+        UpdatePosition(-Vector2.UnitY * 3);
         ballThing = new Entity(Game, position: Position + defaultBallOffset, GetBallSprite(Game.SpriteBatch));
     }
 
     public override void Update(GameTime gameTime)
     {
+        if (towerCore.Health.CurrentHealth <= 0) return;
+
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
@@ -91,24 +114,35 @@ public class Crane : Entity, ITower
             HandleCrusher(deltaTime, (float)gameTime.TotalGameTime.TotalSeconds, damage: 30,
                 reelSpeedFactor: 1f, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 2f);
         }
+
+        base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        towerCore.Health.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+
+        base.Draw(gameTime);
     }
 
     private List<Enemy> GetEnemiesInRange(float extraRange = 0f, bool getOnlyFirst = false, bool useHashSet = false)
     {
         List<Enemy> enemies = new();
+        var ballThingCenter = ballThing!.Position + ballThing.Size / 2;
+        var ballThingSize = MathHelper.Max(ballThing.Size.X, ballThing.Size.Y);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(ballThingCenter, ballThingSize + extraRange);
 
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
+        foreach (var enemy in enemyCandidates)
         {
-            var enemy = EnemySystem.Enemies[i];
-
             if (useHashSet)
             {
                 if (hitEnemies.Contains(enemy)) continue;
             }
 
-            var diff = (ballThing!.Position + ballThing.Size / 2) - (enemy.Position + enemy.Size / 2);
+            var diff = (ballThingCenter) - (enemy.Position + enemy.Size / 2);
             var distance = diff.Length();
 
+            // TODO: ensure this condition is correct
             if (distance > ballThing.Size.X / 2 + enemy.Size.X / 2 + extraRange) continue;
 
             if (useHashSet)
@@ -124,23 +158,23 @@ public class Crane : Entity, ITower
         return enemies;
     }
 
-    private void DamageHitEnemies(int damage)
+    private void DamageHitEnemies(int damage, float deltaTime)
     {
         var enemies = GetEnemiesInRange(useHashSet: true);
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(this, damage);
         }
     }
 
-    private void DamageEnemiesUnconditionally(int damage, float extraRange = 0f)
+    private void DamageEnemiesUnconditionally(int damage, float deltaTime, float extraRange = 0f)
     {
         var enemies = GetEnemiesInRange(extraRange: extraRange);
 
         foreach (var enemy in enemies)
         {
-            enemy.HealthSystem.TakeDamage(damage);
+            enemy.HealthSystem.TakeDamage(this, damage);
         }
     }
 
@@ -152,13 +186,13 @@ public class Crane : Entity, ITower
         if (ballThing!.Position == targetBallPosition) return true;
 
         ballSpeed += ballFallAcceleration;
-        ballThing.Position += Vector2.UnitY * ballSpeed * deltaTime;
+        ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
 
-        DamageHitEnemies(damage);
+        DamageHitEnemies(damage, deltaTime);
 
         if (ballThing.Position.Y >= targetBallPosition.Y)
         {
-            ballThing.Position = targetBallPosition;
+            ballThing.SetPosition(targetBallPosition);
         }
 
         return false;
@@ -168,12 +202,12 @@ public class Crane : Entity, ITower
     {
         if (ballThing!.Position == Position + defaultBallOffset) return;
 
-        ballThing.Position = Vector2.Lerp(targetBallPosition, Position + defaultBallOffset,
-            (1f - (cooldownTimer / cooldownTime)) * reelSpeedFactor);
+        ballThing.SetPosition(Vector2.Lerp(targetBallPosition, Position + defaultBallOffset,
+            (1f - (cooldownTimer / cooldownTime)) * reelSpeedFactor));
 
         if (ballThing.Position.Y <= Position.Y + defaultBallOffset.Y)
         {
-            ballThing.Position = Position + defaultBallOffset;
+            ballThing.SetPosition(Position + defaultBallOffset);
         }
     }
 
@@ -208,6 +242,7 @@ public class Crane : Entity, ITower
         if (IsEnemyBelow())
         {
             Trigger(actionTime);
+            AnimationSystem!.OneShotAnimationState("attack");
         }
     }
 
@@ -219,18 +254,18 @@ public class Crane : Entity, ITower
         if (actionTimer > 0)
         {
             ballSpeed += ballFallAcceleration;
-            ballThing!.Position += Vector2.UnitY * ballSpeed * deltaTime;
+            ballThing!.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
             var enemyHit = GetEnemiesInRange(getOnlyFirst: true).Count > 0;
 
             // Explode if enemy or ground hit
             if (enemyHit || ballThing.Position.Y >= targetBallPosition.Y)
             {
-                ballThing.Position = targetBallPosition;
-                DamageEnemiesUnconditionally(damage: 120, extraRange: 6 * Grid.TileLength);
+                ballThing.SetPosition(targetBallPosition);
+                DamageEnemiesUnconditionally(damage: 120, deltaTime, extraRange: 6 * Grid.TileLength);
 
                 actionTimer = 0;
                 cooldownTimer = cooldownTime + reelDelayTime;
-                ballThing.Position = Position + defaultBallOffset;
+                ballThing.SetPosition(Position + defaultBallOffset);
             }
         }
 
@@ -249,7 +284,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 25 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 15);
+                DamageEnemiesUnconditionally(damage: 15, deltaTime);
             }
         }
 
@@ -304,7 +339,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 10 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 8);
+                DamageEnemiesUnconditionally(damage: 8, deltaTime);
             }
 
             return;
@@ -314,7 +349,7 @@ public class Crane : Entity, ITower
 
         if (cooldownTimerRunning)
         {
-            ballThing!.Position = Position + defaultBallOffset;
+            ballThing!.SetPosition(Position + defaultBallOffset);
 
             return;
         }
@@ -359,7 +394,10 @@ public class Crane : Entity, ITower
     private bool IsEnemyBelow()
     {
         var towerTestPosition = ballThing!.Position + ballThing.Size / 2;
-        foreach (var enemy in EnemySystem.Enemies)
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(towerTestPosition,
+            BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
+
+        foreach (var enemy in enemyCandidates)
         {
             var enemyTestPosition = enemy.Position + enemy.Size / 2;
 
@@ -378,8 +416,7 @@ public class Crane : Entity, ITower
         actionTimer = actionTime;
         var groundCheckPosition = ballThing!.Position;
         
-        while (ScrapSystem.GetScrapFromPosition(groundCheckPosition) is null &&
-            !Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
+        while (!Collision.IsPointInTerrain(groundCheckPosition, Game.Terrain))
         {
             groundCheckPosition += Vector2.UnitY * Grid.TileLength;
         }
@@ -391,23 +428,14 @@ public class Crane : Entity, ITower
 
     private static Texture2D GetBallSprite(SpriteBatch spriteBatch)
     {
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: Grid.TileLength, height: Grid.TileLength,
-        mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[Grid.TileLength * Grid.TileLength];
-
-        for (var i = 0; i < colorData.Length; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        texture.SetData(colorData);
-
+        var texture = TextureUtility.GetBlankTexture(spriteBatch, Grid.TileLength, Grid.TileLength, Color.White);
         return texture;
     }
 
     public override void Destroy()
     {
+        towerCore.CloseDetailsView();
+        Game.Components.Remove(towerCore);
         ballThing?.Destroy();
         base.Destroy();
     }
@@ -427,21 +455,44 @@ public class Crane : Entity, ITower
         return new Vector2(3, 2);
     }
 
-    public static AnimationSystem.AnimationData GetTowerAnimationData()
+    public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("crane");
+        var sprite = AssetManager.GetTexture("crane_base_idle");
 
         return new AnimationSystem.AnimationData
         (
             texture: sprite,
             frameCount: 1,
-            frameSize: new Vector2(sprite.Width / 5, sprite.Height),
+            frameSize: new Vector2(sprite.Width, sprite.Height),
             delaySeconds: 0
         );
+    }
+
+    public static List<KeyValuePair<UIEntity, Vector2>> GetUnupgradedPartIcons(List<UIEntity> uiElements)
+    {
+        var baseData = GetUnupgradedBaseAnimationData();
+
+        var baseEntity = new UIEntity(Game1.Instance, uiElements, Vector2.Zero, baseData);
+
+        var list = new List<KeyValuePair<UIEntity, Vector2>>();
+        list.Add(KeyValuePair.Create(baseEntity, Vector2.Zero));
+
+        return list;
     }
 
     public static BuildingSystem.TowerType GetTowerType()
     {
         return BuildingSystem.TowerType.Crane;
     }
+
+    public void UpgradeTower(TowerUpgradeNode newUpgrade)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static float GetBaseRange() => 0f;
+
+    public float GetRange() => 0f;
+
+    public TowerCore GetTowerCore() => towerCore;
 }

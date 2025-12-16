@@ -6,73 +6,89 @@ namespace _2d_td;
 #nullable enable
 public static class ScrapSystem
 {
-    private static Dictionary<Vector2, ScrapTile>? scrapTileMap;
+    private static bool clearingScrap;
+    private static readonly float clearStepInterval = 0.1f;
+    private static float clearStepTimer;
+    private static Stack<ScrapCorpse>? corpseAddOrder;
+
+    public static BinGrid<ScrapCorpse>? Corpses;
 
     public static void Initialize()
     {
-        if (scrapTileMap is not null)
-        {
-            foreach (var item in scrapTileMap)
-            {
-                item.Value.Destroy();
-            }
-        }
+        if (Corpses is not null) Corpses.Destroy();
 
-        scrapTileMap = new();
+        Corpses = new(Grid.TileLength * 2);
+        corpseAddOrder = new();
+
+        WaveSystem.WaveEnded += ClearScrap;
     }
 
-    public static void AddScrap(Game1 game, Vector2 worldPosition)
+    public static void Update(GameTime gameTime)
     {
-        var gridPosition = Grid.SnapPositionToGrid(worldPosition);
-        ScrapTile? tile = null;
+        if (!clearingScrap) return;
 
-        var targetPosition = gridPosition;
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        clearStepTimer -= deltaTime;
 
-        while (true)
+        if (clearStepTimer <= 0)
         {
-            var belowTile = ScrapSystem.GetScrapFromPosition(targetPosition);
+            clearStepTimer = clearStepInterval;
 
-            if (belowTile is not null && belowTile.ScrapLevel > 0)
+            if (Corpses?.TotalValueCount > 0)
             {
-                if (belowTile.ScrapLevel < ScrapTile.MaxScrapLevel)
+                var corpse = corpseAddOrder!.Pop();
+                CurrencyManager.AddBalance(corpse.ScrapValue);
+                UIComponent.SpawnFlyoutText($"+{corpse.ScrapValue}", corpse.Position, -Vector2.UnitY * 25f,
+                    lifetime: 1f, color: Color.White);
+                corpse.Destroy();
+
+                if (Corpses.TotalValueCount == 0)
                 {
-                    belowTile.AddToPile();
-                    return;
+                    clearingScrap = false;
                 }
-
-                break;
             }
-
-            if (Collision.IsPointInTerrain(targetPosition, game.Terrain))
+            else
             {
-                break;
+                clearingScrap = false;
             }
-
-            targetPosition += Vector2.UnitY * Grid.TileLength;
         }
-
-        targetPosition -= Vector2.UnitY * Grid.TileLength;
-
-        // Assume Initialize has been called. Throw if not.
-        if (!scrapTileMap!.TryGetValue(targetPosition, out tile))
-        {
-            tile = new ScrapTile(game, targetPosition);
-            scrapTileMap.Add(targetPosition, tile);
-            return;
-        }
-
-        tile.AddToPile();
     }
 
-    public static ScrapTile? GetScrapFromPosition(Vector2 worldPosition)
+    public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation,
+        int scrapValue, Vector2? knockback = null)
     {
-        var gridPosition = Grid.SnapPositionToGrid(worldPosition);
+        var corpse = new ScrapCorpse(game, position, animation, scrapValue);
+        corpse.Size -= Vector2.One * 2;
+        corpse.DrawOffset -= Vector2.One;
 
-        if (scrapTileMap!.TryGetValue(gridPosition, out var tile))
-        {
-            return tile;
+        if (knockback is not null) {
+            var kb = (Vector2)knockback;
+            corpse.UpdatePosition(kb); // jerk the corpse a lil
+            corpse.PhysicsSystem.AddForce(kb);
+            corpse.PhysicsSystem.AddForce(-Vector2.UnitY);
         }
 
-        return null;
+        Corpses!.Add(corpse);
+        corpseAddOrder!.Push(corpse);
+    }
+
+    public static bool IsPointInCorpse(Vector2 point)
+    {
+        var corpseCandidates = Corpses!.GetBinAndNeighborValues(point);
+
+        foreach (var corpse in corpseCandidates)
+        {
+            if (Collision.IsPointInEntity(point, corpse)) return true;
+        }
+
+        return false;
+    }
+
+    private static void ClearScrap()
+    {
+        if (clearingScrap) return;
+
+        clearingScrap = true;
+        clearStepTimer = clearStepInterval;
     }
 }

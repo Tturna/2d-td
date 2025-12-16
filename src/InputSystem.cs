@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _2d_td;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -7,11 +8,13 @@ public static class InputSystem
 {
     private static Game1 game;
     private static MouseState mouseState;
+    private static KeyboardState keyboardState;
 
     private static bool isMouseLeftDown;
     private static bool isMouseRightDown;
     private static bool isMouseLeftClicked;
     private static bool isMouseRightClicked;
+    private static Dictionary<Keys, bool> keysDownMap = new();
 
     private static int totalScrollAmount;
     private static int justScrolledAmount;
@@ -19,7 +22,8 @@ public static class InputSystem
     private static bool collectionModified;
 
     public delegate void ClickedHandler(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition);
-    public static event ClickedHandler Clicked;
+    public static event ClickedHandler LeftClicked;
+    public static event ClickedHandler RightClicked;
 
     public static void Initialize(Game1 game)
     {
@@ -30,6 +34,7 @@ public static class InputSystem
     public static void Update()
     {
         mouseState = Mouse.GetState();
+        keyboardState = Keyboard.GetState();
 
         if (IsLeftMouseButtonDown())
         {
@@ -55,6 +60,17 @@ public static class InputSystem
             isMouseRightDown = false;
         }
 
+        foreach (var keyDownItem in keysDownMap)
+        {
+            var key = keyDownItem.Key;
+            var isDown = keyDownItem.Value;
+
+            if (isDown && keyboardState.IsKeyUp(key))
+            {
+                keysDownMap[key] = false;
+            }
+        }
+
         var newScrollAmount = Mouse.GetState().ScrollWheelValue;
         justScrolledAmount = newScrollAmount - totalScrollAmount;
         totalScrollAmount = newScrollAmount;
@@ -63,7 +79,7 @@ public static class InputSystem
         {
             var mouseScreenPos = InputSystem.GetMouseScreenPosition();
             var mouseWorldPos = InputSystem.GetMouseWorldPosition();
-            OnClicked(mouseScreenPos, mouseWorldPos);
+            OnLeftClicked(mouseScreenPos, mouseWorldPos);
 
             collectionModified = false;
 
@@ -80,7 +96,7 @@ public static class InputSystem
 
                 if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
                 {
-                    clickable.OnClick();
+                    clickable.OnLeftClick();
                 }
 
                 // When a clickable causes a scene change, the components list will change.
@@ -88,11 +104,42 @@ public static class InputSystem
                 if (collectionModified) break;
             }
         }
+
+        if (IsRightMouseButtonClicked())
+        {
+            var mouseScreenPos = InputSystem.GetMouseScreenPosition();
+            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+            OnRightClicked(mouseScreenPos, mouseWorldPos);
+
+            collectionModified = false;
+
+            for (int i = game.Components.Count - 1; i >= 0; i--)
+            {
+                if (game.Components.Count < i + 1) continue;
+
+                var component = game.Components[i];
+                if (component is not IClickable) continue;
+
+                var clickable = (IClickable)component;
+
+                if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
+                {
+                    clickable.OnRightClick();
+                }
+
+                if (collectionModified) break;
+            }
+        }
     }
 
-    private static void OnClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    private static void OnLeftClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {
-        Clicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
+        LeftClicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
+    }
+
+    private static void OnRightClicked(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
+    {
+        RightClicked?.Invoke(mouseScreenPosition, mouseWorldPosition);
     }
 
     public static Vector2 GetMouseWorldPosition()
@@ -142,5 +189,49 @@ public static class InputSystem
     public static int mouseJustScrolledAmount()
     {
         return justScrolledAmount;
+    }
+
+    public static bool IsKeyDown(Keys key)
+    {
+        var isDown = keyboardState.IsKeyDown(key);
+
+        if (isDown)
+        {
+            keysDownMap[key] = true;
+        }
+
+        return isDown;
+    }
+
+    public static bool IsKeyTapped(Keys key)
+    {
+        var isDown = keyboardState.IsKeyDown(key);
+
+        if (!isDown) return false;
+
+        var isKeyInMap = keysDownMap.TryGetValue(key, out var isHeld);
+
+        if (!isKeyInMap)
+        {
+            keysDownMap[key] = true;
+            return true;
+        }
+
+        if (!isHeld)
+        {
+            keysDownMap[key] = true;
+        }
+
+        return !isHeld;
+    }
+
+    /// <summary>
+    /// Force registration of clickables to stop for this frame. Useful if for example a button
+    /// creates a new button in the same place but the new one should not be clicked in the same
+    /// frame.
+    /// </summary>
+    public static void ForceClickableInterrupt()
+    {
+        collectionModified = true;
     }
 }

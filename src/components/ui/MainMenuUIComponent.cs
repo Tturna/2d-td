@@ -1,15 +1,23 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
+#nullable enable
 public class MainMenuUIComponent : DrawableGameComponent
 {
     private Game1 game;
     private List<UIEntity> uiEntities = new();
-    private SpriteFont defaultFont = AssetManager.GetFont("default");
+    private SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
     private Texture2D buttonSprite = AssetManager.GetTexture("btn_square");
+    private Texture2D playButtonSprite = AssetManager.GetTexture("main_play_button");
+    private Texture2D quitButtonSprite = AssetManager.GetTexture("main_quit_button");
+    private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
+    private Stack<Action> menuScreenStack = new();
+    private SettingsScreen? settingsScreen;
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -25,6 +33,24 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     public override void Update(GameTime gameTime)
     {
+        if (InputSystem.IsKeyTapped(Keys.Escape))
+        {
+            if (menuScreenStack.Count == 0)
+            {
+                if (settingsScreen is not null)
+                {
+                    settingsScreen.Destroy();
+                }
+
+                LoadMainMenu();
+            }
+            else
+            {
+                var loadPreviousScreen = menuScreenStack.Pop();
+                loadPreviousScreen();
+            }
+        }
+
         base.Update(gameTime);
     }
 
@@ -55,29 +81,51 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         var halfScreenWidth = game.NativeScreenWidth / 2;
         var halfScreenHeight = game.NativeScreenHeight / 2;
-        var playBtnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
+        var playBtnFrameSize = new Vector2(playButtonSprite.Width, playButtonSprite.Height);
+        var quitBtnFrameSize = new Vector2(quitButtonSprite.Width, quitButtonSprite.Height);
+        var settingsBtnFrameSize = new Vector2(settingsButtonSprite.Width, settingsButtonSprite.Height);
 
         var playBtnAnimationData = new AnimationSystem.AnimationData
         (
-            texture: buttonSprite,
-            frameCount: 2,
+            texture: playButtonSprite,
+            frameCount: 1,
             frameSize: playBtnFrameSize,
-            delaySeconds: 0.5f
+            delaySeconds: 0
         );
 
-        var playButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight - playBtnFrameSize.Y / 2);
+        var quitBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: quitButtonSprite,
+            frameCount: 1,
+            frameSize: quitBtnFrameSize,
+            delaySeconds: 0
+        );
+
+        var settingsBtnAnimationData = new AnimationSystem.AnimationData
+        (
+            texture: settingsButtonSprite,
+            frameCount: 1,
+            frameSize: settingsBtnFrameSize,
+            delaySeconds: 0
+        );
+
+        const int Margin = 16;
+        const int Gap = 4;
+        var playButtonPos = new Vector2(Margin, halfScreenHeight);
         var playButton = new UIEntity(game, uiEntities, playButtonPos, playBtnAnimationData);
 
-        var exitButtonPos = new Vector2(halfScreenWidth - playBtnFrameSize.X / 2, halfScreenHeight + playBtnFrameSize.Y / 2 + 10);
-        var exitButton = new UIEntity(game, uiEntities, exitButtonPos, playBtnAnimationData);
+        var settingsButtonPos = new Vector2(Margin, halfScreenHeight + playButtonSprite.Height + Gap);
+        var settingsButton = new UIEntity(game, uiEntities, settingsButtonPos, settingsBtnAnimationData);
+
+        var exitButtonPos = new Vector2(Margin, halfScreenHeight + playButtonSprite.Height + settingsButtonSprite.Height + Gap * 2);
+        var exitButton = new UIEntity(game, uiEntities, exitButtonPos, quitBtnAnimationData);
 
         playButton.ButtonPressed += () => LoadZoneSelector();
         exitButton.ButtonPressed += () => game.Exit();
-
-        var playButtonText = new UIEntity(game, uiEntities, defaultFont, "Play");
-        var exitButtonText = new UIEntity(game, uiEntities, defaultFont, "Exit");
-        playButtonText.Position = playButtonPos + playButton.Size / 2 - playButtonText.Size / 2;
-        exitButtonText.Position = exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2;
+        settingsButton.ButtonPressed += () =>
+        {
+            settingsScreen = new SettingsScreen(game, uiEntities);
+        };
     }
 
     private void LoadZoneSelector()
@@ -89,9 +137,10 @@ public class MainMenuUIComponent : DrawableGameComponent
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
         var titleText = "Select Zone";
-        var title = new UIEntity(game, uiEntities, defaultFont, titleText);
-        var titleOffset = -defaultFont.MeasureString(titleText).X / 2;
-        title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
+        var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
+        title.Scale = Vector2.One * 2;
+        var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
             
         var btnAnimationData = new AnimationSystem.AnimationData
         (
@@ -110,17 +159,40 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            // Create new variable so that the lambda function doesn't create a closure that
-            // captures the "i" iteration variable.
-            var zoneNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevelSelector(zoneNumber);
-
             var text = $"{i + 1}";
-            var zoneText = new UIEntity(game, uiEntities, defaultFont, text);
-            var textXOffset = -defaultFont.MeasureString(text).X / 2;
-            zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
+
+            if (ProgressionManager.IsZoneUnlocked(i + 1))
+            {
+                // Create new variable so that the lambda function doesn't create a closure that
+                // captures the "i" iteration variable.
+                var zoneNumber = i + 1;
+                btn.ButtonPressed += () =>
+                {
+                    if (menuScreenStack.Count == 0 || menuScreenStack.Peek() != LoadZoneSelector)
+                    {
+                        menuScreenStack.Push(LoadZoneSelector);
+                    }
+
+                    LoadLevelSelector(zoneNumber);
+                };
+            }
+            else
+            {
+                text += " (x)";
+            }
+
+            var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
+            zoneText.Scale = Vector2.One * 2;
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
+            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () => LoadMainMenu();
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevelSelector(int selectedZone)
@@ -132,9 +204,10 @@ public class MainMenuUIComponent : DrawableGameComponent
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
         var titleText = "Select Level";
-        var title = new UIEntity(game, uiEntities, defaultFont, titleText);
-        var titleOffset = -defaultFont.MeasureString(titleText).X / 2;
-        title.Position = new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40);
+        var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
+        title.Scale = Vector2.One * 2;
+        var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
 
         var btnAnimationData = new AnimationSystem.AnimationData
             (
@@ -153,15 +226,34 @@ public class MainMenuUIComponent : DrawableGameComponent
             var offset = btnFrameSize.X * i + btnMargin * i;
             var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
             var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-
-            var levelNumber = i + 1;
-            btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
-
             var text = $"{i + 1}";
-            var zoneText = new UIEntity(game, uiEntities, defaultFont, text);
-            var textXOffset = -defaultFont.MeasureString(text).X / 2;
-            zoneText.Position = btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4);
+
+            if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 1))
+            {
+                var levelNumber = i + 1;
+                btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+            }
+            else
+            {
+                text += " (x)";
+            }
+
+            var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
+            zoneText.Scale = Vector2.One * 2;
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
+            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
         }
+
+        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
+        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        backButton.ButtonPressed += () =>
+        {
+            LoadZoneSelector();
+            InputSystem.ForceClickableInterrupt();
+        };
+
+        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
+        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevel(int zone, int level)

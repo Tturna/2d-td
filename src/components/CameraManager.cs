@@ -9,14 +9,40 @@ public class CameraManager : GameComponent
     private Game1 game;
     private float currentScale = 1;
 
+    private float cameraShakeDuration;
+    private float cameraShakeDurationLeft;
+    private float cameraShakeStrength;
+    private Vector2 preShakePosition;
+    private Random rng = new();
+
+    public static CameraManager Instance;
+
     public CameraManager(Game game) : base(game)
     {
         this.game = (Game1)game;
+        Instance = this;
     }
 
     public override void Initialize()
     {
-        Camera.Position = Vector2.One * 400;
+        var initCamPos = new Vector2(400, 400);
+        var failsafe = 0;
+
+        while (!Collision.IsPointInTerrain(initCamPos, game.Terrain))
+        {
+            initCamPos += Vector2.UnitY * Grid.TileLength;
+            failsafe++;
+
+            if (failsafe > 300)
+            {
+                initCamPos = new Vector2(400, 400);
+                break;
+            }
+        }
+
+        initCamPos -= Vector2.UnitY * Grid.TileLength * 8;
+        Camera.Position = initCamPos;
+        preShakePosition = Camera.Position;
 
         base.Initialize();
     }
@@ -45,7 +71,27 @@ public class CameraManager : GameComponent
         var totalCameraScale = 1 / currentScale;
         Camera.Scale = totalCameraScale;
 
-        Camera.Position += posChange;
+        preShakePosition += posChange;
+        Camera.Position = preShakePosition;
+        
+        if (cameraShakeDurationLeft > 0)
+        {
+            var randomAngleRadians = (float)rng.NextDouble() * MathHelper.Tau;
+            var rx = MathF.Cos(randomAngleRadians);
+            var ry = MathF.Sin(randomAngleRadians);
+            var randomUnitVector = new Vector2(rx, ry);
+
+            Camera.Position += randomUnitVector * cameraShakeStrength;
+            cameraShakeDurationLeft -= deltaTime;
+        }
+
         base.Update(gameTime);
+    }
+
+    public void ShakeCamera(float strength, float duration)
+    {
+        cameraShakeStrength = strength;
+        cameraShakeDuration = duration;
+        cameraShakeDurationLeft = duration;
     }
 }

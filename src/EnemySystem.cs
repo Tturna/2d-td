@@ -5,97 +5,123 @@ namespace _2d_td;
 
 public static class EnemySystem
 {
-    public static List<Enemy> Enemies { get; private set; } = new();
+    public static BinGrid<Enemy> EnemyBins;
     static Game1 Game;
 
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
     {
-        { "walker", SpawnWalkerEnemy },
-        { "fridge", SpawnFridgeEnemy }
+        { "node", SpawnNodeEnemy },
+        { "bouncer", SpawnBouncerEnemy },
+        { "meganode", SpawnMeganodeEnemy }
     };
 
     public static void Initialize(Game1 game)
     {
         Game = game;
+        var mainBounds = new Rectangle(-game.NativeScreenWidth, 0,
+            game.NativeScreenWidth * 3, game.NativeScreenHeight * 2);
+        EnemyBins = new BinGrid<Enemy>(Grid.TileLength * 4);
     }
 
     public static void Update(GameTime gameTime)
     {
-        CheckIfEnemyPastLevel();
     }
-
-    public static void CheckIfEnemyPastLevel()
-    {
-        float levelEndX = Game.Terrain.GetLastTilePosition().X;
-        
-        foreach (Enemy enemy in Enemies)
-        {
-            float enemyX = enemy.Position.X;
-            if (enemyX > levelEndX)
-            {
-
-                //Console.WriteLine("Enemy has passed level");
-            }
-        }
-    }
-
 
     public delegate Enemy EnemySpawner(Game game, Vector2 position);
 
-    public static Enemy SpawnWalkerEnemy(Game game, Vector2 position)
+    public static Enemy SpawnNodeEnemy(Game game, Vector2 position)
     {
         var movementData = new MovementSystem.MovementData
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 22f,
+            WalkSpeed = 0.35f,
             JumpForce = 7f
         };
 
-        var texture = AssetManager.GetTexture("goon");
-        var hurtTexture = AssetManager.GetTexture("goon_hit");
-        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+        var texture = AssetManager.GetTexture("node");
+        var frameSize = new Vector2(texture.Width, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData
         (
             texture: texture,
-            frameCount: 8,
+            frameCount: 1,
             frameSize: frameSize,
-            delaySeconds: 0.1f
+            delaySeconds: float.PositiveInfinity
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 100, scrapValue: 1);
-        Enemies.Add(enemy);
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.5f;
+
+        EnemyBins.Add(enemy);
 
         return enemy;
     }
 
-    public static Enemy SpawnFridgeEnemy(Game game, Vector2 position)
+    public static Enemy SpawnBouncerEnemy(Game game, Vector2 position)
+    {
+        var movementData = new MovementSystem.MovementData
+        {
+            Pattern = MovementSystem.MovementPattern.BounceForward,
+            CanWalk = true,
+            WalkSpeed = 0.4f,
+            JumpForce = 8f
+        };
+
+        var texture = AssetManager.GetTexture("bouncer");
+        var frameSize = new Vector2(texture.Width, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        (
+            texture: texture,
+            frameCount: 1,
+            frameSize: frameSize,
+            delaySeconds: float.PositiveInfinity
+        );
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
+            health: 100, scrapValue: 1);
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.3f;
+        enemy.PhysicsSystem.DragFactor = 0.02f;
+        EnemyBins.Add(enemy);
+
+        return enemy;
+    }
+
+    public static Enemy SpawnMeganodeEnemy(Game game, Vector2 position)
     {
         var movementData = new MovementSystem.MovementData
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 16f,
+            WalkSpeed = 0.2f,
             JumpForce = 6f
         };
 
-        var texture = AssetManager.GetTexture("fridge");
-        var hurtTexture = AssetManager.GetTexture("fridge_hit");
-        var frameSize = new Vector2(texture.Width / 8, texture.Height);
+        var texture = AssetManager.GetTexture("meganode");
+        var frameSize = new Vector2(texture.Width, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData
         (
             texture: texture,
-            frameCount: 8,
+            frameCount: 1,
             frameSize: frameSize,
-            delaySeconds: 0.1f
+            delaySeconds: float.PositiveInfinity
         );
 
-        var enemy = new Enemy(game, position, frameSize, movementData, animationData, hurtTexture,
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 300, scrapValue: 5);
-        Enemies.Add(enemy);
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        EnemyBins.Add(enemy);
 
         return enemy;
     }

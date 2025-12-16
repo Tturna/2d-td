@@ -15,6 +15,7 @@ public class UIEntity : Entity, IClickable
     private Func<UIEntity, bool> removeUIEntityCallback;
     private SpriteFont? font;
     public string? Text;
+    public Color TextColor;
 
     public UIEntity(Game game, Vector2? position, Action<UIEntity> addUIEntityCallback,
         Func<UIEntity, bool> removeUIEntityCallback, Texture2D sprite) : base(game, position, sprite)
@@ -40,14 +41,21 @@ public class UIEntity : Entity, IClickable
     public UIEntity(Game game, List<UIEntity> uiEntities, Vector2 position, AnimationSystem.AnimationData animationData) :
         this(game, uiEntities.Add, uiEntities.Remove, position, animationData) { }
 
-    public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
+    public UIEntity(Game game, Action<UIEntity> addUIEntityCallback,
+        Func<UIEntity, bool> removeUIEntityCallback, SpriteFont font, string text,
+        Color? color = null) :
         base(game, size: font.MeasureString(text))
     {
-        uiEntities.Add(this);
-        this.removeUIEntityCallback = uiEntities.Remove;
+        addUIEntityCallback(this);
+        this.removeUIEntityCallback = removeUIEntityCallback;
         this.font = font;
         Text = text;
+
+        TextColor = color is null ? Color.White : (Color)color;
     }
+
+    public UIEntity(Game game, List<UIEntity> uiEntities, SpriteFont font, string text) :
+        this(game, uiEntities.Add, uiEntities.Remove, font, text) { }
 
     public override void Update(GameTime gameTime)
     {
@@ -81,7 +89,15 @@ public class UIEntity : Entity, IClickable
 
         if (font is not null && Text is not null)
         {
-            Game.SpriteBatch.DrawString(font, Text, Position, Color.White);
+            Game.SpriteBatch.DrawString(font,
+                Text,
+                Position,
+                TextColor,
+                rotation: 0f,
+                origin: DrawOrigin,
+                scale: Scale,
+                effects: SpriteEffects.None,
+                layerDepth: DrawLayerDepth);
         }
     }
 
@@ -96,10 +112,17 @@ public class UIEntity : Entity, IClickable
         ButtonPressed?.Invoke();
     }
 
-    public void OnClick()
+    public void ClearButtonHandlers()
+    {
+        ButtonPressed = null;
+    }
+
+    public void OnLeftClick()
     {
         OnButtonPressed();
     }
+
+    public void OnRightClick() { }
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {

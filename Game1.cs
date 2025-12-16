@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -12,15 +11,19 @@ public class Game1 : Game
     public Terrain Terrain;
     public Vector2 RenderTargetSize;
     public Vector2 RenderedBlackBoxSize;
-    public int NativeScreenWidth = 800;
-    public int NativeScreenHeight = 480;
+    public int NativeScreenWidth = 640;
+    public int NativeScreenHeight = 360;
+    public int CurrentZone { get; private set; }
+    public int CurrentLevel { get; private set; }
+    public const float FixedDeltaTime = 1f / 60f;
+    public SpriteFont DefaultFont;
+    public bool IsPaused;
 
     private UIComponent ui;
     private MainMenuUIComponent mainMenu;
     private RenderTarget2D renderTarget;
     private Rectangle renderDestination;
-    private int currentZone, currentLevel;
-    private bool isPaused;
+    private float physicsTimer;
 
     public static Game1 Instance { get; private set; }
 
@@ -33,8 +36,14 @@ public class Game1 : Game
 
         Graphics.PreferredBackBufferWidth = NativeScreenWidth;
         Graphics.PreferredBackBufferHeight = NativeScreenHeight;
-        Graphics.ApplyChanges();
         // Graphics.IsFullScreen = true;
+
+        // default vsync setting
+        Graphics.SynchronizeWithVerticalRetrace = true;
+        Graphics.ApplyChanges();
+
+        // FPS limit
+        IsFixedTimeStep = false;
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
@@ -45,33 +54,64 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
         renderTarget = new(GraphicsDevice, NativeScreenWidth, NativeScreenHeight);
 
-        AssetManager.Initialize(Content);
-        InputSystem.Initialize(this);
         // Load here to prevent components from trying to access assets before they're loaded.
+        AssetManager.Initialize(Content);
         AssetManager.LoadAllAssets();
+        DefaultFont = AssetManager.GetFont("pixelsix");
+
+        InputSystem.Initialize(this);
         Camera.Initialize(this);
+        ParticleSystem.Initialize(this);
 
         SceneManager.LoadMainMenu();
+
+        SavingSystem.LoadGame();
 
         base.Initialize();
     }
 
-    protected override void LoadContent()
-    {
-        SpriteBatch = new SpriteBatch(GraphicsDevice);
-    }
+    protected override void LoadContent() { }
 
     protected override void Update(GameTime gameTime)
     {
         InputSystem.Update();
 
-        if (isPaused)
+        if (IsPaused)
         {
             if (ui is not null) ui.Update(gameTime);
             if (mainMenu is not null) mainMenu.Update(gameTime);
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game)
+            {
+                DebugUtility.Update(this, gameTime);
+            }
+
             return;
+        }
+
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        physicsTimer += deltaTime;
+        var componentsToUpdate = new GameComponent[Components.Count];
+        Components.CopyTo(componentsToUpdate, 0);
+
+        while (physicsTimer >= FixedDeltaTime) {
+            foreach (var component in componentsToUpdate)
+            {
+                if (component is not Entity) continue;
+                var ent = component as Entity;
+                ent.FixedUpdate(FixedDeltaTime);
+            }
+
+            if (SceneManager.CurrentScene == SceneManager.Scene.Game)
+            {
+                DebugUtility.FixedUpdate();
+            }
+
+            ParticleSystem.FixedUpdate();
+
+            physicsTimer -= FixedDeltaTime;
         }
 
         // Console.WriteLine("Components ===============================");
@@ -86,6 +126,8 @@ public class Game1 : Game
                 BuildingSystem.Update(gameTime);
                 WaveSystem.Update(gameTime);
                 EnemySystem.Update(gameTime);
+                ScrapSystem.Update(gameTime);
+                DebugUtility.Update(this, gameTime);
                 break;
         }
 
@@ -110,25 +152,42 @@ public class Game1 : Game
             Vector2 startPoint = lineTuple.Item1;
             Vector2 endPoint = lineTuple.Item2;
             Color color = lineTuple.Item3;
-            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color);
+            LineUtility.DrawLine(SpriteBatch, startPoint, endPoint, color, thickness: 1f);
         }
 
-        DebugUtility.ResetLines();
+        if (!IsPaused)
+        {
+            DebugUtility.ResetLines();
+        }
 
         SpriteBatch.End();
+
+        ParticleSystem.DrawParticles(SpriteBatch, translation);
 
         // Draw UI separately after everything else to avoid it from being moved by the camera.
         if (ui is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             ui.Draw(gameTime);
+            DebugUtility.DrawDebugScreen(SpriteBatch);
+
+            // var mousePoint = InputSystem.GetMouseScreenPosition();
+            // LineUtility.DrawCircle(SpriteBatch, mousePoint, radius: 60f, Color.Red, thickness: 1f,
+            //     resolution: 24);
+
             SpriteBatch.End();
         }
 
         if (mainMenu is not null)
         {
-            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront);
+            SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront,
+                samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
+
+            var infoPos = new Vector2(10, NativeScreenHeight - 40);
+            SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
+
             SpriteBatch.End();
         }
 
@@ -171,20 +230,25 @@ public class Game1 : Game
         mainMenu = null;
         Terrain = null;
 
+        ProgressionManager.Initialize();
+
         switch (loadedScene)
         {
             case SceneManager.Scene.Game:
                 BuildingSystem.Initialize(this);
-                WaveSystem.Initialize(this);
+                WaveSystem.Initialize(this, CurrentZone, CurrentLevel);
                 CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
-                Terrain = new Terrain(this, currentZone, currentLevel);
+                Terrain = new Terrain(this, CurrentZone, CurrentLevel);
 
                 Components.Add(Terrain);
-                //hqPosition will need to be flexible for each level
-                var hqPosition = Terrain.GetLastTilePosition() - new Vector2(0,23*Grid.TileLength);
-                var hq = new HQ(this,hqPosition);
+
+                var hq = new HQ(this, Vector2.Zero);
+                var lastTilePosition = Terrain.GetRightMostTopTileWorldPosition();
+                var hqPosition = lastTilePosition - hq.Size;
+                hq.SetPosition(hqPosition);
+
                 EnemySystem.Initialize(this);
 
                 ui = new UIComponent(this);
@@ -208,12 +272,12 @@ public class Game1 : Game
 
     public void SetCurrentZoneAndLevel(int zone, int level)
     {
-        currentZone = zone;
-        currentLevel = level;
+        CurrentZone = zone;
+        CurrentLevel = level;
     }
 
     public void SetPauseState(bool isPaused)
     {
-        this.isPaused = isPaused;
+        this.IsPaused = isPaused;
     }
 }

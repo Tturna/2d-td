@@ -15,20 +15,29 @@ class Projectile : Entity
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
-    private List<Enemy> hitEnemies = new();
+    public Color TrailColor = Color.White;
+    public float RotationOffset;
+    public float TrailParticleInterval = 0.01f;
+
+    private HashSet<Enemy> hitEnemies = new();
+    private HashSet<Enemy> damagedEnemies = new();
+    private float trailParticleTimer;
+    private Entity ownerEntity; // what spawned/owns this projectile
 
     // this constructor is simple so that the turrets can edit the property
     // of bullet themself
-    public Projectile(Game game, Vector2 startLocation) : base(game, startLocation, null, Vector2.One) { }
+    public Projectile(Game game, Entity source, Vector2 startLocation) :
+        base(game, startLocation, null, Vector2.One)
+    {
+        ownerEntity = source;
+    }
 
     public override void Update(GameTime gameTime)
     {
-        hitEnemies.Clear();
-
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var oldPosition = Position;
-        Position += Direction * (BulletPixelsPerSecond * deltaTime);
+        UpdatePosition(Direction * (BulletPixelsPerSecond * deltaTime));
 
         RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
 
@@ -44,24 +53,39 @@ class Projectile : Entity
         var bulletToDelete = false;
         var shouldExplode = false;
 
-        foreach (Enemy enemy in EnemySystem.Enemies)
+        var startPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(oldPosition);
+        var endPointCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(Position);
+
+        HashSet<Enemy> enemyCandidates = new (startPointCandidates);
+        enemyCandidates.UnionWith(endPointCandidates);
+
+        foreach (Enemy enemy in enemyCandidates)
         {
             if (ExplosionTileRadius == 0)
             {
                 if (Collision.IsLineInEntity(oldPosition, Position, enemy,
                     out Vector2 entryPoint, out Vector2 exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
+                    }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
                     Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
+                    }
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
                 Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
                 {
-                    hitEnemies.Add(enemy);
+                    if (hitEnemies.Add(enemy))
+                    {
+                        ParticleSystem.PlaySparkEffect(entryPoint, -Direction);
+                    }
                 }
             }
             else
@@ -88,27 +112,39 @@ class Projectile : Entity
 
         if (ExplosionTileRadius == 0)
         {
-            for (int i = 0; i < hitEnemies.Count; i++)
+            foreach (var enemy in hitEnemies)
             {
-                // todo: make it so a projectile with pierce doesn't hit the same enemy multiple time
+                if (damagedEnemies.Contains(enemy)) continue;
+
+                var diff = enemy.Position - oldPosition;
+                var knockbackDirection = diff;
+                knockbackDirection.Normalize();
+                var knockback = knockbackDirection * (Damage / 15);
+
+                if (knockback.Y > -1)
+                {
+                    knockback = new Vector2(knockback.X , -1);
+                }
+
+                enemy.HealthSystem.TakeDamage(ownerEntity, Damage);
+                enemy.ApplyKnockback(knockback);
+                damagedEnemies.Add(enemy);
+
                 if (Pierce > 0)
                 {
-                    var enemy = hitEnemies[i];
-                    enemy.HealthSystem.TakeDamage(Damage);
                     Pierce -= 1;
                 }
                 else
                 {
                     bulletToDelete = true;
-                    var enemy = hitEnemies[i];
-                    enemy.HealthSystem.TakeDamage(Damage);
                     break;
                 }
             }
         }
         else if (shouldExplode == true)
         {
-            HandleExplosion();
+            EffectUtility.Explode(this, Position, ExplosionTileRadius * Grid.TileLength,
+                magnitude: 5f, Damage);
 
             if (Pierce > 0)
             {
@@ -125,12 +161,27 @@ class Projectile : Entity
             Destroy();
         }
 
+        if (trailParticleTimer < TrailParticleInterval)
+        {
+            trailParticleTimer += deltaTime;
+        }
+
+        while (trailParticleTimer >= TrailParticleInterval)
+        {
+            trailParticleTimer -= TrailParticleInterval;
+
+            if (trailParticleTimer < 0) trailParticleTimer = 0;
+
+            var pos = Position - Direction * trailParticleTimer * BulletPixelsPerSecond;
+            ParticleSystem.PlayFloater(pos, TrailColor, Direction);
+        }
+
         base.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
-        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X);
+        RotationRadians = (float)Math.Atan2(Direction.Y, Direction.X) + RotationOffset;
         DrawOrigin = new Vector2(BulletLength / 2, BulletWidth / 2);
 
         var bulletStart = Position - Direction * BulletLength / 2f;
@@ -141,22 +192,5 @@ class Projectile : Entity
         }
 
         base.Draw(gameTime);
-    }
-    
-    private void HandleExplosion()
-    {
-        for (int i = EnemySystem.Enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= EnemySystem.Enemies.Count) continue;
-
-            var enemy = EnemySystem.Enemies[i];
-
-            var diff = Position + Size / 2 - enemy.Position + enemy.Size / 2;
-            var distance = diff.Length();
-
-            if (distance > ExplosionTileRadius * Grid.TileLength) continue;
-
-            enemy.HealthSystem.TakeDamage(Damage);
-        }
     }
 }

@@ -5,6 +5,9 @@ namespace _2d_td;
 
 public static class CurrencyManager
 {
+    public delegate void CurrencyAddedHandler(int amount);
+    public static event CurrencyAddedHandler CurrencyAdded;
+
     private static Dictionary<BuildingSystem.TowerType, int> towerPriceMap = new()
     {
         { BuildingSystem.TowerType.GunTurret, 20 },
@@ -12,7 +15,8 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.Drone, 20 },
         { BuildingSystem.TowerType.Crane, 30 },
         { BuildingSystem.TowerType.Mortar, 30 },
-        { BuildingSystem.TowerType.Hovership, 50 }
+        { BuildingSystem.TowerType.Hovership, 50 },
+        { BuildingSystem.TowerType.PunchTrap, 15 }
     };
 
     public static int Balance { get; private set; }
@@ -36,19 +40,30 @@ public static class CurrencyManager
     {
         var price = GetTowerPrice(towerType);
 
-        if (Balance < price)
-        {
-            return false;
-        }
+        if (Balance < price) return false;
 
         // TODO: Track bought towers?
         Balance -= price;
         return true;
     }
 
-    public static void SellTower(BuildingSystem.TowerType towerType)
+    public static bool TryRepairTower(BuildingSystem.TowerType towerType)
     {
-        Balance += (int)Math.Ceiling((double)GetTowerPrice(towerType) / 2.0);
+        var price = GetTowerPrice(towerType) / 2;
+
+        if (Balance < price) return false;
+
+        Balance -= price;
+        return true;
+    }
+
+    public static int SellTower(BuildingSystem.TowerType towerType, bool isBroken)
+    {
+        var priceDivisor = isBroken ? 4 : 2;
+        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / priceDivisor);
+        AddBalance(returnScrap);
+
+        return returnScrap;
     }
 
     public static bool TryBuyUpgrade(int price)
@@ -65,5 +80,6 @@ public static class CurrencyManager
     public static void AddBalance(int amount)
     {
         Balance += amount;
+        CurrencyAdded?.Invoke(amount);
     }
 }

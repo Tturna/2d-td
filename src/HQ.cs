@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,24 +9,7 @@ public class HQ : Entity
     private int startingHealth = 50;
     public static HQ Instance;
     
-    private static Texture2D GetHQSprite(SpriteBatch spriteBatch)
-    {
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, width: 4 * Grid.TileLength,
-            height: 4 * Grid.TileLength, mipmap: false, SurfaceFormat.Color);
-
-        var colorData = new Color[Grid.TileLength * Grid.TileLength * 16];
-
-        for (var i = 0; i < colorData.Length; i++)
-        {
-            colorData[i] = Color.White;
-        }
-
-        texture.SetData(colorData);
-
-        return texture;
-    }
-
-    public HQ(Game1 game, Vector2 position) : base(game, position: position, sprite: GetHQSprite(game.SpriteBatch))
+    public HQ(Game1 game, Vector2 position) : base(game, position, GetHQSprite())
     {
         HealthSystem = new HealthSystem(this, startingHealth);
 
@@ -42,5 +24,10 @@ public class HQ : Entity
         // };
 
         Instance = this;
+    }
+
+    private static Texture2D GetHQSprite()
+    {
+        return AssetManager.GetTexture("hq");
     }
 }

@@ -6,7 +6,7 @@ namespace _2d_td;
 
 public static class Collision
 {
-    private static bool AABB(float xPos1, float yPos1, float xSize1, float ySize1,
+    public static bool AABB(float xPos1, float yPos1, float xSize1, float ySize1,
                              float xPos2, float yPos2, float xSize2, float ySize2)
     {
         if (xPos1 < xPos2 + xSize2 &&
@@ -20,6 +20,18 @@ public static class Collision
         {
             return false;
         }
+    }
+
+    public static bool AreRectAndCircleColliding(Vector2 rectPos, Vector2 rectSize,
+        Vector2 circlePos, float circleRadius)
+    {
+        var closestX = MathHelper.Clamp(circlePos.X, rectPos.X, rectPos.X + rectSize.X);
+        var closestY = MathHelper.Clamp(circlePos.Y, rectPos.Y, rectPos.Y + rectSize.Y);
+
+        var dx = circlePos.X - closestX;
+        var dy = circlePos.Y - closestY;
+
+        return dx * dx + dy * dy <= circleRadius * circleRadius;
     }
 
     public static bool AreEntitiesColliding(Entity ent1, Entity ent2)
@@ -126,64 +138,6 @@ public static class Collision
         var pointGridPosition = Grid.SnapPositionToGrid(point);
         var pointTilePosition = Grid.WorldToTilePosition(pointGridPosition);
         return terrain.TileExistsAtPosition(pointTilePosition);
-    }
-
-    public static bool IsEntityInScrap(Entity ent, out ScrapTile[] collidedScraps)
-    {
-        var entityTileSize = Vector2.Floor(ent.Size / Grid.TileLength) + Vector2.One;
-        HashSet<ScrapTile> collided = new();
-        ScrapTile scrap;
-
-        for (int y = 0; y < entityTileSize.Y; y++)
-        {
-            for (int x = 0; x < entityTileSize.X; x++)
-            {
-                var comparedWorldPosition = ent.Position + new Vector2(x, y) * Grid.TileLength;
-                scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
-
-                if (scrap is not null)
-                {
-                    collided.Add(scrap);
-                }
-            }
-
-            var farEnd = ent.Position + Vector2.UnitX * ent.Size.X;
-            var feGridPos = Grid.SnapPositionToGrid(farEnd);
-            scrap = ScrapSystem.GetScrapFromPosition(feGridPos);
-
-            if (scrap is not null)
-            {
-                collided.Add(scrap);
-            }
-        }
-
-        var bottomEnd = ent.Position + Vector2.UnitY * ent.Size.Y;
-        var beGridPos = Grid.SnapPositionToGrid(bottomEnd);
-
-        for (int x = 0; x < entityTileSize.X; x++)
-        {
-            var comparedWorldPosition = beGridPos + new Vector2(x * Grid.TileLength, 0f);
-            scrap = ScrapSystem.GetScrapFromPosition(comparedWorldPosition);
-
-            if (scrap is not null)
-            {
-                collided.Add(scrap);
-            }
-        }
-
-        var bottomRightCorner = ent.Position + ent.Size;
-        var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
-        scrap = ScrapSystem.GetScrapFromPosition(brcGridPos);
-
-        if (scrap is not null)
-        {
-            collided.Add(scrap);
-        }
-
-        collidedScraps = new ScrapTile[collided.Count];
-        collided.CopyTo(collidedScraps);
-
-        return collidedScraps.Length > 0;
     }
 
     public static bool IsLineInRectangle(Vector2 linePointA, Vector2 linePointB,
@@ -345,18 +299,6 @@ public static class Collision
                 var testPointX = minX + x * Grid.TileLength;
                 var testPointY = minY + y * Grid.TileLength;
                 var testTilePosition = Grid.SnapPositionToGrid(new Vector2(testPointX, testPointY));
-
-                var scrap = ScrapSystem.GetScrapFromPosition(testTilePosition);
-
-                if (scrap is not null)
-                {
-                    if (IsLineInRectangle(linePointA, linePointB, scrap.Position.X,
-                        scrap.Position.Y + (1f - scrap.Scale.Y) * Grid.TileLength, Grid.TileLength,
-                        Grid.TileLength * scrap.Scale.Y, out entryPoint, out exitPoint))
-                    {
-                        return true;
-                    }
-                }
 
                 if (IsPointInTerrain(testTilePosition, Game1.Instance.Terrain))
                 {
