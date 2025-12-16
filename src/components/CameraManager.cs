@@ -65,11 +65,11 @@ public class CameraManager : GameComponent
             posChange.Y += deltaTime * Speed;
 
         // scroll down is negative
-        var scroll = -(float)InputSystem.mouseJustScrolledAmount() / 1000f;
-        currentScale = Math.Max(1, currentScale + scroll);
+        // var scroll = -(float)InputSystem.mouseJustScrolledAmount() / 1000f;
+        // currentScale = Math.Max(1, currentScale + scroll);
         // eg. 1/8 will make it zoom out 8x
-        var totalCameraScale = 1 / currentScale;
-        Camera.Scale = totalCameraScale;
+        // var totalCameraScale = 1 / currentScale;
+        // Camera.Scale = totalCameraScale;
 
         preShakePosition += posChange;
         Camera.Position = preShakePosition;
