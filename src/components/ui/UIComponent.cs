@@ -483,6 +483,8 @@ public class UIComponent : DrawableGameComponent
 
         waveCooldownSkipButton.Destroy();
         waveCooldownSkipText.Destroy();
+        waveCooldownSkipButton = null;
+        waveCooldownSkipText = null;
     }
 
     private void OnMortarStartTargeting(Entity mortar)
