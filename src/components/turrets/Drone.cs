@@ -405,8 +405,6 @@ class Drone : Entity, ITower
         else if (newUpgrade.Name == Upgrade.Artificer.ToString())
         {
             newIdleTexture = AssetManager.GetTexture("drone_artificer_idle");
-            var attackTexture = AssetManager.GetTexture("drone_artificer_attack");
-            var explosionTexture = AssetManager.GetTexture("drone_artificer_explosion");
             newIdleFrameCount = 4;
             gunSprite = null;
             realTileRange -= 4;
