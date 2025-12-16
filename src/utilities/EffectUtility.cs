@@ -64,6 +64,11 @@ public static class EffectUtility
                 effectStrength = MathHelper.Max(1f - rawMagnitude, 0.2f);
             }
 
+            if (blastDirection.Y > -1)
+            {
+                blastDirection = new Vector2(blastDirection.X , -1);
+            }
+
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
