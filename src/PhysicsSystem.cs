@@ -19,7 +19,7 @@ public class PhysicsSystem
 
     /// <summary>
     /// Moves the given entity based on its velocity. Returns a boolean indicating whether
-    /// the entity collided with terrain or scrap.
+    /// the entity collided.
     /// </summary>
     public bool UpdatePhysics(Entity entity, float deltaTime)
     {

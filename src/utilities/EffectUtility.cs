@@ -34,6 +34,12 @@ public static class EffectUtility
             }
 
             enemy.HealthSystem.TakeDamage(source, (int)(damage * effectStrength));
+
+            if (blastDirection.Y > -1)
+            {
+                blastDirection = new Vector2(blastDirection.X , -1);
+            }
+
             enemy.ApplyKnockback(blastDirection * (magnitude * effectStrength));
         }
 
@@ -56,6 +62,11 @@ public static class EffectUtility
                 // 0 at center, 1 at radius edge
                 var rawMagnitude = distance / radius;
                 effectStrength = MathHelper.Max(1f - rawMagnitude, 0.2f);
+            }
+
+            if (blastDirection.Y > -1)
+            {
+                blastDirection = new Vector2(blastDirection.X , -1);
             }
 
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));

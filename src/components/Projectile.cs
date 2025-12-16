@@ -121,6 +121,11 @@ class Projectile : Entity
                 knockbackDirection.Normalize();
                 var knockback = knockbackDirection * (Damage / 15);
 
+                if (knockback.Y > -1)
+                {
+                    knockback = new Vector2(knockback.X , -1);
+                }
+
                 enemy.HealthSystem.TakeDamage(ownerEntity, Damage);
                 enemy.ApplyKnockback(knockback);
                 damagedEnemies.Add(enemy);

@@ -52,8 +52,11 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 100, scrapValue: 1);
-        enemy.DrawOffset = enemy.Size / 2;
-        enemy.DrawOrigin = enemy.Size / 2;
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.5f;
+
         EnemyBins.Add(enemy);
 
         return enemy;
@@ -82,8 +85,9 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 100, scrapValue: 1);
-        enemy.DrawOffset = enemy.Size / 2;
-        enemy.DrawOrigin = enemy.Size / 2;
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.3f;
         enemy.PhysicsSystem.DragFactor = 0.02f;
         EnemyBins.Add(enemy);
@@ -114,8 +118,9 @@ public static class EnemySystem
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
             health: 300, scrapValue: 5);
-        enemy.DrawOffset = enemy.Size / 2;
-        enemy.DrawOrigin = enemy.Size / 2;
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         EnemyBins.Add(enemy);
 
         return enemy;
