@@ -24,6 +24,10 @@ class Drone : Entity, ITower
     private Texture2D? gunSprite = AssetManager.GetTexture("drone_base_gun");
     private Vector2 gunSpriteOrigin;
 
+    private Entity? artificerExplosion;
+    private float artificerExplosionTimer;
+    private float artificerExplosionDelayTimer;
+
     public enum Upgrade
     {
         NoUpgrade,
@@ -68,8 +72,6 @@ class Drone : Entity, ITower
         gunSpriteOrigin = new Vector2(gunSprite.Width, gunSprite.Height / 2);
     }
 
-    // TODO: Handle upgraded stats sensibly by using variables and updating them in
-    // UpgradeTower().
     public override void Update(GameTime gameTime)
     {
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -102,6 +104,12 @@ class Drone : Entity, ITower
         {
             HandleArtificer(deltaTime);
         } 
+
+        if (!towerCore.OffsetDrawing)
+        {
+            DrawOrigin = AnimationSystem!.CurrentAnimationData.FrameSize / 2;
+            DrawOffset = AnimationSystem!.BaseAnimationData.FrameSize / 2;
+        }
 
         base.Update(gameTime);
     }
@@ -149,10 +157,65 @@ class Drone : Entity, ITower
         var actionInterval = 1f / actionsPerSecond;
         actionTimer += deltaTime;
 
+        if (artificerExplosionTimer > 0)
+        {
+            artificerExplosionTimer -= deltaTime;
+
+            if (artificerExplosionTimer <= 0)
+            {
+                artificerExplosion?.Destroy();
+                artificerExplosion = null;
+            }
+        }
+
+        if (artificerExplosionDelayTimer > 0)
+        {
+            artificerExplosionDelayTimer -= deltaTime;
+
+            if (artificerExplosionDelayTimer <= 0)
+            {
+                var explosionTexture = AssetManager.GetTexture("drone_artificer_explosion");
+
+                var explosionAnimation = new AnimationSystem.AnimationData(
+                        texture: explosionTexture,
+                        frameCount: 5,
+                        frameSize: new Vector2(explosionTexture.Width / 5, explosionTexture.Height),
+                        delaySeconds: 0.075f);
+
+                artificerExplosion = new Entity(Game, Position + Size / 2 - explosionAnimation.FrameSize / 2, explosionAnimation);
+                artificerExplosionTimer = explosionAnimation.FrameCount * explosionAnimation.DelaySeconds;
+
+                var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position + Size / 2, realTileRange * Grid.TileLength);
+
+                foreach (var enemy in enemyCandidates)
+                {
+                    var distance = Vector2.Distance(Position + Size / 2, enemy.Position + enemy.Size / 2);
+
+                    if (distance > realTileRange * Grid.TileLength) continue;
+
+                    enemy.HealthSystem.TakeDamage(this, damage);
+                }
+
+                foreach (var tower in BuildingSystem.Towers)
+                {
+                    var distance = Vector2.Distance(Position + Size / 2, tower.Position + tower.Size / 2);
+
+                    if (distance > realTileRange * Grid.TileLength) continue;
+
+                    var core = ((ITower)tower).GetTowerCore();
+                    core.Health.Heal(damage);
+                }
+            }
+
+            return;
+        }
+
         if (actionTimer <= actionInterval) return;
         if (WaveSystem.WaveCooldownLeft > 0) return;
 
-
+        actionTimer = 0f;
+        artificerExplosionDelayTimer = 0.15f;
+        AnimationSystem!.OneShotAnimationState("artificerAttack");
     }
 
     private void Shoot(int damage, Vector2 direction)
@@ -347,6 +410,20 @@ class Drone : Entity, ITower
             realTileRange -= 4;
             actionsPerSecond = 0.5f;
             damage = 20;
+
+            var artificerAttackTexture = AssetManager.GetTexture("drone_artificer_attack");
+            
+            var attackAnimation = new AnimationSystem.AnimationData(
+                texture: artificerAttackTexture,
+                frameCount: 8,
+                frameSize: new Vector2(artificerAttackTexture.Width / 8, artificerAttackTexture.Height),
+                delaySeconds: 0.05f);
+
+            AnimationSystem!.AddAnimationState("artificerAttack", attackAnimation);
+
+            // Disable drawing the tower with anchor at bottom left so it can be manually
+            // offset to anchor at center. This way the artificer attack doesn't jerk the tower.
+            towerCore.OffsetDrawing = false;
         }
         else if (newUpgrade.Name == Upgrade.AssassinDrone.ToString())
         {
