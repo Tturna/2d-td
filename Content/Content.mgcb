@@ -744,6 +744,102 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_base/crane_base_idle.png
 
+#begin sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png
+
+#begin sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle.png
+
+#begin sprites/Towers/Drone/drone_artificer/artificer_explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_artificer/artificer_explosion.png
+
+#begin sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png
+
+#begin sprites/Towers/Drone/drone_artificer/drone_artificer_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_artificer/drone_artificer_idle.png
+
+#begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun.png
+
+#begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle.png
+
+#begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png
+
 #begin sprites/Towers/Drone/drone_base/drone_base_gun.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -767,6 +863,66 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_base/drone_base_idle.png
+
+#begin sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun.png
+
+#begin sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png
+
+#begin sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
+
+#begin sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png
+
+#begin sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png
 
 #begin sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
 /importer:TextureImporter
