@@ -89,6 +89,20 @@ public static class AssetManager
         LoadTexture("railgun_tungstenshells_icon", "sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon");
 
         LoadTexture("drone_base_idle", "sprites/Towers/Drone/drone_base/drone_base_idle");
+        LoadTexture("drone_base_gun", "sprites/Towers/Drone/drone_base/drone_base_gun");
+        LoadTexture("drone_advancedweaponry_idle", "sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle");
+        LoadTexture("drone_advancedweaponry_gun", "sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun");
+        LoadTexture("drone_artificer_idle", "sprites/Towers/Drone/drone_artificer/drone_artificer_idle");
+        LoadTexture("drone_artificer_attack", "sprites/Towers/Drone/drone_artificer/drone_artificer_attack");
+        LoadTexture("drone_artificer_explosion", "sprites/Towers/Drone/drone_artificer/artificer_explosion");
+        LoadTexture("drone_assassindrone_idle", "sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle");
+        LoadTexture("drone_assassindrone_gun", "sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun");
+        LoadTexture("drone_assassindrone_bullet", "sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile");
+        LoadTexture("drone_flyingarsenal_idle", "sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle");
+        LoadTexture("drone_flyingarsenal_gun", "sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun");
+        LoadTexture("drone_improvedradar_idle", "sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle");
+        LoadTexture("drone_quadcopter_idle", "sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle");
+        LoadTexture("drone_quadcopter_gun", "sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun");
 
         LoadTexture("crane_base_idle", "sprites/Towers/Crane/crane_base/crane_base_idle");
         LoadTexture("crane_base_attack", "sprites/Towers/Crane/crane_base/crane_base_attack");

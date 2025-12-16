@@ -347,7 +347,7 @@ public class Mortar : Entity, ITower
     private void OnRightClickTower()
     {
         if (Mortar.IsMortarTargeting) return;
-        if (!towerCore.detailsClosed) return;
+        if (!towerCore.DetailsClosed) return;
         if (BuildingSystem.IsPlacingTower) return;
 
         if (!isTargeting)

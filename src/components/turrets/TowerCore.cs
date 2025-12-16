@@ -13,7 +13,8 @@ public class TowerCore : GameComponent, IClickable
     public HealthSystem Health { get; private set; }
 
     public TurretDetailsPrompt? detailsPrompt;
-    public bool detailsClosed = true;
+    public bool DetailsClosed = true;
+    public bool OffsetDrawing = true;
 
     public delegate void ClickedHandler();
     public event ClickedHandler? LeftClicked;
@@ -69,13 +70,16 @@ public class TowerCore : GameComponent, IClickable
             return;
         }
 
-        // Set draw origin to bot right instead of top left and offset tower drawing
-        // so that variable idle and fire animation frame sizes don't make the tower look like
-        // it's shifting as it changes animations.
-        var currentAnimationData = Turret.AnimationSystem!.CurrentAnimationData;
-        var baseAnimationData = Turret.AnimationSystem!.BaseAnimationData;
-        Turret.DrawOrigin = currentAnimationData.FrameSize;
-        Turret.DrawOffset = baseAnimationData.FrameSize;
+        if (OffsetDrawing)
+        {
+            // Set draw origin to bot right instead of top left and offset tower drawing
+            // so that variable idle and fire animation frame sizes don't make the tower look like
+            // it's shifting as it changes animations.
+            var currentAnimationData = Turret.AnimationSystem!.CurrentAnimationData;
+            var baseAnimationData = Turret.AnimationSystem!.BaseAnimationData;
+            Turret.DrawOrigin = currentAnimationData.FrameSize;
+            Turret.DrawOffset = baseAnimationData.FrameSize;
+        }
 
         base.Update(gameTime);
     }
@@ -134,11 +138,11 @@ public class TowerCore : GameComponent, IClickable
         if (detailsPrompt is not null && (force || detailsPrompt.ShouldCloseDetailsView(mouseScreenPosition)))
         {
             CloseDetailsView();
-            detailsClosed = true;
+            DetailsClosed = true;
         }
         else if (detailsPrompt is not null)
         {
-            detailsClosed = false;
+            DetailsClosed = false;
         }
     }
 
@@ -150,13 +154,13 @@ public class TowerCore : GameComponent, IClickable
 
     public void OnLeftClick()
     {
-        if (detailsClosed && detailsPrompt is null)
+        if (DetailsClosed && detailsPrompt is null)
         {
             detailsPrompt = new TurretDetailsPrompt(Turret.Game, turret: Turret, core: this,
                 UpgradeLeft, UpgradeRight, CurrentUpgrade);
         }
 
-        detailsClosed = false;
+        DetailsClosed = false;
 
         LeftClicked?.Invoke();
     }
