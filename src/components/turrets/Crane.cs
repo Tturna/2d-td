@@ -495,4 +495,7 @@ public class Crane : Entity, ITower
     public float GetRange() => 0f;
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition) { }
+    public void DrawRangeIndicator() { }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -28,7 +29,7 @@ public class UIComponent : DrawableGameComponent
     private bool isWon;
     private bool isLost;
     private int buyButtonCount = 0;
-    private float selectedTowerRange;
+    private Action<Vector2> drawSelectedTowerRangeFunction;
     private bool shouldUpdateMortarReticle;
 
     private static SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
@@ -265,8 +266,8 @@ public class UIComponent : DrawableGameComponent
         if (towerHologramPieces is not null && towerHologramPieces.Count > 0)
         {
             var basePiece = towerHologramPieces[0].Key;
-            LineUtility.DrawCircle(game.SpriteBatch, basePiece.Position + basePiece.Size / 2,
-                selectedTowerRange, Color.White, resolution: 24);
+            var worldPosition = Camera.ScreenToWorldPosition(basePiece.Position + basePiece.Size / 2);
+            drawSelectedTowerRangeFunction(worldPosition);
         }
 
         base.Draw(gameTime);
@@ -281,7 +282,7 @@ public class UIComponent : DrawableGameComponent
                 pieceEntity.Destroy();
             }
 
-            selectedTowerRange = default;
+            drawSelectedTowerRangeFunction = null;
             towerHologramPieces.Clear();
         }
     }
@@ -298,7 +299,7 @@ public class UIComponent : DrawableGameComponent
 
         var towerPieceIcons = T.GetUnupgradedPartIcons(uiElements);
         CreateTowerHologram(towerPieceIcons);
-        selectedTowerRange = T.GetBaseRange() * Grid.TileLength;
+        drawSelectedTowerRangeFunction = T.DrawBaseRangeIndicator;
     }
 
     private void TogglePauseMenu(bool isPauseMenuVisible)

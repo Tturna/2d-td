@@ -21,4 +21,6 @@ public interface ITower
     public abstract static float GetBaseRange();
     public abstract float GetRange();
     public abstract TowerCore GetTowerCore();
+    public abstract static void DrawBaseRangeIndicator(Vector2 worldPosition);
+    public abstract void DrawRangeIndicator();
 }

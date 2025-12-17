@@ -16,8 +16,8 @@ class Drone : Entity, ITower
     private float bulletSpeed = 400f;
     private float actionsPerSecond = 2f;
     private float actionTimer;
-    private float firingSectorWidthDegrees = 45f;
-    private float firingDirectionDegrees = 180;
+    private static float firingSectorWidthDegrees = 45f;
+    private static float firingDirectionDegrees = 180;
     private Vector2 turretAxisCenter;
     private float muzzleOffsetMagnitude = 8;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
@@ -253,15 +253,6 @@ class Drone : Entity, ITower
         var droneCenter = Position + Size / 2;
         var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(droneCenter, range);
 
-        // debug lines
-        // TODO: Probably should draw these as indicators when opening tower details
-        // var firstEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians + halfFiringSectorWidth), MathF.Sin(firingDirectionRadians + halfFiringSectorWidth));
-        // var firstEndPoint = droneCenter + firstEndPointDirection * range;
-        // var secondEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians - halfFiringSectorWidth), MathF.Sin(firingDirectionRadians - halfFiringSectorWidth));
-        // var secondEndPoint = droneCenter + secondEndPointDirection * range;
-        // DebugUtility.DrawDebugLine(droneCenter, firstEndPoint, Color.Lime);
-        // DebugUtility.DrawDebugLine(droneCenter, secondEndPoint, Color.Lime);
-
         foreach (Enemy enemy in enemyCandidates)
         {
             var distanceToEnemy = Vector2.Distance(droneCenter, enemy.Position);
@@ -492,4 +483,45 @@ class Drone : Entity, ITower
     }
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition)
+    {
+        var firingSectorWidthRadians = MathHelper.ToRadians(firingSectorWidthDegrees);
+        var firingDirectionRadians = MathHelper.ToRadians(firingDirectionDegrees);
+        var halfFiringSectorWidth = firingSectorWidthRadians / 2.0f;
+
+        var range = baseTileRange * Grid.TileLength;
+        var firstEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians + halfFiringSectorWidth), MathF.Sin(firingDirectionRadians + halfFiringSectorWidth));
+        var firstEndPoint = worldPosition + firstEndPointDirection * range;
+        var secondEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians - halfFiringSectorWidth), MathF.Sin(firingDirectionRadians - halfFiringSectorWidth));
+        var secondEndPoint = worldPosition + secondEndPointDirection * range;
+
+        var droneScreenPosition = Camera.WorldToScreenPosition(worldPosition);
+        var firstEndPointScreenPosition = Camera.WorldToScreenPosition(firstEndPoint);
+        var secondEndPointScreenPosition = Camera.WorldToScreenPosition(secondEndPoint);
+
+        LineUtility.DrawLine(Game1.Instance.SpriteBatch, droneScreenPosition, firstEndPointScreenPosition, Color.White);
+        LineUtility.DrawLine(Game1.Instance.SpriteBatch, droneScreenPosition, secondEndPointScreenPosition, Color.White);
+    }
+
+    public void DrawRangeIndicator()
+    {
+        var firingSectorWidthRadians = MathHelper.ToRadians(firingSectorWidthDegrees);
+        var firingDirectionRadians = MathHelper.ToRadians(firingDirectionDegrees);
+        var halfFiringSectorWidth = firingSectorWidthRadians / 2.0f;
+
+        var range = realTileRange * Grid.TileLength;
+        var droneCenter = Position + Size / 2;
+        var firstEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians + halfFiringSectorWidth), MathF.Sin(firingDirectionRadians + halfFiringSectorWidth));
+        var firstEndPoint = droneCenter + firstEndPointDirection * range;
+        var secondEndPointDirection = new Vector2(MathF.Cos(firingDirectionRadians - halfFiringSectorWidth), MathF.Sin(firingDirectionRadians - halfFiringSectorWidth));
+        var secondEndPoint = droneCenter + secondEndPointDirection * range;
+
+        var droneScreenPosition = Camera.WorldToScreenPosition(droneCenter);
+        var firstEndPointScreenPosition = Camera.WorldToScreenPosition(firstEndPoint);
+        var secondEndPointScreenPosition = Camera.WorldToScreenPosition(secondEndPoint);
+
+        LineUtility.DrawLine(Game.SpriteBatch, droneScreenPosition, firstEndPointScreenPosition, Color.White);
+        LineUtility.DrawLine(Game.SpriteBatch, droneScreenPosition, secondEndPointScreenPosition, Color.White);
+    }
 }

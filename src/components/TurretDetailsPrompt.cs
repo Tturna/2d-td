@@ -228,13 +228,7 @@ public class TurretDetailsPrompt : UIEntity
             Game.SpriteBatch.DrawString(pixelsixFont, repairText, textPosition, Color.White);
         }
 
-        var towerCenter = targetTowerEntity.Position + targetTowerEntity.Size / 2;
-        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
-        var towerRange = (int)targetTowerInterface.GetRange();
-        var towerTileRange = towerRange * Grid.TileLength;
-
-        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
-            resolution: MathHelper.Max(12, towerRange * 2));
+        targetTowerInterface.DrawRangeIndicator();
 
         if (isMortar)
         {
