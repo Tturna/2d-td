@@ -17,6 +17,12 @@ public class Crane : Entity, ITower
     private float ballSpeed;
     private float ballFallAcceleration = 10f;
     private Vector2 defaultBallOffset = new Vector2(-8, 0);
+    private float cooldownTime = 1.5f;
+    private float reelDelayTime = 1.5f;
+    private float actionTime = 1f;
+    private int damage = 50;
+    private float reelSpeedFactor = 1.5f;
+    private int pierce = 3;
 
     private float actionTimer, cooldownTimer, reelDelayTimer;
     private Vector2 targetBallPosition;
@@ -63,11 +69,11 @@ public class Crane : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBall, rightChild: chargedLifts);
 
-        bigBall.Description = "+20 damage\nIncreased ball size ";
+        bigBall.Description = "+30 damage\nIncreased ball size ";
         chargedLifts.Description = "-1s lift time";
         explosivePayload.Description = "Ball explodes instantly\non contact with an enemy,\ndealing 120 damage in a\n6 tile radius.";
-        crusher.Description = "0.2 shots/sec\n+50 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
-        razorball.Description = "Ball passes through enemies,\ndealing 50 DPS to all\ntouching the blade.\nReeled up after 1.5s.";
+        crusher.Description = "+180 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
+        razorball.Description = "Ball passes through enemies,\ndealing 120 DPS to all\ntouching the blade.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -86,33 +92,30 @@ public class Crane : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleDefaultCrane(deltaTime, damage: 30, reelSpeedFactor: 1f, actionTime: 1f,
-                cooldownTime: 1f, reelDelayTime: 0.5f);
+            HandleDefaultCrane(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBall.ToString())
         {
             // TODO: Increased ball size?
-            HandleDefaultCrane(deltaTime, damage: 50, reelSpeedFactor: 1f, actionTime: 1f,
-                cooldownTime: 1f, reelDelayTime: 0.5f);
+            HandleDefaultCrane(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ChargedLifts.ToString())
         {
-            HandleDefaultCrane(deltaTime, damage: 30, reelSpeedFactor: 1.5f, actionTime: 1f,
-                cooldownTime: 1f, reelDelayTime: 0.5f);
+            HandleDefaultCrane(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ExplosivePayload.ToString())
         {
-            HandleExplosivePayload(deltaTime, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 0.5f);
+            HandleExplosivePayload(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Razorball.ToString())
         {
-            HandleRazorball(deltaTime, (float)gameTime.TotalGameTime.TotalSeconds, damage: 30,
-                reelSpeedFactor: 1.5f, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 1.5f);
+            var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+            HandleRazorball(deltaTime, totalGameSeconds);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Crusher.ToString())
         {
-            HandleCrusher(deltaTime, (float)gameTime.TotalGameTime.TotalSeconds, damage: 30,
-                reelSpeedFactor: 1f, actionTime: 1f, cooldownTime: 1f, reelDelayTime: 2f);
+            var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+            HandleCrusher(deltaTime, totalGameSeconds);
         }
 
         base.Update(gameTime);
@@ -139,11 +142,7 @@ public class Crane : Entity, ITower
                 if (hitEnemies.Contains(enemy)) continue;
             }
 
-            var diff = (ballThingCenter) - (enemy.Position + enemy.Size / 2);
-            var distance = diff.Length();
-
-            // TODO: ensure this condition is correct
-            if (distance > ballThing.Size.X / 2 + enemy.Size.X / 2 + extraRange) continue;
+            if (!Collision.AreEntitiesColliding(enemy, ballThing)) continue;
 
             if (useHashSet)
             {
@@ -153,12 +152,14 @@ public class Crane : Entity, ITower
             enemies.Add(enemy);
 
             if (getOnlyFirst) return enemies;
+
+            if (enemies.Count >= pierce) return enemies;
         }
 
         return enemies;
     }
 
-    private void DamageHitEnemies(int damage, float deltaTime)
+    private void DamageHitEnemies(float deltaTime)
     {
         var enemies = GetEnemiesInRange(useHashSet: true);
 
@@ -168,7 +169,7 @@ public class Crane : Entity, ITower
         }
     }
 
-    private void DamageEnemiesUnconditionally(int damage, float deltaTime, float extraRange = 0f)
+    private void DamageEnemiesUnconditionally(float deltaTime, int damage, float extraRange = 0f)
     {
         var enemies = GetEnemiesInRange(extraRange: extraRange);
 
@@ -181,14 +182,24 @@ public class Crane : Entity, ITower
     /// <summary>
     /// Drops the ball and return a boolean indicating whether it has reached the target.
     /// </summary>
-    private bool HandleBallDescent(float deltaTime, int damage)
+    private bool HandleBallDescent(float deltaTime)
     {
         if (ballThing!.Position == targetBallPosition) return true;
 
         ballSpeed += ballFallAcceleration;
         ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
 
-        DamageHitEnemies(damage, deltaTime);
+        DamageHitEnemies(deltaTime);
+
+        var corpseCandidates = ScrapSystem.Corpses!.GetBinAndNeighborValues(ballThing.Position + ballThing.Size / 2);
+
+        foreach (var corpse in corpseCandidates)
+        {
+            if (Collision.AreEntitiesColliding(corpse, ballThing))
+            {
+                return true;
+            }
+        }
 
         if (ballThing.Position.Y >= targetBallPosition.Y)
         {
@@ -198,7 +209,7 @@ public class Crane : Entity, ITower
         return false;
     }
 
-    private void HandleReelBack(float deltaTime, float reelSpeedFactor, float cooldownTime)
+    private void HandleReelBack(float deltaTime)
     {
         if (ballThing!.Position == Position + defaultBallOffset) return;
 
@@ -211,8 +222,7 @@ public class Crane : Entity, ITower
         }
     }
 
-    private void HandleDefaultCrane(float deltaTime, int damage, float reelSpeedFactor,
-        float actionTime, float cooldownTime, float reelDelayTime)
+    private void HandleDefaultCrane(float deltaTime)
     {
         var reelDelayTimerRunning = UpdateTimer(deltaTime, ref reelDelayTimer);
 
@@ -222,32 +232,36 @@ public class Crane : Entity, ITower
 
         if (cooldownTimerRunning)
         {
-            HandleReelBack(deltaTime, reelSpeedFactor: reelSpeedFactor, cooldownTime);
+            HandleReelBack(deltaTime);
             return;
         }
 
+        // nothing counts down action timer here. It's just set to 0 when the ball hits the ground
         if (actionTimer > 0)
         {
-            var targetReached = HandleBallDescent(deltaTime, damage: damage);
+            var targetReached = HandleBallDescent(deltaTime);
 
             if (targetReached)
             {
                 actionTimer = 0;
                 cooldownTimer = cooldownTime;
                 reelDelayTimer = reelDelayTime;
-                return;
+                // set target pos again in case ball hit corpse and stops before hitting the
+                // target position on terrain
+                targetBallPosition = ballThing!.Position;
             }
+
+            return;
         }
 
         if (IsEnemyBelow())
         {
-            Trigger(actionTime);
+            Trigger();
             AnimationSystem!.OneShotAnimationState("attack");
         }
     }
 
-    private void HandleExplosivePayload(float deltaTime, float actionTime, float cooldownTime,
-        float reelDelayTime)
+    private void HandleExplosivePayload(float deltaTime)
     {
         if (UpdateTimer(deltaTime, ref cooldownTimer)) return;
 
@@ -261,22 +275,24 @@ public class Crane : Entity, ITower
             if (enemyHit || ballThing.Position.Y >= targetBallPosition.Y)
             {
                 ballThing.SetPosition(targetBallPosition);
-                DamageEnemiesUnconditionally(damage: 120, deltaTime, extraRange: 6 * Grid.TileLength);
+                EffectUtility.Explode(this, ballThing.Position + ballThing.Size / 2,
+                    radius: 6 * Grid.TileLength, magnitude: 10, damage);
 
                 actionTimer = 0;
                 cooldownTimer = cooldownTime + reelDelayTime;
                 ballThing.SetPosition(Position + defaultBallOffset);
             }
+
+            return;
         }
 
         if (IsEnemyBelow())
         {
-            Trigger(actionTime);
+            Trigger();
         }
     }
 
-    private void HandleRazorball(float deltaTime, float totalGameSeconds, int damage,
-        float reelSpeedFactor, float actionTime, float cooldownTime, float reelDelayTime)
+    private void HandleRazorball(float deltaTime, float totalGameSeconds)
     {
         if (reelDelayTimer > 0 || cooldownTimer > 0 || actionTimer > 0)
         {
@@ -284,7 +300,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 25 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 15, deltaTime);
+                DamageEnemiesUnconditionally(deltaTime, damage / 4);
             }
         }
 
@@ -296,19 +312,20 @@ public class Crane : Entity, ITower
 
         if (cooldownTimerRunning)
         {
-            HandleReelBack(deltaTime, reelSpeedFactor, cooldownTime);
+            HandleReelBack(deltaTime);
             return;
         }
 
         if (actionTimer > 0)
         {
-            var targetReached = HandleBallDescent(deltaTime, damage: damage);
+            var targetReached = HandleBallDescent(deltaTime);
 
             if (targetReached)
             {
                 actionTimer = 0;
                 reelDelayTimer = reelDelayTime;
                 cooldownTimer = cooldownTime;
+                targetBallPosition = ballThing!.Position;
             }
 
             return;
@@ -316,16 +333,16 @@ public class Crane : Entity, ITower
 
         if (IsEnemyBelow())
         {
-            Trigger(actionTime);
+            Trigger();
         }
     }
 
-    private void HandleCrusher(float deltaTime, float totalGameSeconds, int damage, float reelSpeedFactor,
-        float actionTime, float cooldownTime, float reelDelayTime)
+    private void HandleCrusher(float deltaTime, float totalGameSeconds)
     {
         if (crusherPhysics is null)
         {
             crusherPhysics = new PhysicsSystem(Game);
+            crusherPhysics.IgnoreEnemyCollision = true;
         }
 
         var reelDelayTimerRunning = UpdateTimer(deltaTime, ref reelDelayTimer);
@@ -339,7 +356,7 @@ public class Crane : Entity, ITower
 
             if (comparedTime % 10 == 0)
             {
-                DamageEnemiesUnconditionally(damage: 8, deltaTime);
+                DamageEnemiesUnconditionally(deltaTime, damage);
             }
 
             return;
@@ -356,21 +373,22 @@ public class Crane : Entity, ITower
 
         if (actionTimer > 0)
         {
-            var targetReached = HandleBallDescent(deltaTime, damage: damage);
+            var targetReached = HandleBallDescent(deltaTime);
 
             if (targetReached)
             {
                 cooldownTimer = cooldownTime;
                 reelDelayTimer = reelDelayTime;
                 actionTimer = 0;
-
-                return;
+                targetBallPosition = ballThing!.Position;
             }
+
+            return;
         }
 
         if (IsEnemyBelow())
         {
-            Trigger(actionTime);
+            Trigger();
         }
     }
 
@@ -411,7 +429,7 @@ public class Crane : Entity, ITower
         return false;
     }
 
-    private void Trigger(float actionTime)
+    private void Trigger()
     {
         actionTimer = actionTime;
         var groundCheckPosition = ballThing!.Position;
@@ -421,8 +439,10 @@ public class Crane : Entity, ITower
             groundCheckPosition += Vector2.UnitY * Grid.TileLength;
         }
 
-        groundCheckPosition -= Vector2.UnitY * Grid.TileLength;
-        targetBallPosition = groundCheckPosition;
+        var adjustedPosition = Grid.SnapPositionToGrid(groundCheckPosition - Vector2.UnitY * Grid.TileLength);
+        adjustedPosition += Vector2.One * (Grid.TileLength / 2);
+        adjustedPosition -= ballThing.Size / 2;
+        targetBallPosition = adjustedPosition;
         hitEnemies = new();
     }
 
@@ -487,7 +507,57 @@ public class Crane : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
-        throw new NotImplementedException();
+        // Texture2D newIdleTexture;
+        // Texture2D newFireTexture;
+        // var newIdleFrameCount = 1;
+        // var newFireFrameCount = 1;
+
+        if (newUpgrade.Name == Upgrade.BigBall.ToString())
+        {
+            // newIdleTexture = AssetManager.GetTexture("railgun_antimatterlaser_idle");
+            // newFireTexture = AssetManager.GetTexture("railgun_antimatterlaser_fire");
+            // newIdleFrameCount = 4;
+            // newFireFrameCount = 6;
+            damage += 30;
+        }
+        else if (newUpgrade.Name == Upgrade.ExplosivePayload.ToString())
+        {
+            damage = 120;
+        }
+        else if (newUpgrade.Name == Upgrade.Crusher.ToString())
+        {
+            damage += 180;
+            pierce += 10;
+        }
+        else if (newUpgrade.Name == Upgrade.ChargedLifts.ToString())
+        {
+            cooldownTime -= 1;
+        }
+        else
+        {
+            // razorball
+            damage = 120;
+        }
+
+        // var newIdleAnimation = new AnimationSystem.AnimationData
+        // (
+        //     texture: newIdleTexture,
+        //     frameCount: newIdleFrameCount,
+        //     frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+        //     delaySeconds: 0.1f
+        // );
+
+        // var newFireAnimation = new AnimationSystem.AnimationData
+        // (
+        //     texture: newFireTexture,
+        //     frameCount: newFireFrameCount,
+        //     frameSize: new Vector2(newFireTexture.Width / newFireFrameCount, newFireTexture.Height),
+        //     delaySeconds: 0.05f
+        // );
+
+        // AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
+        // AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
+
     }
 
     public static float GetBaseRange() => 0f;
