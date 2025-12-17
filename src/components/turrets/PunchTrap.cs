@@ -24,7 +24,6 @@ class PunchTrap : Entity, ITower
         QuickJabs,
         FlurryOfBlows,
         Chainsaw
-
     }
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())

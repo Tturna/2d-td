@@ -33,7 +33,7 @@ public class Mortar : Entity, ITower
     public enum Upgrade
     {
         NoUpgrade,
-        BigBomb,
+        HeavyShells,
         EfficientReload,
         BouncingBomb,
         Nuke,
@@ -65,21 +65,21 @@ public class Mortar : Entity, ITower
         var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
         var efficientReloadIcon = AssetManager.GetTexture("mortar_efficientreload_icon");
 
-        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 80);
-        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 200);
+        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 140);
+        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 300);
 
-        var bigBomb = new TowerUpgradeNode(Upgrade.BigBomb.ToString(), bigBombIcon, price: 35,
+        var heavyShells = new TowerUpgradeNode(Upgrade.HeavyShells.ToString(), bigBombIcon, price: 35,
             leftChild: bouncingBomb, rightChild: nuke);
 
-        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 90);
-        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 110);
+        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 160);
+        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 150);
         var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 20,
             leftChild: missileSilo, rightChild: hellrain);
 
         var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
-            leftChild: bigBomb, rightChild: efficientReload);
+            leftChild: heavyShells, rightChild: efficientReload);
 
-        bigBomb.Description = "+2 tile radius,\n+10 damage";
+        heavyShells.Description = "+2 tile radius,\n+10 damage";
         efficientReload.Description = "+0.3 shots/s";
         bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n3 times, exploding with\neach impact.";
         nuke.Description = "+8 tile explosion radius\n+300 damage\n-0.3 shots/s\nLeaves a radiation cloud\nthat deals 5DPS for 5s.";
@@ -149,7 +149,7 @@ public class Mortar : Entity, ITower
             {
                 HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
             }
-            else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBomb.ToString())
+            else if (towerCore.CurrentUpgrade.Name == Upgrade.HeavyShells.ToString())
             {
                 HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
             }
@@ -443,7 +443,7 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
         }
-        else if (newUpgrade.Name == Upgrade.BigBomb.ToString())
+        else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())
         {
             newIdleTexture = AssetManager.GetTexture("mortar_heavyshells_idle");
             newFireTexture = AssetManager.GetTexture("mortar_heavyshells_fire");

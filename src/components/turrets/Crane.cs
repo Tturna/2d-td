@@ -51,12 +51,12 @@ public class Crane : Entity, ITower
 
         var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), tempIcon, price: 85);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), tempIcon, price: 70);
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), tempIcon, price: 185);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), tempIcon, price: 190);
         var bigBall = new TowerUpgradeNode(Upgrade.BigBall.ToString(), tempIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), tempIcon, price: 50);
+        var razorball = new TowerUpgradeNode(Upgrade.Razorball.ToString(), tempIcon, price: 170);
         var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), tempIcon, price: 15,
             leftChild: razorball);
 
