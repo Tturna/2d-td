@@ -221,7 +221,6 @@ public class MovementSystem
 
                 if (Collision.AreEntitiesColliding(entity, enemy))
                 {
-                    Console.WriteLine("bouncer collided with enemy");
                     collided = true;
                     roughCollisionPoint = (entity.Position + entity.Size / 2 + enemy.Position + enemy.Size / 2) / 2;
                     break;

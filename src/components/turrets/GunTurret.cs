@@ -476,7 +476,6 @@ class GunTurret : Entity, ITower
 
         LineUtility.DrawCircle(Game1.Instance.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
             resolution: MathHelper.Max(12, towerRange * 2));
-
     }
 
     public void DrawRangeIndicator()

@@ -167,7 +167,6 @@ class Drone : Entity, ITower
             var x = 1f - MathF.Pow(1f - normalReverseLifetime, 3f); // ease out cubic
             var color = Color.FromNonPremultiplied(new Vector4(1f, 1f, 1f, x));
             artificerExplosion.Color = color;
-                
             artificerExplosionTimer -= deltaTime;
 
             if (artificerExplosionTimer <= 0)
