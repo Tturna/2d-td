@@ -17,12 +17,14 @@ class Hovership : Entity, ITower
     private static int baseTileRange = 20;
     private int realTileRange;
     private int baseDamage = 15;
+    private int realDamage;
+    private float knockback = 10f;
     private int baseProjectileAmount = 3;
     private int realProjectileAmount;
     private int spawnedBombsDuringBarrage;
     private float baseHovershipSpeed = 50f;
     private float realHovershipSpeed;
-    private float actionsPerSecond = 1f;
+    private float actionsPerSecond = 0.5f;
     private float actionTimer;
     private float bombSpawnInterval = 0.3f;
     private float bombSpawnTimer;
@@ -44,6 +46,8 @@ class Hovership : Entity, ITower
     private Dictionary<Enemy, Vector2> ufoCarriedEnemies = new();
     private float ufoSeekTime = 3f;
     private float ufoSeekTimer;
+    private float ufoDamageTime = 0.5f;
+    private float ufoDamageTimer;
 
     private Random random = new();
 
@@ -54,7 +58,7 @@ class Hovership : Entity, ITower
         OrbitalLaser,
         CarpetofFire,
         EfficientEngines,
-        EMPShip,
+        KineticBomber,
         UFO
     }
 
@@ -69,22 +73,23 @@ class Hovership : Entity, ITower
         var ufoIcon = AssetManager.GetTexture("hovership_ufo_icon");
         var efficientEnginesIcon = AssetManager.GetTexture("hovership_efficientengines_icon");
 
-        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), orbitalLaserIcon, price: 160);
-        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), carpetOfFireIcon, price: 120);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), orbitalLaserIcon, price: 260);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), carpetOfFireIcon, price: 190);
         var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), bombierBayIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        var EMPShip = new TowerUpgradeNode(Upgrade.EMPShip.ToString(), empShipIcon, price: 110);
-        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), ufoIcon, price: 200);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), efficientEnginesIcon, price: 15, leftChild: EMPShip, rightChild: UFO);
+        var KineticBomber = new TowerUpgradeNode(Upgrade.KineticBomber.ToString(), empShipIcon, price: 150);
+        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), ufoIcon, price: 180);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), efficientEnginesIcon, price: 35, leftChild: KineticBomber, rightChild: UFO);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
 
         BombierBay.Description = "+2 projectiles";
-        EfficientEngines.Description = "+10 tile range";
-        OrbitalLaser.Description = "-0.85 shots/s\nInstead of bombs,\nfires a massive orbital laser\nthat deals 300 damage\nover 4s.\nUnlimited pierce";
+        EfficientEngines.Description = "+20 tile range.\n+100% movement speed.";
+        OrbitalLaser.Description = "+10 tile hover height.\nFires once every 8s.\nFires an orbital laser\nthat deals 1600\ndamage over 4s.";
+        // TODO: figure out carpet of fire. Probably won't have time to implement fire
         CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
-        EMPShip.Description = "-2 projectiles.\n+10 tile hover height.\n+5 tile area of effect\nNow Shocks enemies for 5s.";
+        KineticBomber.Description = "-2 projectiles.\n+5 tile area of effect.\n+50 damage.\n+200% knockback.";
         UFO.Description = "Sucks up to 5 bots up toward it and\ndrops them back at the entrance.\nWhile held, they take 10 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -100,6 +105,7 @@ class Hovership : Entity, ITower
         realProjectileAmount = baseProjectileAmount;
         realTargetHoverTileHeight = baseTargetHoverTileHeight;
         realHovershipSpeed = baseHovershipSpeed;
+        realDamage = baseDamage;
 
         WaveSystem.WaveEnded += () => shouldReturnToBase = true;
     }
@@ -137,7 +143,7 @@ class Hovership : Entity, ITower
             HandleBasicShots(deltaTime);
             HandleHovershipPosition(deltaTime);
         }
-        else if (towerCore.CurrentUpgrade.Name == Upgrade.EMPShip.ToString())
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.KineticBomber.ToString())
         {
             HandleBasicShots(deltaTime);
             HandleHovershipPosition(deltaTime);
@@ -315,8 +321,8 @@ class Hovership : Entity, ITower
                 if (Collision.AABB(enemy.Position.X, enemy.Position.Y, enemy.Size.X, enemy.Size.Y,
                     beamPos.X, beamPos.Y, orbitalLaserBeam.Size.X, beamLength))
                 {
-                    // 900 damage over 4s
-                    var damage = (int)(900f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
+                    // 1600 damage over 4s
+                    var damage = (int)(1600f / (orbitalLaserFireTime / orbitalLaserDamageInterval));
                     enemy.HealthSystem.TakeDamage(this, damage);
                 }
             }
@@ -338,6 +344,11 @@ class Hovership : Entity, ITower
     {
         var actionInterval = 1f / actionsPerSecond;
         actionTimer += deltaTime;
+
+        if (ufoDamageTimer > 0)
+        {
+            ufoDamageTimer -= deltaTime;
+        }
 
         if (shouldReturnToBase || actionTimer < actionInterval) return;
 
@@ -379,10 +390,20 @@ class Hovership : Entity, ITower
         {
             List<Enemy> toRemove = new();
 
+            var shouldDamage = ufoDamageTimer <= 0;
+
+            if (shouldDamage) ufoDamageTimer = ufoDamageTime;
+
             foreach (var (enemy, relativePosition) in ufoCarriedEnemies)
             {
                 enemy.PhysicsSystem.StopMovement();
                 enemy.SetPosition(Vector2.Lerp(enemy.Position, ufoTractorBeam.Position + relativePosition, deltaTime * 5f));
+
+                if (shouldDamage)
+                {
+                    // 10 DPS
+                    enemy.HealthSystem.TakeDamage(this, (int)(10 * ufoDamageTime));
+                }
 
                 if (!Collision.AreEntitiesColliding(enemy, ufoTractorBeam))
                 {
@@ -411,7 +432,7 @@ class Hovership : Entity, ITower
         bomb.physics.DragFactor = 0f;
         bomb.physics.LocalGravity = 0.125f;
         bomb.Destroyed += _ => EffectUtility.Explode(this, bomb.Position, radius: 4 * Grid.TileLength,
-            magnitude: 10f, damage: baseDamage);
+            magnitude: knockback, damage: realDamage);
     }
 
     private Enemy? GetRightmostEnemy()
@@ -549,6 +570,7 @@ class Hovership : Entity, ITower
             newPlatformFrameCount = 2;
             UpdatePosition(-Vector2.UnitY * 8);
             actionsPerSecond = 1f / 8f;
+            realTargetHoverTileHeight += 10;
 
             var attackBuildupTexture = AssetManager.GetTexture("hovership_orbitallaser_attack");
             var attackBuildupAnimation = new AnimationSystem.AnimationData(
@@ -596,7 +618,7 @@ class Hovership : Entity, ITower
 
             realProjectileAmount += 3;
         }
-        else if (newUpgrade.Name == Upgrade.EMPShip.ToString())
+        else if (newUpgrade.Name == Upgrade.KineticBomber.ToString())
         {
             newIdleTexture = AssetManager.GetTexture("hovership_emp_idle");
             newPlatformTexture = AssetManager.GetTexture("hovership_emp_platform");
@@ -606,7 +628,8 @@ class Hovership : Entity, ITower
             bombSprite = AssetManager.GetTexture("hovership_emp_bomb");
 
             realProjectileAmount -= 2;
-            realTargetHoverTileHeight += 10;
+            realDamage += 50;
+            knockback *= 3;
         }
         else
         {
@@ -655,4 +678,25 @@ class Hovership : Entity, ITower
     public float GetRange() => realTileRange;
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition)
+    {
+        var towerScreenCenter = Camera.WorldToScreenPosition(worldPosition);
+        var towerRange = (int)GetBaseRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game1.Instance.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
+
+    public void DrawRangeIndicator()
+    {
+        var towerCenter = Position + Size / 2;
+        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
+        var towerRange = (int)GetRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
 }

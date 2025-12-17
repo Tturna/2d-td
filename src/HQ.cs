@@ -26,6 +26,24 @@ public class HQ : Entity
         Instance = this;
     }
 
+    public override void Update(GameTime gameTime)
+    {
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        HealthSystem.UpdateHealthBarGraphics(deltaTime);
+
+        base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        if (HealthSystem.CurrentHealth > 0)
+        {
+            HealthSystem.DrawHealthBar(Position + new Vector2(Size.X / 2, -4));
+        }
+
+        base.Draw(gameTime);
+    }
+
     private static Texture2D GetHQSprite()
     {
         return AssetManager.GetTexture("hq");

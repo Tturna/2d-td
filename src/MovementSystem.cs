@@ -183,10 +183,54 @@ public class MovementSystem
 
     private void HandleBounceForward(Entity entity, float deltaTime)
     {
+        var collided = false;
+        var roughCollisionPoint = Vector2.Zero;
+
+        // hacky way to make entity collide with its surroundings. It doesn't normally because
+        // physics is resolved instantly.
+        entity.UpdatePosition(Vector2.UnitY);
+
         if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
+            collided = true;
+            roughCollisionPoint = Grid.TileToWorldPosition(collidedTilePositions[0]);
+        }
+
+        if (!collided)
+        {
+            var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+
+            foreach (var corpse in corpseCandidates)
+            {
+                if (Collision.AreEntitiesColliding(entity, corpse))
+                {
+                    collided = true;
+                    roughCollisionPoint = (entity.Position + entity.Size / 2 + corpse.Position + corpse.Size / 2) / 2;
+                    break;
+                }
+            }
+        }
+
+        if (!collided)
+        {
+            var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+
+            foreach (var enemy in enemyCandidates)
+            {
+                if (enemy == entity) continue;
+
+                if (Collision.AreEntitiesColliding(entity, enemy))
+                {
+                    collided = true;
+                    roughCollisionPoint = (entity.Position + entity.Size / 2 + enemy.Position + enemy.Size / 2) / 2;
+                    break;
+                }
+            }
+        }
+
+        if (collided)
+        {
             // This whole dot product checking prevents the bouncer from getting stuck on ceiling corners.
-            var roughCollisionPoint = Grid.TileToWorldPosition(collidedTilePositions[0]);
             var diff = roughCollisionPoint - entity.Position + entity.Size / 2;
             var dir = diff;
             dir.Normalize();

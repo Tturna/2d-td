@@ -24,7 +24,6 @@ class PunchTrap : Entity, ITower
         QuickJabs,
         FlurryOfBlows,
         Chainsaw
-
     }
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
@@ -271,4 +270,25 @@ class PunchTrap : Entity, ITower
     }
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition)
+    {
+        var towerScreenCenter = Camera.WorldToScreenPosition(worldPosition);
+        var towerRange = (int)GetBaseRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game1.Instance.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
+
+    public void DrawRangeIndicator()
+    {
+        var towerCenter = Position + Size / 2;
+        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
+        var towerRange = (int)GetRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
 }

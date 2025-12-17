@@ -54,11 +54,11 @@ class GunTurret : Entity, ITower
         var rocketShotsIcon = AssetManager.GetTexture("gunTurret_rocketshots_icon");
         var improvedBarrelIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 75);
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 50);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 135);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 110);
         var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 20, leftChild: photonCannon, rightChild: botShot);
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 70);
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 140);
         var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon, price: 15, leftChild: rocketShots);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
@@ -114,11 +114,11 @@ class GunTurret : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage: 10);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.DoubleGun.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + 1, damage: 10);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
@@ -127,11 +127,10 @@ class GunTurret : Entity, ITower
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BotShot.ToString())
         {
             HandleBotShot(deltaTime);
-            // TODO: add knockback
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage: 13);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketShots.ToString())
         {
@@ -172,7 +171,7 @@ class GunTurret : Entity, ITower
         }
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage)
+    private void HandleBasicShots(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
         var closestEnemy = towerCore.GetClosestValidEnemy(realRange);
@@ -195,31 +194,31 @@ class GunTurret : Entity, ITower
 
     private void HandleBotShot(float deltaTime)
     {
-        var actionInterval = 1f / (actionsPerSecond * 0.25f);
-        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange - 2);
-
+        var actionInterval = 1f / (actionsPerSecond);
         actionTimer += deltaTime;
+
+        if (actionTimer < actionInterval) return;
+
+        var closestEnemy = towerCore.GetClosestValidEnemy(baseRange - 2);
 
         if (closestEnemy is null) return;
 
-        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+        var enemyPosition = closestEnemy.Position + closestEnemy.Size / 2;
+        var enemyDirection = enemyPosition - turretHeadAxisCenter;
+        enemyDirection.Normalize();
+        var perpendicular = new Vector2(enemyDirection.Y, -enemyDirection.X);
+        AimAtClosestEnemy(enemyPosition, deltaTime);
 
-        if (actionTimer >= actionInterval)
+        for (int i = 0; i < 5; i++)
         {
-            var enemyPosition = closestEnemy.Position + closestEnemy.Size / 2;
-            var enemyDirection = enemyPosition - turretHeadAxisCenter;
-            enemyDirection.Normalize();
-
-            for (int i = 0; i < 5; i++)
-            {
-                var randomX = random.Next(-12, 12);
-                var randomY = random.Next(-12, 12);
-                var targetDirection = enemyDirection + new Vector2(randomX, randomY);
-                Shoot(targetDirection);
-            }
-
-            actionTimer = 0f;
+            var randomMagnitude = ((float)random.NextDouble() - 0.5f);
+            var directionAddition = perpendicular * randomMagnitude;
+            var targetDirection = enemyDirection + directionAddition;
+            targetDirection.Normalize();
+            Shoot(targetDirection);
         }
+
+        actionTimer = 0f;
     }
 
     private void HandlePhotonCannon(float deltaTime)
@@ -410,6 +409,7 @@ class GunTurret : Entity, ITower
             realRange = baseRange - 2;
             realDamage = baseDamage + 8;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
+            actionsPerSecond *= 0.25f;
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
@@ -438,6 +438,7 @@ class GunTurret : Entity, ITower
         else if (newUpgrade.Name == Upgrade.DoubleGun.ToString())
         {
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_doublegun_gun");
+            actionsPerSecond += 1;
         }
         else if (newUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
@@ -466,4 +467,25 @@ class GunTurret : Entity, ITower
     }
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition)
+    {
+        var towerScreenCenter = Camera.WorldToScreenPosition(worldPosition);
+        var towerRange = (int)GetBaseRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game1.Instance.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
+
+    public void DrawRangeIndicator()
+    {
+        var towerCenter = Position + Size / 2;
+        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
+        var towerRange = (int)GetRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
 }

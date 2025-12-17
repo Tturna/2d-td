@@ -58,11 +58,11 @@ class Railgun : Entity, ITower
         var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
         var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
 
-        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 85);
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 190);
         var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
 
-        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 70);
-        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 80);
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 130);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 160);
         var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), polishedRoundsIcon, price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
@@ -72,6 +72,7 @@ class Railgun : Entity, ITower
         PolishedRound.Description = "+25 damage";
         AntimatterLaser.Description = "+9 pierce,\n+ 6 range,\n+ 20 damage";
         Cannonball.Description = "-2 pierce,\n+250 damage";
+        // TODO: figure out the whole fire thing.
         GoldenGatling.Description = "+5 shots/s,\n-40 damage\nAfter firing for 2s straight,\ninflicts burn stacks as well.";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -360,4 +361,25 @@ class Railgun : Entity, ITower
     }
 
     public TowerCore GetTowerCore() => towerCore;
+
+    public static void DrawBaseRangeIndicator(Vector2 worldPosition)
+    {
+        var towerScreenCenter = Camera.WorldToScreenPosition(worldPosition);
+        var towerRange = (int)GetBaseRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game1.Instance.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
+
+    public void DrawRangeIndicator()
+    {
+        var towerCenter = Position + Size / 2;
+        var towerScreenCenter = Camera.WorldToScreenPosition(towerCenter);
+        var towerRange = (int)GetRange();
+        var towerTileRange = towerRange * Grid.TileLength;
+
+        LineUtility.DrawCircle(Game.SpriteBatch, towerScreenCenter, towerTileRange, Color.White,
+            resolution: MathHelper.Max(12, towerRange * 2));
+    }
 }
