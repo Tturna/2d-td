@@ -15,6 +15,8 @@ public class Mortar : Entity, ITower
     private Vector2 projectileVelocity;
     private float projectileGravity = 0.12f;
     private Vector2 spawnOffset = new Vector2(-4, -4);
+    private int damage = 25;
+    private int explosionTileRadius = 4;
 
     private const float FiringAngle = MathHelper.PiOver4;
     private Random random = new();
@@ -29,6 +31,7 @@ public class Mortar : Entity, ITower
     public static event TargetingHandler StartTargeting;
     public static event TargetingHandler EndTargeting;
     public static event TargetingHandler MissingTargeting;
+    public static event TargetingHandler Destroyed;
 
     public enum Upgrade
     {
@@ -95,7 +98,7 @@ public class Mortar : Entity, ITower
 
     public override void Initialize()
     {
-        UpdatePosition(-Vector2.UnitY * 4);
+        UpdatePosition(-Vector2.UnitY);
 
         base.Initialize();
     }
@@ -147,31 +150,31 @@ public class Mortar : Entity, ITower
         {
             if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
             {
-                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond, deltaTime);
+                HandleBasicShot(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.HeavyShells.ToString())
             {
-                HandleBasicShot(explosionTileRadius: 6, damage: 35, actionsPerSecond, deltaTime);
+                HandleBasicShot(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.BouncingBomb.ToString())
             {
-                HandleBouncingBomb(explosionTileRadius: 6, damage: 50, actionsPerSecond, deltaTime);
+                HandleBouncingBomb(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.Nuke.ToString())
             {
-                HandleBasicShot(explosionTileRadius: 16, damage: 350, actionsPerSecond - 0.3f, deltaTime);
+                HandleBasicShot(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.EfficientReload.ToString())
             {
-                HandleBasicShot(explosionTileRadius: 4, damage: 25, actionsPerSecond + 0.3f, deltaTime);
+                HandleBasicShot(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.MissileSilo.ToString())
             {
-                HandleMissileSilo(explosionTileRadius: 4, damage: 30, actionsPerSecond + 0.3f, deltaTime);
+                HandleMissileSilo(deltaTime);
             }
             else if (towerCore.CurrentUpgrade.Name == Upgrade.Hellrain.ToString())
             {
-                HandleHellrain(explosionTileRadius: 3, damage: 25, actionsPerSecond - 0.3f, deltaTime);
+                HandleHellrain(deltaTime);
             }
         }
 
@@ -185,7 +188,7 @@ public class Mortar : Entity, ITower
         base.Draw(gameTime);
     }
 
-    private void HandleBasicShot(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
+    private void HandleBasicShot(float deltaTime)
     {
         if (projectileVelocity == default) return;
 
@@ -207,7 +210,7 @@ public class Mortar : Entity, ITower
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
-    private void HandleBouncingBomb(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
+    private void HandleBouncingBomb(float deltaTime)
     {
         if (projectileVelocity == default) return;
 
@@ -229,7 +232,7 @@ public class Mortar : Entity, ITower
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
-    private void HandleMissileSilo(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
+    private void HandleMissileSilo(float deltaTime)
     {
         if (projectileVelocity == default) return;
 
@@ -245,8 +248,9 @@ public class Mortar : Entity, ITower
             shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
             shell.RotationOffset = projectileRotationOffset;
 
-            var randomX = (float)random.NextDouble() * 2f - 1f;
-            shell.physics.AddForce(-Vector2.UnitY * 4f + Vector2.UnitX * randomX);
+            var randomX = (float)random.NextDouble() * 3f - 1.5f;
+            var randomVel = (float)random.NextDouble();
+            shell.physics.AddForce(-(Vector2.UnitY * (3f + randomVel)) + Vector2.UnitX * randomX);
 
             shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
         }
@@ -257,7 +261,7 @@ public class Mortar : Entity, ITower
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
     }
 
-    private void HandleHellrain(int explosionTileRadius, int damage, float shotsPerSecond, float deltaTime)
+    private void HandleHellrain(float deltaTime)
     {
         if (projectileVelocity == default) return;
 
@@ -363,6 +367,7 @@ public class Mortar : Entity, ITower
     {
         towerCore.CloseDetailsView();
         Game.Components.Remove(towerCore);
+        Destroyed?.Invoke(this);
 
         base.Destroy();
     }
@@ -435,6 +440,8 @@ public class Mortar : Entity, ITower
                 delaySeconds: 0.075f);
 
             explosionAnimation = newExplosionAnimation;
+            damage += 10;
+            UpdatePosition(-Vector2.UnitY * 4);
         }
         else if (newUpgrade.Name == Upgrade.EfficientReload.ToString())
         {
@@ -442,6 +449,8 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_efficientreload_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
+            actionsPerSecond += 0.3f;
+            UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())
         {
@@ -450,6 +459,9 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 5;
             projectileSprite = AssetManager.GetTexture("mortar_heavyshells_shell");
+            damage += 10;
+            explosionTileRadius += 2;
+            UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.Hellrain.ToString())
         {
@@ -467,6 +479,8 @@ public class Mortar : Entity, ITower
                 delaySeconds: 0.075f);
 
             explosionAnimation = newExplosionAnimation;
+            explosionTileRadius -= 2;
+            UpdatePosition(-Vector2.UnitY * 3);
         }
         else if (newUpgrade.Name == Upgrade.MissileSilo.ToString())
         {
@@ -475,6 +489,8 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 4;
             projectileSprite = AssetManager.GetTexture("mortar_missilesilo_shell");
+            damage = 30;
+            UpdatePosition(Vector2.UnitY);
         }
         else
         {
@@ -492,6 +508,11 @@ public class Mortar : Entity, ITower
                 delaySeconds: 0.1f);
 
             explosionAnimation = newExplosionAnimation;
+
+            explosionTileRadius += 8;
+            damage += 300;
+            actionsPerSecond -= 0.3f;
+            UpdatePosition(-Vector2.UnitY * 7);
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData

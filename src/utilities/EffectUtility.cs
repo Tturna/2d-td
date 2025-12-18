@@ -30,7 +30,10 @@ public static class EffectUtility
             {
                 // 0 at center, 1 at radius edge
                 var rawMagnitude = distance / radius;
-                effectStrength = MathHelper.Max(1f - rawMagnitude, 0.2f);
+                // raw magnitude is usually like 0.295 on a direct hit to a node enemy.
+                // That should count as max damage. 1.3 - raw magnitude means about 1x
+                // strength on a direct hit and at least about 0.3x for an indirect hit.
+                effectStrength = 1.3f - rawMagnitude;
             }
 
             enemy.HealthSystem.TakeDamage(source, (int)(damage * effectStrength));

@@ -12,12 +12,14 @@ public class Enemy : Entity, IKnockable
     public MovementSystem MovementSystem;
     public int ScrapValue;
     public int AttackDamage = 10;
+    public float KnockbackFactor = 1f;
 
     private double hurtProgress;
     private double hurtAnimThreshold;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
-    private Vector2 lastPosition;
+    private Vector2 previousMotionCheckPosition;
+    private float motionCheckInterval = 0.1f;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     private static Texture2D explosionSprite = AssetManager.GetTexture("death_explosion_small");
@@ -62,12 +64,18 @@ public class Enemy : Entity, IKnockable
         }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+        var scaledSeconds = (int)(totalGameSeconds * 100);
+        var posDiff = Position - previousMotionCheckPosition;
 
-        var posDiff = Position - lastPosition;
-        lastPosition = Position;
+        if (scaledSeconds % (motionCheckInterval * 100) == 0)
+        {
+            previousMotionCheckPosition = Position;
+        }
+
         var rawXVelocity = MathF.Abs(posDiff.X);
 
-        if (rawXVelocity > 0.1f)
+        if (rawXVelocity > 2f)
         {
             selfDestructTimer = selfDestructTime;
         }
@@ -158,7 +166,7 @@ public class Enemy : Entity, IKnockable
     public void ApplyKnockback(Vector2 knockback)
     {
         PhysicsSystem.StopMovement();
-        PhysicsSystem.AddForce(knockback);
+        PhysicsSystem.AddForce(knockback * KnockbackFactor);
         selfDestructTimer = selfDestructTime;
     }
 

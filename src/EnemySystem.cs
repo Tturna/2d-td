@@ -90,6 +90,7 @@ public static class EnemySystem
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.3f;
         enemy.PhysicsSystem.DragFactor = 0.02f;
+        enemy.KnockbackFactor = 0.85f;
         EnemyBins.Add(enemy);
 
         return enemy;
@@ -102,7 +103,7 @@ public static class EnemySystem
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
             WalkSpeed = 0.2f,
-            JumpForce = 6f
+            JumpForce = 7f
         };
 
         var texture = AssetManager.GetTexture("meganode");
@@ -117,10 +118,12 @@ public static class EnemySystem
         );
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
-            health: 300, scrapValue: 5);
+            health: 500, scrapValue: 5);
         enemy.Size -= Vector2.One * 2;
         enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.5f;
+        enemy.KnockbackFactor = 0.1f;
         EnemyBins.Add(enemy);
 
         return enemy;

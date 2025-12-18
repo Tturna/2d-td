@@ -21,6 +21,7 @@ public static class ProgressionManager
 
     public static bool IsLevelUnlocked(int zone, int level)
     {
+        if (zone < LastUnlockedZone) return true;
         return IsZoneUnlocked(zone) && level <= LastUnlockedLevel;
     }
 

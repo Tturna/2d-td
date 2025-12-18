@@ -24,6 +24,7 @@ public class MovementSystem
     private Game1 game;
     private Vector2 defaultChargeDirection = Vector2.UnitX;
     private float climbCheckDistanceFactor = 0.15f;
+    private int extraClimbCheckDistance = 6;
 
     public MovementData CurrentData { get; private set; }
 
@@ -46,107 +47,93 @@ public class MovementSystem
         }
     }
 
-    private (bool, bool) ShouldClimb(Entity entity)
+    private bool ShouldClimb(Entity entity)
     {
-        // TODO: Consider using one vertical line check in front of the enemy instead of
-        // multiple points.
+        var entityTopRight = entity.Position + new Vector2(entity.Size.X, 0);
+        var entityBotRight = entity.Position + entity.Size;
+        var entityBotLeft = entity.Position + new Vector2(0, entity.Size.Y);
 
-        (float tileWidth, float remainderWidth) = int.DivRem((int)entity.Size.X, Grid.TileLength);
-        var entityTileWidth = Math.Floor(tileWidth);
+        var topRightCheckPoint = entityTopRight + new Vector2(climbCheckDistanceFactor, 0);
+        var botRightCheckPoint = entityBotRight + new Vector2(climbCheckDistanceFactor, -1);
+        // For checking whether entity is in air (like when climbing) to lengthen climb check line.
+        // This way entity climbs over corners better.
+        var botLeftCheckPoint = entityBotLeft + new Vector2(0, climbCheckDistanceFactor);
+        var botRightLowerPoint = entityBotRight + new Vector2(0, climbCheckDistanceFactor);
+        var entityCenter = entity.Position + entity.Size / 2;
+        var elongated = false;
 
-        var entityTileHeight = (int)Math.Floor(entity.Size.Y / Grid.TileLength);
-        var remainderHeight = entity.Size.Y % Grid.TileLength;
-        var halfEntityWidth = entity.Size.X / 2;
-        var climbCheckDistance = halfEntityWidth + climbCheckDistanceFactor * Grid.TileLength;
-        var shouldClimb = false;
-
-        for (int i = 0; i <= entityTileHeight; i++)
+        if (Collision.IsLineInTerrain(botLeftCheckPoint, botRightLowerPoint, out var _, out var _))
         {
-            var yOffset = Vector2.UnitY * (Grid.TileLength * i);
+            elongated = true;
+            botRightCheckPoint += Vector2.UnitY * extraClimbCheckDistance;
+        }
 
-            if (i == entityTileHeight)
-            {
-                yOffset -= Vector2.UnitY * (Grid.TileLength / 2);
-                yOffset += Vector2.UnitY * (remainderHeight / 2);
-            }
+        if (!elongated)
+        {
+            var elonCorpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entityCenter);
 
-            var startPos = entity.Position + yOffset;
-            var horizontalEntityCenter = startPos + Vector2.UnitX * halfEntityWidth;
-            var climbCheckPoint = horizontalEntityCenter + defaultChargeDirection * climbCheckDistance;
-            
-            if (Collision.IsPointInTerrain(climbCheckPoint, game.Terrain) ||
-                ScrapSystem.IsPointInCorpse(climbCheckPoint))
+            foreach (var corpse in elonCorpseCandidates)
             {
-                shouldClimb = true;
-                break;
-            }
-
-            // climb over towers
-            foreach (var tower in BuildingSystem.Towers)
-            {
-                if (Collision.IsPointInEntity(climbCheckPoint, tower))
+                if (Collision.IsLineInEntity(botLeftCheckPoint, botRightLowerPoint, corpse, out var _, out var _))
                 {
-                    shouldClimb = true;
+                    elongated = true;
+                    botRightCheckPoint += Vector2.UnitY * extraClimbCheckDistance;
                     break;
                 }
             }
-
-            if (shouldClimb) break;
         }
 
-        // true if the entity has its side next to a wall. will be false if the entity
-        // only has its bottom right most corner next to a wall (e.g. if they already climbed
-        // most of the wall).
-        var shouldClimbWall = shouldClimb;
-
-        var bottomStartPos = entity.Position + Vector2.UnitY * (entity.Size.Y - 1);
-        var centerStartPos = bottomStartPos + Vector2.UnitX * halfEntityWidth;
-        var finalCheckPoint = centerStartPos + defaultChargeDirection * climbCheckDistance;
-        var shouldClimbCorner = false;
-
-        if (Collision.IsPointInTerrain(finalCheckPoint, game.Terrain) ||
-            ScrapSystem.IsPointInCorpse(finalCheckPoint))
+        if (!elongated)
         {
-            shouldClimbCorner = true;
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (Collision.IsLineInEntity(botLeftCheckPoint, botRightLowerPoint, tower, out var _, out var _))
+                {
+                    elongated = true;
+                    botRightCheckPoint += Vector2.UnitY * extraClimbCheckDistance;
+                    break;
+                }
+            }
+        }
+
+        if (Collision.IsLineInTerrain(topRightCheckPoint, botRightCheckPoint, out var _, out var _))
+        {
+            return true;
+        }
+
+        var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entityCenter);
+
+        foreach (var corpse in corpseCandidates)
+        {
+            if (Collision.IsLineInEntity(topRightCheckPoint, botRightCheckPoint, corpse, out var _, out var _))
+            {
+                return true;
+            }
         }
 
         foreach (var tower in BuildingSystem.Towers)
         {
-            if (Collision.IsPointInEntity(finalCheckPoint, tower))
+            if (Collision.IsLineInEntity(topRightCheckPoint, botRightCheckPoint, tower, out var _, out var _))
             {
-                shouldClimbCorner = true;
-                break;
+                return true;
             }
         }
 
-        return (shouldClimbWall, shouldClimbCorner);
+        return false;
     }
 
     private void HandleCharge(Entity entity, float deltaTime)
     {
         if (CurrentData.CanWalk)
         {
-            // if (CanAndShouldJump(entity))
-            // {
-            //     var enemy = (Enemy)entity;
-            //     enemy.PhysicsSystem.AddForce(-Vector2.UnitY * CurrentData.JumpForce);
-            //     enemy.PhysicsSystem.AddForce(defaultChargeDirection * CurrentData.WalkSpeed * deltaTime);
-            //     jumpTimer = jumpInterval;
-            // }
-
-            var (shouldClimbWall, shouldClimbCorner) = ShouldClimb(entity);
-
-            if (shouldClimbWall || shouldClimbCorner)
+            if (ShouldClimb(entity))
             {
                 if (entity is Enemy)
                 {
                     ((Enemy)entity).PhysicsSystem.StopMovement();
                 }
 
-                var power = 0.7f;
-                if (shouldClimbCorner) power += 1f;
-
-                var climbVelocity = -Vector2.UnitY * power;
+                var climbVelocity = -Vector2.UnitY;
                 entity.UpdatePosition(climbVelocity);
 
                 // if climbing into enemies or corpses, make them move
@@ -171,14 +158,9 @@ public class MovementSystem
                 }
             }
 
-            var leapMagnitude = 1f;
-
-            if (shouldClimbCorner) leapMagnitude += 1f;
-
-            entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed * leapMagnitude);
+            entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);
             entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
         }
-        // TODO: Implement flying enemy logic and shi
     }
 
     private void HandleBounceForward(Entity entity, float deltaTime)
@@ -194,6 +176,19 @@ public class MovementSystem
         {
             collided = true;
             roughCollisionPoint = Grid.TileToWorldPosition(collidedTilePositions[0]);
+        }
+
+        if (!collided)
+        {
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (Collision.AreEntitiesColliding(entity, tower))
+                {
+                    collided = true;
+                    roughCollisionPoint = (entity.Position + entity.Size / 2 + tower.Position + tower.Size / 2) / 2;
+                    break;
+                }
+            }
         }
 
         if (!collided)
