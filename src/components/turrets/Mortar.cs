@@ -483,6 +483,7 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 4;
             projectileSprite = AssetManager.GetTexture("mortar_missilesilo_shell");
+            damage = 30;
         }
         else
         {
