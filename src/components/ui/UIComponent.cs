@@ -113,6 +113,7 @@ public class UIComponent : DrawableGameComponent
         Mortar.StartTargeting += OnMortarStartTargeting;
         Mortar.EndTargeting += OnMortarEndTargeting;
         Mortar.MissingTargeting += OnMortarMissingTargeting;
+        Mortar.Destroyed += OnMortarDestroyed;
         CurrencyManager.CurrencyAdded += _ => currencyText.StretchImpact(new Vector2(1.5f, 1.5f), 0.2f);
 
         var scrapIconTexture = AssetManager.GetTexture("icon_scrap");
@@ -492,7 +493,7 @@ public class UIComponent : DrawableGameComponent
     {
         if (mortarMissingTargetIndicators.TryGetValue(mortar, out var indicator))
         {
-            mortarMissingTargetIndicators[mortar].Destroy();
+            indicator.Destroy();
             mortarMissingTargetIndicators.Remove(mortar);
         }
 
@@ -523,6 +524,15 @@ public class UIComponent : DrawableGameComponent
         var indicatorPos = Camera.WorldToScreenPosition(mortar.Position + mortar.Size / 2 + indicatorOffset);
         missingTargetIndicator.SetPosition(indicatorPos);
         mortarMissingTargetIndicators[mortar] = missingTargetIndicator;
+    }
+
+    private void OnMortarDestroyed(Entity mortar)
+    {
+        if (mortarMissingTargetIndicators.TryGetValue(mortar, out var indicator))
+        {
+            indicator.Destroy();
+            mortarMissingTargetIndicators.Remove(mortar);
+        }
     }
 
     public static void SpawnFlyoutText(string text, Vector2 startPosition,

@@ -31,6 +31,7 @@ public class Mortar : Entity, ITower
     public static event TargetingHandler StartTargeting;
     public static event TargetingHandler EndTargeting;
     public static event TargetingHandler MissingTargeting;
+    public static event TargetingHandler Destroyed;
 
     public enum Upgrade
     {
@@ -97,7 +98,7 @@ public class Mortar : Entity, ITower
 
     public override void Initialize()
     {
-        UpdatePosition(-Vector2.UnitY * 4);
+        UpdatePosition(-Vector2.UnitY);
 
         base.Initialize();
     }
@@ -366,6 +367,7 @@ public class Mortar : Entity, ITower
     {
         towerCore.CloseDetailsView();
         Game.Components.Remove(towerCore);
+        Destroyed?.Invoke(this);
 
         base.Destroy();
     }
@@ -438,8 +440,8 @@ public class Mortar : Entity, ITower
                 delaySeconds: 0.075f);
 
             explosionAnimation = newExplosionAnimation;
-
             damage += 10;
+            UpdatePosition(-Vector2.UnitY * 4);
         }
         else if (newUpgrade.Name == Upgrade.EfficientReload.ToString())
         {
@@ -448,6 +450,7 @@ public class Mortar : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
             actionsPerSecond += 0.3f;
+            UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())
         {
@@ -458,6 +461,7 @@ public class Mortar : Entity, ITower
             projectileSprite = AssetManager.GetTexture("mortar_heavyshells_shell");
             damage += 10;
             explosionTileRadius += 2;
+            UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.Hellrain.ToString())
         {
@@ -476,6 +480,7 @@ public class Mortar : Entity, ITower
 
             explosionAnimation = newExplosionAnimation;
             explosionTileRadius -= 2;
+            UpdatePosition(-Vector2.UnitY * 3);
         }
         else if (newUpgrade.Name == Upgrade.MissileSilo.ToString())
         {
@@ -485,6 +490,7 @@ public class Mortar : Entity, ITower
             newFireFrameCount = 4;
             projectileSprite = AssetManager.GetTexture("mortar_missilesilo_shell");
             damage = 30;
+            UpdatePosition(Vector2.UnitY);
         }
         else
         {
@@ -506,6 +512,7 @@ public class Mortar : Entity, ITower
             explosionTileRadius += 8;
             damage += 300;
             actionsPerSecond -= 0.3f;
+            UpdatePosition(-Vector2.UnitY * 7);
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
