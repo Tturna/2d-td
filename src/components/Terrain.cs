@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -133,7 +135,15 @@ public class Terrain : DrawableGameComponent
 
     public bool CanPlaceHeavyTile(Vector2 worldPosition)
     {
+        bool stable = true;
         var tilePosition = Grid.WorldToTilePosition(worldPosition - levelOffset);
+
+        if(!lightTiles.ContainsKey(tilePosition + new Vector2(0,1)) && !SolidTileExistsAtTilePosition(tilePosition + new Vector2(0,1)) && 
+        !SolidTileExistsAtTilePosition(tilePosition + new Vector2(0,-1)))
+        {
+            stable = TestHeavyTileStability(tilePosition,1, new Vector2(0,0));
+        }
+
         for(int i = -1; i <= 1; i++)
         {
             for(int j = -1; j <= 1; j++)
@@ -157,6 +167,36 @@ public class Terrain : DrawableGameComponent
         return false;
     }
 
+    public bool TestHeavyTileStability(Vector2 tilePosition,int unstableTiles, Vector2 direction)
+    {
+        int maxUnstableTiles = 4;
+        if(unstableTiles > maxUnstableTiles)
+        {
+            return false;
+        }
+        if(!lightTiles.ContainsKey(tilePosition + new Vector2(0,1)) && !SolidTileExistsAtTilePosition(tilePosition + new Vector2(0,1)) && 
+        !SolidTileExistsAtTilePosition(tilePosition + new Vector2(0,-1)))
+        {
+            bool stableLeft = false;
+            bool stableRight = false;
+            if(heavyTiles.ContainsKey(tilePosition + new Vector2(-1,0)))
+            {
+                stableLeft = TestHeavyTileStability(tilePosition + new Vector2(-1,0),unstableTiles + 1,new Vector2(-1,0));
+            }
+            if(heavyTiles.ContainsKey(tilePosition + new Vector2(1,0)))
+            {
+                stableRight = TestHeavyTileStability(tilePosition + new Vector2(1,0),unstableTiles + 1);
+            }
+
+            return stableLeft || stableRight;
+        }
+        if(heavyTiles.ContainsKey(tilePosition + new Vector2(0,1)))
+        {
+            return TestHeavyTileStability(tilePosition + new Vector2(0,1),unstableTiles);
+        }
+
+    }
+
     public Vector2 GetRightMostTopTileWorldPosition()
     {
         return topRightMostTile * Grid.TileLength + levelOffset;
@@ -170,6 +210,11 @@ public class Terrain : DrawableGameComponent
     public bool SolidTileExistsAtPosition(Vector2 worldPosition)
     {
         var tilePosition = worldPosition - levelOffset / Grid.TileLength;
+        return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition);
+    }
+
+    public bool SolidTileExistsAtTilePosition(Vector2 tilePosition)
+    {
         return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition);
     }
     public bool AnyTileExistsAtTilePosition(Vector2 tilePosition)
