@@ -8,9 +8,9 @@ namespace _2d_td;
 class PunchTrap : Entity, ITower
 {
     private TowerCore towerCore;
-    private static int baseRange = 2;
+    private static int baseTileRange = 2;
     Vector2 direction = new Vector2(-1,0);
-    float knockback = 2.5f;
+    float knockback = 4f;
     int damage = 10;
     float actionsPerSecond = 0.333f;
     float actionTimer;
@@ -45,23 +45,29 @@ class PunchTrap : Entity, ITower
 
         var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
 
-        var MegaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(),
+        var megaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(),
             upgradeIcon: nukeIcon, price: 75);
-        var RocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(),
+        var rocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(),
             upgradeIcon: nukeIcon, price: 80);
-        var FatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(),
-            upgradeIcon: nukeIcon, price: 10,leftChild: MegaPunch,rightChild: RocketGlove);
-        
+        var fatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(),
+            upgradeIcon: nukeIcon, price: 10,leftChild: megaPunch,rightChild: rocketGlove);
 
-        var Chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(),
+        var chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(),
             upgradeIcon: nukeIcon, price: 70);
-        var FlurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(),
+        var flurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(),
             upgradeIcon: nukeIcon, price: 80);
-        var QuickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(),
-            upgradeIcon: nukeIcon, price: 10,leftChild: FlurryOfBlows, rightChild: Chainsaw);
+        var quickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(),
+            upgradeIcon: nukeIcon, price: 10,leftChild: flurryOfBlows, rightChild: chainsaw);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(),
-            upgradeIcon: null, price: 0, parent: null, leftChild: FatFist, rightChild: QuickJabs);
+            upgradeIcon: null, price: 0, parent: null, leftChild: fatFist, rightChild: quickJabs);
+
+        fatFist.Description = "+10 damage\n+1.5x knockback";
+        quickJabs.Description = "-1 second recharge";
+        megaPunch.Description = "+20 damage\n1.5x knockback\nCharges up the longer it\ngoes without firing,\nup to +100 damage and\n+250% knockback.";
+        rocketGlove.Description = "The first flies out and\nexplodes for 60 damage.";
+        flurryOfBlows.Description = "0.5 second recharge";
+        chainsaw.Description = "Fist is replaced with a chainsaw\nand deals 100 damage over 1s,\nbut has no knockback.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -82,31 +88,31 @@ class PunchTrap : Entity, ITower
 
         if (towerCore.CurrentUpgrade.Name == Upgrade.NoUpgrade.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage, knockback);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FatFist.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage + 10, knockback * 1.5f);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
-            HandleMegaPunch(deltaTime, actionsPerSecond, damage + 20, knockback * 1.5f);
+            HandleMegaPunch(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.QuickJabs.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond + .167f, damage, knockback);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime, 10f, 10, 0f);
+            HandleBasicShots(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
-            HandleRocketGlove(deltaTime, actionsPerSecond, damage + 50, knockback);
+            HandleRocketGlove(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond+1.5f, damage, knockback);
+            HandleBasicShots(deltaTime);
         }
 
         base.Update(gameTime);
@@ -119,53 +125,52 @@ class PunchTrap : Entity, ITower
         base.Draw(gameTime);
     }
 
-    private void HandleBasicShots(float deltaTime, float actionsPerSecond, int damage, float knockback)
+    private void HandleBasicShots(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseTileRange))
         {
-            Shoot(damage, knockback);
+            Shoot();
             actionTimer = 0f;
             //AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
-    private void HandleMegaPunch(float deltaTime, float actionsPerSecond, int damage, float knockback)
+    private void HandleMegaPunch(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
-
         actionTimer += deltaTime;
 
         var chargeTime = 10;
         var chargeRatio = actionTimer / chargeTime;
 
-        damage = (int)MathHelper.Lerp(damage, damage * 2, chargeRatio);
+        damage = (int)MathHelper.Lerp(damage, damage + 100, chargeRatio);
 
         knockback = (int)MathHelper.Lerp(knockback, knockback * 3.5f, chargeRatio);
 
-        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseTileRange))
         {
-            Shoot(damage, knockback);
+            Shoot();
             actionTimer = 0f;
             //AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
-    private void Shoot(int damage, float knockback)
+    private void Shoot()
     {
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseRange);
-        var hitCount = 0;
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseTileRange);
 
         foreach (Enemy enemy in enemyCandidates)
         {
-            if (IsEnemyInRange(enemy, baseRange))
+            if (IsEnemyInRange(enemy, baseTileRange))
             {
-                hitCount++;
                 enemy.HealthSystem.TakeDamage(this, damage);
-                enemy.Knockback(direction,knockback);
+                var finalKnockback = direction * knockback - Vector2.UnitY * (knockback);
+                enemy.UpdatePosition(-Vector2.One);
+                enemy.ApplyKnockback(finalKnockback);
             }
         }
     }
@@ -178,16 +183,18 @@ class PunchTrap : Entity, ITower
         return Collision.IsLineInEntity(pointA, pointB, enemy, out var _,out var _);
     }
 
-    public void HandleRocketGlove(float deltaTime, float actionsPerSecond, int damage, float knockback)
+    public void HandleRocketGlove(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
 
         actionTimer += deltaTime;
 
-        if (actionTimer >= actionInterval && DetectEnemies(baseRange))
+        if (actionTimer >= actionInterval && DetectEnemies(baseTileRange))
         {
             RocketGlove rocket = new RocketGlove(Game, Position + direction * 8, knockback);
             rocket.Direction = direction;
+            rocket.Damage = damage;
+            rocket.ExplosionTileRadius = 3;
             actionTimer = 0f;
             //AnimationSystem!.OneShotAnimationState("fire");
         }
@@ -260,13 +267,41 @@ class PunchTrap : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+        if (newUpgrade.Name == Upgrade.FatFist.ToString())
+        {
+            damage += 10;
+            knockback *= 1.5f;
+        }
+        else if (newUpgrade.Name == Upgrade.QuickJabs.ToString())
+        {
+            actionsPerSecond = 0.5f;
+        }
+        else if (newUpgrade.Name == Upgrade.MegaPunch.ToString())
+        {
+            damage += 20;
+            knockback *= 1.5f;
+        }
+        else if (newUpgrade.Name == Upgrade.RocketGlove.ToString())
+        {
+            damage = 60;
+        }
+        else if (newUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
+        {
+            actionsPerSecond = 2f;
+        }
+        else if (newUpgrade.Name == Upgrade.Chainsaw.ToString())
+        {
+            damage = 10;
+            actionsPerSecond = 10f;
+            knockback = 0;
+        }
     }
 
-    public static float GetBaseRange() => baseRange;
+    public static float GetBaseRange() => baseTileRange;
 
     public float GetRange()
     {
-        return baseRange;
+        return baseTileRange;
     }
 
     public TowerCore GetTowerCore() => towerCore;
