@@ -10,7 +10,7 @@ namespace _2d_td;
 class Railgun : Entity, ITower
 {
     private TowerCore towerCore;
-    private Vector2 spawnOffset = new (0, 11);
+    private Vector2 spawnOffset = new (-2, 7);
     private static int baseRange = 18;
     private int realRange;
     private int damage = 30;
