@@ -132,66 +132,6 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Backdrops/zone1_backdrop.png
 
-#begin sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_1.png
-
-#begin sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_2.png
-
-#begin sprites/Background Objects/Zone 1/Moving Objects/roboship_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Background Objects/Zone 1/Moving Objects/roboship_1.png
-
-#begin sprites/Background Objects/Zone 1/skyscraper_ruins_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Background Objects/Zone 1/skyscraper_ruins_1.png
-
-#begin sprites/Background Objects/Zone 1/skyscraper_ruins_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Background Objects/Zone 1/skyscraper_ruins_2.png
-
 #begin sprites/big_gradient.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -336,7 +276,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/enemyhit_mockup.gif
 
-#begin sprites/Foreground Objects/Generic/smog_1.png
+#begin sprites/Environment Objects/Zone 1/midground/turret_building.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -346,9 +286,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Foreground Objects/Generic/smog_1.png
+/build:sprites/Environment Objects/Zone 1/midground/turret_building.png
 
-#begin sprites/Foreground Objects/Generic/smog_2.png
+#begin sprites/Environment Objects/Zone 2/midground/tree_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -358,7 +298,127 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Foreground Objects/Generic/smog_2.png
+/build:sprites/Environment Objects/Zone 2/midground/tree_1.png
+
+#begin sprites/Environment Objects/Zone 2/midground/tree_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 2/midground/tree_2.png
+
+#begin sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1.png
+
+#begin sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2.png
+
+#begin sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1.png
+
+#begin sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1.png
+
+#begin sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2.png
+
+#begin sprites/Environment Objects/Zone 4/midground/deadtree_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/midground/deadtree_1.png
+
+#begin sprites/Environment Objects/Zone 4/midground/deadtree_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/midground/deadtree_2.png
+
+#begin sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1.png
+
+#begin sprites/Environment Objects/Zone 4/midground/ruins_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 4/midground/ruins_1.png
 
 #begin sprites/Generic Effects/explosion_large.png
 /importer:TextureImporter
@@ -455,54 +515,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/map_mockup.gif
-
-#begin sprites/Midground Objects/Zone 1/deadtree_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Midground Objects/Zone 1/deadtree_1.png
-
-#begin sprites/Midground Objects/Zone 1/deadtree_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Midground Objects/Zone 1/deadtree_2.png
-
-#begin sprites/Midground Objects/Zone 1/Moving Objects/hovercraft_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Midground Objects/Zone 1/Moving Objects/hovercraft_1.png
-
-#begin sprites/Midground Objects/Zone 1/ruins_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/Midground Objects/Zone 1/ruins_1.png
 
 #begin sprites/Misc/HQ.png
 /importer:TextureImporter
@@ -636,6 +648,30 @@
 /processorParam:TextureFormat=Color
 /build:sprites/projectiles/railguntemp.png
 
+#begin sprites/Smogs/Generic/smog_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Smogs/Generic/smog_1.png
+
+#begin sprites/Smogs/Generic/smog_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Smogs/Generic/smog_2.png
+
 #begin sprites/tile.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -659,6 +695,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Tiles/blacktiles.png
+
+#begin sprites/Tiles/groundtiles_zone1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Tiles/groundtiles_zone1.png
 
 #begin sprites/Tiles/metaltiles.png
 /importer:TextureImporter
@@ -744,6 +792,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_base/crane_base_idle.png
 
+#begin sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon.png
+
 #begin sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -779,6 +839,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_artificer/artificer_explosion.png
+
+#begin sprites/Towers/Drone/drone_artificer/artificer_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_artificer/artificer_icon.png
 
 #begin sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png
 /importer:TextureImporter
@@ -840,6 +912,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png
 
+#begin sprites/Towers/Drone/drone_assassindrone/icon_assassindrone.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_assassindrone/icon_assassindrone.png
+
 #begin sprites/Towers/Drone/drone_base/drone_base_gun.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -888,6 +972,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png
 
+#begin sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon.png
+
 #begin sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -899,6 +995,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
+
+#begin sprites/Towers/Drone/drone_improvedradar/improvedradar_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_improvedradar/improvedradar_icon.png
 
 #begin sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png
 /importer:TextureImporter
@@ -923,6 +1031,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png
+
+#begin sprites/Towers/Drone/drone_quadcopter/icon_quadcopter.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Drone/drone_quadcopter/icon_quadcopter.png
 
 #begin sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
 /importer:TextureImporter

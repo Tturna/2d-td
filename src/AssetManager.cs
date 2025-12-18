@@ -104,6 +104,13 @@ public static class AssetManager
         LoadTexture("drone_quadcopter_idle", "sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle");
         LoadTexture("drone_quadcopter_gun", "sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun");
 
+        LoadTexture("drone_advancedweaponry_icon", "sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon");
+        LoadTexture("drone_artificer_icon", "sprites/Towers/Drone/drone_artificer/artificer_icon");
+        LoadTexture("drone_assassindrone_icon", "sprites/Towers/Drone/drone_assassindrone/icon_assassindrone");
+        LoadTexture("drone_flyingarsenal_icon", "sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon");
+        LoadTexture("drone_improvedradar_icon", "sprites/Towers/Drone/drone_improvedradar/improvedradar_icon");
+        LoadTexture("drone_quadcopter_icon", "sprites/Towers/Drone/drone_quadcopter/icon_quadcopter");
+
         LoadTexture("crane_base_idle", "sprites/Towers/Crane/crane_base/crane_base_idle");
         LoadTexture("crane_base_attack", "sprites/Towers/Crane/crane_base/crane_base_attack");
 
@@ -198,25 +205,24 @@ public static class AssetManager
         // environment
         LoadTexture("hq", "sprites/Misc/HQ");
 
-        // - zone1 bg moving objects
-        LoadTexture("cloud_z1_1", "sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_1");
-        LoadTexture("cloud_z1_2", "sprites/Background Objects/Zone 1/Moving Objects/cloud_z1_2");
-        LoadTexture("roboship", "sprites/Background Objects/Zone 1/Moving Objects/roboship_1");
-        // - zone1 bg
+        // - zone4 bg moving objects
+        LoadTexture("cloud_z1_1", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1");
+        LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
+        LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
+        // - zone4 bg
         LoadTexture("zone1_backdrop", "sprites/Backdrops/zone1_backdrop");
-        LoadTexture("skyscraper_ruins_1", "sprites/Background Objects/Zone 1/skyscraper_ruins_1");
-        LoadTexture("skyscraper_ruins_2", "sprites/Background Objects/Zone 1/skyscraper_ruins_2");
+        LoadTexture("skyscraper_ruins_1", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1");
+        LoadTexture("skyscraper_ruins_2", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2");
 
-        // - zone1 midground moving objects
-        LoadTexture("hovercraft", "sprites/Midground Objects/Zone 1/Moving Objects/hovercraft_1");
-        // - zone1 mg
-        LoadTexture("deadtree_1", "sprites/Midground Objects/Zone 1/deadtree_1");
-        LoadTexture("deadtree_2", "sprites/Midground Objects/Zone 1/deadtree_2");
-        LoadTexture("ruins_1", "sprites/Midground Objects/Zone 1/ruins_1");
+        // - zone4 midground moving objects
+        LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
+        // - zone4 mg
+        LoadTexture("deadtree_1", "sprites/Environment Objects/Zone 4/midground/deadtree_1");
+        LoadTexture("deadtree_2", "sprites/Environment Objects/Zone 4/midground/deadtree_2");
+        LoadTexture("ruins_1", "sprites/Environment Objects/Zone 4/midground/ruins_1");
 
-        // - zone1 fg
-        LoadTexture("smog_1", "sprites/Foreground Objects/Generic/smog_1");
-        LoadTexture("smog_2", "sprites/Foreground Objects/Generic/smog_2");
+        LoadTexture("smog_1", "sprites/Smogs/Generic/smog_1");
+        LoadTexture("smog_2", "sprites/Smogs/Generic/smog_2");
 
         // ui
         LoadTexture("btn_square", "sprites/UI/button_square");
