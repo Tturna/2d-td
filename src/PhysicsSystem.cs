@@ -10,7 +10,8 @@ public class PhysicsSystem
     public float LocalGravity { get; set; } = 0.8f;
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
-    public bool ignoreTowerCollision = false;
+    public bool IgnoreTowerCollision = false;
+    public bool IgnoreEnemyCollision = false;
 
     public PhysicsSystem(Game1 game)
     {
@@ -44,19 +45,22 @@ public class PhysicsSystem
         }
 
         var collided = collidedTilePositions.Length > 0;
-
-        // Collide with enemies
         var maxSide = MathHelper.Max(entity.Size.X, entity.Size.Y);
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(newCenter, maxSide);
 
-        foreach (var enemy in enemyCandidates)
+        if (!IgnoreEnemyCollision)
         {
-            if (enemy == entity) continue;
+            // Collide with enemies
+            var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(newCenter, maxSide);
 
-            if (!Collision.AreEntitiesColliding(enemy, entity)) continue;
+            foreach (var enemy in enemyCandidates)
+            {
+                if (enemy == entity) continue;
 
-            collided = true;
-            ResolveEntitiesCollision(entity, enemy);
+                if (!Collision.AreEntitiesColliding(enemy, entity)) continue;
+
+                collided = true;
+                ResolveEntitiesCollision(entity, enemy);
+            }
         }
 
         // Collide with corpses
@@ -73,7 +77,7 @@ public class PhysicsSystem
 
         // TODO: Consider spatial partitioning for towers (for example by checking collision
         // the other way around where towers check nearby enemy bins).
-        if (!ignoreTowerCollision)
+        if (!IgnoreTowerCollision)
         {
             foreach (var tower in BuildingSystem.Towers)
             {
