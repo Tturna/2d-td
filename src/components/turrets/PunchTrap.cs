@@ -161,7 +161,7 @@ class PunchTrap : Entity, ITower
 
     private void Shoot()
     {
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseTileRange);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseTileRange * Grid.TileLength);
 
         foreach (Enemy enemy in enemyCandidates)
         {
@@ -177,8 +177,8 @@ class PunchTrap : Entity, ITower
 
     public bool IsEnemyInRange(Enemy enemy, int tileRange)
     {
-        var pointA = Position + direction * Grid.TileLength;
-        var pointB = Position + direction * tileRange * Grid.TileLength;
+        var pointA = Position + new Vector2(0, Size.Y / 2) + direction;
+        var pointB = Position + new Vector2(0, Size.Y / 2) + direction * tileRange * Grid.TileLength;
 
         return Collision.IsLineInEntity(pointA, pointB, enemy, out var _,out var _);
     }
@@ -202,7 +202,7 @@ class PunchTrap : Entity, ITower
     
     public bool DetectEnemies(int tileRange)
     {
-        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, tileRange);
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, tileRange * Grid.TileLength);
 
         foreach (Enemy enemy in enemyCandidates)
         {
