@@ -43,23 +43,28 @@ class Drone : Entity, ITower
     {
         towerCore = new TowerCore(this);
 
-        var tempIcon = AssetManager.GetTexture("gunTurret_botshot_icon");
+        var flyingArsenalIcon = AssetManager.GetTexture("drone_flyingarsenal_icon");
+        var quadcopterIcon = AssetManager.GetTexture("drone_quadcopter_icon");
+        var advancedWeaponryIcon = AssetManager.GetTexture("drone_advancedweaponry_icon");
+        var assassinDroneIcon = AssetManager.GetTexture("drone_assassindrone_icon");
+        var artificerIcon = AssetManager.GetTexture("drone_artificer_icon");
+        var improvedRadarIcon = AssetManager.GetTexture("drone_improvedradar_icon");
 
-        var flyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), tempIcon, price: 220);
-        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), tempIcon, price: 180);
-        var advancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), tempIcon,
+        var flyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), flyingArsenalIcon, price: 220);
+        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), quadcopterIcon, price: 180);
+        var advancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), advancedWeaponryIcon,
             price: 30, leftChild: flyingArsenal, rightChild: quadcopter);
 
-        var assassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), tempIcon, price: 140);
-        var artificer = new TowerUpgradeNode(Upgrade.Artificer.ToString(), tempIcon, price: 160);
-        var ImprovedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), tempIcon, price: 15,
+        var assassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), assassinDroneIcon, price: 140);
+        var artificer = new TowerUpgradeNode(Upgrade.Artificer.ToString(), artificerIcon, price: 160);
+        var improvedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), improvedRadarIcon, price: 15,
             leftChild: assassinDrone, rightChild: artificer);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
-            leftChild: advancedWeaponry, rightChild: ImprovedRadar);
+            leftChild: advancedWeaponry, rightChild: improvedRadar);
 
         advancedWeaponry.Description = "+10 damage,\n+ 0.5 shots/s";
-        ImprovedRadar.Description = "+8 range";
+        improvedRadar.Description = "+8 range";
         flyingArsenal.Description = "+50 damage,\n+1 shots/s";
         quadcopter.Description = "10 shots/s,\n120 degree sight angle\ndirectly downwards";
         assassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+200 damage";
