@@ -130,9 +130,9 @@ public class UIComponent : DrawableGameComponent
         currencyText.UpdatePosition(Vector2.UnitX * (scrapIconTexture.Width + scrapTextOffset.X));
         currencyText.UpdatePosition(-Vector2.UnitY * scrapTextOffset.Y);
 
-        waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Wave 0 of 0");
+        waveIndicator = new UIEntity(game, uiElements, pixelsixFont, "Zone 5, Level 5, Wave 0 of 0");
         waveIndicator.Scale = Vector2.One * 2;
-        var waveTextWidth = pixelsixFont.MeasureString("Wave 99 of 99").X * waveIndicator.Scale.X;
+        var waveTextWidth = pixelsixFont.MeasureString("Zone 5, Level 5, Wave 99 of 99").X * waveIndicator.Scale.X;
         waveIndicator.SetPosition(new Vector2(game.NativeScreenWidth - waveTextWidth, 0));
 
         waveCooldownTimer = new UIEntity(game, uiElements, pixelsixFont, "Next wave in 00:00");
@@ -192,7 +192,7 @@ public class UIComponent : DrawableGameComponent
         }
 
         currencyText.Text = $"{CurrencyManager.Balance}";
-        waveIndicator.Text = $"Wave {WaveSystem.CurrentWaveIndex + 1} of {WaveSystem.MaxWaveIndex}";
+        waveIndicator.Text = $"Zone {game.CurrentZone}, Level {game.CurrentLevel}, Wave {WaveSystem.CurrentWaveIndex + 1} of {WaveSystem.MaxWaveIndex}";
 
         if (WaveSystem.WaveCooldownLeft > 0)
         {
