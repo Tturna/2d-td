@@ -18,7 +18,8 @@ public class Enemy : Entity, IKnockable
     private double hurtAnimThreshold;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
-    private Vector2 lastPosition;
+    private Vector2 previousMotionCheckPosition;
+    private float motionCheckInterval = 0.1f;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
 
     private static Texture2D explosionSprite = AssetManager.GetTexture("death_explosion_small");
@@ -63,12 +64,18 @@ public class Enemy : Entity, IKnockable
         }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+        var scaledSeconds = (int)(totalGameSeconds * 100);
+        var posDiff = Position - previousMotionCheckPosition;
 
-        var posDiff = Position - lastPosition;
-        lastPosition = Position;
+        if (scaledSeconds % (motionCheckInterval * 100) == 0)
+        {
+            previousMotionCheckPosition = Position;
+        }
+
         var rawXVelocity = MathF.Abs(posDiff.X);
 
-        if (rawXVelocity > 0.1f)
+        if (rawXVelocity > 2f)
         {
             selfDestructTimer = selfDestructTime;
         }
