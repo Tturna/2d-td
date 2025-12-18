@@ -247,8 +247,9 @@ public class Mortar : Entity, ITower
             shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
             shell.RotationOffset = projectileRotationOffset;
 
-            var randomX = (float)random.NextDouble() * 2f - 1f;
-            shell.physics.AddForce(-Vector2.UnitY * 4f + Vector2.UnitX * randomX);
+            var randomX = (float)random.NextDouble() * 3f - 1.5f;
+            var randomVel = (float)random.NextDouble();
+            shell.physics.AddForce(-(Vector2.UnitY * (3f + randomVel)) + Vector2.UnitX * randomX);
 
             shell.Destroyed += _ => HandleBasicProjectileHit(shell, damage, explosionTileRadius, deltaTime);
         }

@@ -18,17 +18,18 @@ public class MortarShell : Entity
     private Vector2? differenceToClosestEnemy;
     private float homingDelayTimer;
     private float lifeTime = 5f;
-    private float homingSpeed = 7f;
+    private float homingSpeed = 0.2f;
     private float homingDragFactor = 0.02f;
     private float directionCorrectionThreshold = 0.6f;
-    private float directionCorrectionSpeed = 1.5f;
+    private float directionCorrectionSpeed = 0.5f;
     private Vector2 shellCenter;
 
     public MortarShell(Game1 game) : base(game, position: null, GetShellTexture(game.SpriteBatch))
     {
         physics = new PhysicsSystem(Game);
         var rng = new Random();
-        homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.2f;
+        homingDelayTimer = 0.5f + (float)rng.NextDouble() * 0.5f;
+        homingSpeed += ((float)rng.NextDouble() - 0.5f) * 0.25f;
     }
 
     public override void FixedUpdate(float deltaTime)
