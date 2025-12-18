@@ -198,6 +198,19 @@ public class MovementSystem
 
         if (!collided)
         {
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (Collision.AreEntitiesColliding(entity, tower))
+                {
+                    collided = true;
+                    roughCollisionPoint = (entity.Position + entity.Size / 2 + tower.Position + tower.Size / 2) / 2;
+                    break;
+                }
+            }
+        }
+
+        if (!collided)
+        {
             var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
 
             foreach (var corpse in corpseCandidates)
