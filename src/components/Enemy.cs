@@ -190,11 +190,6 @@ public class Enemy : Entity, IKnockable
         base.Destroy();
     }
 
-    public void Knockback(Vector2 direction,float force)
-    {
-        PhysicsSystem.AddForce(direction*force);
-    }
-
     private void OnDeath(Entity diedEntity)
     {
         EffectUtility.Explode(this, Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
