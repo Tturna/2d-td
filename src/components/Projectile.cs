@@ -156,6 +156,37 @@ class Projectile : Entity
             }
         }
 
+        if (Collision.IsLineInTerrain(oldPosition, Position, out var _, out var _))
+        {
+            bulletToDelete = true;
+        }
+
+        if (!bulletToDelete)
+        {
+            var scrapCandidates = ScrapSystem.Corpses!.GetBinAndNeighborValues(Position);
+
+            foreach (var scrap in scrapCandidates)
+            {
+                if (Collision.IsLineInEntity(oldPosition, Position, scrap, out var _, out var _))
+                {
+                    bulletToDelete = true;
+                    break;
+                }
+            }
+        }
+
+        if (!bulletToDelete)
+        {
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                if (Collision.IsLineInEntity(oldPosition, Position, tower, out var _, out var _))
+                {
+                    bulletToDelete = true;
+                    break;
+                }
+            }
+        }
+                
         if (bulletToDelete || Lifetime <= 0f)
         {
             Destroy();
