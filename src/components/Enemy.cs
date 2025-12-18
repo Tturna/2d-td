@@ -12,6 +12,7 @@ public class Enemy : Entity, IKnockable
     public MovementSystem MovementSystem;
     public int ScrapValue;
     public int AttackDamage = 10;
+    public float KnockbackFactor = 1f;
 
     private double hurtProgress;
     private double hurtAnimThreshold;
@@ -158,7 +159,7 @@ public class Enemy : Entity, IKnockable
     public void ApplyKnockback(Vector2 knockback)
     {
         PhysicsSystem.StopMovement();
-        PhysicsSystem.AddForce(knockback);
+        PhysicsSystem.AddForce(knockback * KnockbackFactor);
         selfDestructTimer = selfDestructTime;
     }
 

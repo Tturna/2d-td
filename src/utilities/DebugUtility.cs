@@ -75,12 +75,17 @@ public static class DebugUtility
             EnemySystem.SpawnBouncerEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
+        if (InputSystem.IsKeyTapped(Keys.T))
+        {
+            EnemySystem.SpawnMeganodeEnemy(game, InputSystem.GetMouseWorldPosition());
+        }
+
         if (InputSystem.IsKeyTapped(Keys.Q))
         {
             EnemySystem.EnemyBins.Destroy();
         }
 
-        if (InputSystem.IsKeyTapped(Keys.T))
+        if (InputSystem.IsKeyTapped(Keys.Y))
         {
             CurrencyManager.AddBalance(10);
         }
