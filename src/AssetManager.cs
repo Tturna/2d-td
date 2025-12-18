@@ -195,6 +195,9 @@ public static class AssetManager
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
+        LoadTexture("heavytiles", "sprites/tiles/metaltiles");
+        LoadTexture("lighttiles", "sprites/tiles/scaffoldtiles");
+        LoadTexture("groundtiles_zone1", "sprites/tiles/groundtiles_zone1");
 
         // enemies
         LoadTexture("node", "sprites/Enemies/Node/node_body");
