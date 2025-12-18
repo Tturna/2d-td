@@ -43,6 +43,8 @@ class PunchTrap : Entity, ITower
 
         towerCore = new TowerCore(this);
 
+        towerCore.Health.SetMaxHealth(500);
+
         var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
 
         var megaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(),
