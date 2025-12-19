@@ -165,8 +165,13 @@ class Projectile : Entity
             {
                 if (Collision.IsLineInEntity(oldPosition, Position, scrap, out var _, out var _))
                 {
-                    bulletToDelete = true;
-                    break;
+                    Pierce -= 1;
+
+                    if (Pierce <= 0)
+                    {
+                        bulletToDelete = true;
+                        break;
+                    }
                 }
             }
         }
