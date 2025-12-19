@@ -292,6 +292,7 @@ class Drone : Entity, ITower
     {
         towerCore.CloseDetailsView();
         Game.Components.Remove(towerCore);
+        artificerExplosion?.Destroy();
 
         base.Destroy();
     }
