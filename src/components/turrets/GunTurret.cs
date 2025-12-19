@@ -258,11 +258,6 @@ class GunTurret : Entity, ITower
 
     private void HandleRocketShots(float deltaTime)
     {
-        // TODO: Centralize upgrade specific data like damage and range definitions.
-        // Either have them all defined in Update(), define them in the handler functions
-        // or come up with a better structure.
-
-        // TODO: 2 tile explosion on bullet impact
         var actionInterval = 1f / actionsPerSecond;
         var closestEnemy = towerCore.GetClosestValidEnemy(baseRange + 8);
 
@@ -277,7 +272,7 @@ class GunTurret : Entity, ITower
             var enemyCenter = closestEnemy.Position + closestEnemy.Size / 2;
             var direction = enemyCenter - turretHeadAxisCenter;
             direction.Normalize();
-            Shoot(direction);
+            Shoot(direction, explosionTileRadius: 2);
             actionTimer = 0f;
         }
     }
@@ -306,7 +301,7 @@ class GunTurret : Entity, ITower
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Vector2 direction)
+    private void Shoot(Vector2 direction, int explosionTileRadius = 0)
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
@@ -329,6 +324,7 @@ class GunTurret : Entity, ITower
         bullet.RotationOffset = projectileRotationOffset;
         bullet.TrailParticleInterval = 0.003f;
         bullet.TrailColor = Color.Silver;
+        bullet.ExplosionTileRadius = explosionTileRadius;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
         ParticleSystem.PlayShotSmokeEffect(startLocation);

@@ -94,16 +94,19 @@ class Projectile : Entity
                     out Vector2 entryPoint, out Vector2 exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
                     Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
                 Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
             }
         }
@@ -146,17 +149,10 @@ class Projectile : Entity
             EffectUtility.Explode(this, Position, ExplosionTileRadius * Grid.TileLength,
                 magnitude: 5f, Damage);
 
-            if (Pierce > 0)
-            {
-                Pierce -= 1;
-            }
-            else
-            {
-                bulletToDelete = true;
-            }
+            bulletToDelete = true;
         }
 
-        if (Collision.IsLineInTerrain(oldPosition, Position, out var _, out var _))
+        if (!bulletToDelete && Collision.IsLineInTerrain(oldPosition, Position, out var _, out var _))
         {
             bulletToDelete = true;
         }
