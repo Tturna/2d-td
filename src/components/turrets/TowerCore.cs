@@ -224,6 +224,14 @@ public class TowerCore : GameComponent, IClickable
                 {
                     return false;
                 }
+
+                foreach (var tower in BuildingSystem.Towers)
+                {
+                    if (Collision.IsPointInEntity(position, tower))
+                    {
+                        return false;
+                    }
+                }
             }
         }
 

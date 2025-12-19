@@ -44,25 +44,6 @@ public static class BuildingSystem
 
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
-        // TODO: Make a system that doesn't require collision checks against every entity.
-        // This could be done by connecting tiles or tile coordinates to entities and checking
-        // if the tile under the mouse has a connected entity.
-        var isColliding = false;
-
-        foreach (var component in game.Components)
-        {
-            if (isColliding) break;
-
-            if (component is not Entity) continue;
-
-            var entity = (Entity)component;
-
-            if (entity.Position == gridMousePosition)
-            {
-                isColliding = true;
-            }
-        }
-
         var towerAllowsPlacement = true;
 
         if (canPlaceTowerCallback is not null)
@@ -70,8 +51,7 @@ public static class BuildingSystem
             towerAllowsPlacement = canPlaceTowerCallback(gridMousePosition);
         }
 
-        CanPlaceTower = !isColliding &&
-            towerAllowsPlacement &&
+        CanPlaceTower = towerAllowsPlacement &&
             gameTime.TotalGameTime > allowedTowerPlacementTime &&
             selectedTowerType != TowerType.None;
 

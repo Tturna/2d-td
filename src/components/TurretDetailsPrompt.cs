@@ -10,6 +10,7 @@ namespace _2d_td;
 public class TurretDetailsPrompt : UIEntity
 {
     private UIEntity sellBtn;
+    private string sellText;
     private UIEntity? repairBtn;
     private UIEntity? leftUpgradeBtn;
     private UIEntity? rightUpgradeBtn;
@@ -52,10 +53,10 @@ public class TurretDetailsPrompt : UIEntity
             delaySeconds: 0.5f
         );
 
+        towerType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
         sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
             UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
-
-        towerType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
+        sellText = $"Sell ({CurrencyManager.GetTowerPrice(towerType) / 2})";
 
         sellBtn.ButtonPressed += () =>
         {
@@ -155,11 +156,11 @@ public class TurretDetailsPrompt : UIEntity
     {
         var halfTurretWidth = targetTowerEntity.AnimationSystem!.BaseAnimationData.FrameSize.X / 2;
         var detailsPromptOffset = new Vector2(upgradeBgSpriteSize.X / 2 - halfTurretWidth, 50);
-        var sellBtnOffset = new Vector2(halfTurretWidth - 64, 40);
+        var sellBtnOffset = new Vector2(upgradeBgSpriteSize.X + 20, 4);
         var upgradeIndicatorOffset = new Vector2(upgradeBgSpriteSize.X / 2 - upgradeIndicatorSpriteSize.X / 6, 2);
 
         var detailsOffsetPosition = targetTowerEntity.Position - detailsPromptOffset;
-        var sellBtnOffsetPosition = targetTowerEntity.Position - sellBtnOffset;
+        var sellBtnOffsetPosition = detailsOffsetPosition + sellBtnOffset;
         var upgradeIndicatorOffsetPosition = detailsOffsetPosition + upgradeIndicatorOffset;
 
         var detailsScreenPosition = Camera.WorldToScreenPosition(detailsOffsetPosition);
@@ -217,6 +218,10 @@ public class TurretDetailsPrompt : UIEntity
             var pos = rightUpgradeBtn.Position + new Vector2(upgradeBtnWidth + PriceMargin, PriceYOffset);
             Game.SpriteBatch.DrawString(pixelsixFont, rightUpgradePrice.ToString(), pos, Color.White);
         }
+
+        var sellTextSize = pixelsixFont.MeasureString(sellText);
+        var sellTextPos = sellBtn.Position + sellBtn.Size / 2 - sellTextSize / 2;
+        Game.SpriteBatch.DrawString(pixelsixFont, sellText, sellTextPos, Color.White);
 
         if (repairBtn is not null)
         {
