@@ -96,7 +96,7 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.Y))
         {
-            CurrencyManager.AddBalance(10);
+            CurrencyManager.AddBalance(100);
         }
 
         if (InputSystem.IsKeyTapped(Keys.H))
