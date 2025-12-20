@@ -11,6 +11,7 @@ public class PhysicsSystem
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
     public bool IgnoreTowerCollision = false;
+    public bool IgnoreBrokenTowerCollision = false;
     public bool IgnoreEnemyCollision = false;
 
     public PhysicsSystem(Game1 game)
@@ -82,6 +83,14 @@ public class PhysicsSystem
             foreach (var tower in BuildingSystem.Towers)
             {
                 if (!Collision.AreEntitiesColliding(entity, tower)) continue;
+
+                if (IgnoreBrokenTowerCollision)
+                {
+                    var towerInterface = (ITower)tower;
+                    var core = towerInterface.GetTowerCore();
+
+                    if (core.Health.CurrentHealth <= 0) continue;
+                }
 
                 collided = true;
                 ResolveEntitiesCollision(entity, tower);

@@ -193,7 +193,7 @@ public class Enemy : Entity, IKnockable
     private void OnDeath(Entity diedEntity)
     {
         EffectUtility.Explode(this, Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
-            animation: deathExplosionAnimation);
+            animation: deathExplosionAnimation, hurtTowers: true);
 
         var corpseSprite = AssetManager.GetTexture("node_corpse");
         var anim = new AnimationSystem.AnimationData(
