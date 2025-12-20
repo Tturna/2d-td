@@ -11,6 +11,7 @@ public class PhysicsSystem
     public Vector2 Velocity { get; private set; }
     public float DragFactor { get; set; } = 0.05f;
     public bool IgnoreTowerCollision = false;
+    public bool IgnoreBrokenTowerCollision = false;
     public bool IgnoreEnemyCollision = false;
 
     public PhysicsSystem(Game1 game)
@@ -77,11 +78,22 @@ public class PhysicsSystem
 
         // TODO: Consider spatial partitioning for towers (for example by checking collision
         // the other way around where towers check nearby enemy bins).
+        // I think enemy-tower collision is done like this because collision resolution makes
+        // the entities not overlap so checking for collision in tower logic just fails even tho
+        // they should be colliding.
         if (!IgnoreTowerCollision)
         {
             foreach (var tower in BuildingSystem.Towers)
             {
                 if (!Collision.AreEntitiesColliding(entity, tower)) continue;
+
+                if (IgnoreBrokenTowerCollision)
+                {
+                    var towerInterface = (ITower)tower;
+                    var core = towerInterface.GetTowerCore();
+
+                    if (core.Health.CurrentHealth <= 0) continue;
+                }
 
                 collided = true;
                 ResolveEntitiesCollision(entity, tower);

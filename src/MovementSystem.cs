@@ -1,4 +1,5 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -87,6 +88,10 @@ public class MovementSystem
         {
             foreach (var tower in BuildingSystem.Towers)
             {
+                var core = ((ITower)tower).GetTowerCore();
+
+                if (core.Health.CurrentHealth <= 0) continue;
+
                 if (Collision.IsLineInEntity(botLeftCheckPoint, botRightLowerPoint, tower, out var _, out var _))
                 {
                     elongated = true;
@@ -113,6 +118,10 @@ public class MovementSystem
 
         foreach (var tower in BuildingSystem.Towers)
         {
+            var core = ((ITower)tower).GetTowerCore();
+
+            if (core.Health.CurrentHealth <= 0) continue;
+
             if (Collision.IsLineInEntity(topRightCheckPoint, botRightCheckPoint, tower, out var _, out var _))
             {
                 return true;
