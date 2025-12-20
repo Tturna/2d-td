@@ -11,7 +11,7 @@ public class Enemy : Entity, IKnockable
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
     public int ScrapValue;
-    public int AttackDamage = 10;
+    public int AttackDamage = 5;
     public float KnockbackFactor = 1f;
 
     private double hurtProgress;
@@ -42,6 +42,8 @@ public class Enemy : Entity, IKnockable
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
         selfDestructTimer = selfDestructTime;
+
+        DrawLayerDepth = 0.88f;
     }
 
     public override void Update(GameTime gameTime)

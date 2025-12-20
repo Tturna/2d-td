@@ -60,6 +60,7 @@ public static class ScrapSystem
         var corpse = new ScrapCorpse(game, position, animation, scrapValue);
         corpse.Size -= Vector2.One * 2;
         corpse.DrawOffset -= Vector2.One;
+        corpse.PhysicsSystem.IgnoreBrokenTowerCollision = true;
 
         if (knockback is not null) {
             var kb = (Vector2)knockback;

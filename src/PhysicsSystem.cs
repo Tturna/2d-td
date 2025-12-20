@@ -78,6 +78,9 @@ public class PhysicsSystem
 
         // TODO: Consider spatial partitioning for towers (for example by checking collision
         // the other way around where towers check nearby enemy bins).
+        // I think enemy-tower collision is done like this because collision resolution makes
+        // the entities not overlap so checking for collision in tower logic just fails even tho
+        // they should be colliding.
         if (!IgnoreTowerCollision)
         {
             foreach (var tower in BuildingSystem.Towers)
