@@ -21,6 +21,7 @@ class Projectile : Entity
 
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
+    private HashSet<ScrapCorpse> piercedCorpses = new();
     private float trailParticleTimer;
     private Entity ownerEntity; // what spawned/owns this projectile
 
@@ -163,9 +164,12 @@ class Projectile : Entity
 
             foreach (var scrap in scrapCandidates)
             {
+                if (piercedCorpses.Contains(scrap)) continue;
+
                 if (Collision.IsLineInEntity(oldPosition, Position, scrap, out var _, out var _))
                 {
                     Pierce -= 1;
+                    piercedCorpses.Add(scrap);
 
                     if (Pierce <= 0)
                     {
