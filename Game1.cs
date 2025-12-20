@@ -237,10 +237,10 @@ public class Game1 : Game
             case SceneManager.Scene.Game:
                 BuildingSystem.Initialize(this);
                 WaveSystem.Initialize(this, CurrentZone, CurrentLevel);
-                CurrencyManager.Initialize();
                 ScrapSystem.Initialize();
 
                 Terrain = new Terrain(this, CurrentZone, CurrentLevel);
+                CurrencyManager.Initialize();
 
                 Components.Add(Terrain);
 

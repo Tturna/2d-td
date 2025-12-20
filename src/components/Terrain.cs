@@ -42,8 +42,8 @@ public class Terrain : DrawableGameComponent
             "data", "levels", levelName, $"{levelName}.csv");
 
         Tileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
-        PlayerHeavyTileset = new Tileset(AssetManager.GetTexture("heavytiles"), 4, 4);
-        PlayerLightTileset = new Tileset(AssetManager.GetTexture("lighttiles"), 4, 4);
+        PlayerHeavyTileset = new Tileset(AssetManager.GetTexture("heavytiles"), 12, 4);
+        PlayerLightTileset = new Tileset(AssetManager.GetTexture("lighttiles"), 12, 4);
     }
 
     public override void Initialize()
@@ -106,24 +106,38 @@ public class Terrain : DrawableGameComponent
         }
     }
 
-    public void PlaceLightTileAt(Vector2 worldPosition, int tileId)
+    public bool PlaceLightTileAt(Vector2 worldPosition)
     {
         if(CanPlaceLightTile(worldPosition) == false)
         {
-            return;
+            return false;
         }
         var tilePosition = Grid.WorldToTilePosition(worldPosition-levelOffset);
-        lightTiles[tilePosition] = tileId;
+        lightTiles[tilePosition] = 1;
+        return true;
     }
 
-    public void PlaceHeavyTileAt(Vector2 worldPosition, int tileId)
+    public bool PlaceTileAt(Vector2 worldPosition,Tileset tileset)
+    {
+        if(tileset == PlayerLightTileset)
+        {
+            return PlaceLightTileAt(worldPosition);
+        }
+        else if(tileset == PlayerHeavyTileset)
+        {
+            return PlaceHeavyTileAt(worldPosition);
+        }
+        return false;
+    }
+    public bool PlaceHeavyTileAt(Vector2 worldPosition)
     {
         if(CanPlaceHeavyTile(worldPosition) == false)
         {
-            return;
+            return false;
         }
         var tilePosition = Grid.WorldToTilePosition(worldPosition-levelOffset);
-        heavyTiles[tilePosition] = tileId;
+        heavyTiles[tilePosition] = 36;
+        return true;
     }
 
     public bool CanPlaceLightTile(Vector2 worldPosition)
@@ -131,6 +145,16 @@ public class Terrain : DrawableGameComponent
         var tilePosition = Grid.WorldToTilePosition(worldPosition - levelOffset);
         return (lightTiles.ContainsKey(tilePosition+ new Vector2(0,1)) || lightTiles.ContainsKey(tilePosition + new Vector2(0,-1)) 
         || tiles.ContainsKey(tilePosition+ new Vector2(0,1)) || tiles.ContainsKey(tilePosition + new Vector2(0,-1))) && !AnyTileExistsAtTilePosition(tilePosition);
+    }
+
+    public Tileset getPlayerHeavyTileset()
+    {
+        return PlayerHeavyTileset;
+    }
+
+    public Tileset getPlayerLightTileset()
+    {
+        return PlayerLightTileset;
     }
 
     public bool CanPlaceHeavyTile(Vector2 worldPosition)

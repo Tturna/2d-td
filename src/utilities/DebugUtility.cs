@@ -72,11 +72,11 @@ public static class DebugUtility
 
         if (InputSystem.IsKeyTapped(Keys.F))
         {
-            Game1.Instance.Terrain.PlaceLightTileAt(InputSystem.GetMouseWorldPosition(),1);
+            //Game1.Instance.Terrain.PlaceLightTileAt(InputSystem.GetMouseWorldPosition(),1);
         }
         if (InputSystem.IsKeyTapped(Keys.G))
         {
-            Game1.Instance.Terrain.PlaceHeavyTileAt(InputSystem.GetMouseWorldPosition(),1);
+            //Game1.Instance.Terrain.PlaceHeavyTileAt(InputSystem.GetMouseWorldPosition(),36);
         }
 
         if (InputSystem.IsKeyTapped(Keys.R))

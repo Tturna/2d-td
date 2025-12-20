@@ -198,6 +198,8 @@ public static class AssetManager
         LoadTexture("heavytiles", "sprites/tiles/metaltiles");
         LoadTexture("lighttiles", "sprites/tiles/scaffoldtiles");
         LoadTexture("groundtiles_zone1", "sprites/tiles/groundtiles_zone1");
+        LoadTexture("heavytilesingle", "sprites/tiles/metaltiles_single");
+        LoadTexture("lighttilesingle", "sprites/tiles/scaffoldtiles_single");
 
         // enemies
         LoadTexture("node", "sprites/Enemies/Node/node_body");

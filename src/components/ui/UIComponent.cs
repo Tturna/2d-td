@@ -38,6 +38,8 @@ public class UIComponent : DrawableGameComponent
     private float halfScreenHeight = Game1.Instance.NativeScreenHeight / 2;
     private static Vector2 buttonFrameSize = new Vector2(buttonSprite.Bounds.Width, buttonSprite.Bounds.Height);
     private readonly Vector2 scrapTextOffset = new Vector2(3, -1);
+    private bool drawTileHologram;
+    private Tileset selectedTileset;
 
     private AnimationSystem.AnimationData buttonAnimationData = new
     (
@@ -55,11 +57,59 @@ public class UIComponent : DrawableGameComponent
         Instance = this;
     }
 
+    private void CreateTileBuyButtons()
+    {
+        const float Gap = 16;
+        const float Margin = 20;
+        Vector2 priceIconOffset = new Vector2(3, 3);
+        Vector2 priceTextOffset = new Vector2(2, -2);
+        var xPos = game.NativeScreenWidth - buttonFrameSize.X - Margin*3;
+        var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
+        var heavyPos = new Vector2(xPos, yPos);
+        var lightPos = heavyPos - new Vector2(buttonFrameSize.X + Gap, 0);
+
+        var priceIcon = AssetManager.GetTexture("icon_scrap_small");
+        var heavyTileBuyButton = new UIEntity(game, uiElements, heavyPos, buttonAnimationData);
+        var lightTileBuyButton = new UIEntity(game, uiElements, lightPos, buttonAnimationData);
+        var heavyTilePriceIcon = new UIEntity(game, uiElements, heavyPos,priceIcon);
+        var lightTilePriceIcon = new UIEntity(game, uiElements, lightPos, priceIcon);
+
+        heavyTilePriceIcon.SetPosition(heavyTileBuyButton.Position + new Vector2(priceIconOffset.X,
+            heavyTileBuyButton.Size.Y + priceIconOffset.Y));
+        lightTilePriceIcon.SetPosition(lightTileBuyButton.Position + new Vector2(priceIconOffset.X,
+            lightTileBuyButton.Size.Y + priceIconOffset.Y));
+    
+        var heavyTilePriceText = new UIEntity(game, uiElements, pixelsixFont, "5");
+        heavyTilePriceText.SetPosition(heavyTilePriceIcon.Position
+            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y));
+        var lightTilePriceText = new UIEntity(game, uiElements, pixelsixFont, "1");
+        lightTilePriceText.SetPosition(lightTilePriceIcon.Position
+            + new Vector2(priceIcon.Width + priceTextOffset.X, priceTextOffset.Y));
+
+        var heavyTileIcon = new UIEntity(game, uiElements, AssetManager.GetTexture("heavytilesingle"));
+        var lightTileIcon = new UIEntity(game, uiElements, AssetManager.GetTexture("lighttilesingle"));
+
+        heavyTileIcon.SetPosition(heavyTileBuyButton.Position + new Vector2(7, 8));
+        lightTileIcon.SetPosition(lightTileBuyButton.Position + new Vector2(7, 8));
+
+        heavyTileBuyButton.ButtonPressed += () => 
+        {
+            BuildingSystem.SelectTile(game.Terrain.getPlayerHeavyTileset());
+            drawTileHologram = true; 
+            selectedTileset = game.Terrain.getPlayerHeavyTileset(); 
+        };
+        lightTileBuyButton.ButtonPressed += () => 
+        {
+            BuildingSystem.SelectTile(game.Terrain.getPlayerLightTileset());
+            drawTileHologram = true; 
+            selectedTileset = game.Terrain.getPlayerLightTileset(); 
+        };
+    }
     private void CreateTowerBuyButton<T>(BuildingSystem.TowerType towerType) where T : ITower
     {
         const float Margin = 20;
-        const float Gap = 32;
-        const int towers = 6;
+        const float Gap = 16;
+        const int towers = 7;
         Vector2 priceIconOffset = new Vector2(3, 3);
         Vector2 priceTextOffset = new Vector2(2, -2);
 
@@ -150,6 +200,8 @@ public class UIComponent : DrawableGameComponent
         CreateTowerBuyButton<Hovership>(BuildingSystem.TowerType.Hovership);
         CreateTowerBuyButton<PunchTrap>(BuildingSystem.TowerType.PunchTrap);
 
+        CreateTileBuyButtons();
+
         var pauseIconTexture = AssetManager.GetTexture("btn_pause");
         var pauseButtonAnimation = new AnimationSystem.AnimationData
         (
@@ -189,7 +241,10 @@ public class UIComponent : DrawableGameComponent
         if (InputSystem.IsRightMouseButtonClicked())
         {
             RemoveTowerHologram();
+            drawTileHologram = false;
+            selectedTileset = null;
             BuildingSystem.DeselectTower();
+            BuildingSystem.DeselectTile();
         }
 
         currencyText.Text = $"{CurrencyManager.Balance}";
@@ -259,6 +314,22 @@ public class UIComponent : DrawableGameComponent
     {
         // Call Draw() manually on each UI element so they don't move with the camera.
         // Game1 already creates a new sprite batch for this function call.
+        if(drawTileHologram)
+        {
+            var Sprite = (selectedTileset == game.Terrain.getPlayerHeavyTileset()) ? 
+                AssetManager.GetTexture("heavytilesingle") : 
+                AssetManager.GetTexture("lighttilesingle");
+            var Position = Grid.SnapPositionToGrid(InputSystem.GetMouseScreenPosition()) + new Vector2(0, Sprite.Height / 2);
+            game.SpriteBatch.Draw(Sprite,
+                    Position,
+                    sourceRectangle: null,
+                    Color.White,
+                    rotation: 0,
+                    origin: default,
+                    scale: Vector2.One,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0.6f);
+        }
         foreach (UIEntity uiElement in uiElements)
         {
             uiElement.DrawCustom(gameTime);
