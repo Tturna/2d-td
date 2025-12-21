@@ -112,6 +112,8 @@ public class Enemy : Entity, IKnockable
 
     public override void UpdatePosition(Vector2 positionChange)
     {
+        if (IsDestroyed) return;
+
         var newPosition = Position + positionChange;
 
         if (newPosition.Y >= yKillThreshold)
@@ -142,6 +144,8 @@ public class Enemy : Entity, IKnockable
 
     public override void SetPosition(Vector2 newPosition, bool force = false)
     {
+        if (IsDestroyed) return;
+
         if (!force)
         {
             var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
