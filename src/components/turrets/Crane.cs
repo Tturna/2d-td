@@ -64,6 +64,7 @@ public class Crane : Entity, ITower
         var bigBoxIcon = AssetManager.GetTexture("crane_biggerbox_icon");
         var sawbladeIcon = AssetManager.GetTexture("crane_biggerbox_icon"); // temp
         var chargedLiftsIcon = AssetManager.GetTexture("crane_chargedlifts_icon");
+        var laserGateIcon = AssetManager.GetTexture("crane_lasergate_icon");
 
         var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 185);
         var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 190);
@@ -71,8 +72,9 @@ public class Crane : Entity, ITower
             leftChild: explosivePayload, rightChild: crusher);
 
         var sawblade = new TowerUpgradeNode(Upgrade.Sawblade.ToString(), sawbladeIcon, price: 170);
+        var lasergate = new TowerUpgradeNode(Upgrade.LaserGate.ToString(), laserGateIcon, price: 170);
         var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), chargedLiftsIcon, price: 15,
-            leftChild: sawblade);
+            leftChild: sawblade, rightChild: lasergate);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: bigBox, rightChild: chargedLifts);
@@ -125,6 +127,10 @@ public class Crane : Entity, ITower
         {
             var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
             HandleSawblade(deltaTime, totalGameSeconds);
+        }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.LaserGate.ToString())
+        {
+            HandleLaserGate(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Crusher.ToString())
         {
@@ -354,6 +360,51 @@ public class Crane : Entity, ITower
         {
             Trigger();
             AnimationSystem!.OneShotAnimationState("attack");
+        }
+    }
+
+    private void HandleLaserGate(float deltaTime)
+    {
+        if (IsEnemyBelow())
+        {
+            if (ballThing!.Scale.X > 0)
+            {
+                hitDelayTimer -= deltaTime;
+
+                if (hitDelayTimer <= 0)
+                {
+                    hitDelayTimer = hitDelay;
+                    var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(ballThing.Position, BinGrid<Enemy>.LineDirection.Down);
+
+                    foreach (var enemy in enemyCandidates)
+                    {
+                        if (!Collision.IsLineInEntity(ballThing!.Position, targetBallPosition, enemy,
+                            out var _, out var _))
+                        {
+                            continue;
+                        }
+
+                        enemy.HealthSystem.TakeDamage(this, damage / 10);
+                    }
+                }
+            }
+            else
+            {
+                if (Collision.IsLineInTerrain(ballThing!.Position, ballThing.Position + Vector2.UnitY * 100,
+                    out var entryPoint, out var _))
+                {
+                    targetBallPosition = entryPoint;
+                    var diff = ballThing!.Position - entryPoint;
+                    var distance = diff.Length();
+                    ballThing.Scale = new Vector2(1, distance);
+                    AnimationSystem!.ToggleAnimationState("attack");
+                }
+            }
+        }
+        else if (ballThing!.Scale.X > 0)
+        {
+            ballThing.Scale = Vector2.Zero;
+            AnimationSystem!.ToggleAnimationState(null);
         }
     }
 
@@ -640,6 +691,34 @@ public class Crane : Entity, ITower
             newFireFrameCount = 3;
 
             cooldownTime -= 1;
+        }
+        else if (newUpgrade.Name == Upgrade.LaserGate.ToString())
+        {
+            newIdleTexture = AssetManager.GetTexture("crane_lasergate_idle");
+            newFireTexture = AssetManager.GetTexture("crane_lasergate_attack");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 2;
+
+            var newBallTexture = AssetManager.GetTexture("crane_lasergate_laser");
+            var newBallAnimation = new AnimationSystem.AnimationData(
+                texture: newBallTexture,
+                frameCount: 2,
+                frameSize: new Vector2(newBallTexture.Width / 2, newBallTexture.Height),
+                delaySeconds: 0.1f);
+
+            ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+
+            damage = 100;
+            var ballOffsetAdjustment = new Vector2(2, 3);
+            var towerOffset = new Vector2(0, -2);
+
+            if (ballThing.Position == Position + ballOffset)
+            {
+                ballThing.UpdatePosition(ballOffsetAdjustment + towerOffset);
+            }
+
+            UpdatePosition(towerOffset);
+            ballOffset += ballOffsetAdjustment;
         }
         else
         {
