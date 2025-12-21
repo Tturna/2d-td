@@ -216,6 +216,7 @@ public static class AssetManager
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
+        LoadTexture("blacktiles", "sprites/Tiles/blacktiles");
         LoadTexture("heavytiles", "sprites/Tiles/metaltiles");
         LoadTexture("lighttiles", "sprites/Tiles/scaffoldtiles");
         LoadTexture("groundtiles_zone1", "sprites/Tiles/groundtiles_zone1");

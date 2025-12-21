@@ -9,12 +9,15 @@ namespace _2d_td;
 public class Terrain : DrawableGameComponent
 {
     private Game1 game;
-    private readonly Tileset Tileset;
+    private readonly Tileset TerrainTileset;
+    private readonly Tileset BackgroundTileset;
     private readonly Tileset PlayerLightTileset;
     private readonly Tileset PlayerHeavyTileset;
     private readonly string LevelPath;
+    private readonly string BgLevelPath;
 
     private Dictionary<Vector2, int> tiles = new();
+    private Dictionary<Vector2, int> backgroundTiles = new();
     private Dictionary<Vector2, int> lightTiles = new();
     private Dictionary<Vector2, int> heavyTiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
@@ -22,7 +25,8 @@ public class Terrain : DrawableGameComponent
     private Vector2 topRightMostTile;
 
     public Terrain(Game game, int zone, int level, string tilesetName = "groundtiles_zone1",
-        int tilesetWidth = 12, int tilesetHeight = 4) : base(game)
+        string bgTilesetName = "blacktiles", int tilesetWidth = 12, int tilesetHeight = 4,
+        int bgTilesetWidth = 4, int bgTilesetHeight = 4) : base(game)
     {
         this.game = (Game1)game;
 
@@ -38,8 +42,11 @@ public class Terrain : DrawableGameComponent
         var levelName = $"zone{zone}level{level}";
         LevelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
             "data", "levels", levelName, $"{levelName}.csv");
+        BgLevelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
+            "data", "levels", levelName, $"{levelName}_bg.csv");
 
-        Tileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
+        TerrainTileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
+        BackgroundTileset = new Tileset(AssetManager.GetTexture(bgTilesetName), bgTilesetWidth, bgTilesetHeight);
         PlayerHeavyTileset = new Tileset(AssetManager.GetTexture("heavytiles"), 12, 4);
         PlayerLightTileset = new Tileset(AssetManager.GetTexture("lighttiles"), 12, 4);
     }
@@ -81,6 +88,42 @@ public class Terrain : DrawableGameComponent
                 row++;
             }
         }
+
+        if (File.Exists(BgLevelPath))
+        {
+            using (var bgLevelReader = new StreamReader(BgLevelPath))
+            {
+                string line = bgLevelReader.ReadLine();
+                var row = 0;
+
+                while (line is not null)
+                {
+                    String[] ids = line.Split(",");
+
+                    for (int col = 0; col < ids.Length; col++)
+                    {
+                        if (!int.TryParse(ids[col], out int tileId))
+                        {
+                            throw new InvalidDataException(
+                                $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {LevelPath}. Expected an integer."
+                            );
+                        }
+
+                        if (tileId == -1) continue; // The Tiled editor sets air to -1
+
+                        var tilePosition = new Vector2(col, row);
+                        backgroundTiles[tilePosition] = tileId;
+                    }
+
+                    line = bgLevelReader.ReadLine();
+                    row++;
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Background tile file ({BgLevelPath}) not found.");
+        }
     }
 
     public override void Draw(GameTime gameTime)
@@ -88,19 +131,25 @@ public class Terrain : DrawableGameComponent
         foreach ((Vector2 tilePosition, int tileId) in tiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            Tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+            TerrainTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.9f);
+        }
+
+        foreach ((Vector2 tilePosition, int tileId) in backgroundTiles)
+        {
+            var worldPosition = tilePosition * Grid.TileLength + levelOffset;
+            BackgroundTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 1f);
         }
 
         foreach ((Vector2 tilePosition, int tileId) in lightTiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            PlayerLightTileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+            PlayerLightTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.8f);
         }
 
         foreach ((Vector2 tilePosition, int tileId) in heavyTiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            PlayerHeavyTileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+            PlayerHeavyTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.7f);
         }
     }
 
