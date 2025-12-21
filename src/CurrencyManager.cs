@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
@@ -20,17 +19,19 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.PunchTrap, 15 }
     };
 
-    private static Dictionary<Tileset, int> tilePriceMap = new()
-    {
-        { Game1.Instance.Terrain.getPlayerLightTileset(), 1 },
-        { Game1.Instance.Terrain.getPlayerHeavyTileset(), 3 }
-    };
+    private static Dictionary<Tileset, int> tilePriceMap;
 
     public static int Balance { get; private set; }
 
     public static void Initialize()
     {
         Balance = 200;
+
+        tilePriceMap = new()
+        {
+            { Game1.Instance.Terrain.getPlayerLightTileset(), 1 },
+            { Game1.Instance.Terrain.getPlayerHeavyTileset(), 3 }
+        };
     }
 
     public static int GetTowerPrice(BuildingSystem.TowerType towerType)
