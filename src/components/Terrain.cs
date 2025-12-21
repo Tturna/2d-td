@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -169,7 +167,6 @@ public class Terrain : DrawableGameComponent
         }
 
         int unstableTiles = CountUnstableHeavyTiles(tilePosition, new List<Vector2>());
-        Console.WriteLine($"Unstable tiles: {unstableTiles}");
         stable = (unstableTiles > maxUnstableTiles) ? false : true;
         if(!stable)
         {
