@@ -319,9 +319,13 @@ public class UIComponent : DrawableGameComponent
             var Sprite = (selectedTileset == game.Terrain.getPlayerHeavyTileset()) ? 
                 AssetManager.GetTexture("heavytilesingle") : 
                 AssetManager.GetTexture("lighttilesingle");
-            var Position = Grid.SnapPositionToGrid(InputSystem.GetMouseScreenPosition()) + new Vector2(0, Sprite.Height / 2);
+
+            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+            var hologramWorldPosition = Grid.SnapPositionToGrid(mouseWorldPos);
+            var hologramPosition = Camera.WorldToScreenPosition(hologramWorldPosition);
+
             game.SpriteBatch.Draw(Sprite,
-                    Position,
+                    hologramPosition,
                     sourceRectangle: null,
                     Color.White,
                     rotation: 0,

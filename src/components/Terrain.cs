@@ -167,7 +167,6 @@ public class Terrain : DrawableGameComponent
         }
 
         int unstableTiles = CountUnstableHeavyTiles(tilePosition, new List<Vector2>());
-        Console.WriteLine($"Unstable tiles: {unstableTiles}");
         stable = (unstableTiles > maxUnstableTiles) ? false : true;
         if(!stable)
         {
