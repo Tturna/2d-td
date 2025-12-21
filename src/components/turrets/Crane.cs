@@ -16,7 +16,7 @@ public class Crane : Entity, ITower
     private const float TriggerMargin = 3f;
     private float ballSpeed;
     private float ballFallAcceleration = 10f;
-    private Vector2 defaultBallOffset = new Vector2(-8, 0);
+    private Vector2 defaultBallOffset = new Vector2(0, 6);
     private Vector2 ballOffset;
     private float cooldownTime = 1.5f;
     private float reelDelayTime = 1.5f;
@@ -86,8 +86,6 @@ public class Crane : Entity, ITower
 
     public override void Initialize()
     {
-        UpdatePosition(-Vector2.UnitY * 3);
-
         var baseBallAnimation = new AnimationSystem.AnimationData(
             texture: TextureUtility.GetBlankTexture(Game.SpriteBatch, Grid.TileLength, Grid.TileLength, Color.White),
             frameCount: 1,
@@ -468,7 +466,45 @@ public class Crane : Entity, ITower
 
     public static bool CanPlaceTower(Vector2 targetWorldPosition)
     {
-        return TowerCore.DefaultCanPlaceTower(GetDefaultGridSize(), targetWorldPosition);
+        var targetGridPosition = Grid.SnapPositionToGrid(targetWorldPosition) + Vector2.UnitX * Grid.TileLength;
+        var gridSizeX = 2;
+        var gridSizeY = 2;
+
+        for (int y = 0; y < gridSizeY; y++)
+        {
+            for (int x = 0; x < gridSizeX; x++)
+            {
+                var position = targetGridPosition + new Vector2(x, y) * Grid.TileLength;
+
+                if (Collision.IsPointInTerrain(position, Game1.Instance.Terrain))
+                {
+                    return false;
+                }
+
+                foreach (var tower in BuildingSystem.Towers)
+                {
+                    if (Collision.IsPointInEntity(position, tower))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        var belowTilePosition = targetGridPosition + Vector2.UnitY * gridSizeY * Grid.TileLength;
+        var aboveTilePosition = targetGridPosition - Vector2.UnitY * Grid.TileLength;
+
+        if (!Collision.IsPointInTerrain(belowTilePosition, Game1.Instance.Terrain))
+        {
+            return false;
+        }
+
+        if (Collision.IsPointInTerrain(aboveTilePosition, Game1.Instance.Terrain))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public static Entity CreateNewInstance(Game game, Vector2 worldPosition)
@@ -535,6 +571,9 @@ public class Crane : Entity, ITower
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
 
             damage += 30;
+            UpdatePosition(-Vector2.UnitY * 2);
+
+            ballOffset += Vector2.UnitY * 2;
         }
         else if (newUpgrade.Name == Upgrade.ExplosivePayload.ToString())
         {
@@ -553,6 +592,9 @@ public class Crane : Entity, ITower
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
 
             damage = 120;
+            UpdatePosition(-Vector2.UnitY * 3);
+
+            ballOffset += Vector2.UnitY * 2;
         }
         else if (newUpgrade.Name == Upgrade.Crusher.ToString())
         {
@@ -572,11 +614,22 @@ public class Crane : Entity, ITower
 
             damage += 180;
             pierce += 10;
+
+            var ballOffsetAdjustment = new Vector2(-8 - newBallTexture.Width / 2, -newBallTexture.Height / 2);
+            var towerOffset = new Vector2(8, -4);
+
+            if (ballThing.Position == Position + ballOffset)
+            {
+                ballThing.UpdatePosition(ballOffsetAdjustment + towerOffset);
+            }
+
+            UpdatePosition(towerOffset);
+            ballOffset += ballOffsetAdjustment;
         }
         else if (newUpgrade.Name == Upgrade.ChargedLifts.ToString())
         {
             newIdleTexture = AssetManager.GetTexture("crane_chargedlifts_idle");
-            newFireTexture = AssetManager.GetTexture("crane_chargedlifts_idle");
+            newFireTexture = AssetManager.GetTexture("crane_chargedlifts_attack");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
 
@@ -599,6 +652,16 @@ public class Crane : Entity, ITower
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
 
             damage = 120;
+            var ballOffsetAdjustment = new Vector2(-3, 5);
+            var towerOffset = new Vector2(-3, -5);
+
+            if (ballThing.Position == Position + ballOffset)
+            {
+                ballThing.UpdatePosition(ballOffsetAdjustment + towerOffset);
+            }
+
+            UpdatePosition(towerOffset);
+            ballOffset += ballOffsetAdjustment;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
