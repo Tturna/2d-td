@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
@@ -28,6 +27,9 @@ public class Crane : Entity, ITower
     private float actionTimer, cooldownTimer, reelDelayTimer;
     private Vector2 targetBallPosition;
     private HashSet<Enemy> hitEnemies = new();
+
+    private float hitDelay = 0.1f;
+    private float hitDelayTimer;
 
     public enum Upgrade
     {
@@ -122,7 +124,7 @@ public class Crane : Entity, ITower
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Sawblade.ToString())
         {
             var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
-            HandleRazorball(deltaTime, totalGameSeconds);
+            HandleSawblade(deltaTime, totalGameSeconds);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Crusher.ToString())
         {
@@ -194,14 +196,17 @@ public class Crane : Entity, ITower
     /// <summary>
     /// Drops the ball and return a boolean indicating whether it has reached the target.
     /// </summary>
-    private bool HandleBallDescent(float deltaTime)
+    private bool HandleBallDescent(float deltaTime, bool damageEnemies = true)
     {
         if (ballThing!.Position == targetBallPosition) return true;
 
         ballSpeed += ballFallAcceleration;
         ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
 
-        DamageHitEnemies(deltaTime);
+        if (damageEnemies)
+        {
+            DamageHitEnemies(deltaTime);
+        }
 
         var corpseCandidates = ScrapSystem.Corpses!.GetBinAndNeighborValues(ballThing.Position + ballThing.Size / 2);
 
@@ -305,15 +310,16 @@ public class Crane : Entity, ITower
         }
     }
 
-    private void HandleRazorball(float deltaTime, float totalGameSeconds)
+    private void HandleSawblade(float deltaTime, float totalGameSeconds)
     {
         if (reelDelayTimer > 0 || cooldownTimer > 0 || actionTimer > 0)
         {
-            var comparedTime = Math.Floor(totalGameSeconds * 100f);
+            hitDelayTimer -= deltaTime;
 
-            if (comparedTime % 25 == 0)
+            if (hitDelayTimer <= 0)
             {
-                DamageEnemiesUnconditionally(deltaTime, damage / 4);
+                DamageEnemiesUnconditionally(deltaTime, damage / 10);
+                hitDelayTimer = hitDelay;
             }
         }
 
@@ -331,7 +337,7 @@ public class Crane : Entity, ITower
 
         if (actionTimer > 0)
         {
-            var targetReached = HandleBallDescent(deltaTime);
+            var targetReached = HandleBallDescent(deltaTime, damageEnemies: false);
 
             if (targetReached)
             {
