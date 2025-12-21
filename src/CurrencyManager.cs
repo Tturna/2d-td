@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
@@ -19,6 +20,12 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.PunchTrap, 15 }
     };
 
+    private static Dictionary<Tileset, int> tilePriceMap = new()
+    {
+        { Game1.Instance.Terrain.getPlayerLightTileset(), 1 },
+        { Game1.Instance.Terrain.getPlayerHeavyTileset(), 3 }
+    };
+
     public static int Balance { get; private set; }
 
     public static void Initialize()
@@ -35,7 +42,15 @@ public static class CurrencyManager
 
         throw new ArgumentOutOfRangeException(nameof(towerType), $"Given type {towerType} does not have a price.");
     }
+    
+    public static bool TryBuyTile(Tileset tileset)
+    {
+        var price = tilePriceMap[tileset];
+        if (Balance < price) return false;
 
+        Balance -= price;
+        return true;
+    }
     public static bool TryBuyTower(BuildingSystem.TowerType towerType)
     {
         var price = GetTowerPrice(towerType);

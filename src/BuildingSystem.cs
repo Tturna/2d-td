@@ -22,11 +22,14 @@ public static class BuildingSystem
     private static Game1 game;
     private static TimeSpan lastGameTime;
     private static TowerType selectedTowerType;
+    private static Tileset selectedTileset;
     private static TimeSpan allowedTowerPlacementTime;
     private static Func<Vector2, bool> canPlaceTowerCallback;
     private static Func<Game, Vector2, Entity> createTowerInstanceCallback;
 
     public static bool CanPlaceTower { get; private set; }
+
+    public static bool IsPlacingTile { get; private set; }
     public static bool IsPlacingTower { get; private set; }
     public static List<Entity> Towers { get; private set; } = new();
 
@@ -36,11 +39,12 @@ public static class BuildingSystem
         Towers = new();
     }
 
+
     public static void Update(GameTime gameTime)
     {
         lastGameTime = gameTime.TotalGameTime;
         if (game is null) return;
-        if (selectedTowerType == TowerType.None) return;
+        if (selectedTowerType == TowerType.None && selectedTileset == null) return;
 
         var gridMousePosition = Grid.SnapPositionToGrid(InputSystem.GetMouseWorldPosition());
 
@@ -59,6 +63,17 @@ public static class BuildingSystem
         {
             TrySpawnTower(gridMousePosition);
         }
+
+        if (InputSystem.IsLeftMouseButtonClicked() && IsPlacingTile)
+        {
+            if(game.Terrain.PlaceTileAt(gridMousePosition, selectedTileset))
+            {
+                CurrencyManager.TryBuyTile(selectedTileset);
+                SoundSystem.PlaySound("placeDown");
+            }
+        }
+
+
     }
 
     private static bool TrySpawnTower(Vector2 position)
@@ -91,6 +106,18 @@ public static class BuildingSystem
         IsPlacingTower = true;
     }
 
+    public static void SelectTile(Tileset tileset)
+    {
+        allowedTowerPlacementTime = lastGameTime.Add(TimeSpan.FromMilliseconds(200));
+        selectedTileset = tileset;
+        IsPlacingTile = true;
+    }
+
+    public static void DeselectTile()
+    {
+        selectedTileset = null;
+        IsPlacingTile = false;
+    }
     public static void DeselectTower()
     {
         selectedTowerType = TowerType.None;

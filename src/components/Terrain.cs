@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -10,14 +12,18 @@ public class Terrain : DrawableGameComponent
 {
     private Game1 game;
     private readonly Tileset Tileset;
+    private readonly Tileset PlayerLightTileset;
+    private readonly Tileset PlayerHeavyTileset;
     private readonly string LevelPath;
 
     private Dictionary<Vector2, int> tiles = new();
+    private Dictionary<Vector2, int> lightTiles = new();
+    private Dictionary<Vector2, int> heavyTiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
 
     private Vector2 topRightMostTile;
 
-    public Terrain(Game game, int zone, int level, string tilesetName = "purptiles",
+    public Terrain(Game game, int zone, int level, string tilesetName = "groundtiles_zone1",
         int tilesetWidth = 12, int tilesetHeight = 4) : base(game)
     {
         this.game = (Game1)game;
@@ -36,6 +42,8 @@ public class Terrain : DrawableGameComponent
             "data", "levels", levelName, $"{levelName}.csv");
 
         Tileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
+        PlayerHeavyTileset = new Tileset(AssetManager.GetTexture("heavytiles"), 12, 4);
+        PlayerLightTileset = new Tileset(AssetManager.GetTexture("lighttiles"), 12, 4);
     }
 
     public override void Initialize()
@@ -84,6 +92,140 @@ public class Terrain : DrawableGameComponent
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
             Tileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
         }
+
+        foreach ((Vector2 tilePosition, int tileId) in lightTiles)
+        {
+            var worldPosition = tilePosition * Grid.TileLength + levelOffset;
+            PlayerLightTileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+        }
+
+        foreach ((Vector2 tilePosition, int tileId) in heavyTiles)
+        {
+            var worldPosition = tilePosition * Grid.TileLength + levelOffset;
+            PlayerHeavyTileset.DrawTile(game.SpriteBatch, tileId, worldPosition);
+        }
+    }
+
+    public bool PlaceLightTileAt(Vector2 worldPosition)
+    {
+        if(CanPlaceLightTile(worldPosition) == false)
+        {
+            return false;
+        }
+        var tilePosition = Grid.WorldToTilePosition(worldPosition-levelOffset);
+        lightTiles[tilePosition] = 1;
+        return true;
+    }
+
+    public bool PlaceTileAt(Vector2 worldPosition,Tileset tileset)
+    {
+        if(tileset == PlayerLightTileset)
+        {
+            return PlaceLightTileAt(worldPosition);
+        }
+        else if(tileset == PlayerHeavyTileset)
+        {
+            return PlaceHeavyTileAt(worldPosition);
+        }
+        return false;
+    }
+    public bool PlaceHeavyTileAt(Vector2 worldPosition)
+    {
+        if(CanPlaceHeavyTile(worldPosition) == false)
+        {
+            return false;
+        }
+        var tilePosition = Grid.WorldToTilePosition(worldPosition-levelOffset);
+        heavyTiles[tilePosition] = 36;
+        return true;
+    }
+
+    public bool CanPlaceLightTile(Vector2 worldPosition)
+    {
+        var tilePosition = Grid.WorldToTilePosition(worldPosition - levelOffset);
+        return (lightTiles.ContainsKey(tilePosition+ new Vector2(0,1)) || lightTiles.ContainsKey(tilePosition + new Vector2(0,-1)) 
+        || tiles.ContainsKey(tilePosition+ new Vector2(0,1)) || tiles.ContainsKey(tilePosition + new Vector2(0,-1))) && !AnyTileExistsAtTilePosition(tilePosition);
+    }
+
+    public Tileset getPlayerHeavyTileset()
+    {
+        return PlayerHeavyTileset;
+    }
+
+    public Tileset getPlayerLightTileset()
+    {
+        return PlayerLightTileset;
+    }
+
+    public bool CanPlaceHeavyTile(Vector2 worldPosition)
+    {
+        
+        bool stable = true;
+        int maxUnstableTiles = 4;
+        var tilePosition = Grid.WorldToTilePosition(worldPosition - levelOffset);
+        if(AnyTileExistsAtTilePosition(tilePosition))
+        {
+            return false;
+        }
+
+        int unstableTiles = CountUnstableHeavyTiles(tilePosition, new List<Vector2>());
+        Console.WriteLine($"Unstable tiles: {unstableTiles}");
+        stable = (unstableTiles > maxUnstableTiles) ? false : true;
+        if(!stable)
+        {
+            return false;
+        }
+        for(int i = -1; i <= 1; i++)
+        {
+            for(int j = -1; j <= 1; j++)
+            {
+                if(Math.Abs(i+j) != 1)
+                {
+                    continue;
+                }
+
+                if(tiles.ContainsKey(tilePosition + new Vector2(i,j)) || lightTiles.ContainsKey(tilePosition + new Vector2(0,1)) 
+                || heavyTiles.ContainsKey(tilePosition + new Vector2(i,j)))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int CountUnstableHeavyTiles(Vector2 tilePosition, List<Vector2> checkedTiles)
+    {
+        checkedTiles.Add(tilePosition);
+        if(!AnyTileExistsAtTilePosition(tilePosition+new Vector2(0,1)) && !AnyTileExistsAtTilePosition(tilePosition+new Vector2(0,-1)))
+        {
+            int stableLeft = 0;
+            int stableRight = 0;
+            if(heavyTiles.ContainsKey(tilePosition + new Vector2(-1,0)) && !checkedTiles.Contains(tilePosition + new Vector2(-1,0)))
+            {
+                stableLeft = CountUnstableHeavyTiles(tilePosition + new Vector2(-1,0),checkedTiles);
+            }
+            if(heavyTiles.ContainsKey(tilePosition + new Vector2(1,0)) && !checkedTiles.Contains(tilePosition + new Vector2(1,0)))
+            {
+                stableRight = CountUnstableHeavyTiles(tilePosition + new Vector2(1,0),checkedTiles);
+            }
+
+            return stableLeft + stableRight + 1;
+        }
+        int stableAbove = 0;
+        int stableBelow = 0;
+        if(heavyTiles.ContainsKey(tilePosition + new Vector2(0,1)) && !lightTiles.ContainsKey(tilePosition + new Vector2(0,1))
+         && !tiles.ContainsKey(tilePosition + new Vector2(0,1)) && !checkedTiles.Contains(tilePosition + new Vector2(0,1)))
+        {
+            stableBelow = CountUnstableHeavyTiles(tilePosition + new Vector2(0,1),checkedTiles)+1;
+        }
+        if(heavyTiles.ContainsKey(tilePosition + new Vector2(0,-1)) && !lightTiles.ContainsKey(tilePosition + new Vector2(0,-1))
+         && !tiles.ContainsKey(tilePosition + new Vector2(0,-1))&& !checkedTiles.Contains(tilePosition + new Vector2(0,-1)))
+        {
+            stableAbove = CountUnstableHeavyTiles(tilePosition + new Vector2(0,-1),checkedTiles)+1;
+        }
+        return stableAbove + stableBelow;
+
     }
 
     public Vector2 GetRightMostTopTileWorldPosition()
@@ -96,9 +238,18 @@ public class Terrain : DrawableGameComponent
         return tiles.Keys.First() * Grid.TileLength + levelOffset;
     }
 
-    public bool TileExistsAtPosition(Vector2 worldPosition)
+    public bool SolidTileExistsAtPosition(Vector2 worldPosition)
     {
         var tilePosition = worldPosition - levelOffset / Grid.TileLength;
-        return tiles.ContainsKey(tilePosition);
+        return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition);
+    }
+
+    public bool SolidTileExistsAtTilePosition(Vector2 tilePosition)
+    {
+        return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition);
+    }
+    public bool AnyTileExistsAtTilePosition(Vector2 tilePosition)
+    {
+        return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition) || lightTiles.ContainsKey(tilePosition);
     }
 }
