@@ -9,9 +9,10 @@ namespace _2d_td;
 public class Mortar : Entity, ITower
 {
     private TowerCore towerCore;
-    private float actionsPerSecond = 0.5f;
+    private float actionsPerSecond = 0.4f;
     private float actionTimer;
     private bool isTargeting, canSetTarget;
+    private static float changeTargetFireDelay = 1f;
     private Vector2 projectileVelocity;
     private float projectileGravity = 0.12f;
     private Vector2 spawnOffset = new Vector2(-4, -4);
@@ -68,15 +69,15 @@ public class Mortar : Entity, ITower
         var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
         var efficientReloadIcon = AssetManager.GetTexture("mortar_efficientreload_icon");
 
-        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 140);
-        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 300);
+        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 110);
+        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 150);
 
-        var heavyShells = new TowerUpgradeNode(Upgrade.HeavyShells.ToString(), bigBombIcon, price: 35,
+        var heavyShells = new TowerUpgradeNode(Upgrade.HeavyShells.ToString(), bigBombIcon, price: 30,
             leftChild: bouncingBomb, rightChild: nuke);
 
-        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 160);
-        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 150);
-        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 20,
+        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 110);
+        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 85);
+        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 30,
             leftChild: missileSilo, rightChild: hellrain);
 
         var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
@@ -127,6 +128,7 @@ public class Mortar : Entity, ITower
             projectileVelocity = CalculateProjectileVelocity(TargetHitpoint, deltaTime);
             isTargeting = false;
             IsMortarTargeting = false;
+            actionTimer += changeTargetFireDelay;
             EndTargeting?.Invoke(this);
         }
 
@@ -449,7 +451,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_efficientreload_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
-            actionsPerSecond += 0.3f;
+            actionsPerSecond += 0.4f;
             UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())

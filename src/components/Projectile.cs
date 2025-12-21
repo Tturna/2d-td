@@ -171,6 +171,13 @@ class Projectile : Entity
                     Pierce -= 1;
                     piercedCorpses.Add(scrap);
 
+                    if(Damage > 30 && Pierce <=0)
+                    {
+                        Damage -= 5;
+                        ScrapSystem.DestroyCorpse(scrap);
+                        continue;
+                    }
+                    
                     if (Pierce <= 0)
                     {
                         bulletToDelete = true;

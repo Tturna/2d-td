@@ -52,14 +52,14 @@ class Drone : Entity, ITower
         var artificerIcon = AssetManager.GetTexture("drone_artificer_icon");
         var improvedRadarIcon = AssetManager.GetTexture("drone_improvedradar_icon");
 
-        var flyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), flyingArsenalIcon, price: 220);
-        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), quadcopterIcon, price: 180);
+        var flyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), flyingArsenalIcon, price: 120);
+        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), quadcopterIcon, price: 150);
         var advancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), advancedWeaponryIcon,
-            price: 30, leftChild: flyingArsenal, rightChild: quadcopter);
+            price: 20, leftChild: flyingArsenal, rightChild: quadcopter);
 
-        var assassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), assassinDroneIcon, price: 140);
-        var artificer = new TowerUpgradeNode(Upgrade.Artificer.ToString(), artificerIcon, price: 160);
-        var improvedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), improvedRadarIcon, price: 15,
+        var assassinDrone = new TowerUpgradeNode(Upgrade.AssassinDrone.ToString(), assassinDroneIcon, price: 90);
+        var artificer = new TowerUpgradeNode(Upgrade.Artificer.ToString(), artificerIcon, price: 110);
+        var improvedRadar = new TowerUpgradeNode(Upgrade.ImprovedRadar.ToString(), improvedRadarIcon, price: 20,
             leftChild: assassinDrone, rightChild: artificer);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,

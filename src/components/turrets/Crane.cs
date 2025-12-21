@@ -66,13 +66,13 @@ public class Crane : Entity, ITower
         var chargedLiftsIcon = AssetManager.GetTexture("crane_chargedlifts_icon");
         var laserGateIcon = AssetManager.GetTexture("crane_lasergate_icon");
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 185);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 190);
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 110);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 70);
         var bigBox = new TowerUpgradeNode(Upgrade.BigBox.ToString(), bigBoxIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var sawblade = new TowerUpgradeNode(Upgrade.Sawblade.ToString(), sawbladeIcon, price: 170);
-        var lasergate = new TowerUpgradeNode(Upgrade.LaserGate.ToString(), laserGateIcon, price: 170);
+        var sawblade = new TowerUpgradeNode(Upgrade.Sawblade.ToString(), sawbladeIcon, price: 60);
+        var lasergate = new TowerUpgradeNode(Upgrade.LaserGate.ToString(), laserGateIcon, price: 70);
         var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), chargedLiftsIcon, price: 15,
             leftChild: sawblade, rightChild: lasergate);
 

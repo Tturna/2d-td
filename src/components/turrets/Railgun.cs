@@ -58,12 +58,12 @@ class Railgun : Entity, ITower
         var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
         var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
 
-        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 190);
+        var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 135);
         var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
 
-        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 130);
-        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 160);
-        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), polishedRoundsIcon, price: 20, leftChild: Cannonball, rightChild: GoldenGatling);
+        var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 95);
+        var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 100);
+        var PolishedRound = new TowerUpgradeNode(Upgrade.PolishedRound.ToString(), polishedRoundsIcon, price: 30, leftChild: Cannonball, rightChild: GoldenGatling);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: Momentum, rightChild: PolishedRound);

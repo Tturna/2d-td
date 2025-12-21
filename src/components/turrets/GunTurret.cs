@@ -16,7 +16,7 @@ class GunTurret : Entity, ITower
 
     private static int baseRange = 12;
     private int realRange;
-    private int baseDamage = 10;
+    private int baseDamage = 20;
     private int realDamage;
     private float actionsPerSecond = 1f;
     private float actionTimer;
@@ -54,11 +54,11 @@ class GunTurret : Entity, ITower
         var rocketShotsIcon = AssetManager.GetTexture("gunTurret_rocketshots_icon");
         var improvedBarrelIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 135);
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 110);
-        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 20, leftChild: photonCannon, rightChild: botShot);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 65);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 20);
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 15, leftChild: photonCannon, rightChild: botShot);
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 140);
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 45);
         var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon, price: 15, leftChild: rocketShots);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
@@ -318,7 +318,6 @@ class GunTurret : Entity, ITower
         bullet.BulletPixelsPerSecond = bulletPixelsPerSecond;
         bullet.Damage = realDamage;
         bullet.Lifetime = 1f;
-        bullet.Pierce = 3;
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
@@ -402,10 +401,9 @@ class GunTurret : Entity, ITower
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_botshot_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
-            realRange = baseRange - 2;
             realDamage = baseDamage + 8;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
-            actionsPerSecond *= 0.25f;
+            actionsPerSecond *= 0.75f;
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
@@ -440,7 +438,7 @@ class GunTurret : Entity, ITower
         {
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
             realRange = baseRange + 4;
-            realDamage = baseDamage + 3;
+            realDamage = baseDamage + 15;
             projectileSprite = AssetManager.GetTexture("gunTurret_improvedbarrel_bullet");
         }
 

@@ -13,10 +13,10 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.GunTurret, 20 },
         { BuildingSystem.TowerType.Railgun, 25 },
         { BuildingSystem.TowerType.Drone, 25 },
-        { BuildingSystem.TowerType.Crane, 30 },
+        { BuildingSystem.TowerType.Crane, 20 },
         { BuildingSystem.TowerType.Mortar, 30 },
-        { BuildingSystem.TowerType.Hovership, 50 },
-        { BuildingSystem.TowerType.PunchTrap, 15 }
+        { BuildingSystem.TowerType.Hovership, 25 },
+        { BuildingSystem.TowerType.PunchTrap, 5 }
     };
 
     private static Dictionary<Tileset, int> tilePriceMap;
@@ -25,12 +25,16 @@ public static class CurrencyManager
 
     public static void Initialize()
     {
-        Balance = 200;
+        Balance = 75;
 
         tilePriceMap = new()
         {
             { Game1.Instance.Terrain.getPlayerLightTileset(), 1 },
             { Game1.Instance.Terrain.getPlayerHeavyTileset(), 3 }
+        };
+        WaveSystem.WaveEnded += () => 
+        {
+            AddBalance(WaveSystem.WaveReward);
         };
     }
 
