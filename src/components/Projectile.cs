@@ -21,6 +21,7 @@ class Projectile : Entity
 
     private HashSet<Enemy> hitEnemies = new();
     private HashSet<Enemy> damagedEnemies = new();
+    private HashSet<ScrapCorpse> piercedCorpses = new();
     private float trailParticleTimer;
     private Entity ownerEntity; // what spawned/owns this projectile
 
@@ -94,16 +95,19 @@ class Projectile : Entity
                     out Vector2 entryPoint, out Vector2 exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideOneOffset,
                     Position + sideOneOffset, enemy, out entryPoint, out exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
                 else if (Collision.IsLineInEntity(oldPosition + sideTwoOffset,
                 Position + sideTwoOffset, enemy, out entryPoint, out exitPoint))
                 {
                     shouldExplode = true;
+                    break;
                 }
             }
         }
@@ -146,17 +150,10 @@ class Projectile : Entity
             EffectUtility.Explode(this, Position, ExplosionTileRadius * Grid.TileLength,
                 magnitude: 5f, Damage);
 
-            if (Pierce > 0)
-            {
-                Pierce -= 1;
-            }
-            else
-            {
-                bulletToDelete = true;
-            }
+            bulletToDelete = true;
         }
 
-        if (Collision.IsLineInTerrain(oldPosition, Position, out var _, out var _))
+        if (!bulletToDelete && Collision.IsLineInTerrain(oldPosition, Position, out var _, out var _))
         {
             bulletToDelete = true;
         }
@@ -167,10 +164,18 @@ class Projectile : Entity
 
             foreach (var scrap in scrapCandidates)
             {
+                if (piercedCorpses.Contains(scrap)) continue;
+
                 if (Collision.IsLineInEntity(oldPosition, Position, scrap, out var _, out var _))
                 {
-                    bulletToDelete = true;
-                    break;
+                    Pierce -= 1;
+                    piercedCorpses.Add(scrap);
+
+                    if (Pierce <= 0)
+                    {
+                        bulletToDelete = true;
+                        break;
+                    }
                 }
             }
         }

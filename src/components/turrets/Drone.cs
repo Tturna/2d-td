@@ -16,8 +16,10 @@ class Drone : Entity, ITower
     private float bulletSpeed = 400f;
     private float actionsPerSecond = 2f;
     private float actionTimer;
-    private static float firingSectorWidthDegrees = 45f;
-    private static float firingDirectionDegrees = 180;
+    private static float baseFiringSectorWidthDegrees = 45f;
+    private static float baseFiringDirectionDegrees = 180;
+    private float firingSectorWidthDegrees;
+    private float firingDirectionDegrees;
     private Vector2 turretAxisCenter;
     private float muzzleOffsetMagnitude = 8;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
@@ -75,6 +77,9 @@ class Drone : Entity, ITower
         realTileRange = baseTileRange;
         turretAxisCenter = Position + new Vector2(-1, Size.Y / 2);
         gunSpriteOrigin = new Vector2(gunSprite.Width, gunSprite.Height / 2);
+
+        firingSectorWidthDegrees = baseFiringSectorWidthDegrees;
+        firingDirectionDegrees = baseFiringDirectionDegrees;
     }
 
     public override void Update(GameTime gameTime)
@@ -292,6 +297,7 @@ class Drone : Entity, ITower
     {
         towerCore.CloseDetailsView();
         Game.Components.Remove(towerCore);
+        artificerExplosion?.Destroy();
 
         base.Destroy();
     }
@@ -354,6 +360,14 @@ class Drone : Entity, ITower
                 if (Collision.IsPointInTerrain(position, Game1.Instance.Terrain))
                 {
                     return false;
+                }
+
+                foreach (var tower in BuildingSystem.Towers)
+                {
+                    if (Collision.IsPointInEntity(position, tower))
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -490,8 +504,8 @@ class Drone : Entity, ITower
 
     public static void DrawBaseRangeIndicator(Vector2 worldPosition)
     {
-        var firingSectorWidthRadians = MathHelper.ToRadians(firingSectorWidthDegrees);
-        var firingDirectionRadians = MathHelper.ToRadians(firingDirectionDegrees);
+        var firingSectorWidthRadians = MathHelper.ToRadians(baseFiringSectorWidthDegrees);
+        var firingDirectionRadians = MathHelper.ToRadians(baseFiringDirectionDegrees);
         var halfFiringSectorWidth = firingSectorWidthRadians / 2.0f;
 
         var range = baseTileRange * Grid.TileLength;

@@ -1,4 +1,5 @@
 using System;
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -87,6 +88,10 @@ public class MovementSystem
         {
             foreach (var tower in BuildingSystem.Towers)
             {
+                var core = ((ITower)tower).GetTowerCore();
+
+                if (core.Health.CurrentHealth <= 0) continue;
+
                 if (Collision.IsLineInEntity(botLeftCheckPoint, botRightLowerPoint, tower, out var _, out var _))
                 {
                     elongated = true;
@@ -113,6 +118,10 @@ public class MovementSystem
 
         foreach (var tower in BuildingSystem.Towers)
         {
+            var core = ((ITower)tower).GetTowerCore();
+
+            if (core.Health.CurrentHealth <= 0) continue;
+
             if (Collision.IsLineInEntity(topRightCheckPoint, botRightCheckPoint, tower, out var _, out var _))
             {
                 return true;
@@ -124,42 +133,40 @@ public class MovementSystem
 
     private void HandleCharge(Entity entity, float deltaTime)
     {
+        var enemyEntity = (Enemy)entity;
+
         if (CurrentData.CanWalk)
         {
-            if (ShouldClimb(entity))
+            if (ShouldClimb(enemyEntity))
             {
-                if (entity is Enemy)
-                {
-                    ((Enemy)entity).PhysicsSystem.StopMovement();
-                }
+                enemyEntity.PhysicsSystem.StopMovement();
 
                 var climbVelocity = -Vector2.UnitY;
-                entity.UpdatePosition(climbVelocity);
+                enemyEntity.UpdatePosition(climbVelocity);
 
                 // if climbing into enemies or corpses, make them move
-                var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+                var enemyCandidates = EnemySystem.EnemyBins.GetBinAndNeighborValues(enemyEntity.Position + enemyEntity.Size / 2);
 
                 foreach (var enemy in enemyCandidates)
                 {
-                    if (entity == enemy) continue;
-                    if (!Collision.AreEntitiesColliding(entity, enemy)) continue;
+                    if (enemyEntity == enemy) continue;
+                    if (!Collision.AreEntitiesColliding(enemyEntity, enemy)) continue;
 
                     enemy.UpdatePosition(climbVelocity);
                 }
 
-                var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(entity.Position + entity.Size / 2);
+                var corpseCandidates = ScrapSystem.Corpses.GetBinAndNeighborValues(enemyEntity.Position + enemyEntity.Size / 2);
 
                 foreach (var corpse in corpseCandidates)
                 {
-                    if (entity == corpse) continue;
-                    if (!Collision.AreEntitiesColliding(entity, corpse)) continue;
+                    if (!Collision.AreEntitiesColliding(enemyEntity, corpse)) continue;
 
                     corpse.ClimbUp(climbVelocity);
                 }
             }
 
-            entity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);
-            entity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
+            enemyEntity.UpdatePosition(defaultChargeDirection * CurrentData.WalkSpeed);
+            enemyEntity.Rotate(deltaTime * CurrentData.WalkSpeed * 10f);
         }
     }
 

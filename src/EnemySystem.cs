@@ -56,6 +56,7 @@ public static class EnemySystem
         enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.5f;
+        enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
 
         EnemyBins.Add(enemy);
 
@@ -90,6 +91,7 @@ public static class EnemySystem
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.3f;
         enemy.PhysicsSystem.DragFactor = 0.02f;
+        enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
         enemy.KnockbackFactor = 0.85f;
         EnemyBins.Add(enemy);
 
@@ -123,6 +125,7 @@ public static class EnemySystem
         enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.5f;
+        enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
         enemy.KnockbackFactor = 0.1f;
         EnemyBins.Add(enemy);
 

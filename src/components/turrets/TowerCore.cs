@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
@@ -20,9 +19,10 @@ public class TowerCore : GameComponent, IClickable
     public event ClickedHandler? LeftClicked;
     public event ClickedHandler? RightClicked;
 
-    private HashSet<Entity> enemiesThatDamagedTurret = new();
     private float brokenParticleInterval = 0.2f;
     private float brokenParticleTimer;
+    private float damageInterval = 0.5f;
+    private float damageDelayTimer;
 
     public TowerCore(Entity turret) : base(turret.Game)
     {
@@ -38,7 +38,6 @@ public class TowerCore : GameComponent, IClickable
 
         WaveSystem.WaveEnded += () =>
         {
-            enemiesThatDamagedTurret.Clear();
             Health.ResetHealth();
         };
 
@@ -53,6 +52,11 @@ public class TowerCore : GameComponent, IClickable
     public override void Update(GameTime gameTime)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (damageDelayTimer > 0)
+        {
+            damageDelayTimer -= deltaTime;
+        }
 
         Health.UpdateHealthBarGraphics(deltaTime);
 
@@ -86,10 +90,10 @@ public class TowerCore : GameComponent, IClickable
 
     public void TryTakeDamage(Entity source, int amount)
     {
-        if (enemiesThatDamagedTurret.Contains(source)) return;
+        if (damageDelayTimer > 0) return;
         if (Health.CurrentHealth <= -Health.MaxHealth / 2) return;
 
-        enemiesThatDamagedTurret.Add(source);
+        damageDelayTimer = damageInterval;
         Health.TakeDamage(source, amount);
         ParticleSystem.PlayBrokenTowerEffect(Turret.Position + Turret.Size / 2);
         var flyoutPosition = Turret.Position;
@@ -223,6 +227,14 @@ public class TowerCore : GameComponent, IClickable
                 if (Collision.IsPointInTerrain(position, Game1.Instance.Terrain))
                 {
                     return false;
+                }
+
+                foreach (var tower in BuildingSystem.Towers)
+                {
+                    if (Collision.IsPointInEntity(position, tower))
+                    {
+                        return false;
+                    }
                 }
             }
         }

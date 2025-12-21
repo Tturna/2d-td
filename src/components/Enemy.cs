@@ -11,7 +11,7 @@ public class Enemy : Entity, IKnockable
     public PhysicsSystem PhysicsSystem;
     public MovementSystem MovementSystem;
     public int ScrapValue;
-    public int AttackDamage = 10;
+    public int AttackDamage = 5;
     public float KnockbackFactor = 1f;
 
     private double hurtProgress;
@@ -42,6 +42,8 @@ public class Enemy : Entity, IKnockable
         ScrapValue = scrapValue;
         hurtAnimThreshold = 0.33 * HealthSystem.MaxHealth;
         selfDestructTimer = selfDestructTime;
+
+        DrawLayerDepth = 0.88f;
     }
 
     public override void Update(GameTime gameTime)
@@ -110,6 +112,8 @@ public class Enemy : Entity, IKnockable
 
     public override void UpdatePosition(Vector2 positionChange)
     {
+        if (IsDestroyed) return;
+
         var newPosition = Position + positionChange;
 
         if (newPosition.Y >= yKillThreshold)
@@ -140,6 +144,8 @@ public class Enemy : Entity, IKnockable
 
     public override void SetPosition(Vector2 newPosition, bool force = false)
     {
+        if (IsDestroyed) return;
+
         if (!force)
         {
             var oldBinGridPosition = EnemySystem.EnemyBins.WorldToGridPosition(Position);
@@ -193,7 +199,7 @@ public class Enemy : Entity, IKnockable
     private void OnDeath(Entity diedEntity)
     {
         EffectUtility.Explode(this, Position + Size / 2, Size.X * 2f, magnitude: 10f, damage: 0,
-            animation: deathExplosionAnimation);
+            animation: deathExplosionAnimation, hurtTowers: true);
 
         var corpseSprite = AssetManager.GetTexture("node_corpse");
         var anim = new AnimationSystem.AnimationData(

@@ -352,12 +352,7 @@ public class Crane : Entity, ITower
             crusherPhysics.AddForce(-Vector2.UnitX * 10f * deltaTime);
             crusherPhysics.UpdatePhysics(ballThing, deltaTime);
 
-            var comparedTime = Math.Floor(totalGameSeconds * 100f);
-
-            if (comparedTime % 10 == 0)
-            {
-                DamageEnemiesUnconditionally(deltaTime, damage);
-            }
+            DamageHitEnemies(deltaTime);
 
             return;
         }

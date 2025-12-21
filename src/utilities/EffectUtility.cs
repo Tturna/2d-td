@@ -1,3 +1,4 @@
+using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 
 namespace _2d_td;
@@ -10,7 +11,8 @@ public static class EffectUtility
     /// entities further from the explosion.
     /// </summary>
     public static void Explode(Entity source, Vector2 worldPosition, float radius, float magnitude,
-        int damage, bool useEffectFalloff = true, AnimationSystem.AnimationData? animation = null)
+        int damage, bool useEffectFalloff = true, AnimationSystem.AnimationData? animation = null,
+        bool hurtTowers = false)
     {
         var enemies = EnemySystem.EnemyBins.GetValuesFromBinsInRange(worldPosition, radius).ToArray();
 
@@ -73,6 +75,20 @@ public static class EffectUtility
             }
 
             corpse.ApplyKnockback(blastDirection * (magnitude * effectStrength));
+        }
+
+        if (hurtTowers)
+        {
+            foreach (var tower in BuildingSystem.Towers)
+            {
+                var minSide = MathHelper.Min(tower.Size.X, tower.Size.Y);
+                var diff = tower.Position + tower.Size / 2 - worldPosition;
+                var distance = diff.Length();
+
+                if (distance - minSide > radius) continue;
+
+                ((ITower)tower).GetTowerCore().Health.TakeDamage(source, damage);
+            }
         }
 
         SoundSystem.PlaySound("explosion");

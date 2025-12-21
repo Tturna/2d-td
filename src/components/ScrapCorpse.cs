@@ -74,6 +74,8 @@ public class ScrapCorpse : Entity, IKnockable
 
     public override void SetPosition(Vector2 newPosition, bool force = false)
     {
+        if (IsDestroyed) return;
+
         if (!force)
         {
             var oldBinGridPosition = ScrapSystem.Corpses.WorldToGridPosition(Position);
@@ -99,6 +101,8 @@ public class ScrapCorpse : Entity, IKnockable
 
     public void ClimbUp(Vector2 climbVelocity)
     {
+        if (IsDestroyed) return;
+
         UpdatePosition(climbVelocity);
         PhysicsSystem.AddForce(Vector2.UnitX * (climbVelocity.Y / 2));
 
