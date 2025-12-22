@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
@@ -25,7 +26,7 @@ public static class CurrencyManager
 
     public static void Initialize()
     {
-        Balance = 75;
+        Balance = 80;
 
         tilePriceMap = new()
         {
@@ -34,7 +35,7 @@ public static class CurrencyManager
         };
         WaveSystem.WaveEnded += () => 
         {
-            AddBalance(WaveSystem.WaveReward);
+            // TODO: Give money here instead of WaveSystem, right now it doesnt work because it doesnt get reset when leaving the level
         };
     }
 

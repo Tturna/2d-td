@@ -243,6 +243,9 @@ public static class WaveSystem
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
+        CurrencyManager.AddBalance(WaveSystem.WaveReward);
+        UIComponent.SpawnFlyoutText($"+{WaveSystem.WaveReward}", HQ.Instance.Position, -Vector2.UnitY * 25f,
+        lifetime: 1f, color: Color.White);
 
         if (CurrentWaveIndex == MaxWaveIndex - 1)
         {

@@ -54,11 +54,11 @@ class GunTurret : Entity, ITower
         var rocketShotsIcon = AssetManager.GetTexture("gunTurret_rocketshots_icon");
         var improvedBarrelIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
 
-        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 65);
-        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 20);
+        var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 70);
+        var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 80);
         var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 15, leftChild: photonCannon, rightChild: botShot);
 
-        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 45);
+        var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 65);
         var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon, price: 15, leftChild: rocketShots);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
