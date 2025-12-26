@@ -8,6 +8,7 @@ public class HealthSystem
     public Entity Owner;
     public int CurrentHealth { get; private set; }
     public int MaxHealth { get; private set; }
+    public bool IsRepairable = false;
 
     public delegate void DiedHandler(Entity diedEntity);
     public event DiedHandler Died;
@@ -49,6 +50,7 @@ public class HealthSystem
     public void DrawHealthBar(Vector2 worldPosition)
     {
         if (CurrentHealth >= MaxHealth) return;
+        if (CurrentHealth <= 0 && !IsRepairable) return;
 
         var bgColor = CurrentHealth <= 0 ? repairBackgroundBarColor : normalBackgroundBarColor;
         var fgColor = CurrentHealth <= 0 ? repairForegroundBarColor : normalForegroundBarColor;

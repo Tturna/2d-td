@@ -28,6 +28,7 @@ public class TowerCore : GameComponent, IClickable
     {
         Turret = turret;
         Health = new HealthSystem(Turret, initialHealth: 100);
+        Health.IsRepairable = true;
         CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
 
