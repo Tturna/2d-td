@@ -17,7 +17,7 @@ public class RocketGlove : Entity
     public float Lifetime;
     
     public RocketGlove(Game game, Vector2 startLocation, float knockback) : base(game, startLocation,
-        TextureUtility.GetBlankTexture(((Game1)game).SpriteBatch, 7, 7, Color.White))
+        GetRocketGloveAnimation())
     {
         // Rocket specific defaults
         PixelsPerSecond = 100f;
@@ -26,6 +26,8 @@ public class RocketGlove : Entity
         maxHitEnemies = 5;
         Lifetime = 1f;
         this.knockback = knockback;
+
+        Size -= new Vector2(0, 4);
     }
 
     public override void Update(GameTime gameTime)
@@ -68,5 +70,18 @@ public class RocketGlove : Entity
                 magnitude: knockback, Damage);
             Destroy();
         }
+    }
+
+    private static AnimationSystem.AnimationData GetRocketGloveAnimation()
+    {
+        var rocketGloveTexture = AssetManager.GetTexture("rocketglove");
+
+        var animation = new AnimationSystem.AnimationData(
+            texture: rocketGloveTexture,
+            frameCount: 2,
+            frameSize: new Vector2(rocketGloveTexture.Width / 2, rocketGloveTexture.Height),
+            delaySeconds: 0.1f);
+
+        return animation;
     }
 }

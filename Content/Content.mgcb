@@ -924,6 +924,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_crusher/crane_crusher_idle.png
 
+#begin sprites/Towers/Crane/crane_crusher/crusher_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Crane/crane_crusher/crusher_icon.png
+
 #begin sprites/Towers/Crane/crane_crusher/crusherball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1055,6 +1067,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle.png
+
+#begin sprites/Towers/Crane/crane_sawblade/sawblade_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Crane/crane_sawblade/sawblade_icon.png
 
 #begin sprites/Towers/Crane/crane_sawblade/sawblade.png
 /importer:TextureImporter
@@ -2040,6 +2064,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png
 
+#begin sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon.png
+
 #begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2075,6 +2111,174 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove.png
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast.png
 /importer:TextureImporter

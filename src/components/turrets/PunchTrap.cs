@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -9,11 +11,15 @@ class PunchTrap : Entity, ITower
 {
     private TowerCore towerCore;
     private static int baseTileRange = 2;
-    Vector2 direction = new Vector2(-1,0);
-    float knockback = 4f;
-    int damage = 10;
-    float actionsPerSecond = 0.333f;
-    float actionTimer;
+    private Vector2 direction = new Vector2(-1,0);
+    private float knockback = 4f;
+    private int damage = 10;
+    private float actionsPerSecond = 0.333f;
+    private float actionTimer;
+
+    private float chainsawTurnoffDelay = 0.5f;
+    private float chainsawTurnoffTimer;
+    private float chainsawStartTimer;
 
     public enum Upgrade
     {
@@ -28,38 +34,43 @@ class PunchTrap : Entity, ITower
 
     public PunchTrap(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
     {
-        //var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base");
+        var fireAnimationTexture = AssetManager.GetTexture("punchtrap_base_fire");
 
-        /*var fireAnimation = new AnimationSystem.AnimationData
+        var fireAnimation = new AnimationSystem.AnimationData
         (
             texture: fireAnimationTexture,
-            frameCount: 5,
-            frameSize: new Vector2(fireAnimationTexture.Width / 5, fireAnimationTexture.Height),
-            delaySeconds: 0.05f
+            frameCount: 9,
+            frameSize: new Vector2(fireAnimationTexture.Width / 9, fireAnimationTexture.Height),
+            delaySeconds: 0.07f
         );
 
         // base constructor defines animation system
-        AnimationSystem!.AddAnimationState("fire", fireAnimation);*/
+        AnimationSystem!.AddAnimationState("fire", fireAnimation);
 
         towerCore = new TowerCore(this);
 
         towerCore.Health.SetMaxHealth(500);
 
-        var nukeIcon = AssetManager.GetTexture("mortar_nuke_icon");
+        var megaPunchIcon = AssetManager.GetTexture("punchtrap_megapunch_icon");
+        var rocketGloveIcon = AssetManager.GetTexture("punchtrap_rocketglove_icon");
+        var fatfistIcon = AssetManager.GetTexture("punchtrap_fatfist_icon");
+        var chainsawIcon = AssetManager.GetTexture("punchtrap_chainsaw_icon");
+        var flurryOfBlowsIcon = AssetManager.GetTexture("punchtrap_flurryofblows_icon");
+        var quickJabsIcon = AssetManager.GetTexture("punchtrap_quickjabs_icon");
 
         var megaPunch = new TowerUpgradeNode(Upgrade.MegaPunch.ToString(),
-            upgradeIcon: nukeIcon, price: 75);
+            upgradeIcon: megaPunchIcon, price: 75);
         var rocketGlove = new TowerUpgradeNode(Upgrade.RocketGlove.ToString(),
-            upgradeIcon: nukeIcon, price: 80);
+            upgradeIcon: rocketGloveIcon, price: 80);
         var fatFist = new TowerUpgradeNode(Upgrade.FatFist.ToString(),
-            upgradeIcon: nukeIcon, price: 10,leftChild: megaPunch,rightChild: rocketGlove);
+            upgradeIcon: fatfistIcon, price: 10,leftChild: megaPunch,rightChild: rocketGlove);
 
         var chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(),
-            upgradeIcon: nukeIcon, price: 70);
+            upgradeIcon: chainsawIcon, price: 70);
         var flurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(),
-            upgradeIcon: nukeIcon, price: 80);
+            upgradeIcon: flurryOfBlowsIcon, price: 80);
         var quickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(),
-            upgradeIcon: nukeIcon, price: 10,leftChild: flurryOfBlows, rightChild: chainsaw);
+            upgradeIcon: quickJabsIcon, price: 10,leftChild: flurryOfBlows, rightChild: chainsaw);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(),
             upgradeIcon: null, price: 0, parent: null, leftChild: fatFist, rightChild: quickJabs);
@@ -84,6 +95,23 @@ class PunchTrap : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
+        if (InputSystem.IsKeyTapped(Keys.Up))
+        {
+            UpdatePosition(-Vector2.UnitY);
+        }
+        else if (InputSystem.IsKeyTapped(Keys.Down))
+        {
+            UpdatePosition(Vector2.UnitY);
+        }
+        else if (InputSystem.IsKeyTapped(Keys.Left))
+        {
+            UpdatePosition(-Vector2.UnitX);
+        }
+        else if (InputSystem.IsKeyTapped(Keys.Right))
+        {
+            UpdatePosition(Vector2.UnitX);
+        }
+
         if (towerCore.Health.CurrentHealth <= 0) return;
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -106,7 +134,7 @@ class PunchTrap : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Chainsaw.ToString())
         {
-            HandleBasicShots(deltaTime);
+            HandleChainsaw(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
@@ -137,7 +165,48 @@ class PunchTrap : Entity, ITower
         {
             Shoot();
             actionTimer = 0f;
-            //AnimationSystem!.OneShotAnimationState("fire");
+            AnimationSystem!.OneShotAnimationState("fire");
+        }
+    }
+
+    private void HandleChainsaw(float deltaTime)
+    {
+        var actionInterval = 1f / actionsPerSecond;
+
+        actionTimer += deltaTime;
+
+        if (chainsawStartTimer > 0)
+        {
+            chainsawStartTimer -= deltaTime;
+
+            if (chainsawStartTimer <= 0)
+            {
+                AnimationSystem!.ToggleAnimationState("firing");
+            }
+        }
+
+        if (actionTimer >= actionInterval && DetectEnemies(baseTileRange))
+        {
+            Shoot();
+            actionTimer = 0f;
+            
+            if (chainsawTurnoffTimer <= 0)
+            {
+                AnimationSystem!.OneShotAnimationState("fire");
+                var animation = AnimationSystem.CurrentAnimationData;
+                chainsawStartTimer = animation.FrameCount * animation.DelaySeconds;
+            }
+
+            chainsawTurnoffTimer = chainsawTurnoffDelay;
+        }
+        else if (chainsawTurnoffTimer > 0)
+        {
+            chainsawTurnoffTimer -= deltaTime;
+
+            if (chainsawTurnoffTimer <= 0)
+            {
+                AnimationSystem!.ToggleAnimationState(null);
+            }
         }
     }
 
@@ -157,7 +226,7 @@ class PunchTrap : Entity, ITower
         {
             Shoot();
             actionTimer = 0f;
-            //AnimationSystem!.OneShotAnimationState("fire");
+            AnimationSystem!.OneShotAnimationState("fire");
         }
     }
 
@@ -198,7 +267,7 @@ class PunchTrap : Entity, ITower
             rocket.Damage = damage;
             rocket.ExplosionTileRadius = 3;
             actionTimer = 0f;
-            //AnimationSystem!.OneShotAnimationState("fire");
+            AnimationSystem!.OneShotAnimationState("fire");
         }
     }
     
@@ -224,7 +293,7 @@ class PunchTrap : Entity, ITower
 
     public static AnimationSystem.AnimationData GetUnupgradedBaseAnimationData()
     {
-        var sprite = AssetManager.GetTexture("punchtrap_base");
+        var sprite = AssetManager.GetTexture("punchtrap_base_idle");
 
         return new AnimationSystem.AnimationData
         (
@@ -269,34 +338,101 @@ class PunchTrap : Entity, ITower
 
     public void UpgradeTower(TowerUpgradeNode newUpgrade)
     {
+        Texture2D newIdleTexture;
+        Texture2D newFireTexture;
+        var newIdleFrameCount = 1;
+        var newFireFrameCount = 1;
+
         if (newUpgrade.Name == Upgrade.FatFist.ToString())
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_fatfist_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_fatfist_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 9;
+
             damage += 10;
             knockback *= 1.5f;
+            UpdatePosition(-Vector2.One);
         }
         else if (newUpgrade.Name == Upgrade.QuickJabs.ToString())
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_quickjabs_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_quickjabs_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 7;
+
             actionsPerSecond = 0.5f;
         }
         else if (newUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_fatfist_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_megapunch_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 6;
+
             damage += 20;
             knockback *= 1.5f;
         }
         else if (newUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_rocketglove_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_rocketglove_fire");
+            newIdleFrameCount = 2;
+            newFireFrameCount = 7;
+
             damage = 60;
+            UpdatePosition(-Vector2.One);
         }
         else if (newUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_base_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_flurryofblows_fire");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 4;
+
             actionsPerSecond = 2f;
         }
-        else if (newUpgrade.Name == Upgrade.Chainsaw.ToString())
+        else
         {
+            newIdleTexture = AssetManager.GetTexture("punchtrap_chainsaw_idle");
+            newFireTexture = AssetManager.GetTexture("punchtrap_chainsaw_fire");
+            var firingTexture = AssetManager.GetTexture("punchtrap_chainsaw_firing");
+            newIdleFrameCount = 1;
+            newFireFrameCount = 3;
+
+            var firingAnimation = new AnimationSystem.AnimationData
+            (
+                texture: firingTexture,
+                frameCount: 2,
+                frameSize: new Vector2(firingTexture.Width / 2, firingTexture.Height),
+                delaySeconds: 0.05f
+            );
+
+            AnimationSystem!.AddAnimationState("firing", firingAnimation);
+
             damage = 10;
             actionsPerSecond = 10f;
             knockback = 0;
         }
+
+        var newIdleAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newIdleTexture,
+            frameCount: newIdleFrameCount,
+            frameSize: new Vector2(newIdleTexture.Width / newIdleFrameCount, newIdleTexture.Height),
+            delaySeconds: 0.1f
+        );
+
+        var newFireAnimation = new AnimationSystem.AnimationData
+        (
+            texture: newFireTexture,
+            frameCount: newFireFrameCount,
+            frameSize: new Vector2(newFireTexture.Width / newFireFrameCount, newFireTexture.Height),
+            delaySeconds: 0.07f
+        );
+
+        AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
+        AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
 
     public static float GetBaseRange() => baseTileRange;
