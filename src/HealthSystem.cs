@@ -8,6 +8,7 @@ public class HealthSystem
     public Entity Owner;
     public int CurrentHealth { get; private set; }
     public int MaxHealth { get; private set; }
+    public bool IsRepairable = false;
 
     public delegate void DiedHandler(Entity diedEntity);
     public event DiedHandler Died;
@@ -49,6 +50,7 @@ public class HealthSystem
     public void DrawHealthBar(Vector2 worldPosition)
     {
         if (CurrentHealth >= MaxHealth) return;
+        if (CurrentHealth <= 0 && !IsRepairable) return;
 
         var bgColor = CurrentHealth <= 0 ? repairBackgroundBarColor : normalBackgroundBarColor;
         var fgColor = CurrentHealth <= 0 ? repairForegroundBarColor : normalForegroundBarColor;
@@ -76,7 +78,7 @@ public class HealthSystem
             origin: Vector2.Zero,
             scale: new Vector2(healthBarWidth, 1),
             effects: SpriteEffects.None,
-            layerDepth: 0.7f);
+            layerDepth: 0.4f);
 
         fgColor = healthBarFlashTimer > 0 ? Color.White : fgColor;
 
@@ -89,7 +91,7 @@ public class HealthSystem
             origin: Vector2.Zero,
             scale: new Vector2(foregroundBarWidth, 1),
             effects: SpriteEffects.None,
-            layerDepth: 0.6f);
+            layerDepth: 0.3f);
     }
 
     public void TakeDamage(Entity source, int amount)

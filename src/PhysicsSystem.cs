@@ -42,6 +42,17 @@ public class PhysicsSystem
 
         if (Collision.IsEntityInTerrain(entity, game.Terrain, out var collidedTilePositions))
         {
+            foreach (var tilePosWithLevelOffset in collidedTilePositions)
+            {
+                if (!game.Terrain.HeavyTileExistsAtPosition(tilePosWithLevelOffset)) continue;
+
+                if (entity is Enemy)
+                {
+                    var enemyEntity = (Enemy)entity;
+                    game.Terrain.DamageHeavyTile(tilePosWithLevelOffset, entity, enemyEntity.AttackDamage);
+                }
+            }
+
             ResolveEntityTerrainCollision(entity, collidedTilePositions);
         }
 
