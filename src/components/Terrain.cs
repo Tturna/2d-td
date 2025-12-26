@@ -98,14 +98,14 @@ public class Terrain : DrawableGameComponent
 
                 while (line is not null)
                 {
-                    String[] ids = line.Split(",");
+                    string[] ids = line.Split(",");
 
                     for (int col = 0; col < ids.Length; col++)
                     {
                         if (!int.TryParse(ids[col], out int tileId))
                         {
                             throw new InvalidDataException(
-                                $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {LevelPath}. Expected an integer."
+                                $"Invalid value '{ids[col]}' at row {row}, column {col + 1} in {BgLevelPath}. Expected an integer."
                             );
                         }
 
