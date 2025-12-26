@@ -76,7 +76,7 @@ public class HealthSystem
             origin: Vector2.Zero,
             scale: new Vector2(healthBarWidth, 1),
             effects: SpriteEffects.None,
-            layerDepth: 0.7f);
+            layerDepth: 0.4f);
 
         fgColor = healthBarFlashTimer > 0 ? Color.White : fgColor;
 
@@ -89,7 +89,7 @@ public class HealthSystem
             origin: Vector2.Zero,
             scale: new Vector2(foregroundBarWidth, 1),
             effects: SpriteEffects.None,
-            layerDepth: 0.6f);
+            layerDepth: 0.3f);
     }
 
     public void TakeDamage(Entity source, int amount)

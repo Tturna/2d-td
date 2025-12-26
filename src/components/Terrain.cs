@@ -6,8 +6,21 @@ using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
+#nullable enable
 public class Terrain : DrawableGameComponent
 {
+    private struct HeavyTile
+    {
+        public int TileId;
+        public HealthSystem? Health;
+        public float DamageDelayTimer;
+
+        public HeavyTile(int tileId)
+        {
+            TileId = tileId;
+        }
+    }
+
     private Game1 game;
     private readonly Tileset TerrainTileset;
     private readonly Tileset BackgroundTileset;
@@ -19,8 +32,9 @@ public class Terrain : DrawableGameComponent
     private Dictionary<Vector2, int> tiles = new();
     private Dictionary<Vector2, int> backgroundTiles = new();
     private Dictionary<Vector2, int> lightTiles = new();
-    private Dictionary<Vector2, int> heavyTiles = new();
+    private Dictionary<Vector2, HeavyTile> heavyTiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
+    private float tileDamageDelay = 0.5f;
 
     private Vector2 topRightMostTile;
 
@@ -57,7 +71,7 @@ public class Terrain : DrawableGameComponent
         // it's not needed anymore.
         using (var levelReader = new StreamReader(LevelPath))
         {
-            string line = levelReader.ReadLine();
+            string? line = levelReader.ReadLine();
             var row = 0;
 
             while (line is not null)
@@ -93,7 +107,7 @@ public class Terrain : DrawableGameComponent
         {
             using (var bgLevelReader = new StreamReader(BgLevelPath))
             {
-                string line = bgLevelReader.ReadLine();
+                string? line = bgLevelReader.ReadLine();
                 var row = 0;
 
                 while (line is not null)
@@ -126,12 +140,33 @@ public class Terrain : DrawableGameComponent
         }
     }
 
+    public override void Update(GameTime gameTime)
+    {
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        foreach (var (pos, tile) in heavyTiles)
+        {
+            if (tile.Health is null) continue;
+
+            if (tile.DamageDelayTimer > 0)
+            {
+                var copy = tile;
+                copy.DamageDelayTimer -= deltaTime;
+                heavyTiles[pos] = copy;
+            }
+
+            tile.Health.UpdateHealthBarGraphics(deltaTime);
+        }
+
+        base.Update(gameTime);
+    }
+
     public override void Draw(GameTime gameTime)
     {
         foreach ((Vector2 tilePosition, int tileId) in tiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            TerrainTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.9f);
+            TerrainTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.98f);
         }
 
         foreach ((Vector2 tilePosition, int tileId) in backgroundTiles)
@@ -143,13 +178,20 @@ public class Terrain : DrawableGameComponent
         foreach ((Vector2 tilePosition, int tileId) in lightTiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            PlayerLightTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.8f);
+            PlayerLightTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.97f);
         }
 
-        foreach ((Vector2 tilePosition, int tileId) in heavyTiles)
+        foreach ((Vector2 tilePosition, HeavyTile tile) in heavyTiles)
         {
             var worldPosition = tilePosition * Grid.TileLength + levelOffset;
-            PlayerHeavyTileset.DrawTile(game.SpriteBatch, tileId, worldPosition, depth: 0.7f);
+            PlayerHeavyTileset.DrawTile(game.SpriteBatch, tile.TileId, worldPosition, depth: 0.96f);
+        }
+
+        foreach (var (pos, tile) in heavyTiles)
+        {
+            if (tile.Health is null) continue;
+
+            tile.Health.DrawHealthBar(Grid.TileToWorldPosition(pos) + levelOffset + new Vector2(Grid.TileLength / 2, -2));
         }
     }
 
@@ -188,7 +230,7 @@ public class Terrain : DrawableGameComponent
         }
 
         var tilePosition = Grid.WorldToTilePosition(worldPosition - levelOffset);
-        heavyTiles[tilePosition] = 36;
+        heavyTiles[tilePosition] = new HeavyTile(36);
 
         return true;
     }
@@ -308,9 +350,9 @@ public class Terrain : DrawableGameComponent
         return tiles.Keys.First() * Grid.TileLength + levelOffset;
     }
 
-    public bool SolidTileExistsAtPosition(Vector2 worldPosition)
+    public bool SolidTileExistsAtPosition(Vector2 tilePosWithLevelOffset)
     {
-        var tilePosition = worldPosition - levelOffset / Grid.TileLength;
+        var tilePosition = tilePosWithLevelOffset - levelOffset / Grid.TileLength;
 
         return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition);
     }
@@ -323,5 +365,62 @@ public class Terrain : DrawableGameComponent
     public bool AnyTileExistsAtTilePosition(Vector2 tilePosition)
     {
         return tiles.ContainsKey(tilePosition) || heavyTiles.ContainsKey(tilePosition) || lightTiles.ContainsKey(tilePosition);
+    }
+
+    public bool HeavyTileExistsAtPosition(Vector2 tilePosWithLevelOffset)
+    {
+        var tilePosition = tilePosWithLevelOffset - levelOffset / Grid.TileLength;
+
+        return heavyTiles.ContainsKey(tilePosition);
+    }
+
+    public bool HeavyTileIsIntactAtPosition(Vector2 tilePosWithLevelOffset)
+    {
+        var tilePosition = tilePosWithLevelOffset - levelOffset / Grid.TileLength;
+
+        return heavyTiles.ContainsKey(tilePosition) &&
+            (heavyTiles[tilePosition].Health is null ||
+             heavyTiles[tilePosition].Health!.CurrentHealth > 0);
+    }
+
+    public bool CollisionTileIsActiveAtPosition(Vector2 tilePosWithLevelOffset)
+    {
+        if (SolidTileExistsAtPosition(tilePosWithLevelOffset))
+        {
+            if (HeavyTileExistsAtPosition(tilePosWithLevelOffset))
+            {
+                return HeavyTileIsIntactAtPosition(tilePosWithLevelOffset);
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void DamageHeavyTile(Vector2 tilePosWithLevelOffset, Entity source, int damage)
+    {
+        var tilePosition = tilePosWithLevelOffset - levelOffset / Grid.TileLength;
+        var tile = heavyTiles[tilePosition];
+
+        if (tile.DamageDelayTimer > 0) return;
+
+        if (tile.Health is null)
+        {
+            tile.Health = new(owner: null, initialHealth: 50);
+        }
+
+        tile.Health.TakeDamage(source, damage);
+        tile.DamageDelayTimer = tileDamageDelay;
+        heavyTiles[tilePosition] = tile;
+
+        var tileWorldPosition = Grid.TileToWorldPosition(tilePosition) + levelOffset;
+
+        UIComponent.SpawnFlyoutText(damage.ToString(), tileWorldPosition, -Vector2.UnitY * 25f,
+            1f, Color.White);
     }
 }
