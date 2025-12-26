@@ -16,7 +16,7 @@ public class Tileset
         this.tilesetHeight = tilesetHeight;
     }
 
-    public void DrawTile(SpriteBatch spriteBatch, int tileId, Vector2 position)
+    public void DrawTile(SpriteBatch spriteBatch, int tileId, Vector2 position, float depth = 1f)
     {
         (int yPos, int xPos) = int.DivRem(tileId, tilesetWidth);
 
@@ -26,6 +26,11 @@ public class Tileset
         spriteBatch.Draw(texture,
                 position,
                 sourceRectangle: sourceRect,
-                Color.White);
+                Color.White,
+                rotation: 0,
+                origin: default,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: depth);
     }
 }
