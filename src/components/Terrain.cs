@@ -308,7 +308,7 @@ public class Terrain : DrawableGameComponent
     {
         checkedTiles.Add(tilePosition);
 
-        if (!AnyTileExistsAtTilePosition(tilePosition+new Vector2(0, 1)) && !AnyTileExistsAtTilePosition(tilePosition + new Vector2(0, -1)))
+        if (!AnyTileExistsAtTilePosition(tilePosition + new Vector2(0, 1)) && !AnyTileExistsAtTilePosition(tilePosition + new Vector2(0, -1)))
         {
             int stableLeft = 0;
             int stableRight = 0;
