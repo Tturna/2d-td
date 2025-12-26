@@ -138,6 +138,14 @@ public class Terrain : DrawableGameComponent
         {
             Console.WriteLine($"Background tile file ({BgLevelPath}) not found.");
         }
+
+        WaveSystem.WaveEnded += () =>
+        {
+            foreach (var (pos, tile) in heavyTiles)
+            {
+                tile.Health?.ResetHealth();
+            }
+        };
     }
 
     public override void Update(GameTime gameTime)
