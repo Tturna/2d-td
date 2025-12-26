@@ -94,15 +94,15 @@ public class UIComponent : DrawableGameComponent
 
         heavyTileBuyButton.ButtonPressed += () => 
         {
-            BuildingSystem.SelectTile(game.Terrain.getPlayerHeavyTileset());
+            BuildingSystem.SelectTile(game.Terrain.GetPlayerHeavyTileset());
             drawTileHologram = true; 
-            selectedTileset = game.Terrain.getPlayerHeavyTileset(); 
+            selectedTileset = game.Terrain.GetPlayerHeavyTileset(); 
         };
         lightTileBuyButton.ButtonPressed += () => 
         {
-            BuildingSystem.SelectTile(game.Terrain.getPlayerLightTileset());
+            BuildingSystem.SelectTile(game.Terrain.GetPlayerLightTileset());
             drawTileHologram = true; 
-            selectedTileset = game.Terrain.getPlayerLightTileset(); 
+            selectedTileset = game.Terrain.GetPlayerLightTileset(); 
         };
     }
     private void CreateTowerBuyButton<T>(BuildingSystem.TowerType towerType) where T : ITower
@@ -316,7 +316,7 @@ public class UIComponent : DrawableGameComponent
         // Game1 already creates a new sprite batch for this function call.
         if(drawTileHologram)
         {
-            var Sprite = (selectedTileset == game.Terrain.getPlayerHeavyTileset()) ? 
+            var Sprite = (selectedTileset == game.Terrain.GetPlayerHeavyTileset()) ? 
                 AssetManager.GetTexture("heavytilesingle") : 
                 AssetManager.GetTexture("lighttilesingle");
 
