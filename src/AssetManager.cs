@@ -301,7 +301,7 @@ public static class AssetManager
         LoadSound("menuClick", "sound/click1");
         LoadSound("punch", "sound/punch1");
         LoadSound("hqDamage", "sound/damage1");
-        LoadSound("laser", "sound/laser1");
+        LoadSound("laser", "sound/turret/laser1");
         LoadSound("coin", "sound/coin");
         LoadSound("enemyHit1", "sound/enemy/enemyhit1");
         LoadSound("enemyHit2", "sound/enemy/enemyhit2");
