@@ -365,13 +365,14 @@ class PunchTrap : Entity, ITower
         }
         else if (newUpgrade.Name == Upgrade.MegaPunch.ToString())
         {
-            newIdleTexture = AssetManager.GetTexture("punchtrap_fatfist_idle");
+            newIdleTexture = AssetManager.GetTexture("punchtrap_megapunch_idle");
             newFireTexture = AssetManager.GetTexture("punchtrap_megapunch_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 6;
 
             damage += 20;
             knockback *= 1.5f;
+            UpdatePosition(new Vector2(-4, -2));
         }
         else if (newUpgrade.Name == Upgrade.RocketGlove.ToString())
         {
@@ -385,12 +386,13 @@ class PunchTrap : Entity, ITower
         }
         else if (newUpgrade.Name == Upgrade.FlurryOfBlows.ToString())
         {
-            newIdleTexture = AssetManager.GetTexture("punchtrap_base_idle");
+            newIdleTexture = AssetManager.GetTexture("punchtrap_flurryofblows_idle");
             newFireTexture = AssetManager.GetTexture("punchtrap_flurryofblows_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 4;
 
             actionsPerSecond = 2f;
+            UpdatePosition(new Vector2(-1, -3));
         }
         else
         {

@@ -204,6 +204,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Enemies/Bouncer/bouncer_body.png
 
+#begin sprites/Enemies/Chunk/chunk_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Enemies/Chunk/chunk_body.png
+
 #begin sprites/Enemies/Meganode/meganode_body.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2172,6 +2184,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png
 
+#begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle.png
+
 #begin sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2183,6 +2207,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
+
+#begin sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate.png
 
 #begin sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png
 /importer:TextureImporter

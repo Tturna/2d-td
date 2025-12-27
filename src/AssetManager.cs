@@ -204,7 +204,9 @@ public static class AssetManager
         LoadTexture("punchtrap_chainsaw_firing", "sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running");
         LoadTexture("punchtrap_fatfist_idle", "sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle");
         LoadTexture("punchtrap_fatfist_fire", "sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire");
+        LoadTexture("punchtrap_flurryofblows_idle", "sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle");
         LoadTexture("punchtrap_flurryofblows_fire", "sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire");
+        LoadTexture("punchtrap_megapunch_idle", "sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate");
         LoadTexture("punchtrap_megapunch_fire", "sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged");
         LoadTexture("punchtrap_quickjabs_idle", "sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle");
         LoadTexture("punchtrap_quickjabs_fire", "sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire");
