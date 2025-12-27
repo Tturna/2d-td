@@ -22,6 +22,7 @@ public class Enemy : Entity, IKnockable
     private Vector2 previousMotionCheckPosition;
     private float motionCheckInterval = 0.1f;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
+    private Random random = new();
 
     private static Texture2D explosionSprite = AssetManager.GetTexture("death_explosion_small");
     private AnimationSystem.AnimationData deathExplosionAnimation = new AnimationSystem.AnimationData(
@@ -188,7 +189,11 @@ public class Enemy : Entity, IKnockable
         StretchImpact(new Vector2(1.8f, 0.4f), 0.1f);
         ParticleSystem.PlayBotchunkExplosion(Position + Size / 2);
         UIComponent.SpawnFlyoutText(amount.ToString(), Position - Vector2.UnitY * (Size.Y + 2), -Vector2.UnitY * 12, lifetime: 1f,
-            color: Color.FromNonPremultiplied(new Vector4(249f/255f, 72f/255f, 88f/255f, 1f)));
+            color: Color.FromNonPremultiplied(new Vector4(249f / 255f, 72f / 255f, 88f / 255f, 1f)));
+
+        var randomIndex = random.Next(0, 3);
+        var hitSounds = new string[3] { "enemyHit1", "enemyHit2", "enemyHit3" };
+        SoundSystem.PlaySound(hitSounds[randomIndex]);
     }
 
     public override void Destroy()

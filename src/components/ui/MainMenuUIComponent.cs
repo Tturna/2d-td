@@ -35,6 +35,8 @@ public class MainMenuUIComponent : DrawableGameComponent
     {
         if (InputSystem.IsKeyTapped(Keys.Escape))
         {
+            SoundSystem.PlaySound("menuClick");
+
             if (menuScreenStack.Count == 0)
             {
                 if (settingsScreen is not null)
@@ -122,14 +124,12 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         playButton.ButtonPressed += () => LoadZoneSelector();
         exitButton.ButtonPressed += () => game.Exit();
-        settingsButton.ButtonPressed += () =>
-        {
-            settingsScreen = new SettingsScreen(game, uiEntities);
-        };
+        settingsButton.ButtonPressed += () => settingsScreen = new SettingsScreen(game, uiEntities);
     }
 
     private void LoadZoneSelector()
     {
+        SoundSystem.PlaySound("menuClick");
         ClearUI();
 
         var halfScreenWidth = game.NativeScreenWidth / 2;
@@ -189,7 +189,11 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
         var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
-        backButton.ButtonPressed += () => LoadMainMenu();
+        backButton.ButtonPressed += () =>
+        {
+            LoadMainMenu();
+            SoundSystem.PlaySound("menuClick");
+        };
 
         var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
         backText.SetPosition(backButtonPos);
@@ -197,6 +201,7 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     private void LoadLevelSelector(int selectedZone)
     {
+        SoundSystem.PlaySound("menuClick");
         ClearUI();
 
         var halfScreenWidth = game.NativeScreenWidth / 2;
@@ -258,6 +263,7 @@ public class MainMenuUIComponent : DrawableGameComponent
 
     private void LoadLevel(int zone, int level)
     {
+        SoundSystem.PlaySound("menuClick");
         game.SetCurrentZoneAndLevel(zone, level);
         SceneManager.LoadGame();
     }

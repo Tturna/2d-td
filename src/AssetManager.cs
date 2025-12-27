@@ -296,6 +296,18 @@ public static class AssetManager
         LoadSound("placeDown", "sound/turret/placeDown"); // temp
         LoadSound("shoot", "sound/turret/shoot"); // temp
         LoadSound("upgrade", "sound/turret/upgrade"); // temp
+        LoadSound("sell", "sound/turret/sell");
+        LoadSound("railgunfire", "sound/turret/railgunfire");
+        LoadSound("mortarfire", "sound/turret/mortarfire");
+        LoadSound("menuClick", "sound/click1");
+        LoadSound("punch", "sound/punch1");
+        LoadSound("hqDamage", "sound/damage1");
+        LoadSound("laser", "sound/laser1");
+        LoadSound("coin", "sound/coin");
+        LoadSound("enemyHit1", "sound/enemy/enemyhit1");
+        LoadSound("enemyHit2", "sound/enemy/enemyhit2");
+        LoadSound("enemyHit3", "sound/enemy/enemyhit3");
+        LoadSound("alarm", "sound/alarm");
     }
 
     public static Texture2D GetTexture(string name)

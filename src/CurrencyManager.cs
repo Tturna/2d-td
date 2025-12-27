@@ -83,6 +83,7 @@ public static class CurrencyManager
         var priceDivisor = isBroken ? 4 : 2;
         var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / priceDivisor);
         AddBalance(returnScrap);
+        SoundSystem.PlaySound("sell");
 
         return returnScrap;
     }
@@ -102,5 +103,6 @@ public static class CurrencyManager
     {
         Balance += amount;
         CurrencyAdded?.Invoke(amount);
+        SoundSystem.PlaySound("coin");
     }
 }

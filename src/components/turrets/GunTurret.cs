@@ -231,7 +231,11 @@ class GunTurret : Entity, ITower
         photonCannonTargetDistance = 0f;
         photonCannonBeam!.Scale = Vector2.Zero;
 
-        if (closestEnemy is null) return;
+        if (closestEnemy is null)
+        {
+            SoundSystem.ToggleSound("laser", false);
+            return;
+        }
 
         var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
@@ -244,6 +248,7 @@ class GunTurret : Entity, ITower
             photonCannonTargetDistance = diff.Length() - muzzleOffsetFactor;
             photonCannonBeam.SetPosition(turretHeadAxisCenter + direction * muzzleOffsetFactor);
             photonCannonBeam.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
+            SoundSystem.ToggleSound("laser", true);
 
             if (actionTimer >= actionInterval)
             {

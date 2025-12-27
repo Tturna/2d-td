@@ -56,7 +56,13 @@ public class SettingsScreen : UIEntity
 
         var backButtonPosition = Position + new Vector2(margin, Size.Y - buttonSprite.Height - margin);
         backButton = new UIEntity(game, uiEntities, backButtonPosition, buttonAnimationData);
-        backButton.ButtonPressed += () => Destroy();
+        backButton.ButtonPressed += () =>
+        {
+            Destroy();
+            SoundSystem.PlaySound("menuClick");
+        };
+
+        SoundSystem.PlaySound("menuClick");
     }
 
     public override void Destroy()

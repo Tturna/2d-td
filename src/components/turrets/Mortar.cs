@@ -210,6 +210,7 @@ public class Mortar : Entity, ITower
 
         AnimationSystem.OneShotAnimationState("fire");
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
+        SoundSystem.PlaySound("mortarfire");
     }
 
     private void HandleBouncingBomb(float deltaTime)
@@ -232,6 +233,7 @@ public class Mortar : Entity, ITower
 
         AnimationSystem.OneShotAnimationState("fire");
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
+        SoundSystem.PlaySound("mortarfire");
     }
 
     private void HandleMissileSilo(float deltaTime)
@@ -261,6 +263,7 @@ public class Mortar : Entity, ITower
 
         AnimationSystem.OneShotAnimationState("fire");
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
+        SoundSystem.PlaySound("mortarfire");
     }
 
     private void HandleHellrain(float deltaTime)
@@ -290,6 +293,7 @@ public class Mortar : Entity, ITower
 
         AnimationSystem.OneShotAnimationState("fire");
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
+        SoundSystem.PlaySound("mortarfire");
     }
 
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
