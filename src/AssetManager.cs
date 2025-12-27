@@ -296,6 +296,7 @@ public static class AssetManager
         LoadSound("shoot", "sound/turret/shoot"); // temp
         LoadSound("upgrade", "sound/turret/upgrade"); // temp
         LoadSound("sell", "sound/turret/sell");
+        LoadSound("railgunfire", "sound/turret/railgunfire");
         LoadSound("menuClick", "sound/click1");
         LoadSound("punch", "sound/punch1");
         LoadSound("hqDamage", "sound/damage1");
