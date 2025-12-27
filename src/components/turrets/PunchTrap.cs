@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using _2d_td.interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace _2d_td;
 
@@ -97,23 +96,6 @@ class PunchTrap : Entity, ITower
 
     public override void Update(GameTime gameTime)
     {
-        if (InputSystem.IsKeyTapped(Keys.Up))
-        {
-            UpdatePosition(-Vector2.UnitY);
-        }
-        else if (InputSystem.IsKeyTapped(Keys.Down))
-        {
-            UpdatePosition(Vector2.UnitY);
-        }
-        else if (InputSystem.IsKeyTapped(Keys.Left))
-        {
-            UpdatePosition(-Vector2.UnitX);
-        }
-        else if (InputSystem.IsKeyTapped(Keys.Right))
-        {
-            UpdatePosition(Vector2.UnitX);
-        }
-
         if (towerCore.Health.CurrentHealth <= 0) return;
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
