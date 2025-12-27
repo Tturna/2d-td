@@ -300,6 +300,9 @@ public static class AssetManager
         LoadSound("hqDamage", "sound/damage1");
         LoadSound("laser", "sound/laser1");
         LoadSound("coin", "sound/coin");
+        LoadSound("enemyHit1", "sound/enemy/enemyhit1");
+        LoadSound("enemyHit2", "sound/enemy/enemyhit2");
+        LoadSound("enemyHit3", "sound/enemy/enemyhit3");
     }
 
     public static Texture2D GetTexture(string name)

@@ -54,6 +54,24 @@
 /processorParam:Quality=Best
 /build:sound/damage1.mp3
 
+#begin sound/enemy/enemyhit1.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/enemy/enemyhit1.mp3
+
+#begin sound/enemy/enemyhit2.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/enemy/enemyhit2.mp3
+
+#begin sound/enemy/enemyhit3.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/enemy/enemyhit3.mp3
+
 #begin sound/explosion/explosion.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
