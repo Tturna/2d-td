@@ -10,8 +10,7 @@
         "formations":
         [
             "easyFormation1",
-            "easyFormation3",
-            "easyFormation4"
+            "easyFormation2"
         ],
         "maxFormations": 4
     },
@@ -23,14 +22,15 @@
             "easyFormation3",
             "easyFormation4"
         ],
-        "maxFormations": 4
+        "maxFormations": 5
     },
     {
         "formations":
         [
             "easyFormation1",
             "easyFormation2",
-            "easyFormation3"
+            "easyFormation3",
+            "easyFormation4"
         ],
         "maxFormations": 6
     },
@@ -39,9 +39,10 @@
         [
             "easyFormation1",
             "easyFormation2",
-            "easyFormation3"
+            "easyFormation3",
+            "easyFormation4"
         ],
-        "maxFormations": 7
+        "maxFormations": 8
     },
 
 
@@ -51,7 +52,8 @@
         [
             "easyFormation1",
             "easyFormation2",
-            "easyFormation3"
+            "easyFormation3",
+            "easyFormation4"
         ],
         "maxFormations": 6
     },
@@ -62,7 +64,7 @@
             "easyFormation1",
             "easyFormation2"
         ],
-        "maxFormations": 5
+        "maxFormations": 7
     },
     {
         "formations":
@@ -71,7 +73,7 @@
             "mediumFormation2",
             "easyFormation2"
         ],
-        "maxFormations": 6
+        "maxFormations": 7
     },
     {
         "formations":
@@ -81,7 +83,7 @@
             "easyFormation2",
             "easyFormation3"
         ],
-        "maxFormations": 6
+        "maxFormations": 8
     },
     {
         "formations":
@@ -92,10 +94,8 @@
             "easyFormation2",
             "easyFormation3"
         ],
-        "maxFormations": 7
+        "maxFormations": 10
     },
-
-
 
     {
         "formations":
@@ -117,7 +117,7 @@
             "mediumFormation3",
             "easyFormation1"
         ],
-        "maxFormations": 9
+        "maxFormations": 8
     },
     {
         "formations":
@@ -128,7 +128,7 @@
             "easyFormation2",
             "hardFormation1"
         ],
-        "maxFormations": 8
+        "maxFormations": 9
     },
     {
         "formations":
@@ -147,9 +147,10 @@
             "hardFormation1",
             "mediumFormation3",
             "easyFormation2",
-            "hardFormation3"
+            "hardFormation3",
+            "easyFormation1"
         ],
-        "maxFormations": 8
+        "maxFormations": 12
     },
 
 
@@ -163,7 +164,7 @@
             "mediumFormation1",
             "hardFormation3"
         ],
-        "maxFormations": 9
+        "maxFormations": 10
     },
     {
         "formations":
@@ -184,7 +185,7 @@
             "hardFormation2",
             "easyFormation2"
         ],
-        "maxFormations": 9
+        "maxFormations": 11
     },
     {
         "formations":
@@ -195,7 +196,7 @@
             "easyFormation3",
             "mediumFormation1"
         ],
-        "maxFormations": 10
+        "maxFormations": 11
     },
     {
         "formations":
@@ -203,9 +204,11 @@
             "hardFormation2",
             "mediumFormation3",
             "bossFormation1",
-            "easyFormation1"
+            "easyFormation1",
+            "mediumFormation2",
+            "hardFormation3"
         ],
-        "maxFormations": 9
+        "maxFormations": 14
     },
 
 
@@ -218,7 +221,7 @@
             "mediumFormation2",
             "hardFormation2"
         ],
-        "maxFormations": 10
+        "maxFormations": 12
     },
     {
         "formations":
@@ -229,7 +232,7 @@
             "easyFormation2",
             "hardFormation1"
         ],
-        "maxFormations": 10
+        "maxFormations": 12
     },
     {
         "formations":
@@ -239,7 +242,7 @@
             "mediumFormation3",
             "easyFormation1"
         ],
-        "maxFormations": 10
+        "maxFormations": 13
     },
     {
         "formations":
@@ -249,7 +252,7 @@
             "mediumFormation3",
             "bossFormation3"
         ],
-        "maxFormations": 10
+        "maxFormations": 13
     },
     {
         "formations":
@@ -259,6 +262,6 @@
             "hardFormation1",
             "bossFormation2"
         ],
-        "maxFormations": 10
+        "maxFormations": 15
     }
 ]

@@ -308,6 +308,11 @@ public static class DebugUtility
         }
     }
 
+    public static bool IsDebugEnabled()
+    {
+        return debugEnabled;
+    }
+
     private static void OnInput(object sender, TextInputEventArgs args)
     {
         var key = args.Key;

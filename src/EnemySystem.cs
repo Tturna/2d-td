@@ -70,7 +70,7 @@ public static class EnemySystem
         {
             Pattern = MovementSystem.MovementPattern.Charge,
             CanWalk = true,
-            WalkSpeed = 0.35f,
+            WalkSpeed = 0.25f,
             JumpForce = 7f
         };
 
@@ -92,6 +92,14 @@ public static class EnemySystem
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.5f;
         enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
+        enemy.KnockbackFactor = 0.5f;
+
+        //temp
+        if(DebugUtility.IsDebugEnabled())
+        {
+            enemy.ignoreSelfDestruct = true;
+        }
+        
 
         EnemyBins.Add(enemy);
 

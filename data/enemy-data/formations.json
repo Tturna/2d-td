@@ -6,7 +6,7 @@
         ],
         "cooldown": 4,
         "weight": 2,
-        "spawnCooldown": 2
+        "spawnCooldown": 1
     },
     {
         "formationName": "easyFormation2",
@@ -16,49 +16,47 @@
         ],
         "cooldown": 4,
         "weight": 1,
-        "spawnCooldown": 2
+        "spawnCooldown": 1
     },
     {
         "formationName": "easyFormation3",
         "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "node", "spawnCount": 1 }
+            { "enemyName": "chunk", "spawnCount": 2 },
+            { "enemyName": "node", "spawnCount": 2 }
         ],
-        "cooldown": 1,
-        "weight": 2,
-        "spawnCooldown": 1
+        "cooldown": 5,
+        "weight": 1,
+        "spawnCooldown": 2
     },
     {
         "formationName": "easyFormation4",
         "enemyGroups": [
-            { "enemyName": "chunk", "spawnCount": 1 }
+            { "enemyName": "chunk", "spawnCount": 3 }
         ],
         "cooldown": 1,
         "weight": 2,
-        "spawnCooldown": 1
+        "spawnCooldown": 2
     },
     {
         "formationName": "mediumFormation1",
         "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "chunk", "spawnCount": 1 },
             { "enemyName": "bouncer", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 2 }
         ],
         "cooldown": 3.5,
         "weight": 1.3,
-        "spawnCooldown": 2
+        "spawnCooldown": 1
     },
     {
         "formationName": "mediumFormation2",
         "enemyGroups": [
             { "enemyName": "bouncer", "spawnCount": 1 },
-            { "enemyName": "node", "spawnCount": 3 }
+            { "enemyName": "node", "spawnCount": 5 }
         ],
         "cooldown": 2,
         "weight": 1.5,
-        "spawnCooldown": 3
+        "spawnCooldown": 1
     },
     {
         "formationName": "mediumFormation3",
@@ -67,64 +65,56 @@
         ],
         "cooldown": 1,
         "weight": 1.2,
-        "spawnCooldown": 4
+        "spawnCooldown": 2
     },
     {
         "formationName": "hardFormation1",
         "enemyGroups": [
+            { "enemyName": "chunk", "spawnCount": 1 },
             { "enemyName": "bouncer", "spawnCount": 2 },
             { "enemyName": "node", "spawnCount": 1 },
             { "enemyName": "bouncer", "spawnCount": 1 }
         ],
         "cooldown": 3,
         "weight": 1,
-        "spawnCooldown": 5
+        "spawnCooldown": 3
     },
     {
         "formationName": "hardFormation2",
         "enemyGroups": [
-            { "enemyName": "bouncer", "spawnCount": 3 }
+            { "enemyName": "bouncer", "spawnCount": 3 },
+            { "enemyName": "node", "spawnCount": 2 }
         ],
         "cooldown": 1,
         "weight": 0.8,
-        "spawnCooldown": 6
+        "spawnCooldown": 2
     },
     {
         "formationName": "hardFormation3",
         "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 2 },
             { "enemyName": "bouncer", "spawnCount": 2 },
             { "enemyName": "node", "spawnCount": 1 },
             { "enemyName": "bouncer", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 0.9,
-        "spawnCooldown": 5
+        "spawnCooldown": 2
     },
     {
         "formationName": "bossFormation1",
         "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "chunk", "spawnCount": 1 },
+            { "enemyName": "node", "spawnCount": 3 },
             { "enemyName": "bouncer", "spawnCount": 1 },
             { "enemyName": "meganode", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 1,
-        "spawnCooldown": 5
+        "spawnCooldown": 3
     },
     {
         "formationName": "bossFormation2",
-        "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 1 },
-            { "enemyName": "bouncer", "spawnCount": 2 },
-            { "enemyName": "meganode", "spawnCount": 1 }
-        ],
-        "cooldown": 1,
-        "weight": 1,
-        "spawnCooldown": 5
-    },
-    {
-        "formationName": "bossFormation3",
         "enemyGroups": [
             { "enemyName": "node", "spawnCount": 3 },
             { "enemyName": "bouncer", "spawnCount": 2 },
@@ -132,6 +122,19 @@
         ],
         "cooldown": 1,
         "weight": 1,
-        "spawnCooldown": 5
+        "spawnCooldown": 2
+    },
+    {
+        "formationName": "bossFormation3",
+        "enemyGroups": [
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "chunk", "spawnCount": 3 },
+            { "enemyName": "node", "spawnCount": 1 },
+            { "enemyName": "meganode", "spawnCount": 2 },
+            { "enemyName": "node", "spawnCount": 1 }
+        ],
+        "cooldown": 1,
+        "weight": 1,
+        "spawnCooldown": 4
     }
 ]

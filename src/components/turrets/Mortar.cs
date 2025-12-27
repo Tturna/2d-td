@@ -9,7 +9,7 @@ namespace _2d_td;
 public class Mortar : Entity, ITower
 {
     private TowerCore towerCore;
-    private float actionsPerSecond = 0.4f;
+    private float actionsPerSecond = 0.3f;
     private float actionTimer;
     private bool isTargeting, canSetTarget;
     private static float changeTargetFireDelay = 1f;
@@ -295,7 +295,7 @@ public class Mortar : Entity, ITower
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
     {
         EffectUtility.Explode(this, shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
-            magnitude: 10f, damage, animation: explosionAnimation);
+            magnitude: 5f, damage, animation: explosionAnimation);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount,
@@ -451,7 +451,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_efficientreload_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
-            actionsPerSecond += 0.4f;
+            actionsPerSecond += 0.5f;
             UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())
@@ -513,7 +513,7 @@ public class Mortar : Entity, ITower
 
             explosionTileRadius += 8;
             damage += 300;
-            actionsPerSecond -= 0.3f;
+            actionsPerSecond -= 0.2f;
             UpdatePosition(-Vector2.UnitY * 7);
         }
 
