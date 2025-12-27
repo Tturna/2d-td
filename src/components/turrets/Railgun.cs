@@ -189,6 +189,7 @@ class Railgun : Entity, ITower
         bullet.RotationOffset = projectileRotationOffset;
 
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
+        SoundSystem.PlaySound("railgunfire");
     }
 
     public bool IsEnemyInLine(int tileRange)

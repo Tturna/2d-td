@@ -260,6 +260,7 @@ public static class WaveSystem
         currentWave = currentZone.waves[CurrentWaveIndex];
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Started");
         waveStarted = true;
+        SoundSystem.PlaySound("alarm");
 
         // starts next wave
     }

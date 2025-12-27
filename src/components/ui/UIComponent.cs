@@ -97,12 +97,14 @@ public class UIComponent : DrawableGameComponent
             BuildingSystem.SelectTile(game.Terrain.GetPlayerHeavyTileset());
             drawTileHologram = true; 
             selectedTileset = game.Terrain.GetPlayerHeavyTileset(); 
+            SoundSystem.PlaySound("menuClick");
         };
         lightTileBuyButton.ButtonPressed += () => 
         {
             BuildingSystem.SelectTile(game.Terrain.GetPlayerLightTileset());
             drawTileHologram = true; 
             selectedTileset = game.Terrain.GetPlayerLightTileset(); 
+            SoundSystem.PlaySound("menuClick");
         };
     }
     private void CreateTowerBuyButton<T>(BuildingSystem.TowerType towerType) where T : ITower
@@ -124,7 +126,11 @@ public class UIComponent : DrawableGameComponent
         var towerButton = new UIEntity(game, uiElements, Vector2.Zero, buttonAnimationData);
         var towerPriceIcon = new UIEntity(game, uiElements, priceIcon);
         var towerPriceText = new UIEntity(game, uiElements, pixelsixFont, CurrencyManager.GetTowerPrice(towerType).ToString());
-        towerButton.ButtonPressed += () => SelectTower<T>();
+        towerButton.ButtonPressed += () =>
+        {
+            SelectTower<T>();
+            SoundSystem.PlaySound("menuClick");
+        };
 
         var towerPieces = T.GetUnupgradedPartIcons(uiElements);
         var baseIcon = towerPieces[0].Key;
@@ -380,6 +386,7 @@ public class UIComponent : DrawableGameComponent
 
     private void TogglePauseMenu(bool isPauseMenuVisible)
     {
+        SoundSystem.PlaySound("menuClick");
         game.SetPauseState(isPauseMenuVisible);
         this.isPauseMenuVisible = isPauseMenuVisible;
 
@@ -450,7 +457,12 @@ public class UIComponent : DrawableGameComponent
                 };
             }
         };
-        exitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
+
+        exitButton.ButtonPressed += () =>
+        {
+            SceneManager.LoadMainMenu();
+            SoundSystem.PlaySound("menuClick");
+        };
 
         var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
         var settingsButtonText = new UIEntity(game, uiElements, pixelsixFont, "Settings");
@@ -546,7 +558,11 @@ public class UIComponent : DrawableGameComponent
 
         var pos = new Vector2(game.NativeScreenWidth - buttonFrameSize.X - 4, 50);
         waveCooldownSkipButton = new UIEntity(game, uiElements, pos, buttonAnimationData);
-        waveCooldownSkipButton.ButtonPressed += () => WaveSystem.SkipWaveCooldown();
+        waveCooldownSkipButton.ButtonPressed += () =>
+        {
+            WaveSystem.SkipWaveCooldown();
+            SoundSystem.PlaySound("menuClick");
+        };
 
         waveCooldownSkipText = new UIEntity(game, uiElements, pixelsixFont, "Skip");
         var skipTextSize = pixelsixFont.MeasureString("Skip");
@@ -589,6 +605,7 @@ public class UIComponent : DrawableGameComponent
             mortarReticle.Destroy();
             mortarReticle = null;
             shouldUpdateMortarReticle = false;
+            SoundSystem.PlaySound("menuClick");
         }
     }
 
