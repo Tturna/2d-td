@@ -74,7 +74,7 @@ public static class EnemySystem
             JumpForce = 7f
         };
 
-        var texture = AssetManager.GetTexture("node");
+        var texture = AssetManager.GetTexture("chunk");
         var frameSize = new Vector2(texture.Width, texture.Height);
 
         var animationData = new AnimationSystem.AnimationData

@@ -243,11 +243,8 @@ public static class WaveSystem
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
+        
         CurrencyManager.AddBalance(WaveSystem.WaveReward);
-        UIComponent.SpawnFlyoutText($"+{WaveSystem.WaveReward}", HQ.Instance.Position, -Vector2.UnitY * 25f,
-        lifetime: 1f, color: Color.White);
-
-        CurrencyManager.AddBalance(20);
         var textVelocity = -Vector2.UnitY * 25f;
         var flyoutScreenPos = new Vector2(game.NativeScreenWidth / 2, game.NativeScreenHeight - 64);
         var flyoutPos = Camera.ScreenToWorldPosition(flyoutScreenPos);

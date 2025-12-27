@@ -16,7 +16,7 @@ class GunTurret : Entity, ITower
 
     private static int baseRange = 12;
     private int realRange;
-    private int baseDamage = 20;
+    private int baseDamage = 25;
     private int realDamage;
     private float actionsPerSecond = 1f;
     private float actionTimer;
