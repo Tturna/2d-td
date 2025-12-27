@@ -248,6 +248,7 @@ class Drone : Entity, ITower
         bullet.BulletLength = 20f;
         bullet.BulletWidth = 8f;
         bullet.Sprite = projectileSprite;
+        SoundSystem.PlaySound("shoot");
     }
 
     private Enemy? GetEnemyInFiringSector()

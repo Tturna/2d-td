@@ -96,6 +96,12 @@
 /processorParam:Quality=Best
 /build:sound/punch1.mp3
 
+#begin sound/turret/mortarfire.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/turret/mortarfire.mp3;sound/turret/mortarfire
+
 #begin sound/turret/placeDown.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
