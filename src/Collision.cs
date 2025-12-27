@@ -86,7 +86,7 @@ public static class Collision
 
                 // Check collision by checking if a tile exists within the grid space
                 // taken by the entity.
-                if (terrain.SolidTileExistsAtPosition(comparedTilePosition))
+                if (terrain.CollisionTileIsActiveAtPosition(comparedTilePosition))
                 {
                     collided.Add(comparedTilePosition);
                 }
@@ -96,7 +96,7 @@ public static class Collision
             var feGridPos = Grid.SnapPositionToGrid(farEnd);
             var feTilePos = Grid.WorldToTilePosition(feGridPos);
 
-            if (terrain.SolidTileExistsAtPosition(feTilePos))
+            if (terrain.CollisionTileIsActiveAtPosition(feTilePos))
             {
                 collided.Add(feTilePos);
             }
@@ -112,7 +112,7 @@ public static class Collision
 
             // Check collision by checking if a tile exists within the grid space
             // taken by the entity.
-            if (terrain.SolidTileExistsAtPosition(comparedTilePosition))
+            if (terrain.CollisionTileIsActiveAtPosition(comparedTilePosition))
             {
                 collided.Add(comparedTilePosition);
             }
@@ -122,7 +122,7 @@ public static class Collision
         var brcGridPos = Grid.SnapPositionToGrid(bottomRightCorner);
         var brcTilePos = Grid.WorldToTilePosition(brcGridPos);
 
-        if (terrain.SolidTileExistsAtPosition(brcTilePos))
+        if (terrain.CollisionTileIsActiveAtPosition(brcTilePos))
         {
             collided.Add(brcTilePos);
         }
@@ -137,7 +137,8 @@ public static class Collision
     {
         var pointGridPosition = Grid.SnapPositionToGrid(point);
         var pointTilePosition = Grid.WorldToTilePosition(pointGridPosition);
-        return terrain.SolidTileExistsAtPosition(pointTilePosition);
+
+        return terrain.CollisionTileIsActiveAtPosition(pointTilePosition);
     }
 
     public static bool IsLineInRectangle(Vector2 linePointA, Vector2 linePointB,

@@ -197,7 +197,29 @@ public static class AssetManager
         LoadTexture("hovership_orbitallaser_icon", "sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon");
         LoadTexture("hovership_ufo_icon", "sprites/Towers/Hovership/hovership_UFO/UFO_icon");
 
-        LoadTexture("punchtrap_base", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
+        LoadTexture("punchtrap_base_idle", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle");
+        LoadTexture("punchtrap_base_fire", "sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire");
+        LoadTexture("punchtrap_chainsaw_idle", "sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle");
+        LoadTexture("punchtrap_chainsaw_fire", "sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire");
+        LoadTexture("punchtrap_chainsaw_firing", "sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running");
+        LoadTexture("punchtrap_fatfist_idle", "sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle");
+        LoadTexture("punchtrap_fatfist_fire", "sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire");
+        LoadTexture("punchtrap_flurryofblows_idle", "sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle");
+        LoadTexture("punchtrap_flurryofblows_fire", "sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire");
+        LoadTexture("punchtrap_megapunch_idle", "sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate");
+        LoadTexture("punchtrap_megapunch_fire", "sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged");
+        LoadTexture("punchtrap_quickjabs_idle", "sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle");
+        LoadTexture("punchtrap_quickjabs_fire", "sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire");
+        LoadTexture("punchtrap_rocketglove_idle", "sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle");
+        LoadTexture("punchtrap_rocketglove_fire", "sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire");
+        LoadTexture("rocketglove", "sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove");
+
+        LoadTexture("punchtrap_chainsaw_icon", "sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon");
+        LoadTexture("punchtrap_fatfist_icon", "sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon");
+        LoadTexture("punchtrap_flurryofblows_icon", "sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon");
+        LoadTexture("punchtrap_megapunch_icon", "sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon");
+        LoadTexture("punchtrap_quickjabs_icon", "sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon");
+        LoadTexture("punchtrap_rocketglove_icon", "sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon");
 
         // effects
         LoadTexture("muzzleflash_small", "sprites/Generic Effects/muzzleflash_small");
@@ -216,6 +238,7 @@ public static class AssetManager
 
         // tiles
         LoadTexture("purptiles", "sprites/tiles/purptiles");
+        LoadTexture("blacktiles", "sprites/Tiles/blacktiles");
         LoadTexture("heavytiles", "sprites/Tiles/metaltiles");
         LoadTexture("lighttiles", "sprites/Tiles/scaffoldtiles");
         LoadTexture("groundtiles_zone1", "sprites/Tiles/groundtiles_zone1");
