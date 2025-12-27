@@ -303,6 +303,7 @@ public static class AssetManager
         LoadSound("enemyHit1", "sound/enemy/enemyhit1");
         LoadSound("enemyHit2", "sound/enemy/enemyhit2");
         LoadSound("enemyHit3", "sound/enemy/enemyhit3");
+        LoadSound("alarm", "sound/alarm");
     }
 
     public static Texture2D GetTexture(string name)
