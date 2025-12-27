@@ -79,7 +79,7 @@ class PunchTrap : Entity, ITower
         fatFist.Description = "+10 damage\n+1.5x knockback";
         quickJabs.Description = "-1 second recharge";
         megaPunch.Description = "+20 damage\n1.5x knockback\nCharges up the longer it\ngoes without firing,\nup to +100 damage and\n+250% knockback.";
-        rocketGlove.Description = "The first flies out and\nexplodes for 60 damage.";
+        rocketGlove.Description = "The fist flies out and\nexplodes for 60 damage.";
         flurryOfBlows.Description = "0.5 second recharge";
         chainsaw.Description = "Fist is replaced with a chainsaw\nand deals 100 damage over 1s,\nbut has no knockback.";
 
