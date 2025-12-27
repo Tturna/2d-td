@@ -6,17 +6,17 @@
         ],
         "cooldown": 4,
         "weight": 2,
-        "spawnCooldown": 4
+        "spawnCooldown": 2
     },
     {
         "formationName": "easyFormation2",
         "enemyGroups": [
-            { "enemyName": "node", "spawnCount": 2 },
+            { "enemyName": "chunk", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 4 }
         ],
         "cooldown": 4,
-        "weight": 2,
-        "spawnCooldown": 4
+        "weight": 1,
+        "spawnCooldown": 2
     },
     {
         "formationName": "easyFormation3",
@@ -25,6 +25,15 @@
             { "enemyName": "node", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 1 },
             { "enemyName": "node", "spawnCount": 1 }
+        ],
+        "cooldown": 1,
+        "weight": 2,
+        "spawnCooldown": 1
+    },
+    {
+        "formationName": "easyFormation4",
+        "enemyGroups": [
+            { "enemyName": "chunk", "spawnCount": 1 }
         ],
         "cooldown": 1,
         "weight": 2,

@@ -11,6 +11,7 @@ public static class EnemySystem
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
     {
         { "node", SpawnNodeEnemy },
+        { "chunk", SpawnChunkEnemy },
         { "bouncer", SpawnBouncerEnemy },
         { "meganode", SpawnMeganodeEnemy }
     };
@@ -85,7 +86,7 @@ public static class EnemySystem
         );
 
         var enemy = new Enemy(game, position, frameSize, movementData, animationData,
-            health: 100, scrapValue: 1);
+            health: 250, scrapValue: 2);
         enemy.Size -= Vector2.One * 2;
         enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
