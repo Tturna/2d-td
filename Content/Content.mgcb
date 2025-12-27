@@ -42,6 +42,12 @@
 /processorParam:Quality=Best
 /build:sound/click1.mp3
 
+#begin sound/coin.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/coin.mp3
+
 #begin sound/damage1.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor

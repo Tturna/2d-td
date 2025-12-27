@@ -97,5 +97,6 @@ public static class CurrencyManager
     {
         Balance += amount;
         CurrencyAdded?.Invoke(amount);
+        SoundSystem.PlaySound("coin");
     }
 }
