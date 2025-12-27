@@ -18,10 +18,11 @@ public class HQ : Entity
         //     Console.WriteLine("Player lost 🥶");
         // };
         //
-        // HealthSystem.Damaged += (hq, amount) =>
-        // {
-        //     Console.WriteLine("HQ damaged");
-        // };
+
+        HealthSystem.Damaged += (source, hq, amount) =>
+        {
+            SoundSystem.PlaySound("hqDamage");
+        };
 
         Instance = this;
     }

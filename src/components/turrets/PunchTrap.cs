@@ -150,6 +150,7 @@ class PunchTrap : Entity, ITower
             Shoot();
             actionTimer = 0f;
             AnimationSystem!.OneShotAnimationState("fire");
+            SoundSystem.PlaySound("punch");
         }
     }
 
@@ -211,6 +212,7 @@ class PunchTrap : Entity, ITower
             Shoot();
             actionTimer = 0f;
             AnimationSystem!.OneShotAnimationState("fire");
+            SoundSystem.PlaySound("punch");
         }
     }
 
