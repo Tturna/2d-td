@@ -204,7 +204,11 @@ public class Crane : Entity, ITower
     /// </summary>
     private bool HandleBallDescent(float deltaTime, bool damageEnemies = true)
     {
-        if (ballThing!.Position == targetBallPosition) return true;
+        if (ballThing!.Position == targetBallPosition)
+        {
+            SoundSystem.PlaySound("mortarfire");
+            return true;
+        }
 
         ballSpeed += ballFallAcceleration;
         ballThing.UpdatePosition(Vector2.UnitY * ballSpeed * deltaTime);
@@ -220,6 +224,7 @@ public class Crane : Entity, ITower
         {
             if (Collision.AreEntitiesColliding(corpse, ballThing))
             {
+                SoundSystem.PlaySound("mortarfire");
                 return true;
             }
         }
