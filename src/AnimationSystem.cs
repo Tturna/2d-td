@@ -14,6 +14,7 @@ public class AnimationSystem
         public int FrameCount;
         public Vector2 FrameSize;
         public float DelaySeconds;
+        public Vector2 DrawOffset = Vector2.Zero;
 
         public AnimationData(Texture2D texture, int frameCount, Vector2 frameSize, float delaySeconds)
         {
@@ -221,6 +222,8 @@ public class AnimationSystem
         // var size = new Vector2(sizeRect.Width, sizeRect.Height);
         // var offset = scaleDiff * size;
         var offset = Vector2.Zero;
+
+        offset += CurrentAnimationData.DrawOffset;
 
         spriteBatch.Draw(texture,
                 position + offset + drawOffset,

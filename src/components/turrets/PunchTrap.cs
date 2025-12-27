@@ -44,6 +44,8 @@ class PunchTrap : Entity, ITower
             delaySeconds: 0.07f
         );
 
+        fireAnimation.DrawOffset = Vector2.UnitY;
+
         // base constructor defines animation system
         AnimationSystem!.AddAnimationState("fire", fireAnimation);
 
@@ -342,6 +344,7 @@ class PunchTrap : Entity, ITower
         Texture2D newFireTexture;
         var newIdleFrameCount = 1;
         var newFireFrameCount = 1;
+        var newFireAnimationOffset = new Vector2(0, 1);
 
         if (newUpgrade.Name == Upgrade.FatFist.ToString())
         {
@@ -401,13 +404,14 @@ class PunchTrap : Entity, ITower
             var firingTexture = AssetManager.GetTexture("punchtrap_chainsaw_firing");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
+            newFireAnimationOffset = Vector2.Zero;
 
             var firingAnimation = new AnimationSystem.AnimationData
             (
                 texture: firingTexture,
                 frameCount: 2,
                 frameSize: new Vector2(firingTexture.Width / 2, firingTexture.Height),
-                delaySeconds: 0.05f
+                delaySeconds: 0.1f
             );
 
             AnimationSystem!.AddAnimationState("firing", firingAnimation);
@@ -433,6 +437,7 @@ class PunchTrap : Entity, ITower
             delaySeconds: 0.07f
         );
 
+        newFireAnimation.DrawOffset = newFireAnimationOffset;
         AnimationSystem!.ChangeAnimationState(null, newIdleAnimation);
         AnimationSystem.ChangeAnimationState("fire", newFireAnimation);
     }
