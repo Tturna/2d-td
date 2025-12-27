@@ -64,19 +64,19 @@
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/enemy/enemyhit1.mp3
+/build:sound/enemy/enemyhit1.mp3;sound/enemy/enemyhit1
 
 #begin sound/enemy/enemyhit2.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/enemy/enemyhit2.mp3
+/build:sound/enemy/enemyhit2.mp3;sound/enemy/enemyhit2
 
 #begin sound/enemy/enemyhit3.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/enemy/enemyhit3.mp3
+/build:sound/enemy/enemyhit3.mp3;sound/enemy/enemyhit3
 
 #begin sound/explosion/explosion.mp3
 /importer:Mp3Importer
@@ -84,17 +84,17 @@
 /processorParam:Quality=Best
 /build:sound/explosion/explosion.mp3;sound/explosion/explosion
 
-#begin sound/laser1.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/laser1.mp3
-
 #begin sound/punch1.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/punch1.mp3
+
+#begin sound/turret/laser1.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/turret/laser1.mp3;sound/turret/laser1
 
 #begin sound/turret/mortarfire.mp3
 /importer:Mp3Importer
@@ -202,7 +202,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Backdrops/zone1_backdrop.png
+/build:sprites/Backdrops/zone1_backdrop.png;sprites/Backdrops/zone1_backdrop
 
 #begin sprites/big_gradient.png
 /importer:TextureImporter
@@ -226,7 +226,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Archive/Fridge/fridge_hurtframe.png
+/build:sprites/Enemies/Archive/Fridge/fridge_hurtframe.png;sprites/Enemies/Archive/Fridge/fridge_hurtframe
 
 #begin sprites/Enemies/Archive/Fridge/fridge_walk.png
 /importer:TextureImporter
@@ -238,7 +238,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Archive/Fridge/fridge_walk.png
+/build:sprites/Enemies/Archive/Fridge/fridge_walk.png;sprites/Enemies/Archive/Fridge/fridge_walk
 
 #begin sprites/Enemies/Archive/Goon/goon_hurtframe.png
 /importer:TextureImporter
@@ -250,7 +250,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Archive/Goon/goon_hurtframe.png
+/build:sprites/Enemies/Archive/Goon/goon_hurtframe.png;sprites/Enemies/Archive/Goon/goon_hurtframe
 
 #begin sprites/Enemies/Archive/Goon/goon_walk.png
 /importer:TextureImporter
@@ -262,7 +262,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Archive/Goon/goon_walk.png
+/build:sprites/Enemies/Archive/Goon/goon_walk.png;sprites/Enemies/Archive/Goon/goon_walk
 
 #begin sprites/Enemies/Bouncer/bouncer_body.png
 /importer:TextureImporter
@@ -274,7 +274,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Bouncer/bouncer_body.png
+/build:sprites/Enemies/Bouncer/bouncer_body.png;sprites/Enemies/Bouncer/bouncer_body
 
 #begin sprites/Enemies/Chunk/chunk_body.png
 /importer:TextureImporter
@@ -286,7 +286,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Chunk/chunk_body.png
+/build:sprites/Enemies/Chunk/chunk_body.png;sprites/Enemies/Chunk/chunk_body
 
 #begin sprites/Enemies/Meganode/meganode_body.png
 /importer:TextureImporter
@@ -298,7 +298,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Meganode/meganode_body.png
+/build:sprites/Enemies/Meganode/meganode_body.png;sprites/Enemies/Meganode/meganode_body
 
 #begin sprites/Enemies/Node/node_body.png
 /importer:TextureImporter
@@ -310,7 +310,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Node/node_body.png
+/build:sprites/Enemies/Node/node_body.png;sprites/Enemies/Node/node_body
 
 #begin sprites/Enemies/Node/node_corpse.png
 /importer:TextureImporter
@@ -322,7 +322,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemies/Node/node_corpse.png
+/build:sprites/Enemies/Node/node_corpse.png;sprites/Enemies/Node/node_corpse
 
 #begin sprites/Enemy Juice Effects/enemy_deathexplosion_small.png
 /importer:TextureImporter
@@ -334,7 +334,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Enemy Juice Effects/enemy_deathexplosion_small.png
+/build:sprites/Enemy Juice Effects/enemy_deathexplosion_small.png;sprites/Enemy Juice Effects/enemy_deathexplosion_small
 
 #begin sprites/enemy.png
 /importer:TextureImporter
@@ -370,7 +370,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 1/midground/turret_building.png
+/build:sprites/Environment Objects/Zone 1/midground/turret_building.png;sprites/Environment Objects/Zone 1/midground/turret_building
 
 #begin sprites/Environment Objects/Zone 2/midground/tree_1.png
 /importer:TextureImporter
@@ -382,7 +382,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 2/midground/tree_1.png
+/build:sprites/Environment Objects/Zone 2/midground/tree_1.png;sprites/Environment Objects/Zone 2/midground/tree_1
 
 #begin sprites/Environment Objects/Zone 2/midground/tree_2.png
 /importer:TextureImporter
@@ -394,7 +394,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 2/midground/tree_2.png
+/build:sprites/Environment Objects/Zone 2/midground/tree_2.png;sprites/Environment Objects/Zone 2/midground/tree_2
 
 #begin sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1.png
 /importer:TextureImporter
@@ -406,7 +406,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1.png
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1.png;sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1
 
 #begin sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2.png
 /importer:TextureImporter
@@ -418,7 +418,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2.png
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2.png;sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2
 
 #begin sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1.png
 /importer:TextureImporter
@@ -430,7 +430,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1.png
+/build:sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1.png;sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1
 
 #begin sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1.png
 /importer:TextureImporter
@@ -442,7 +442,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1.png
+/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1.png;sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1
 
 #begin sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2.png
 /importer:TextureImporter
@@ -454,7 +454,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2.png
+/build:sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2.png;sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2
 
 #begin sprites/Environment Objects/Zone 4/midground/deadtree_1.png
 /importer:TextureImporter
@@ -466,7 +466,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/midground/deadtree_1.png
+/build:sprites/Environment Objects/Zone 4/midground/deadtree_1.png;sprites/Environment Objects/Zone 4/midground/deadtree_1
 
 #begin sprites/Environment Objects/Zone 4/midground/deadtree_2.png
 /importer:TextureImporter
@@ -478,7 +478,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/midground/deadtree_2.png
+/build:sprites/Environment Objects/Zone 4/midground/deadtree_2.png;sprites/Environment Objects/Zone 4/midground/deadtree_2
 
 #begin sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1.png
 /importer:TextureImporter
@@ -490,7 +490,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1.png
+/build:sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1.png;sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1
 
 #begin sprites/Environment Objects/Zone 4/midground/ruins_1.png
 /importer:TextureImporter
@@ -502,7 +502,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Environment Objects/Zone 4/midground/ruins_1.png
+/build:sprites/Environment Objects/Zone 4/midground/ruins_1.png;sprites/Environment Objects/Zone 4/midground/ruins_1
 
 #begin sprites/Generic Effects/explosion_large.png
 /importer:TextureImporter
@@ -514,7 +514,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Effects/explosion_large.png
+/build:sprites/Generic Effects/explosion_large.png;sprites/Generic Effects/explosion_large
 
 #begin sprites/Generic Effects/explosion_small.png
 /importer:TextureImporter
@@ -526,7 +526,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Effects/explosion_small.png
+/build:sprites/Generic Effects/explosion_small.png;sprites/Generic Effects/explosion_small
 
 #begin sprites/Generic Effects/muzzleflash_large.png
 /importer:TextureImporter
@@ -538,7 +538,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Effects/muzzleflash_large.png
+/build:sprites/Generic Effects/muzzleflash_large.png;sprites/Generic Effects/muzzleflash_large
 
 #begin sprites/Generic Effects/muzzleflash_medium.png
 /importer:TextureImporter
@@ -550,7 +550,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Effects/muzzleflash_medium.png
+/build:sprites/Generic Effects/muzzleflash_medium.png;sprites/Generic Effects/muzzleflash_medium
 
 #begin sprites/Generic Effects/muzzleflash_small.png
 /importer:TextureImporter
@@ -562,7 +562,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Effects/muzzleflash_small.png
+/build:sprites/Generic Effects/muzzleflash_small.png;sprites/Generic Effects/muzzleflash_small
 
 #begin sprites/Generic Particles/fire.png
 /importer:TextureImporter
@@ -574,7 +574,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Generic Particles/fire.png
+/build:sprites/Generic Particles/fire.png;sprites/Generic Particles/fire
 
 #begin sprites/gunTurretHead.png
 /importer:TextureImporter
@@ -610,7 +610,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Misc/HQ.png
+/build:sprites/Misc/HQ.png;sprites/Misc/HQ
 
 #begin sprites/mountain.png
 /importer:TextureImporter
@@ -646,7 +646,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk1.png
+/build:sprites/Particles/botchunk1.png;sprites/Particles/botchunk1
 
 #begin sprites/Particles/botchunk2.png
 /importer:TextureImporter
@@ -658,7 +658,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk2.png
+/build:sprites/Particles/botchunk2.png;sprites/Particles/botchunk2
 
 #begin sprites/Particles/botchunk3.png
 /importer:TextureImporter
@@ -670,7 +670,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk3.png
+/build:sprites/Particles/botchunk3.png;sprites/Particles/botchunk3
 
 #begin sprites/Particles/botchunk4.png
 /importer:TextureImporter
@@ -682,7 +682,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk4.png
+/build:sprites/Particles/botchunk4.png;sprites/Particles/botchunk4
 
 #begin sprites/Particles/botchunk5.png
 /importer:TextureImporter
@@ -694,7 +694,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk5.png
+/build:sprites/Particles/botchunk5.png;sprites/Particles/botchunk5
 
 #begin sprites/Particles/botchunk6.png
 /importer:TextureImporter
@@ -706,7 +706,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/botchunk6.png
+/build:sprites/Particles/botchunk6.png;sprites/Particles/botchunk6
 
 #begin sprites/Particles/smoke.png
 /importer:TextureImporter
@@ -718,7 +718,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Particles/smoke.png
+/build:sprites/Particles/smoke.png;sprites/Particles/smoke
 
 #begin sprites/projectiles/railguntemp.png
 /importer:TextureImporter
@@ -730,7 +730,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/projectiles/railguntemp.png
+/build:sprites/projectiles/railguntemp.png;sprites/projectiles/railguntemp
 
 #begin sprites/Smogs/Generic/smog_1.png
 /importer:TextureImporter
@@ -742,7 +742,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Smogs/Generic/smog_1.png
+/build:sprites/Smogs/Generic/smog_1.png;sprites/Smogs/Generic/smog_1
 
 #begin sprites/Smogs/Generic/smog_2.png
 /importer:TextureImporter
@@ -754,7 +754,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Smogs/Generic/smog_2.png
+/build:sprites/Smogs/Generic/smog_2.png;sprites/Smogs/Generic/smog_2
 
 #begin sprites/tile.png
 /importer:TextureImporter
@@ -778,7 +778,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/blacktiles.png
+/build:sprites/Tiles/blacktiles.png;sprites/Tiles/blacktiles
 
 #begin sprites/Tiles/groundtiles_zone1.png
 /importer:TextureImporter
@@ -790,7 +790,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/groundtiles_zone1.png
+/build:sprites/Tiles/groundtiles_zone1.png;sprites/Tiles/groundtiles_zone1
 
 #begin sprites/Tiles/metaltiles_single.png
 /importer:TextureImporter
@@ -802,7 +802,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/metaltiles_single.png
+/build:sprites/Tiles/metaltiles_single.png;sprites/Tiles/metaltiles_single
 
 #begin sprites/Tiles/metaltiles.png
 /importer:TextureImporter
@@ -814,9 +814,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/metaltiles.png
+/build:sprites/Tiles/metaltiles.png;sprites/Tiles/metaltiles
 
-#begin sprites/tiles/purptiles.png
+#begin sprites/Tiles/purptiles.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -826,7 +826,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/tiles/purptiles.png
+/build:sprites/Tiles/purptiles.png;sprites/Tiles/purptiles
 
 #begin sprites/Tiles/scaffoldtiles_single.png
 /importer:TextureImporter
@@ -838,7 +838,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/scaffoldtiles_single.png
+/build:sprites/Tiles/scaffoldtiles_single.png;sprites/Tiles/scaffoldtiles_single
 
 #begin sprites/Tiles/scaffoldtiles.png
 /importer:TextureImporter
@@ -850,7 +850,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Tiles/scaffoldtiles.png
+/build:sprites/Tiles/scaffoldtiles.png;sprites/Tiles/scaffoldtiles
 
 #begin sprites/tileset.png
 /importer:TextureImporter
@@ -886,7 +886,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_base/crane_base_attack.png
+/build:sprites/Towers/Crane/crane_base/crane_base_attack.png;sprites/Towers/Crane/crane_base/crane_base_attack
 
 #begin sprites/Towers/Crane/crane_base/crane_base_idle.png
 /importer:TextureImporter
@@ -898,7 +898,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_base/crane_base_idle.png
+/build:sprites/Towers/Crane/crane_base/crane_base_idle.png;sprites/Towers/Crane/crane_base/crane_base_idle
 
 #begin sprites/Towers/Crane/crane_biggerbox/biggerbox_icon.png
 /importer:TextureImporter
@@ -910,7 +910,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_biggerbox/biggerbox_icon.png
+/build:sprites/Towers/Crane/crane_biggerbox/biggerbox_icon.png;sprites/Towers/Crane/crane_biggerbox/biggerbox_icon
 
 #begin sprites/Towers/Crane/crane_biggerbox/biggerbox.png
 /importer:TextureImporter
@@ -922,7 +922,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_biggerbox/biggerbox.png
+/build:sprites/Towers/Crane/crane_biggerbox/biggerbox.png;sprites/Towers/Crane/crane_biggerbox/biggerbox
 
 #begin sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack.png
 /importer:TextureImporter
@@ -934,7 +934,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack.png
+/build:sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack.png;sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack
 
 #begin sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle.png
 /importer:TextureImporter
@@ -946,7 +946,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle.png
+/build:sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle.png;sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle
 
 #begin sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon.png
 /importer:TextureImporter
@@ -958,7 +958,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon.png
+/build:sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon.png;sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon
 
 #begin sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_attack.png
 /importer:TextureImporter
@@ -970,7 +970,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_attack.png
+/build:sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_attack.png;sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_attack
 
 #begin sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_idle.png
 /importer:TextureImporter
@@ -982,7 +982,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_idle.png
+/build:sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_idle.png;sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_idle
 
 #begin sprites/Towers/Crane/crane_crusher/crane_crusher_fire.png
 /importer:TextureImporter
@@ -994,7 +994,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_crusher/crane_crusher_fire.png
+/build:sprites/Towers/Crane/crane_crusher/crane_crusher_fire.png;sprites/Towers/Crane/crane_crusher/crane_crusher_fire
 
 #begin sprites/Towers/Crane/crane_crusher/crane_crusher_idle.png
 /importer:TextureImporter
@@ -1006,7 +1006,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_crusher/crane_crusher_idle.png
+/build:sprites/Towers/Crane/crane_crusher/crane_crusher_idle.png;sprites/Towers/Crane/crane_crusher/crane_crusher_idle
 
 #begin sprites/Towers/Crane/crane_crusher/crusher_icon.png
 /importer:TextureImporter
@@ -1018,7 +1018,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_crusher/crusher_icon.png
+/build:sprites/Towers/Crane/crane_crusher/crusher_icon.png;sprites/Towers/Crane/crane_crusher/crusher_icon
 
 #begin sprites/Towers/Crane/crane_crusher/crusherball.png
 /importer:TextureImporter
@@ -1030,7 +1030,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_crusher/crusherball.png
+/build:sprites/Towers/Crane/crane_crusher/crusherball.png;sprites/Towers/Crane/crane_crusher/crusherball
 
 #begin sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_attack.png
 /importer:TextureImporter
@@ -1042,7 +1042,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_attack.png
+/build:sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_attack.png;sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_attack
 
 #begin sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_idle.png
 /importer:TextureImporter
@@ -1054,7 +1054,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_idle.png
+/build:sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_idle.png;sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_idle
 
 #begin sprites/Towers/Crane/crane_explosivepayload/explosivebox.png
 /importer:TextureImporter
@@ -1066,7 +1066,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_explosivepayload/explosivebox.png
+/build:sprites/Towers/Crane/crane_explosivepayload/explosivebox.png;sprites/Towers/Crane/crane_explosivepayload/explosivebox
 
 #begin sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon.png
 /importer:TextureImporter
@@ -1078,7 +1078,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon.png
+/build:sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon.png;sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon
 
 #begin sprites/Towers/Crane/crane_lasergate/crane_lasergate_attacking.png
 /importer:TextureImporter
@@ -1090,7 +1090,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_lasergate/crane_lasergate_attacking.png
+/build:sprites/Towers/Crane/crane_lasergate/crane_lasergate_attacking.png;sprites/Towers/Crane/crane_lasergate/crane_lasergate_attacking
 
 #begin sprites/Towers/Crane/crane_lasergate/crane_lasergate_idle.png
 /importer:TextureImporter
@@ -1102,7 +1102,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_lasergate/crane_lasergate_idle.png
+/build:sprites/Towers/Crane/crane_lasergate/crane_lasergate_idle.png;sprites/Towers/Crane/crane_lasergate/crane_lasergate_idle
 
 #begin sprites/Towers/Crane/crane_lasergate/gatelaser.png
 /importer:TextureImporter
@@ -1114,7 +1114,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_lasergate/gatelaser.png
+/build:sprites/Towers/Crane/crane_lasergate/gatelaser.png;sprites/Towers/Crane/crane_lasergate/gatelaser
 
 #begin sprites/Towers/Crane/crane_lasergate/lasergate_icon.png
 /importer:TextureImporter
@@ -1126,7 +1126,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_lasergate/lasergate_icon.png
+/build:sprites/Towers/Crane/crane_lasergate/lasergate_icon.png;sprites/Towers/Crane/crane_lasergate/lasergate_icon
 
 #begin sprites/Towers/Crane/crane_sawblade/crane_sawblade_attack.png
 /importer:TextureImporter
@@ -1138,7 +1138,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_sawblade/crane_sawblade_attack.png
+/build:sprites/Towers/Crane/crane_sawblade/crane_sawblade_attack.png;sprites/Towers/Crane/crane_sawblade/crane_sawblade_attack
 
 #begin sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle.png
 /importer:TextureImporter
@@ -1150,7 +1150,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle.png
+/build:sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle.png;sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle
 
 #begin sprites/Towers/Crane/crane_sawblade/sawblade_icon.png
 /importer:TextureImporter
@@ -1162,7 +1162,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_sawblade/sawblade_icon.png
+/build:sprites/Towers/Crane/crane_sawblade/sawblade_icon.png;sprites/Towers/Crane/crane_sawblade/sawblade_icon
 
 #begin sprites/Towers/Crane/crane_sawblade/sawblade.png
 /importer:TextureImporter
@@ -1174,7 +1174,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Crane/crane_sawblade/sawblade.png
+/build:sprites/Towers/Crane/crane_sawblade/sawblade.png;sprites/Towers/Crane/crane_sawblade/sawblade
 
 #begin sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon.png
 /importer:TextureImporter
@@ -1186,7 +1186,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon.png
+/build:sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon.png;sprites/Towers/Drone/drone_advancedweaponry/advancedweaponry_icon
 
 #begin sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png
 /importer:TextureImporter
@@ -1198,7 +1198,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png
+/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun.png;sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_gun
 
 #begin sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle.png
 /importer:TextureImporter
@@ -1210,7 +1210,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle.png
+/build:sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle.png;sprites/Towers/Drone/drone_advancedweaponry/drone_advancedweaponry_idle
 
 #begin sprites/Towers/Drone/drone_artificer/artificer_explosion.png
 /importer:TextureImporter
@@ -1222,7 +1222,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_artificer/artificer_explosion.png
+/build:sprites/Towers/Drone/drone_artificer/artificer_explosion.png;sprites/Towers/Drone/drone_artificer/artificer_explosion
 
 #begin sprites/Towers/Drone/drone_artificer/artificer_icon.png
 /importer:TextureImporter
@@ -1234,7 +1234,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_artificer/artificer_icon.png
+/build:sprites/Towers/Drone/drone_artificer/artificer_icon.png;sprites/Towers/Drone/drone_artificer/artificer_icon
 
 #begin sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png
 /importer:TextureImporter
@@ -1246,7 +1246,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png
+/build:sprites/Towers/Drone/drone_artificer/drone_artificer_attack.png;sprites/Towers/Drone/drone_artificer/drone_artificer_attack
 
 #begin sprites/Towers/Drone/drone_artificer/drone_artificer_idle.png
 /importer:TextureImporter
@@ -1258,7 +1258,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_artificer/drone_artificer_idle.png
+/build:sprites/Towers/Drone/drone_artificer/drone_artificer_idle.png;sprites/Towers/Drone/drone_artificer/drone_artificer_idle
 
 #begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun.png
 /importer:TextureImporter
@@ -1270,7 +1270,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun.png
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun.png;sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_gun
 
 #begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle.png
 /importer:TextureImporter
@@ -1282,7 +1282,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle.png
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle.png;sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_idle
 
 #begin sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png
 /importer:TextureImporter
@@ -1294,7 +1294,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png
+/build:sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile.png;sprites/Towers/Drone/drone_assassindrone/drone_assassindrone_projectile
 
 #begin sprites/Towers/Drone/drone_assassindrone/icon_assassindrone.png
 /importer:TextureImporter
@@ -1306,7 +1306,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_assassindrone/icon_assassindrone.png
+/build:sprites/Towers/Drone/drone_assassindrone/icon_assassindrone.png;sprites/Towers/Drone/drone_assassindrone/icon_assassindrone
 
 #begin sprites/Towers/Drone/drone_base/drone_base_gun.png
 /importer:TextureImporter
@@ -1318,7 +1318,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_base/drone_base_gun.png
+/build:sprites/Towers/Drone/drone_base/drone_base_gun.png;sprites/Towers/Drone/drone_base/drone_base_gun
 
 #begin sprites/Towers/Drone/drone_base/drone_base_idle.png
 /importer:TextureImporter
@@ -1330,7 +1330,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_base/drone_base_idle.png
+/build:sprites/Towers/Drone/drone_base/drone_base_idle.png;sprites/Towers/Drone/drone_base/drone_base_idle
 
 #begin sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun.png
 /importer:TextureImporter
@@ -1342,7 +1342,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun.png
+/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun.png;sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_gun
 
 #begin sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png
 /importer:TextureImporter
@@ -1354,7 +1354,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png
+/build:sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle.png;sprites/Towers/Drone/drone_flyingarsenal/drone_flyingarsenal_idle
 
 #begin sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon.png
 /importer:TextureImporter
@@ -1366,7 +1366,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon.png
+/build:sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon.png;sprites/Towers/Drone/drone_flyingarsenal/flyingarsenal_icon
 
 #begin sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
 /importer:TextureImporter
@@ -1378,7 +1378,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png
+/build:sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle.png;sprites/Towers/Drone/drone_improvedradar/drone_improvedradar_idle
 
 #begin sprites/Towers/Drone/drone_improvedradar/improvedradar_icon.png
 /importer:TextureImporter
@@ -1390,7 +1390,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_improvedradar/improvedradar_icon.png
+/build:sprites/Towers/Drone/drone_improvedradar/improvedradar_icon.png;sprites/Towers/Drone/drone_improvedradar/improvedradar_icon
 
 #begin sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png
 /importer:TextureImporter
@@ -1402,7 +1402,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png
+/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun.png;sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_gun
 
 #begin sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png
 /importer:TextureImporter
@@ -1414,7 +1414,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png
+/build:sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle.png;sprites/Towers/Drone/drone_quadcopter/drone_quadcopter_idle
 
 #begin sprites/Towers/Drone/drone_quadcopter/icon_quadcopter.png
 /importer:TextureImporter
@@ -1426,7 +1426,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Drone/drone_quadcopter/icon_quadcopter.png
+/build:sprites/Towers/Drone/drone_quadcopter/icon_quadcopter.png;sprites/Towers/Drone/drone_quadcopter/icon_quadcopter
 
 #begin sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
 /importer:TextureImporter
@@ -1438,7 +1438,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_base/hovership_base_idle.png
+/build:sprites/Towers/Hovership/hovership_base/hovership_base_idle.png;sprites/Towers/Hovership/hovership_base/hovership_base_idle
 
 #begin sprites/Towers/Hovership/hovership_base/hovership_base_platform.png
 /importer:TextureImporter
@@ -1450,7 +1450,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_base/hovership_base_platform.png
+/build:sprites/Towers/Hovership/hovership_base/hovership_base_platform.png;sprites/Towers/Hovership/hovership_base/hovership_base_platform
 
 #begin sprites/Towers/Hovership/hovership_base/hovership_bomb.png
 /importer:TextureImporter
@@ -1462,7 +1462,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_base/hovership_bomb.png
+/build:sprites/Towers/Hovership/hovership_base/hovership_bomb.png;sprites/Towers/Hovership/hovership_base/hovership_bomb
 
 #begin sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon.png
 /importer:TextureImporter
@@ -1474,7 +1474,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon.png
+/build:sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon.png;sprites/Towers/Hovership/hovership_bombierbay/bombierbay_icon
 
 #begin sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
 /importer:TextureImporter
@@ -1486,7 +1486,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png
+/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle.png;sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_idle
 
 #begin sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform.png
 /importer:TextureImporter
@@ -1498,7 +1498,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform.png
+/build:sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform.png;sprites/Towers/Hovership/hovership_bombierbay/hovership_bombierbay_platform
 
 #begin sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon.png
 /importer:TextureImporter
@@ -1510,7 +1510,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon.png
+/build:sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon.png;sprites/Towers/Hovership/hovership_carpetoffire/carpetoffire_icon
 
 #begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb.png
 /importer:TextureImporter
@@ -1522,7 +1522,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb.png
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb.png;sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_firebomb
 
 #begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
 /importer:TextureImporter
@@ -1534,7 +1534,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle.png;sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_idle
 
 #begin sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform.png
 /importer:TextureImporter
@@ -1546,7 +1546,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform.png
+/build:sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform.png;sprites/Towers/Hovership/hovership_carpetoffire/hovership_carpetoffire_platform
 
 #begin sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon.png
 /importer:TextureImporter
@@ -1558,7 +1558,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon.png
+/build:sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon.png;sprites/Towers/Hovership/hovership_efficientengines/efficientengines_icon
 
 #begin sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
 /importer:TextureImporter
@@ -1570,7 +1570,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png
+/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle.png;sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_idle
 
 #begin sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform.png
 /importer:TextureImporter
@@ -1582,7 +1582,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform.png
+/build:sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform.png;sprites/Towers/Hovership/hovership_efficientengines/hovership_efficientengines_platform
 
 #begin sprites/Towers/Hovership/hovership_EMP/EMP_icon.png
 /importer:TextureImporter
@@ -1594,7 +1594,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_EMP/EMP_icon.png
+/build:sprites/Towers/Hovership/hovership_EMP/EMP_icon.png;sprites/Towers/Hovership/hovership_EMP/EMP_icon
 
 #begin sprites/Towers/Hovership/hovership_EMP/EMPbomb.png
 /importer:TextureImporter
@@ -1606,7 +1606,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_EMP/EMPbomb.png
+/build:sprites/Towers/Hovership/hovership_EMP/EMPbomb.png;sprites/Towers/Hovership/hovership_EMP/EMPbomb
 
 #begin sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
 /importer:TextureImporter
@@ -1618,7 +1618,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png
+/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle.png;sprites/Towers/Hovership/hovership_EMP/hovership_EMP_idle
 
 #begin sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform.png
 /importer:TextureImporter
@@ -1630,7 +1630,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform.png
+/build:sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform.png;sprites/Towers/Hovership/hovership_EMP/hovership_EMP_platform
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack.png
 /importer:TextureImporter
@@ -1642,7 +1642,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack.png;sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_attack
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing.png
 /importer:TextureImporter
@@ -1654,7 +1654,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing.png;sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_firing
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
 /importer:TextureImporter
@@ -1666,7 +1666,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle.png;sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_idle
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform.png
 /importer:TextureImporter
@@ -1678,7 +1678,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform.png;sprites/Towers/Hovership/hovership_orbitallaser/hovership_orbitallaser_platform
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact.png
 /importer:TextureImporter
@@ -1690,7 +1690,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact.png;sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam_impact
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam.png
 /importer:TextureImporter
@@ -1702,7 +1702,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam.png;sprites/Towers/Hovership/hovership_orbitallaser/orbitalbeam
 
 #begin sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon.png
 /importer:TextureImporter
@@ -1714,7 +1714,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon.png
+/build:sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon.png;sprites/Towers/Hovership/hovership_orbitallaser/orbitallaser_icon
 
 #begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
 /importer:TextureImporter
@@ -1726,7 +1726,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle.png;sprites/Towers/Hovership/hovership_UFO/hovership_UFO_idle
 
 #begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform.png
 /importer:TextureImporter
@@ -1738,7 +1738,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform.png
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform.png;sprites/Towers/Hovership/hovership_UFO/hovership_UFO_platform
 
 #begin sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam.png
 /importer:TextureImporter
@@ -1750,7 +1750,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam.png
+/build:sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam.png;sprites/Towers/Hovership/hovership_UFO/hovership_UFO_tractorbeam
 
 #begin sprites/Towers/Hovership/hovership_UFO/UFO_icon.png
 /importer:TextureImporter
@@ -1762,7 +1762,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Hovership/hovership_UFO/UFO_icon.png
+/build:sprites/Towers/Hovership/hovership_UFO/UFO_icon.png;sprites/Towers/Hovership/hovership_UFO/UFO_icon
 
 #begin sprites/Towers/Mortar/mortar_base/mortar_base_fire.png
 /importer:TextureImporter
@@ -1774,7 +1774,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_base/mortar_base_fire.png
+/build:sprites/Towers/Mortar/mortar_base/mortar_base_fire.png;sprites/Towers/Mortar/mortar_base/mortar_base_fire
 
 #begin sprites/Towers/Mortar/mortar_base/mortar_base_idle.png
 /importer:TextureImporter
@@ -1786,7 +1786,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_base/mortar_base_idle.png
+/build:sprites/Towers/Mortar/mortar_base/mortar_base_idle.png;sprites/Towers/Mortar/mortar_base/mortar_base_idle
 
 #begin sprites/Towers/Mortar/mortar_base/mortarshell.png
 /importer:TextureImporter
@@ -1798,7 +1798,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_base/mortarshell.png
+/build:sprites/Towers/Mortar/mortar_base/mortarshell.png;sprites/Towers/Mortar/mortar_base/mortarshell
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/bouncing_bomb.png
 /importer:TextureImporter
@@ -1810,7 +1810,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/bouncing_bomb.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/bouncing_bomb.png;sprites/Towers/Mortar/mortar_bouncing_bomb/bouncing_bomb
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/explosion_bouncingbomb.png
 /importer:TextureImporter
@@ -1822,7 +1822,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/explosion_bouncingbomb.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/explosion_bouncingbomb.png;sprites/Towers/Mortar/mortar_bouncing_bomb/explosion_bouncingbomb
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire.png
 /importer:TextureImporter
@@ -1834,7 +1834,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire.png;sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_fire
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png
 /importer:TextureImporter
@@ -1846,7 +1846,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle.png;sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncing_bomb_idle
 
 #begin sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon.png
 /importer:TextureImporter
@@ -1858,7 +1858,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon.png
+/build:sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon.png;sprites/Towers/Mortar/mortar_bouncing_bomb/mortar_bouncingbomb_icon
 
 #begin sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire.png
 /importer:TextureImporter
@@ -1870,7 +1870,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire.png
+/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire.png;sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_fire
 
 #begin sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon.png
 /importer:TextureImporter
@@ -1882,7 +1882,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon.png
+/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon.png;sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_icon
 
 #begin sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle.png
 /importer:TextureImporter
@@ -1894,7 +1894,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle.png
+/build:sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle.png;sprites/Towers/Mortar/mortar_efficientreload/mortar_efficientreload_idle
 
 #begin sprites/Towers/Mortar/mortar_heavyshells/heavyshell.png
 /importer:TextureImporter
@@ -1906,7 +1906,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_heavyshells/heavyshell.png
+/build:sprites/Towers/Mortar/mortar_heavyshells/heavyshell.png;sprites/Towers/Mortar/mortar_heavyshells/heavyshell
 
 #begin sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire.png
 /importer:TextureImporter
@@ -1918,7 +1918,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire.png
+/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire.png;sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_fire
 
 #begin sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon.png
 /importer:TextureImporter
@@ -1930,7 +1930,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon.png
+/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon.png;sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_icon
 
 #begin sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle.png
 /importer:TextureImporter
@@ -1942,7 +1942,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle.png
+/build:sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle.png;sprites/Towers/Mortar/mortar_heavyshells/mortar_heavyshells_idle
 
 #begin sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire.png
 /importer:TextureImporter
@@ -1954,7 +1954,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire.png
+/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire.png;sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_fire
 
 #begin sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_icon.png
 /importer:TextureImporter
@@ -1966,7 +1966,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_icon.png
+/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_icon.png;sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_icon
 
 #begin sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle.png
 /importer:TextureImporter
@@ -1978,7 +1978,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle.png
+/build:sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle.png;sprites/Towers/Mortar/mortar_hellrain/mortar_hellrain_idle
 
 #begin sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion.png
 /importer:TextureImporter
@@ -1990,7 +1990,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion.png
+/build:sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion.png;sprites/Towers/Mortar/mortar_hellrain/rainmissile_explosion
 
 #begin sprites/Towers/Mortar/mortar_hellrain/rainmissile.png
 /importer:TextureImporter
@@ -2002,7 +2002,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_hellrain/rainmissile.png
+/build:sprites/Towers/Mortar/mortar_hellrain/rainmissile.png;sprites/Towers/Mortar/mortar_hellrain/rainmissile
 
 #begin sprites/Towers/Mortar/mortar_missilesilo/ballisticmissile.png
 /importer:TextureImporter
@@ -2014,7 +2014,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_missilesilo/ballisticmissile.png
+/build:sprites/Towers/Mortar/mortar_missilesilo/ballisticmissile.png;sprites/Towers/Mortar/mortar_missilesilo/ballisticmissile
 
 #begin sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire.png
 /importer:TextureImporter
@@ -2026,7 +2026,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire.png
+/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire.png;sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_fire
 
 #begin sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon.png
 /importer:TextureImporter
@@ -2038,7 +2038,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon.png
+/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon.png;sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_icon
 
 #begin sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png
 /importer:TextureImporter
@@ -2050,7 +2050,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png
+/build:sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle.png;sprites/Towers/Mortar/mortar_missilesilo/mortar_missilesilo_idle
 
 #begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire.png
 /importer:TextureImporter
@@ -2062,7 +2062,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire.png
+/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire.png;sprites/Towers/Mortar/mortar_nuke/mortar_nuke_fire
 
 #begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon.png
 /importer:TextureImporter
@@ -2074,7 +2074,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon.png
+/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon.png;sprites/Towers/Mortar/mortar_nuke/mortar_nuke_icon
 
 #begin sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle.png
 /importer:TextureImporter
@@ -2086,7 +2086,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle.png
+/build:sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle.png;sprites/Towers/Mortar/mortar_nuke/mortar_nuke_idle
 
 #begin sprites/Towers/Mortar/mortar_nuke/nuclear_explosion.png
 /importer:TextureImporter
@@ -2098,7 +2098,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_nuke/nuclear_explosion.png
+/build:sprites/Towers/Mortar/mortar_nuke/nuclear_explosion.png;sprites/Towers/Mortar/mortar_nuke/nuclear_explosion
 
 #begin sprites/Towers/Mortar/mortar_nuke/nuke.png
 /importer:TextureImporter
@@ -2110,7 +2110,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_nuke/nuke.png
+/build:sprites/Towers/Mortar/mortar_nuke/nuke.png;sprites/Towers/Mortar/mortar_nuke/nuke
 
 #begin sprites/Towers/Mortar/mortar_reticle.png
 /importer:TextureImporter
@@ -2122,7 +2122,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Mortar/mortar_reticle.png
+/build:sprites/Towers/Mortar/mortar_reticle.png;sprites/Towers/Mortar/mortar_reticle
 
 #begin sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png
 /importer:TextureImporter
@@ -2134,7 +2134,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire.png;sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png
 /importer:TextureImporter
@@ -2146,7 +2146,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle.png;sprites/Towers/Punch Trap/punchtrap_base/punchtrap_base_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon.png
 /importer:TextureImporter
@@ -2158,7 +2158,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon.png;sprites/Towers/Punch Trap/punchtrap_chainsaw/chainsaw_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png
 /importer:TextureImporter
@@ -2170,7 +2170,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire.png;sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle.png
 /importer:TextureImporter
@@ -2182,7 +2182,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle.png;sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png
 /importer:TextureImporter
@@ -2194,7 +2194,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png
+/build:sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running.png;sprites/Towers/Punch Trap/punchtrap_chainsaw/punchtrap_chainsaw_running
 
 #begin sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon.png
 /importer:TextureImporter
@@ -2206,7 +2206,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon.png;sprites/Towers/Punch Trap/punchtrap_fatfist/fatfist_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire.png
 /importer:TextureImporter
@@ -2218,7 +2218,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire.png;sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle.png
 /importer:TextureImporter
@@ -2230,7 +2230,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle.png;sprites/Towers/Punch Trap/punchtrap_fatfist/punchtrap_fatfist_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon.png
 /importer:TextureImporter
@@ -2242,7 +2242,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon.png;sprites/Towers/Punch Trap/punchtrap_flurryofblows/flurryofblows_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png
 /importer:TextureImporter
@@ -2254,7 +2254,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire.png;sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle.png
 /importer:TextureImporter
@@ -2266,7 +2266,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle.png;sprites/Towers/Punch Trap/punchtrap_flurryofblows/punchtrap_flurryofblows_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
 /importer:TextureImporter
@@ -2278,7 +2278,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon.png;sprites/Towers/Punch Trap/punchtrap_megapunch/megapunch_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate.png
 /importer:TextureImporter
@@ -2290,7 +2290,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate.png
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate.png;sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_finalstate
 
 #begin sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png
 /importer:TextureImporter
@@ -2302,7 +2302,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png
+/build:sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged.png;sprites/Towers/Punch Trap/punchtrap_megapunch/punchtrap_megapunch_fire_charged
 
 #begin sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire.png
 /importer:TextureImporter
@@ -2314,7 +2314,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire.png;sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle.png
 /importer:TextureImporter
@@ -2326,7 +2326,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle.png;sprites/Towers/Punch Trap/punchtrap_quickjabs/punchtrap_quickjabs_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon.png
 /importer:TextureImporter
@@ -2338,7 +2338,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon.png;sprites/Towers/Punch Trap/punchtrap_quickjabs/quickjabs_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire.png
 /importer:TextureImporter
@@ -2350,7 +2350,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire.png
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire.png;sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_fire
 
 #begin sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle.png
 /importer:TextureImporter
@@ -2362,7 +2362,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle.png
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle.png;sprites/Towers/Punch Trap/punchtrap_rocketglove/punchtrap_rocketglove_idle
 
 #begin sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon.png
 /importer:TextureImporter
@@ -2374,7 +2374,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon.png
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon.png;sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove_icon
 
 #begin sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove.png
 /importer:TextureImporter
@@ -2386,7 +2386,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove.png
+/build:sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove.png;sprites/Towers/Punch Trap/punchtrap_rocketglove/rocketglove
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast.png
 /importer:TextureImporter
@@ -2398,7 +2398,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast.png
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast.png;sprites/Towers/Railgun/railgun_antimatterlaser/antimatterblast
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon.png
 /importer:TextureImporter
@@ -2410,7 +2410,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon.png
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon.png;sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_icon
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash.png
 /importer:TextureImporter
@@ -2422,7 +2422,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash.png
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash.png;sprites/Towers/Railgun/railgun_antimatterlaser/antimatterlaser_muzzleflash
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire.png
 /importer:TextureImporter
@@ -2434,7 +2434,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire.png
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire.png;sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_fire
 
 #begin sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle.png
 /importer:TextureImporter
@@ -2446,7 +2446,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle.png
+/build:sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle.png;sprites/Towers/Railgun/railgun_antimatterlaser/railgun_antiomatterlaser_idle
 
 #begin sprites/Towers/Railgun/railgun_base/railgun_base_fire.png
 /importer:TextureImporter
@@ -2458,7 +2458,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_base/railgun_base_fire.png
+/build:sprites/Towers/Railgun/railgun_base/railgun_base_fire.png;sprites/Towers/Railgun/railgun_base/railgun_base_fire
 
 #begin sprites/Towers/Railgun/railgun_base/railgun_base_idle.png
 /importer:TextureImporter
@@ -2470,7 +2470,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_base/railgun_base_idle.png
+/build:sprites/Towers/Railgun/railgun_base/railgun_base_idle.png;sprites/Towers/Railgun/railgun_base/railgun_base_idle
 
 #begin sprites/Towers/Railgun/railgun_base/railgun_base.png
 /importer:TextureImporter
@@ -2482,7 +2482,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_base/railgun_base.png
+/build:sprites/Towers/Railgun/railgun_base/railgun_base.png;sprites/Towers/Railgun/railgun_base/railgun_base
 
 #begin sprites/Towers/Railgun/railgun_base/railgunbullet.png
 /importer:TextureImporter
@@ -2494,7 +2494,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_base/railgunbullet.png
+/build:sprites/Towers/Railgun/railgun_base/railgunbullet.png;sprites/Towers/Railgun/railgun_base/railgunbullet
 
 #begin sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile.png
 /importer:TextureImporter
@@ -2506,7 +2506,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile.png
+/build:sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile.png;sprites/Towers/Railgun/railgun_cannonball/cannonball_projectile
 
 #begin sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire.png
 /importer:TextureImporter
@@ -2518,7 +2518,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire.png
+/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire.png;sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_fire
 
 #begin sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon.png
 /importer:TextureImporter
@@ -2530,7 +2530,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon.png
+/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon.png;sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_icon
 
 #begin sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle.png
 /importer:TextureImporter
@@ -2542,7 +2542,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle.png
+/build:sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle.png;sprites/Towers/Railgun/railgun_cannonball/railgun_cannonball_idle
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming.png
 /importer:TextureImporter
@@ -2554,7 +2554,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming.png;sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile_flaming
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile.png
 /importer:TextureImporter
@@ -2566,7 +2566,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile.png;sprites/Towers/Railgun/railgun_goldengatling/goldengatling_projectile
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body.png
 /importer:TextureImporter
@@ -2578,7 +2578,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body.png;sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_body
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing.png
 /importer:TextureImporter
@@ -2590,7 +2590,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing.png;sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_firing
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon.png
 /importer:TextureImporter
@@ -2602,7 +2602,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon.png;sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_icon
 
 #begin sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png
 /importer:TextureImporter
@@ -2614,7 +2614,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png
+/build:sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle.png;sprites/Towers/Railgun/railgun_goldengatling/railgun_goldengatling_idle
 
 #begin sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon.png
 /importer:TextureImporter
@@ -2626,7 +2626,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon.png
+/build:sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon.png;sprites/Towers/Railgun/railgun_polishedrounds/polishedrounds_icon
 
 #begin sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire.png
 /importer:TextureImporter
@@ -2638,7 +2638,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire.png
+/build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire.png;sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_fire
 
 #begin sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png
 /importer:TextureImporter
@@ -2650,7 +2650,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png
+/build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png;sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle
 
 #begin sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png
 /importer:TextureImporter
@@ -2662,7 +2662,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png
+/build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png;sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire
 
 #begin sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle.png
 /importer:TextureImporter
@@ -2674,7 +2674,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle.png
+/build:sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle.png;sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_idle
 
 #begin sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon.png
 /importer:TextureImporter
@@ -2686,7 +2686,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon.png
+/build:sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon.png;sprites/Towers/Railgun/railgun_tungstenshells/tungstenshells_icon
 
 #begin sprites/Towers/Turret/turret_base/turret_body_base.png
 /importer:TextureImporter
@@ -2698,7 +2698,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_base/turret_body_base.png
+/build:sprites/Towers/Turret/turret_base/turret_body_base.png;sprites/Towers/Turret/turret_base/turret_body_base
 
 #begin sprites/Towers/Turret/turret_base/turret_bullet_base.png
 /importer:TextureImporter
@@ -2710,7 +2710,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_base/turret_bullet_base.png
+/build:sprites/Towers/Turret/turret_base/turret_bullet_base.png;sprites/Towers/Turret/turret_base/turret_bullet_base
 
 #begin sprites/Towers/Turret/turret_base/turret_gun_base.png
 /importer:TextureImporter
@@ -2722,7 +2722,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_base/turret_gun_base.png
+/build:sprites/Towers/Turret/turret_base/turret_gun_base.png;sprites/Towers/Turret/turret_base/turret_gun_base
 
 #begin sprites/Towers/Turret/turret_botshot/botshot_pellet.png
 /importer:TextureImporter
@@ -2734,7 +2734,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_botshot/botshot_pellet.png
+/build:sprites/Towers/Turret/turret_botshot/botshot_pellet.png;sprites/Towers/Turret/turret_botshot/botshot_pellet
 
 #begin sprites/Towers/Turret/turret_botshot/turret_botshot_body.png
 /importer:TextureImporter
@@ -2746,7 +2746,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_botshot/turret_botshot_body.png
+/build:sprites/Towers/Turret/turret_botshot/turret_botshot_body.png;sprites/Towers/Turret/turret_botshot/turret_botshot_body
 
 #begin sprites/Towers/Turret/turret_botshot/turret_botshot_gun.png
 /importer:TextureImporter
@@ -2758,7 +2758,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_botshot/turret_botshot_gun.png
+/build:sprites/Towers/Turret/turret_botshot/turret_botshot_gun.png;sprites/Towers/Turret/turret_botshot/turret_botshot_gun
 
 #begin sprites/Towers/Turret/turret_botshot/turret_botshot_icon.png
 /importer:TextureImporter
@@ -2770,7 +2770,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_botshot/turret_botshot_icon.png
+/build:sprites/Towers/Turret/turret_botshot/turret_botshot_icon.png;sprites/Towers/Turret/turret_botshot/turret_botshot_icon
 
 #begin sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon.png
 /importer:TextureImporter
@@ -2782,7 +2782,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon.png
+/build:sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon.png;sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon
 
 #begin sprites/Towers/Turret/turret_doublegun/turret_gun_10.png
 /importer:TextureImporter
@@ -2794,7 +2794,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_doublegun/turret_gun_10.png
+/build:sprites/Towers/Turret/turret_doublegun/turret_gun_10.png;sprites/Towers/Turret/turret_doublegun/turret_gun_10
 
 #begin sprites/Towers/Turret/turret_gun_20_firing.png
 /importer:TextureImporter
@@ -2806,7 +2806,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_gun_20_firing.png
+/build:sprites/Towers/Turret/turret_gun_20_firing.png;sprites/Towers/Turret/turret_gun_20_firing
 
 #begin sprites/Towers/Turret/turret_gun_20.png
 /importer:TextureImporter
@@ -2818,7 +2818,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_gun_20.png
+/build:sprites/Towers/Turret/turret_gun_20.png;sprites/Towers/Turret/turret_gun_20
 
 #begin sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet.png
 /importer:TextureImporter
@@ -2830,7 +2830,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet.png
+/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet.png;sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_bullet
 
 #begin sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun.png
 /importer:TextureImporter
@@ -2842,7 +2842,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun.png
+/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun.png;sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_gun
 
 #begin sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon.png
 /importer:TextureImporter
@@ -2854,7 +2854,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon.png
+/build:sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon.png;sprites/Towers/Turret/turret_improvedbarrel/turret_improvedbarrel_icon
 
 #begin sprites/Towers/Turret/turret_photoncannon/laserparticle.png
 /importer:TextureImporter
@@ -2866,7 +2866,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/laserparticle.png
+/build:sprites/Towers/Turret/turret_photoncannon/laserparticle.png;sprites/Towers/Turret/turret_photoncannon/laserparticle
 
 #begin sprites/Towers/Turret/turret_photoncannon/photonlaser.png
 /importer:TextureImporter
@@ -2878,7 +2878,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/photonlaser.png
+/build:sprites/Towers/Turret/turret_photoncannon/photonlaser.png;sprites/Towers/Turret/turret_photoncannon/photonlaser
 
 #begin sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body.png
 /importer:TextureImporter
@@ -2890,7 +2890,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body.png
+/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body.png;sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_body
 
 #begin sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun_firing.png
 /importer:TextureImporter
@@ -2902,7 +2902,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun_firing.png
+/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun_firing.png;sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun_firing
 
 #begin sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun.png
 /importer:TextureImporter
@@ -2914,7 +2914,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun.png
+/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun.png;sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_gun
 
 #begin sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon.png
 /importer:TextureImporter
@@ -2926,7 +2926,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon.png
+/build:sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon.png;sprites/Towers/Turret/turret_photoncannon/turret_photoncannon_icon
 
 #begin sprites/Towers/Turret/turret_rocketshot/rocket.png
 /importer:TextureImporter
@@ -2938,7 +2938,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_rocketshot/rocket.png
+/build:sprites/Towers/Turret/turret_rocketshot/rocket.png;sprites/Towers/Turret/turret_rocketshot/rocket
 
 #begin sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body.png
 /importer:TextureImporter
@@ -2950,7 +2950,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body.png
+/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body.png;sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body
 
 #begin sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun.png
 /importer:TextureImporter
@@ -2962,7 +2962,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun.png
+/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun.png;sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun
 
 #begin sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon.png
 /importer:TextureImporter
@@ -2974,7 +2974,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon.png
+/build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon.png;sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon
 
 #begin sprites/tree.png
 /importer:TextureImporter
@@ -3034,7 +3034,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/button_smallsquare.png
+/build:sprites/UI/button_smallsquare.png;sprites/UI/button_smallsquare
 
 #begin sprites/UI/button_square_empty.png
 /importer:TextureImporter
@@ -3046,7 +3046,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/button_square_empty.png
+/build:sprites/UI/button_square_empty.png;sprites/UI/button_square_empty
 
 #begin sprites/UI/button_square.png
 /importer:TextureImporter
@@ -3058,7 +3058,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/button_square.png
+/build:sprites/UI/button_square.png;sprites/UI/button_square
 
 #begin sprites/UI/infobutton.png
 /importer:TextureImporter
@@ -3070,7 +3070,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/infobutton.png
+/build:sprites/UI/infobutton.png;sprites/UI/infobutton
 
 #begin sprites/UI/mainmenu_playbutton.png
 /importer:TextureImporter
@@ -3082,7 +3082,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/mainmenu_playbutton.png
+/build:sprites/UI/mainmenu_playbutton.png;sprites/UI/mainmenu_playbutton
 
 #begin sprites/UI/mainmenu_quitbutton.png
 /importer:TextureImporter
@@ -3094,7 +3094,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/mainmenu_quitbutton.png
+/build:sprites/UI/mainmenu_quitbutton.png;sprites/UI/mainmenu_quitbutton
 
 #begin sprites/UI/mainmenu_settingsbutton.png
 /importer:TextureImporter
@@ -3106,7 +3106,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/mainmenu_settingsbutton.png
+/build:sprites/UI/mainmenu_settingsbutton.png;sprites/UI/mainmenu_settingsbutton
 
 #begin sprites/UI/pausebutton.png
 /importer:TextureImporter
@@ -3118,7 +3118,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/pausebutton.png
+/build:sprites/UI/pausebutton.png;sprites/UI/pausebutton
 
 #begin sprites/UI/scrapicon_small.png
 /importer:TextureImporter
@@ -3130,7 +3130,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/scrapicon_small.png
+/build:sprites/UI/scrapicon_small.png;sprites/UI/scrapicon_small
 
 #begin sprites/UI/scrapicon.png
 /importer:TextureImporter
@@ -3142,7 +3142,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/scrapicon.png
+/build:sprites/UI/scrapicon.png;sprites/UI/scrapicon
 
 #begin sprites/UI/upgradebg.png
 /importer:TextureImporter
@@ -3154,7 +3154,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/upgradebg.png
+/build:sprites/UI/upgradebg.png;sprites/UI/upgradebg
 
 #begin sprites/UI/upgradeindicator.png
 /importer:TextureImporter
@@ -3166,5 +3166,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/UI/upgradeindicator.png
+/build:sprites/UI/upgradeindicator.png;sprites/UI/upgradeindicator
 
