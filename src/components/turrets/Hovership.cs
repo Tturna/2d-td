@@ -360,7 +360,7 @@ class Hovership : Entity, ITower
         ufoTractorBeam.SetPosition(shipCenterBottom - Vector2.UnitX * (ufoTractorBeam.Size.X / 2));
         var beamVisible = ufoCarriedEnemies.Count > 0;
 
-        if (ufoSeekTimer < ufoSeekTime && ufoCarriedEnemies.Count < 5)
+        if (ufoCarriedEnemies.Count < 5 && (ufoSeekTimer < ufoSeekTime || ufoCarriedEnemies.Count < 1))
         {
             ufoSeekTimer += deltaTime;
 
