@@ -116,24 +116,27 @@ public static class AssetManager
         LoadTexture("crane_biggerbox_idle", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle");
         LoadTexture("crane_biggerbox_attack", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack");
         LoadTexture("crane_biggerbox_box", "sprites/Towers/Crane/crane_biggerbox/biggerbox");
-        LoadTexture("crane_biggerbox_icon", "sprites/Towers/Crane/crane_biggerbox/biggerbox_icon");
         LoadTexture("crane_chargedlifts_idle", "sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_idle");
         LoadTexture("crane_chargedlifts_attack", "sprites/Towers/Crane/crane_chargedlifts/crane_chargedlifts_attack");
-        LoadTexture("crane_chargedlifts_icon", "sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon");
         LoadTexture("crane_crusher_idle", "sprites/Towers/Crane/crane_crusher/crane_crusher_idle");
         LoadTexture("crane_crusher_attack", "sprites/Towers/Crane/crane_crusher/crane_crusher_fire");
         LoadTexture("crane_crusher_ball", "sprites/Towers/Crane/crane_crusher/crusherball");
         LoadTexture("crane_explosivepayload_idle", "sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_idle");
         LoadTexture("crane_explosivepayload_attack", "sprites/Towers/Crane/crane_explosivepayload/crane_explosivepayload_attack");
-        LoadTexture("crane_explosivepayload_icon", "sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon");
         LoadTexture("crane_explosivepayload_box", "sprites/Towers/Crane/crane_explosivepayload/explosivebox");
         LoadTexture("crane_lasergate_idle", "sprites/Towers/Crane/crane_lasergate/crane_lasergate_idle");
         LoadTexture("crane_lasergate_attack", "sprites/Towers/Crane/crane_lasergate/crane_lasergate_attacking");
-        LoadTexture("crane_lasergate_icon", "sprites/Towers/Crane/crane_lasergate/lasergate_icon");
         LoadTexture("crane_lasergate_laser", "sprites/Towers/Crane/crane_lasergate/gatelaser");
         LoadTexture("crane_sawblade_idle", "sprites/Towers/Crane/crane_sawblade/crane_sawblade_idle");
         LoadTexture("crane_sawblade_attack", "sprites/Towers/Crane/crane_sawblade/crane_sawblade_attack");
         LoadTexture("crane_sawblade_blade", "sprites/Towers/Crane/crane_sawblade/sawblade");
+
+        LoadTexture("crane_biggerbox_icon", "sprites/Towers/Crane/crane_biggerbox/biggerbox_icon");
+        LoadTexture("crane_chargedlifts_icon", "sprites/Towers/Crane/crane_chargedlifts/chargedlifts_icon");
+        LoadTexture("crane_explosivepayload_icon", "sprites/Towers/Crane/crane_explosivepayload/explosivepayload_icon");
+        LoadTexture("crane_lasergate_icon", "sprites/Towers/Crane/crane_lasergate/lasergate_icon");
+        LoadTexture("crane_crusher_icon", "sprites/Towers/Crane/crane_crusher/crusher_icon");
+        LoadTexture("crane_sawblade_icon", "sprites/Towers/Crane/crane_sawblade/sawblade_icon");
 
         LoadTexture("mortar_base_idle", "sprites/Towers/Mortar/mortar_base/mortar_base_idle");
         LoadTexture("mortar_base_fire", "sprites/Towers/Mortar/mortar_base/mortar_base_fire");
