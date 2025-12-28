@@ -16,7 +16,7 @@ public class SettingsScreen : UIEntity
     private UIEntity backButton;
 
     public delegate void OnDestroyedHandler();
-    public event OnDestroyedHandler OnDestroyed;
+    public static event OnDestroyedHandler OnDestroyed;
 
     public SettingsScreen(Game1 game, List<UIEntity> uiEntities) : base(game, uiEntities,
         GetSettingsScreenBackgroundSprite(game))

@@ -30,6 +30,7 @@ class GunTurret : Entity, ITower
     private Entity muzzleFlash;
     private float muzzleFlashTimer;
 
+    private bool isPhotonCannonFiring;
     private Entity? photonCannonBeam;
 
     private Random random = new();
@@ -228,12 +229,18 @@ class GunTurret : Entity, ITower
         var closestEnemy = towerCore.GetClosestValidEnemy(baseRange);
 
         actionTimer += deltaTime;
+
         photonCannonTargetDistance = 0f;
         photonCannonBeam!.Scale = Vector2.Zero;
 
         if (closestEnemy is null)
         {
-            SoundSystem.ToggleSound("laser", false);
+            if (isPhotonCannonFiring)
+            {
+                SoundSystem.ToggleSound("laser", false);
+            }
+
+            isPhotonCannonFiring = false;
             return;
         }
 
@@ -248,7 +255,6 @@ class GunTurret : Entity, ITower
             photonCannonTargetDistance = diff.Length() - muzzleOffsetFactor;
             photonCannonBeam.SetPosition(turretHeadAxisCenter + direction * muzzleOffsetFactor);
             photonCannonBeam.RotationRadians = MathF.Atan2(direction.Y, direction.X) + MathHelper.Pi;
-            SoundSystem.ToggleSound("laser", true);
 
             if (actionTimer >= actionInterval)
             {
@@ -258,6 +264,13 @@ class GunTurret : Entity, ITower
                 actionTimer = 0f;
                 ParticleSystem.PlayPhotonLaserImpact(entryPoint);
             }
+
+            if (!isPhotonCannonFiring)
+            {
+                SoundSystem.ToggleSound("laser", true);
+            }
+
+            isPhotonCannonFiring = true;
         }
     }
 

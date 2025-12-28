@@ -279,5 +279,14 @@ public class Game1 : Game
     public void SetPauseState(bool isPaused)
     {
         this.IsPaused = isPaused;
+
+        if (IsPaused)
+        {
+            SoundSystem.PauseAllToggledAudio();
+        }
+        else
+        {
+            SoundSystem.ResumeAllToggledAudio();
+        }
     }
 }

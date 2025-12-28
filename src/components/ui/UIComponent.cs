@@ -450,7 +450,7 @@ public class UIComponent : DrawableGameComponent
                 }
 
                 pauseMenuElements.Clear();
-                settingsScreen.OnDestroyed += () =>
+                SettingsScreen.OnDestroyed += () =>
                 {
                     TogglePauseMenu(true);
                     settingsScreen = null;
