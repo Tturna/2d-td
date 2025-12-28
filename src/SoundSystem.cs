@@ -7,6 +7,7 @@ public static class SoundSystem
 {
     private record struct ToggledSound
     {
+        public string SoundEffectName;
         public SoundEffectInstance Instance;
         public int CurrentUserCount;
     }
@@ -14,13 +15,35 @@ public static class SoundSystem
     private static Dictionary<SoundEffect, ToggledSound> toggledSounds = new();
     private static bool isSubscribedToSettings;
 
+    private static Dictionary<string, float> sfxVolumeMultipliers = new()
+    {
+        { "coin", 0.3f },
+        { "mortarfire", 1.5f },
+        { "alarm", 0.5f },
+        { "enemyHit1", 0.75f },
+        { "enemyHit2", 0.75f },
+        { "enemyHit3", 0.75f }
+    };
+    
+    private static float GetFinalSoundVolume(string soundEffect)
+    {
+        var finalVolume = SettingsSystem.GetTotalSFXVolume();
+
+        if (sfxVolumeMultipliers.TryGetValue(soundEffect, out var volumeMultiplier))
+        {
+            finalVolume *= volumeMultiplier;
+        }
+
+        return finalVolume;
+    }
+
     private static void UpdateToggledSoundVolume()
     {
         foreach (var (sound, toggledSound) in toggledSounds)
         {
             if (toggledSound.Instance is null) continue;
 
-            toggledSound.Instance.Volume = SettingsSystem.GetTotalSFXVolume();
+            toggledSound.Instance.Volume = GetFinalSoundVolume(toggledSound.SoundEffectName);
         }
     }
 
@@ -33,7 +56,7 @@ public static class SoundSystem
 
         var sound = AssetManager.GetSound(name);
         var instance = sound.CreateInstance();
-        instance.Volume = SettingsSystem.GetTotalSFXVolume();
+        instance.Volume = GetFinalSoundVolume(name);
         instance.Play();
 
         return instance;
@@ -74,11 +97,12 @@ public static class SoundSystem
         else if (state)
         {
             var instance = sound.CreateInstance();
-            instance.Volume = SettingsSystem.GetTotalSFXVolume();
+            instance.Volume = GetFinalSoundVolume(name);
             instance.IsLooped = true;
             instance.Play();
 
             toggledSound = new ToggledSound();
+            toggledSound.SoundEffectName = name;
             toggledSound.Instance = instance;
             toggledSound.CurrentUserCount = 1;
             toggledSounds.Add(sound, toggledSound);
