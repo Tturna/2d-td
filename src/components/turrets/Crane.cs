@@ -20,7 +20,7 @@ public class Crane : Entity, ITower
     private float cooldownTime = 1.5f;
     private float reelDelayTime = 1.5f;
     private float actionTime = 1f;
-    private int damage = 50;
+    private int damage = 75;
     private float reelSpeedFactor = 1.5f;
     private int pierce = 3;
 
@@ -66,7 +66,7 @@ public class Crane : Entity, ITower
         var chargedLiftsIcon = AssetManager.GetTexture("crane_chargedlifts_icon");
         var laserGateIcon = AssetManager.GetTexture("crane_lasergate_icon");
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 110);
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 140);
         var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 70);
         var bigBox = new TowerUpgradeNode(Upgrade.BigBox.ToString(), bigBoxIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
@@ -713,7 +713,7 @@ public class Crane : Entity, ITower
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
 
-            damage = 100;
+            damage = 150;
             var ballOffsetAdjustment = new Vector2(2, 3);
             var towerOffset = new Vector2(0, -2);
 

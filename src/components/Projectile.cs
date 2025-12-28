@@ -123,7 +123,7 @@ class Projectile : Entity
                 var diff = enemy.Position - oldPosition;
                 var knockbackDirection = diff;
                 knockbackDirection.Normalize();
-                var knockback = knockbackDirection * (Damage / 15);
+                var knockback = knockbackDirection * (Damage / 20);
 
                 if (knockback.Y > -1)
                 {

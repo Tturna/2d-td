@@ -12,6 +12,16 @@
             "easyFormation1",
             "easyFormation2"
         ],
+        "maxFormations": 3
+    },
+    {
+        "formations":
+        [
+            "easyFormation1",
+            "easyFormation2",
+            "easyFormation3",
+            "easyFormation4"
+        ],
         "maxFormations": 4
     },
     {
@@ -32,17 +42,7 @@
             "easyFormation3",
             "easyFormation4"
         ],
-        "maxFormations": 6
-    },
-    {
-        "formations":
-        [
-            "easyFormation1",
-            "easyFormation2",
-            "easyFormation3",
-            "easyFormation4"
-        ],
-        "maxFormations": 8
+        "maxFormations": 7
     },
 
 

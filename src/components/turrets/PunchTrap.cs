@@ -12,8 +12,8 @@ class PunchTrap : Entity, ITower
     private static int baseTileRange = 2;
     private Vector2 direction = new Vector2(-1,0);
     private float knockback = 4f;
-    private int damage = 10;
-    private float actionsPerSecond = 0.333f;
+    private int damage = 20;
+    private float actionsPerSecond = 0.5f;
     private float actionTimer;
 
     private float chainsawTurnoffDelay = 0.5f;
@@ -337,7 +337,7 @@ class PunchTrap : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 9;
 
-            damage += 10;
+            damage += 20;
             knockback *= 1.5f;
             UpdatePosition(-Vector2.One);
         }
@@ -348,7 +348,7 @@ class PunchTrap : Entity, ITower
             newIdleFrameCount = 1;
             newFireFrameCount = 7;
 
-            actionsPerSecond = 0.5f;
+            actionsPerSecond = 1f;
         }
         else if (newUpgrade.Name == Upgrade.MegaPunch.ToString())
         {

@@ -14,7 +14,7 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.GunTurret, 20 },
         { BuildingSystem.TowerType.Railgun, 25 },
         { BuildingSystem.TowerType.Drone, 25 },
-        { BuildingSystem.TowerType.Crane, 20 },
+        { BuildingSystem.TowerType.Crane, 15 },
         { BuildingSystem.TowerType.Mortar, 30 },
         { BuildingSystem.TowerType.Hovership, 25 },
         { BuildingSystem.TowerType.PunchTrap, 5 }
