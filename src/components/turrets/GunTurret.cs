@@ -67,7 +67,7 @@ class GunTurret : Entity, ITower
         doubleGun.Description = "+1 shots/sec";
         improvedBarrel.Description = "+3 damage,\n+4 range";
         photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
-        botShot.Description = "-75% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
+        botShot.Description = "-25% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
         rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -410,7 +410,8 @@ class GunTurret : Entity, ITower
             realRange = baseRange - 2;
             realDamage = baseDamage + 8;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
-            actionsPerSecond *= 0.25f;
+            actionsPerSecond *= 0.75f;
+            UpdatePosition(new Vector2(-2, -2));
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {
