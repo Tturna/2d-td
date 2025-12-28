@@ -752,6 +752,8 @@ public class Crane : Entity, ITower
 
             UpdatePosition(towerOffset);
             ballOffset += ballOffsetAdjustment;
+            reelDelayTime = 3f;
+            cooldownTime = 2f;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
