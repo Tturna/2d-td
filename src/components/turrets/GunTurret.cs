@@ -216,7 +216,7 @@ class GunTurret : Entity, ITower
             var directionAddition = perpendicular * randomMagnitude;
             var targetDirection = enemyDirection + directionAddition;
             targetDirection.Normalize();
-            Shoot(targetDirection);
+            Shoot(targetDirection, playSound: i == 0);
         }
 
         actionTimer = 0f;
@@ -319,7 +319,7 @@ class GunTurret : Entity, ITower
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Vector2 direction, int explosionTileRadius = 0)
+    private void Shoot(Vector2 direction, int explosionTileRadius = 0, bool playSound = true)
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
@@ -346,7 +346,11 @@ class GunTurret : Entity, ITower
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
         ParticleSystem.PlayShotSmokeEffect(startLocation);
-        SoundSystem.PlaySound("shoot");
+
+        if (playSound)
+        {
+            SoundSystem.PlaySound("shoot");
+        }
     }
 
     public override void Destroy()
