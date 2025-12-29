@@ -19,7 +19,8 @@ public class Enemy : Entity, IKnockable
     private float selfDestructTime = 8;
     private float selfDestructTimer;
     private Vector2 previousMotionCheckPosition;
-    private float motionCheckInterval = 0.1f;
+    private float motionCheckInterval = 0.3f;
+    private float motionCheckTimer;
     private readonly int yKillThreshold = 100 * Grid.TileLength;
     private Random random = new();
 
@@ -70,10 +71,12 @@ public class Enemy : Entity, IKnockable
         var totalGameSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
         var scaledSeconds = (int)(totalGameSeconds * 100);
         var posDiff = Position - previousMotionCheckPosition;
+        motionCheckTimer += deltaTime;
 
-        if (scaledSeconds % (motionCheckInterval * 100) == 0)
+        if (motionCheckTimer > motionCheckInterval)
         {
             previousMotionCheckPosition = Position;
+            motionCheckTimer = 0;
         }
 
         var rawXVelocity = MathF.Abs(posDiff.X);

@@ -27,6 +27,7 @@ public static class SceneManager
 
     private static void OnSceneLoaded(Scene loadedScene)
     {
+        SoundSystem.StopAllToggledAudio();
         SceneLoaded?.Invoke(loadedScene);
     }
 }

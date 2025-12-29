@@ -60,9 +60,9 @@ public class Crane : Entity, ITower
         towerCore = new TowerCore(this);
 
         var explosivePayloadIcon = AssetManager.GetTexture("crane_explosivepayload_icon");
-        var crusherIcon = AssetManager.GetTexture("crane_biggerbox_icon"); // temp
+        var crusherIcon = AssetManager.GetTexture("crane_crusher_icon");
         var bigBoxIcon = AssetManager.GetTexture("crane_biggerbox_icon");
-        var sawbladeIcon = AssetManager.GetTexture("crane_biggerbox_icon"); // temp
+        var sawbladeIcon = AssetManager.GetTexture("crane_sawblade_icon");
         var chargedLiftsIcon = AssetManager.GetTexture("crane_chargedlifts_icon");
         var laserGateIcon = AssetManager.GetTexture("crane_lasergate_icon");
 
@@ -752,6 +752,8 @@ public class Crane : Entity, ITower
 
             UpdatePosition(towerOffset);
             ballOffset += ballOffsetAdjustment;
+            reelDelayTime = 3f;
+            cooldownTime = 2f;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData

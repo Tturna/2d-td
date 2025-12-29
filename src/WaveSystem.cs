@@ -129,7 +129,7 @@ public static class WaveSystem
 
         Console.WriteLine($"Loaded {waves.Count} waves with {formations.Count} formations");
 
-        waveCooldown = 15f;
+        waveCooldown = 25f;
         WaveCooldownLeft = waveCooldown;
         CurrentWaveIndex = -1;
         waveStarted = false;

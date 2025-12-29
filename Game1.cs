@@ -185,8 +185,9 @@ public class Game1 : Game
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
 
-            var infoPos = new Vector2(10, NativeScreenHeight - 40);
-            SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
+            // Debug
+            // var infoPos = new Vector2(10, NativeScreenHeight - 40);
+            // SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
 
             SpriteBatch.End();
         }
@@ -279,5 +280,14 @@ public class Game1 : Game
     public void SetPauseState(bool isPaused)
     {
         this.IsPaused = isPaused;
+
+        if (IsPaused)
+        {
+            SoundSystem.PauseAllToggledAudio();
+        }
+        else
+        {
+            SoundSystem.ResumeAllToggledAudio();
+        }
     }
 }
