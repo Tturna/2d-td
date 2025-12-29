@@ -12,6 +12,7 @@ public class SettingsScreen : UIEntity
 
     private Slider masterVolumeSlider;
     private Slider sfxVolumeSlider;
+    private Slider musicVolumeSlider;
     private UIEntity fullscreenButton;
     private UIEntity backButton;
 
@@ -29,14 +30,18 @@ public class SettingsScreen : UIEntity
 
         var masterVolumeSliderPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 3);
         var sfxVolumeSliderPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 5);
+        var musicVolumeSliderPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 7);
         masterVolumeSlider = new Slider(game, uiEntities, masterVolumeSliderPosition);
         sfxVolumeSlider = new Slider(game, uiEntities, sfxVolumeSliderPosition);
+        musicVolumeSlider = new Slider(game, uiEntities, musicVolumeSliderPosition);
 
         masterVolumeSlider.SetValue(SettingsSystem.MasterVolume);
         sfxVolumeSlider.SetValue(SettingsSystem.RawSoundEffectVolume);
+        musicVolumeSlider.SetValue(SettingsSystem.RawMusicVolume);
 
         masterVolumeSlider.OnValueChanged += (float newValue) => SettingsSystem.MasterVolume = newValue;
         sfxVolumeSlider.OnValueChanged += (float newValue) => SettingsSystem.RawSoundEffectVolume = newValue;
+        musicVolumeSlider.OnValueChanged += (float newValue) => SettingsSystem.RawMusicVolume = newValue;
 
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var buttonAnimationData = new AnimationSystem.AnimationData
@@ -47,7 +52,7 @@ public class SettingsScreen : UIEntity
             delaySeconds: 0.5f
         );
 
-        var fullscreenButtonPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 7);
+        var fullscreenButtonPosition = Position + new Vector2(textAreaWidth + margin * 2, margin * 9);
         fullscreenButton = new UIEntity(game, uiEntities, fullscreenButtonPosition, buttonAnimationData);
         fullscreenButton.ButtonPressed += () =>
         {
@@ -71,6 +76,7 @@ public class SettingsScreen : UIEntity
         SavingSystem.SaveGame();
         masterVolumeSlider.Destroy();
         sfxVolumeSlider.Destroy();
+        musicVolumeSlider.Destroy();
         fullscreenButton.Destroy();
         backButton.Destroy();
         OnDestroyed?.Invoke();
@@ -84,17 +90,20 @@ public class SettingsScreen : UIEntity
         var settingsTextPos = Position + new Vector2(margin);
         var masterVolumeTextPos = Position + new Vector2(margin, margin * 3);
         var sfxVolumeTextPos = Position + new Vector2(margin, margin * 5);
-        var fullscreenTogglePos = Position + new Vector2(margin, margin * 7);
+        var musicVolumeTextPos = Position + new Vector2(margin, margin * 7);
+        var fullscreenTogglePos = Position + new Vector2(margin, margin * 9);
 
         game.SpriteBatch.DrawString(game.DefaultFont, "Settings", settingsTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Master volume", masterVolumeTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Effects volume", sfxVolumeTextPos, Color.White);
+        game.SpriteBatch.DrawString(game.DefaultFont, "Music volume", musicVolumeTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Fullscreen", fullscreenTogglePos, Color.White);
 
         var valueTextOrigin = masterVolumeTextPos + Vector2.UnitX * (textAreaWidth + 80 + margin * 3);
         var masterVolumeValuePos = valueTextOrigin;
         var sfxVolumeValuePos = valueTextOrigin + new Vector2(0, margin * 2);
-        var fullscreenTextPos = valueTextOrigin + new Vector2(0, margin * 4);
+        var musicVolumeValuePos = valueTextOrigin + new Vector2(0, margin * 4);
+        var fullscreenTextPos = valueTextOrigin + new Vector2(0, margin * 6);
         var fullscreenText = game.Graphics.IsFullScreen ? "Enabled" : "Disabled";
         var fullscreenToggleTextSize = game.DefaultFont.MeasureString("Toggle");
         var fullscreenToggleTextPos = fullscreenButton.Position + fullscreenButton.Size / 2 - fullscreenToggleTextSize / 2;
@@ -103,6 +112,8 @@ public class SettingsScreen : UIEntity
             masterVolumeValuePos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, ((int)(sfxVolumeSlider.Value * 100)).ToString(),
             sfxVolumeValuePos, Color.White);
+        game.SpriteBatch.DrawString(game.DefaultFont, ((int)(musicVolumeSlider.Value * 100)).ToString(),
+            musicVolumeValuePos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, "Toggle",
             fullscreenToggleTextPos, Color.White);
         game.SpriteBatch.DrawString(game.DefaultFont, fullscreenText,
