@@ -82,9 +82,21 @@
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/explosion/explosion.mp3;sound/explosion/explosion
+/build:sound/explosion/explosion.mp3
 
-#begin sound/punch1.mp3
+#begin sound/music/Cyberpunk Moonlight Sonata.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sound/music/Cyberpunk Moonlight Sonata.mp3
+
+#begin sound/music/menutrack.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sound/music/menutrack.mp3;sound/music/menutrack
+
+#begin sound/turret/laser1.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
@@ -94,43 +106,43 @@
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/laser1.mp3;sound/turret/laser1
+/build:sound/turret/laser1.mp3
 
 #begin sound/turret/mortarfire.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/mortarfire.mp3;sound/turret/mortarfire
+/build:sound/turret/mortarfire.mp3
 
 #begin sound/turret/placeDown.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/placeDown.mp3;sound/turret/placeDown
+/build:sound/turret/placeDown.mp3
 
 #begin sound/turret/railgunfire.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/railgunfire.mp3;sound/turret/railgunfire
+/build:sound/turret/railgunfire.mp3
 
 #begin sound/turret/sell.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/sell.mp3;sound/turret/sell
+/build:sound/turret/sell.mp3
 
 #begin sound/turret/shoot.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/shoot.mp3;sound/turret/shoot
+/build:sound/turret/shoot.mp3
 
 #begin sound/turret/upgrade.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound/turret/upgrade.mp3;sound/turret/upgrade
+/build:sound/turret/upgrade.mp3
 
 #begin sprites/2dtd_palatte.png
 /importer:TextureImporter

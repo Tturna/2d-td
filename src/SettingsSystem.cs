@@ -4,9 +4,15 @@ public static class SettingsSystem
 {
     public static float MasterVolume = 0.2f;
     public static float RawSoundEffectVolume = 1f;
+    public static float RawMusicVolume = 1f;
 
     public static float GetTotalSFXVolume()
     {
         return RawSoundEffectVolume * MasterVolume;
+    }
+
+    public static float GetTotalMusicVolume()
+    {
+        return RawMusicVolume * MasterVolume;
     }
 }

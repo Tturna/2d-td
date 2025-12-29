@@ -51,13 +51,13 @@ public static class ProgressionManager
         {
             LastUnlockedZone = zone;
             LastUnlockedLevel = level;
+            SavingSystem.SaveGame();
         }
         else if (zone == LastUnlockedZone && level > LastUnlockedLevel)
         {
             LastUnlockedLevel = level;
+            SavingSystem.SaveGame();
         }
-
-        SavingSystem.SaveGame();
     }
 
     public static void UnlockNextLevel()

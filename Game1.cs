@@ -185,8 +185,9 @@ public class Game1 : Game
                 samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             mainMenu.Draw(gameTime);
 
-            var infoPos = new Vector2(10, NativeScreenHeight - 40);
-            SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
+            // Debug
+            // var infoPos = new Vector2(10, NativeScreenHeight - 40);
+            // SpriteBatch.DrawString(DefaultFont, AppContext.BaseDirectory, infoPos, Color.White);
 
             SpriteBatch.End();
         }
@@ -231,6 +232,7 @@ public class Game1 : Game
         Terrain = null;
 
         ProgressionManager.Initialize();
+        SoundSystem.StopSong();
 
         switch (loadedScene)
         {
@@ -260,10 +262,14 @@ public class Game1 : Game
                 var parallax = new Parallax(this);
                 Components.Add(parallax);
 
+                SoundSystem.PlaySong("moonlightsonata");
+
                 break;
             case SceneManager.Scene.Menu:
                 mainMenu = new MainMenuUIComponent(this);
                 Components.Add(mainMenu);
+                SoundSystem.PlaySong("menu");
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException($"Loaded scene '{loadedScene}' did not match any scene in SceneManager.Scene.");
@@ -279,5 +285,14 @@ public class Game1 : Game
     public void SetPauseState(bool isPaused)
     {
         this.IsPaused = isPaused;
+
+        if (IsPaused)
+        {
+            SoundSystem.PauseAllToggledAudio();
+        }
+        else
+        {
+            SoundSystem.ResumeAllToggledAudio();
+        }
     }
 }
