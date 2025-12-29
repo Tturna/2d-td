@@ -16,7 +16,8 @@ public class SettingsScreen : UIEntity
     private UIEntity backButton;
 
     public delegate void OnDestroyedHandler();
-    public static event OnDestroyedHandler OnDestroyed;
+    public event OnDestroyedHandler OnDestroyed;
+    public static event OnDestroyedHandler OnSettingsSaved;
 
     public SettingsScreen(Game1 game, List<UIEntity> uiEntities) : base(game, uiEntities,
         GetSettingsScreenBackgroundSprite(game))
@@ -73,6 +74,7 @@ public class SettingsScreen : UIEntity
         fullscreenButton.Destroy();
         backButton.Destroy();
         OnDestroyed?.Invoke();
+        OnSettingsSaved?.Invoke();
 
         base.Destroy();
     }

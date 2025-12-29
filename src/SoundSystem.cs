@@ -51,7 +51,8 @@ public static class SoundSystem
     {
         if (!isSubscribedToSettings)
         {
-            SettingsScreen.OnDestroyed += () => UpdateToggledSoundVolume();
+            SettingsScreen.OnSettingsSaved += () => UpdateToggledSoundVolume();
+            isSubscribedToSettings = true;
         }
 
         var sound = AssetManager.GetSound(name);
@@ -66,7 +67,8 @@ public static class SoundSystem
     {
         if (!isSubscribedToSettings)
         {
-            SettingsScreen.OnDestroyed += () => UpdateToggledSoundVolume();
+            SettingsScreen.OnSettingsSaved += () => UpdateToggledSoundVolume();
+            isSubscribedToSettings = true;
         }
 
         var sound = AssetManager.GetSound(name);
