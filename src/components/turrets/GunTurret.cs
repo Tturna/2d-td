@@ -15,7 +15,7 @@ class GunTurret : Entity, ITower
     private float photonCannonTargetDistance;
 
     private static int baseRange = 12;
-    private int realRange;
+    private int realTileRange;
     private int baseDamage = 10;
     private int realDamage;
     private float actionsPerSecond = 1f;
@@ -33,6 +33,10 @@ class GunTurret : Entity, ITower
     private bool isPhotonCannonFiring;
     private Entity? photonCannonBeam;
 
+    private float ultraCaliberLineTimer;
+    private float ultraCaliberLineTime = 0.05f;
+    private Vector2 ultraCaliberShotTarget;
+
     private Random random = new();
 
     public enum Upgrade
@@ -42,7 +46,8 @@ class GunTurret : Entity, ITower
         PhotonCannon,
         BotShot,
         ImprovedBarrel,
-        RocketShots
+        RocketShots,
+        UltraCaliber
     }
 
     public GunTurret(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
@@ -54,13 +59,17 @@ class GunTurret : Entity, ITower
         var doubleGunIcon = AssetManager.GetTexture("gunTurret_doublegun_icon");
         var rocketShotsIcon = AssetManager.GetTexture("gunTurret_rocketshots_icon");
         var improvedBarrelIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
+        var ultraCaliberIcon = AssetManager.GetTexture("gunTurret_improvedbarrel_icon");
 
         var photonCannon = new TowerUpgradeNode(Upgrade.PhotonCannon.ToString(), photonCannonIcon, price: 135);
         var botShot = new TowerUpgradeNode(Upgrade.BotShot.ToString(), botShotIcon, price: 110);
-        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 20, leftChild: photonCannon, rightChild: botShot);
+        var doubleGun = new TowerUpgradeNode(Upgrade.DoubleGun.ToString(), doubleGunIcon, price: 20,
+            leftChild: photonCannon, rightChild: botShot);
 
         var rocketShots = new TowerUpgradeNode(Upgrade.RocketShots.ToString(), rocketShotsIcon, price: 140);
-        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon, price: 15, leftChild: rocketShots);
+        var ultraCaliber = new TowerUpgradeNode(Upgrade.UltraCaliber.ToString(), ultraCaliberIcon, price: 120);
+        var improvedBarrel = new TowerUpgradeNode(Upgrade.ImprovedBarrel.ToString(), improvedBarrelIcon,
+            price: 15, leftChild: rocketShots, rightChild: ultraCaliber);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0, parent: null,
             leftChild: doubleGun, rightChild: improvedBarrel);
@@ -70,9 +79,10 @@ class GunTurret : Entity, ITower
         photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
         botShot.Description = "-25% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
         rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
+        ultraCaliber.Description = "+20 damage,\n+6 range,\nTargest highest health enemy,\ndoes more damage to far\naway enemies.";
 
         towerCore.CurrentUpgrade = defaultNode;
-        realRange = baseRange;
+        realTileRange = baseRange;
         realDamage = baseDamage;
 
         var muzzleFlashAnimation = new AnimationSystem.AnimationData(
@@ -137,6 +147,10 @@ class GunTurret : Entity, ITower
         {
             HandleRocketShots(deltaTime);
         }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.UltraCaliber.ToString())
+        {
+            HandleUltraCaliber(deltaTime);
+        }
 
         if (muzzleFlash.Scale != Vector2.Zero)
         {
@@ -170,18 +184,28 @@ class GunTurret : Entity, ITower
                 photonCannonBeam!.Scale = new Vector2(photonCannonTargetDistance, 1);
             }
         }
+
+        if (ultraCaliberLineTimer > 0)
+        {
+            var rad = -turretHead!.RotationRadians - MathHelper.PiOver2;
+            var dirX = Math.Sin(rad);
+            var dirY = Math.Cos(rad);
+            var dir = new Vector2((float)dirX, (float)dirY);
+            LineUtility.DrawLine(Game.SpriteBatch, turretHeadAxisCenter + dir * muzzleOffsetFactor,
+                ultraCaliberShotTarget, Color.White);
+        }
     }
 
     private void HandleBasicShots(float deltaTime)
     {
         var actionInterval = 1f / actionsPerSecond;
-        var closestEnemy = towerCore.GetClosestValidEnemy(realRange);
+        var closestEnemy = towerCore.GetClosestValidEnemy(realTileRange);
 
         actionTimer += deltaTime;
 
         if (closestEnemy is null) return;
 
-        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+        AimAtPosition(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (actionTimer >= actionInterval)
         {
@@ -208,7 +232,7 @@ class GunTurret : Entity, ITower
         var enemyDirection = enemyPosition - turretHeadAxisCenter;
         enemyDirection.Normalize();
         var perpendicular = new Vector2(enemyDirection.Y, -enemyDirection.X);
-        AimAtClosestEnemy(enemyPosition, deltaTime);
+        AimAtPosition(enemyPosition, deltaTime);
 
         for (int i = 0; i < 5; i++)
         {
@@ -244,7 +268,7 @@ class GunTurret : Entity, ITower
             return;
         }
 
-        var aimAccuracy = AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+        var aimAccuracy = AimAtPosition(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (aimAccuracy < 0.05f && Collision.IsLineInEntity(turretHeadAxisCenter,
             closestEnemy.Position + closestEnemy.Size / 2, closestEnemy, out var entryPoint, out var _))
@@ -283,7 +307,7 @@ class GunTurret : Entity, ITower
 
         if (closestEnemy is null) return;
 
-        AimAtClosestEnemy(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
+        AimAtPosition(closestEnemy.Position + closestEnemy.Size / 2, deltaTime);
 
         if (actionTimer >= actionInterval)
         {
@@ -295,13 +319,79 @@ class GunTurret : Entity, ITower
         }
     }
 
+    private void HandleUltraCaliber(float deltaTime)
+    {
+        var actionInterval = 1f / actionsPerSecond;
+        var healthiesEnemy = GetHealthiestEnemyInRange(realTileRange);
+
+        actionTimer += deltaTime;
+
+        if (ultraCaliberLineTimer > 0)
+        {
+            ultraCaliberLineTimer -= deltaTime;
+        }
+
+        if (healthiesEnemy is null) return;
+
+        AimAtPosition(healthiesEnemy.Position + healthiesEnemy.Size / 2, deltaTime);
+
+        if (actionTimer >= actionInterval)
+        {
+            var enemyCenter = healthiesEnemy.Position + healthiesEnemy.Size / 2;
+            var diff = enemyCenter - turretHeadAxisCenter;
+            var direction = diff;
+            direction.Normalize();
+            var distance = diff.Length();
+
+            // inverse lerp
+            var minRange = realTileRange / 2 * Grid.TileLength;
+            var maxRange = realTileRange * Grid.TileLength;
+            var damageMultiplier = 1f + (distance - minRange) / (maxRange - minRange);
+
+            healthiesEnemy.HealthSystem.TakeDamage(this, (int)(realDamage * damageMultiplier));
+            actionTimer = 0f;
+            ultraCaliberLineTimer = ultraCaliberLineTime;
+            ultraCaliberShotTarget = healthiesEnemy.Position + healthiesEnemy.Size / 2;
+        }
+    }
+
+    private Enemy? GetHealthiestEnemyInRange(int tileRange)
+    {
+        Enemy? healthiestEnemy = null;
+        float highestHealth = float.NegativeInfinity;
+        var range = tileRange * Grid.TileLength;
+        var towerCenter = Position + Size / 2;
+        var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(towerCenter, range);
+
+        foreach (Enemy enemy in enemyCandidates)
+        {
+            var enemyCenter = enemy.Position + enemy.Size / 2;
+            var distanceToEnemy = Vector2.Distance(towerCenter, enemyCenter);
+
+            DebugUtility.DrawDebugLine(towerCenter, enemyCenter, Color.Lime);
+
+            if (distanceToEnemy > range)
+                continue;
+
+            if (enemy.HealthSystem.MaxHealth > highestHealth)
+            {
+                if (Collision.IsLineInTerrain(towerCenter, enemyCenter, out var _, out var _)) continue;
+
+                highestHealth = enemy.HealthSystem.MaxHealth;
+                healthiestEnemy = enemy;
+            }
+        }
+
+        return healthiestEnemy;
+    }
+
     /// <summary>
     /// Aims the turret head smoothly towards given position. Returns similarity between turret head direction
     /// and target direction (0 = same, 1 = opposite).
     /// </summary>
-    private float AimAtClosestEnemy(Vector2 enemyPosition, float deltaTime)
+    private float AimAtPosition(Vector2 position, float deltaTime)
     {
-        var enemyTurretDiff = enemyPosition - turretHead!.Position;
+        var enemyTurretDiff = position - turretHead!.Position;
         // Add MathHelper.Pi to rotate by 180 degrees because the turret sprite's forward direction is opposite to the mathematical zero angle.
         var radiansToEnemy = (float)Math.Atan2(enemyTurretDiff.Y, enemyTurretDiff.X) + MathHelper.Pi;
         var radiansDiff = radiansToEnemy - turretHead.RotationRadians;
@@ -319,7 +409,7 @@ class GunTurret : Entity, ITower
         return radiansDiff / MathHelper.Pi;
     }
 
-    private void Shoot(Vector2 direction, int explosionTileRadius = 0, bool playSound = true)
+    private void Shoot(Vector2 direction, int? damage = null, int explosionTileRadius = 0, bool playSound = true)
     {
         direction.Normalize();
         var muzzleOffset = direction * muzzleOffsetFactor;
@@ -334,7 +424,7 @@ class GunTurret : Entity, ITower
         var bullet = new Projectile(Game, this, startLocation);
         bullet.Direction = direction;
         bullet.BulletPixelsPerSecond = bulletPixelsPerSecond;
-        bullet.Damage = realDamage;
+        bullet.Damage = damage ?? realDamage;
         bullet.Lifetime = 1f;
         bullet.Pierce = 3;
         bullet.Sprite = projectileSprite;
@@ -424,7 +514,7 @@ class GunTurret : Entity, ITower
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_botshot_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
-            realRange = baseRange - 2;
+            realTileRange = baseRange - 2;
             realDamage = baseDamage + 8;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
             actionsPerSecond *= 0.75f;
@@ -449,7 +539,7 @@ class GunTurret : Entity, ITower
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_rocketshots_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
-            realRange = baseRange + 8;
+            realTileRange = baseRange + 8;
             realDamage = baseDamage + 23;
             projectileSprite = AssetManager.GetTexture("gunTurret_rocketshots_rocket");
             projectileRotationOffset = MathHelper.Pi; // rotate 180 degrees
@@ -459,10 +549,15 @@ class GunTurret : Entity, ITower
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_doublegun_gun");
             actionsPerSecond += 1;
         }
+        else if (newUpgrade.Name == Upgrade.UltraCaliber.ToString())
+        {
+            realDamage += 20;
+            realTileRange += 6;
+        }
         else if (newUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_improvedbarrel_gun");
-            realRange = baseRange + 4;
+            realTileRange = baseRange + 4;
             realDamage = baseDamage + 3;
             projectileSprite = AssetManager.GetTexture("gunTurret_improvedbarrel_bullet");
         }
@@ -482,7 +577,7 @@ class GunTurret : Entity, ITower
 
     public float GetRange()
     {
-        return realRange;
+        return realTileRange;
     }
 
     public TowerCore GetTowerCore() => towerCore;
