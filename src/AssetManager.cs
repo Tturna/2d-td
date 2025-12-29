@@ -296,8 +296,18 @@ public static class AssetManager
         LoadTexture("main_play_button", "sprites/UI/mainmenu_playbutton");
         LoadTexture("main_quit_button", "sprites/UI/mainmenu_quitbutton");
         LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
-        LoadTexture("zoneselector_bg", "sprites/UI/zoneselectorbg_temp");
-        LoadTexture("zone3levelselector_bg", "sprites/UI/zone3levelselectorbg_temp");
+        LoadTexture("zoneselector_bg", "sprites/UI/worldmap");
+        LoadTexture("zone1levelselector_bg", "sprites/UI/zoneselect_background_zone1");
+        LoadTexture("zone2levelselector_bg", "sprites/UI/zoneselect_background_zone2");
+        LoadTexture("zone3levelselector_bg", "sprites/UI/zoneselect_background_zone3");
+        LoadTexture("zone4levelselector_bg", "sprites/UI/zoneselect_background_zone4");
+        LoadTexture("zonebutton1", "sprites/UI/zonebutton_1");
+        LoadTexture("zonebutton2", "sprites/UI/zonebutton_2");
+        LoadTexture("zonebutton3", "sprites/UI/zonebutton_3");
+        LoadTexture("zonebutton4", "sprites/UI/zonebutton_4");
+        LoadTexture("btn_back", "sprites/UI/button_back");
+        LoadTexture("levelbutton_uncleared", "sprites/UI/levelbutton_uncleared");
+        LoadTexture("levelbutton_cleared", "sprites/UI/levelbutton_cleared");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
