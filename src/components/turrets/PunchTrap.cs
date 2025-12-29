@@ -76,7 +76,7 @@ class PunchTrap : Entity, ITower
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(),
             upgradeIcon: null, price: 0, parent: null, leftChild: fatFist, rightChild: quickJabs);
 
-        fatFist.Description = "+10 damage\n+1.5x knockback";
+        fatFist.Description = "+20 damage\n+1.5x knockback";
         quickJabs.Description = "-1 second recharge";
         megaPunch.Description = "+20 damage\n1.5x knockback\nCharges up the longer it\ngoes without firing,\nup to +100 damage and\n+250% knockback.";
         rocketGlove.Description = "The first flies out and\nexplodes for 60 damage.";

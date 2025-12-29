@@ -74,10 +74,10 @@ class Railgun : Entity, ITower
 
         Momentum.Description = "+3 pierce";
         PolishedRound.Description = "+25 damage";
-        AntimatterLaser.Description = "+9 pierce,\n+6 range,\n+20 damage,\n-1 Knockback";
-        Cannonball.Description = "-2 pierce,\n+250 damage,\nx2 Knockback";
+        AntimatterLaser.Description = "+9 pierce,\n+6 range,\n+20 damage,\n-1 knockback";
+        Cannonball.Description = "-2 pierce,\n+250 damage,\nx2 knockback";
         SoundCannon.Description = "-10 damage,\n+3 knockback,\n+4 pierce";
-        GoldenGatling.Description = "+5 shots/s,\n-40 damage";
+        GoldenGatling.Description = "+5 shots/s,\n-40 damage,-2 pierce,\n-1 knockback";
 
         towerCore.CurrentUpgrade = defaultNode;
 
