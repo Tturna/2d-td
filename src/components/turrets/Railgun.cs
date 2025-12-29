@@ -32,7 +32,8 @@ class Railgun : Entity, ITower
         AntimatterLaser,
         PolishedRound,
         Cannonball,
-        GoldenGatling
+        GoldenGatling,
+        SoundCannon
     }
 
     public Railgun(Game game, Vector2 position) : base(game, position, GetUnupgradedBaseAnimationData())
@@ -58,6 +59,7 @@ class Railgun : Entity, ITower
         var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
         var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
 
+        var SoundCannon = new TowerUpgradeNode(Upgrade.SoundCannon.ToString(), antimatterLaserIcon, price: 80);
         var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 135);
         var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
 
@@ -70,10 +72,10 @@ class Railgun : Entity, ITower
 
         Momentum.Description = "+3 pierce";
         PolishedRound.Description = "+25 damage";
-        AntimatterLaser.Description = "+9 pierce,\n+ 6 range,\n+ 20 damage";
-        Cannonball.Description = "-2 pierce,\n+250 damage";
-        // TODO: figure out the whole fire thing.
-        GoldenGatling.Description = "+5 shots/s,\n-40 damage\nAfter firing for 2s straight,\ninflicts burn stacks as well.";
+        AntimatterLaser.Description = "+9 pierce,\n+6 range,\n+20 damage,\n-1 Knockback";
+        Cannonball.Description = "-2 pierce,\n+250 damage,\nx2 Knockback";
+        SoundCannon.Description = "-10 damage,\n+3 knockback,\n+4 pierce";
+        GoldenGatling.Description = "+5 shots/s,\n-40 damage";
 
         towerCore.CurrentUpgrade = defaultNode;
 

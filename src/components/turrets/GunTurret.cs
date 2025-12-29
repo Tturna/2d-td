@@ -21,6 +21,7 @@ class GunTurret : Entity, ITower
     private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bulletPixelsPerSecond = 850f;
+    private float knockback=1f;
     private float muzzleOffsetFactor = 14f;
     private float turretSmoothSpeed = 5f;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
@@ -329,6 +330,7 @@ class GunTurret : Entity, ITower
         bullet.TrailParticleInterval = 0.003f;
         bullet.TrailColor = Color.Silver;
         bullet.ExplosionTileRadius = explosionTileRadius;
+        bullet.Momentum = knockback;
 
         turretHead!.StretchImpact(new Vector2(0.7f, 1f), 0.15f);
         ParticleSystem.PlayShotSmokeEffect(startLocation);
@@ -409,6 +411,7 @@ class GunTurret : Entity, ITower
             realDamage = baseDamage + 8;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
             actionsPerSecond *= 0.75f;
+            knockback *= 2f;
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {

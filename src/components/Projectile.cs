@@ -12,6 +12,8 @@ class Projectile : Entity
     public float BulletPixelsPerSecond = 0f;
     public float BulletLength = 16f;
     public float BulletWidth = 2f;
+
+    public float Momentum = 0f;
     public int Damage = 0;
     public int Pierce = 0;
     public int ExplosionTileRadius = 0;
@@ -123,7 +125,7 @@ class Projectile : Entity
                 var diff = enemy.Position - oldPosition;
                 var knockbackDirection = diff;
                 knockbackDirection.Normalize();
-                var knockback = knockbackDirection * (Damage / 20);
+                var knockback = knockbackDirection * Momentum;
 
                 if (knockback.Y > -1)
                 {
