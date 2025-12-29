@@ -84,9 +84,9 @@ public class Mortar : Entity, ITower
             leftChild: heavyShells, rightChild: efficientReload);
 
         heavyShells.Description = "+2 tile radius,\n+10 damage";
-        efficientReload.Description = "+0.3 shots/s";
-        bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n3 times, exploding with\neach impact.";
-        nuke.Description = "+8 tile explosion radius\n+300 damage\n-0.3 shots/s\nLeaves a radiation cloud\nthat deals 5DPS for 5s.";
+        efficientReload.Description = "+0.5 shots/s";
+        bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n4 times, exploding with\neach impact.";
+        nuke.Description = "+8 tile explosion radius\n+300 damage\n -.2 shots/s";
         missileSilo.Description = "+2 projectiles\nFires homing missiles directly\nupwards, dealing 30 damage each.";
         hellrain.Description = "-2 tile explosion radius.\nFires in a 6-shot barrage\nwith considerable spread.";
 
@@ -227,7 +227,7 @@ public class Mortar : Entity, ITower
         shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         shell.RotationOffset = projectileRotationOffset;
 
-        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3, deltaTime);
+        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 4, deltaTime);
 
         actionTimer = 1f / actionsPerSecond;
 
