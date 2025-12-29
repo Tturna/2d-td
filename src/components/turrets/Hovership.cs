@@ -90,8 +90,8 @@ class Hovership : Entity, ITower
         EfficientEngines.Description = "+20 tile range.\n+100% movement speed.";
         OrbitalLaser.Description = "+10 tile hover height.\nFires once every 8s.\nFires an orbital laser\nthat deals 1600\ndamage over 4s.";
         // TODO: figure out carpet of fire. Probably won't have time to implement fire
-        CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
-        KineticBomber.Description = "-2 projectiles.\n+5 tile area of effect.\n+50 damage.\n+200% knockback.";
+        CarpetofFire.Description = "+7 projectiles,\n+5 damage";
+        KineticBomber.Description = "-2 projectiles.\n+5 tile area of effect.\n+30 damage.\n++12 knockback.";
         UFO.Description = "Sucks up to 5 bots up toward it and\ndrops them back at the entrance.\nWhile held, they take 10 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -618,7 +618,8 @@ class Hovership : Entity, ITower
             UpdatePosition(-Vector2.UnitY);
             bombSprite = AssetManager.GetTexture("hovership_carpetoffire_bomb");
 
-            realProjectileAmount += 3;
+            realProjectileAmount += 7;
+            realDamage += 5;
         }
         else if (newUpgrade.Name == Upgrade.KineticBomber.ToString())
         {
