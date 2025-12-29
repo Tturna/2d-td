@@ -168,7 +168,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/2DTDplatformerconcept.png
 
-#begin sprites/Backdrops/zone1_backdrop.png
+#begin sprites/Backdrops/backdrop_zone1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -178,7 +178,43 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/Backdrops/zone1_backdrop.png
+/build:sprites/Backdrops/backdrop_zone1.png
+
+#begin sprites/Backdrops/backdrop_zone2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Backdrops/backdrop_zone2.png
+
+#begin sprites/Backdrops/backdrop_zone3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Backdrops/backdrop_zone3.png
+
+#begin sprites/Backdrops/backdrop_zone4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Backdrops/backdrop_zone4.png
 
 #begin sprites/big_gradient.png
 /importer:TextureImporter
@@ -875,6 +911,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Crane/crane_base/crane_base_idle.png
+
+#begin sprites/Towers/Crane/crane_base/crane_base_projectile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Crane/crane_base/crane_base_projectile.png
 
 #begin sprites/Towers/Crane/crane_biggerbox/biggerbox_icon.png
 /importer:TextureImporter
@@ -3083,6 +3131,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/UI/levelbutton_cleared.png
+
+#begin sprites/UI/levelbutton_inactive.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/UI/levelbutton_inactive.png
 
 #begin sprites/UI/levelbutton_uncleared.png
 /importer:TextureImporter

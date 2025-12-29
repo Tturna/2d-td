@@ -269,7 +269,7 @@ public static class AssetManager
         LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
         // - zone4 bg
-        LoadTexture("zone1_backdrop", "sprites/Backdrops/zone1_backdrop");
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
         LoadTexture("skyscraper_ruins_1", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1");
         LoadTexture("skyscraper_ruins_2", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2");
 
@@ -308,6 +308,7 @@ public static class AssetManager
         LoadTexture("btn_back", "sprites/UI/button_back");
         LoadTexture("levelbutton_uncleared", "sprites/UI/levelbutton_uncleared");
         LoadTexture("levelbutton_cleared", "sprites/UI/levelbutton_cleared");
+        LoadTexture("levelbutton_inactive", "sprites/UI/levelbutton_inactive");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");

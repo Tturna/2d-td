@@ -287,12 +287,12 @@ public class MainMenuUIComponent : DrawableGameComponent
         title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
 
         var btnAnimationData = new AnimationSystem.AnimationData
-            (
-             texture: buttonSprite,
-             frameCount: 2,
-             frameSize: btnFrameSize,
-             delaySeconds: 0.5f
-            );
+        (
+         texture: buttonSprite,
+         frameCount: 2,
+         frameSize: btnFrameSize,
+         delaySeconds: 0.5f
+        );
 
         var levels = levelSelectionButtonPositions[selectedZone - 1].Length;
         var btnMargin = 20;
@@ -300,28 +300,64 @@ public class MainMenuUIComponent : DrawableGameComponent
 
         for (int i = 0; i < levels; i++)
         {
-            var isLevelCleared = ProgressionManager.IsLevelUnlocked(selectedZone, i + 1);
-            var textureName = isLevelCleared ? "levelbutton_cleared" : "levelbutton_uncleared";
+            var isLevelUnlocked = ProgressionManager.IsLevelUnlocked(selectedZone, i + 1);
+            string textureName;
+
+            if (!isLevelUnlocked)
+            {
+                textureName = "levelbutton_inactive";
+            }
+            else
+            {
+                if (i + 1 < 5)
+                {
+                    if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 2))
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else
+                    {
+                        textureName = "levelbutton_uncleared";
+                    }
+                }
+                else
+                {
+                    if (selectedZone + 1 >= 4)
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else if (ProgressionManager.IsLevelUnlocked(selectedZone + 1, i + 2))
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else
+                    {
+                        textureName = "levelbutton_uncleared";
+                    }
+                }
+            }
+
             var iconTexture = AssetManager.GetTexture(textureName);
+            var frameCount = textureName == "levelbutton_inactive" ? 1 : 2;
             var iconAnimationData = new AnimationSystem.AnimationData(
                 texture: iconTexture,
-                frameCount: 2,
-                frameSize: new Vector2(iconTexture.Width / 2, iconTexture.Height),
+                frameCount: frameCount,
+                frameSize: new Vector2(iconTexture.Width / frameCount, iconTexture.Height),
                 delaySeconds: float.PositiveInfinity);
 
             var pos = levelSelectionButtonPositions[selectedZone - 1][i];
             var btn = new UIEntity(game, uiEntities, pos, iconAnimationData);
             var text = $"{i + 1}";
 
-            if (isLevelCleared)
+            if (isLevelUnlocked)
             {
                 var levelNumber = i + 1;
                 btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
             }
-            else
-            {
-                text += " (x)";
-            }
+            // else
+            // {
+            //     text += " (x)";
+            // }
 
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
