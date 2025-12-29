@@ -75,7 +75,7 @@ class Railgun : Entity, ITower
         Momentum.Description = "+3 pierce";
         PolishedRound.Description = "+25 damage";
         AntimatterLaser.Description = "+9 pierce,\n+6 range,\n+20 damage,\n-1 knockback";
-        Cannonball.Description = "-2 pierce,\n+250 damage,\nx2 knockback";
+        Cannonball.Description = "-2 pierce,\n+350 damage,\nx2 knockback";
         SoundCannon.Description = "-10 damage,\n+3 knockback,\n+4 pierce";
         GoldenGatling.Description = "+5 shots/s,\n-40 damage,-2 pierce,\n-1 knockback";
 
@@ -131,7 +131,7 @@ class Railgun : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.Cannonball.ToString())
         {
-            HandleBasicShots(deltaTime, actionsPerSecond, damage+275, pierce-2);
+            HandleBasicShots(deltaTime, actionsPerSecond, damage+350, pierce-2);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.GoldenGatling.ToString())
         {
