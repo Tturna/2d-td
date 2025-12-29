@@ -15,10 +15,10 @@ public static class SoundSystem
     private static Dictionary<SoundEffect, ToggledSound> toggledSounds = new();
     private static bool isSubscribedToSettings;
 
+    // Important: Multipliers can't be greater than 1! Valid volume range is 0 to 1.
     private static Dictionary<string, float> sfxVolumeMultipliers = new()
     {
         { "coin", 0.3f },
-        { "mortarfire", 1.5f },
         { "alarm", 0.5f },
         { "enemyHit1", 0.75f },
         { "enemyHit2", 0.75f },
