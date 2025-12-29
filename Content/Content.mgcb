@@ -84,6 +84,18 @@
 /processorParam:Quality=Best
 /build:sound/explosion/explosion.mp3
 
+#begin sound/music/Cyberpunk Moonlight Sonata.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sound/music/Cyberpunk Moonlight Sonata.mp3
+
+#begin sound/music/menutrack.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sound/music/menutrack.mp3;sound/music/menutrack
+
 #begin sound/punch1.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor

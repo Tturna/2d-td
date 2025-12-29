@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace _2d_td;
 
@@ -11,6 +12,7 @@ public static class AssetManager
     private static Dictionary<string, Texture2D> _textures = new();
     private static Dictionary<string, SpriteFont> _fonts = new();
     private static Dictionary<string, SoundEffect> _soundEffects = new();
+    private static Dictionary<string, Song> _songs = new();
 
     public static void Initialize(ContentManager contentManager)
     {
@@ -33,6 +35,11 @@ public static class AssetManager
     {
         var path = contentPath is not null ? contentPath : name;
         _soundEffects.Add(name, _content.Load<SoundEffect>(path));
+    }
+    public static void LoadSong(string name, string contentPath = null)
+    {
+        var path = contentPath is not null ? contentPath : name;
+        _songs.Add(name, _content.Load<Song>(path));
     }
 
     // TODO: Split asset loading once there are different levels and zones.
@@ -295,7 +302,7 @@ public static class AssetManager
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
 
-        // sounds
+        // sound effects
         LoadSound("explosion", "sound/explosion/explosion"); // temp
         LoadSound("placeDown", "sound/turret/placeDown"); // temp
         LoadSound("shoot", "sound/turret/shoot"); // temp
@@ -312,6 +319,10 @@ public static class AssetManager
         LoadSound("enemyHit2", "sound/enemy/enemyhit2");
         LoadSound("enemyHit3", "sound/enemy/enemyhit3");
         LoadSound("alarm", "sound/alarm");
+
+        // music
+        LoadSong("moonlightsonata", "sound/music/Cyberpunk Moonlight Sonata");
+        LoadSong("menu", "sound/music/menutrack");
     }
 
     public static Texture2D GetTexture(string name)
@@ -347,6 +358,18 @@ public static class AssetManager
         else
         {
             throw new KeyNotFoundException($"Sound '{name}' not found");
+        }
+    }
+
+    public static Song GetSong(string name)
+    {
+        if (_songs.TryGetValue(name, out var song))
+        {
+            return song;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Song '{name}' not found");
         }
     }
 }
