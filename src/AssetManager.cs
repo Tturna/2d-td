@@ -289,6 +289,8 @@ public static class AssetManager
         LoadTexture("main_play_button", "sprites/UI/mainmenu_playbutton");
         LoadTexture("main_quit_button", "sprites/UI/mainmenu_quitbutton");
         LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
+        LoadTexture("zoneselector_bg", "sprites/UI/zoneselectorbg_temp");
+        LoadTexture("zone3levelselector_bg", "sprites/UI/zone3levelselectorbg_temp");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
