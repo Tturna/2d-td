@@ -232,6 +232,7 @@ public class Game1 : Game
         Terrain = null;
 
         ProgressionManager.Initialize();
+        SoundSystem.StopSong();
 
         switch (loadedScene)
         {
@@ -261,10 +262,14 @@ public class Game1 : Game
                 var parallax = new Parallax(this);
                 Components.Add(parallax);
 
+                SoundSystem.PlaySong("moonlightsonata");
+
                 break;
             case SceneManager.Scene.Menu:
                 mainMenu = new MainMenuUIComponent(this);
                 Components.Add(mainMenu);
+                SoundSystem.PlaySong("menu");
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException($"Loaded scene '{loadedScene}' did not match any scene in SceneManager.Scene.");

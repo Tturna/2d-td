@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace _2d_td;
 
@@ -37,8 +38,10 @@ public static class SoundSystem
         return finalVolume;
     }
 
-    private static void UpdateToggledSoundVolume()
+    private static void UpdatePlayingAudioVolume()
     {
+        MediaPlayer.Volume = SettingsSystem.GetTotalMusicVolume();
+
         foreach (var (sound, toggledSound) in toggledSounds)
         {
             if (toggledSound.Instance is null) continue;
@@ -51,7 +54,7 @@ public static class SoundSystem
     {
         if (!isSubscribedToSettings)
         {
-            SettingsScreen.OnSettingsSaved += () => UpdateToggledSoundVolume();
+            SettingsScreen.OnSettingsSaved += () => UpdatePlayingAudioVolume();
             isSubscribedToSettings = true;
         }
 
@@ -67,7 +70,7 @@ public static class SoundSystem
     {
         if (!isSubscribedToSettings)
         {
-            SettingsScreen.OnSettingsSaved += () => UpdateToggledSoundVolume();
+            SettingsScreen.OnSettingsSaved += () => UpdatePlayingAudioVolume();
             isSubscribedToSettings = true;
         }
 
@@ -150,5 +153,23 @@ public static class SoundSystem
             toggledSound.Instance.Dispose();
             toggledSounds.Remove(key);
         }
+    }
+
+    public static void PlaySong(string name)
+    {
+        if (!isSubscribedToSettings)
+        {
+            SettingsScreen.OnSettingsSaved += () => UpdatePlayingAudioVolume();
+            isSubscribedToSettings = true;
+        }
+
+        MediaPlayer.Volume = SettingsSystem.GetTotalMusicVolume();
+        MediaPlayer.IsRepeating = true;
+        MediaPlayer.Play(AssetManager.GetSong(name));
+    }
+
+    public static void StopSong()
+    {
+        MediaPlayer.Stop();
     }
 }
