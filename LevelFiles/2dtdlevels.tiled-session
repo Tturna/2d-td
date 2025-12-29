@@ -1,0 +1,93 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "zone1quarrylevel.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "backgroundtiles.tsx": {
+            "dynamicWrapping": false
+        },
+        "groundtiles_zone1.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 11
+        },
+        "zone1/backgroundtiles.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "zone1/groundtiles_zone1.tsx": {
+            "scaleInDock": 1
+        },
+        "zone1/zone1flatlevel.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 422.75,
+                "y": 44.25
+            }
+        },
+        "zone1/zone1hillslevel.tmx": {
+            "scale": 2.3275,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 399.78517722878627,
+                "y": 181.95488721804514
+            }
+        },
+        "zone1/zone1quarrylevel.tmx": {
+            "scale": 2.3275,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 399.78517722878627,
+                "y": 59.93555316863592
+            }
+        },
+        "zone1/zone1tunnellevel.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 324.1666666666667,
+                "y": 185.16666666666669
+            }
+        },
+        "zone1quarrylevel.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 395.75,
+                "y": 122.25
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/leoti/General/2d-td/LevelFiles/zone1",
+    "last.externalTilesetPath": "C:/Users/leoti/General/2d-td/LevelFiles",
+    "last.imagePath": "C:/Users/leoti/General/2d-td/Content/sprites/Tiles",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 100,
+    "openFiles": [
+        "zone1quarrylevel.tmx",
+        "groundtiles_zone1.tsx"
+    ],
+    "project": "2dtdlevels.tiled-project",
+    "recentFiles": [
+        "zone1quarrylevel.tmx",
+        "zone1/zone1quarrylevel.tmx",
+        "groundtiles_zone1.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
