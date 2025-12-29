@@ -137,13 +137,18 @@ public static class SoundSystem
 
     public static void StopAllToggledAudio()
     {
-        foreach (var (sound, toggledSound) in toggledSounds)
+        var keys = new SoundEffect[toggledSounds.Keys.Count];
+        toggledSounds.Keys.CopyTo(keys, 0);
+
+        foreach (var key in keys)
         {
+            var toggledSound = toggledSounds[key];
+
             if (toggledSound.Instance is null) continue;
 
             toggledSound.Instance.Stop();
             toggledSound.Instance.Dispose();
-            toggledSounds.Remove(sound);
+            toggledSounds.Remove(key);
         }
     }
 }
