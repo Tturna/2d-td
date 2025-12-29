@@ -12,6 +12,8 @@ class PunchTrap : Entity, ITower
     private static int baseTileRange = 2;
     private Vector2 direction = new Vector2(-1,0);
     private float knockback = 4f;
+    private float chargedKnockback = 0f;
+    private int chargedDamage = 0;
     private int damage = 20;
     private float actionsPerSecond = 0.5f;
     private float actionTimer;
@@ -67,7 +69,7 @@ class PunchTrap : Entity, ITower
             upgradeIcon: fatfistIcon, price: 10,leftChild: megaPunch,rightChild: rocketGlove);
 
         var chainsaw = new TowerUpgradeNode(Upgrade.Chainsaw.ToString(),
-            upgradeIcon: chainsawIcon, price: 70);
+            upgradeIcon: chainsawIcon, price: 60);
         var flurryOfBlows = new TowerUpgradeNode(Upgrade.FlurryOfBlows.ToString(),
             upgradeIcon: flurryOfBlowsIcon, price: 80);
         var quickJabs = new TowerUpgradeNode(Upgrade.QuickJabs.ToString(),
@@ -201,11 +203,11 @@ class PunchTrap : Entity, ITower
         actionTimer += deltaTime;
 
         var chargeTime = 10;
-        var chargeRatio = actionTimer / chargeTime;
+        var chargeRatio = MathHelper.Min(actionTimer / chargeTime,1f);
 
-        damage = (int)MathHelper.Lerp(damage, damage + 100, chargeRatio);
+        chargedDamage = (int)MathHelper.Lerp(damage, damage + 200, chargeRatio);
 
-        knockback = (int)MathHelper.Lerp(knockback, knockback * 3.5f, chargeRatio);
+        chargedKnockback = MathHelper.Lerp(knockback, knockback * 3.5f, chargeRatio);
 
         if (actionTimer >= actionInterval && DetectEnemies(baseTileRange))
         {
@@ -220,12 +222,15 @@ class PunchTrap : Entity, ITower
     {
         var enemyCandidates = EnemySystem.EnemyBins.GetValuesFromBinsInRange(Position, baseTileRange * Grid.TileLength);
 
+        var damageToDeal = (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString()) ? chargedDamage : damage;
+        var knockbackToApply = (towerCore.CurrentUpgrade.Name == Upgrade.MegaPunch.ToString()) ? chargedKnockback : knockback;
+
         foreach (Enemy enemy in enemyCandidates)
         {
             if (IsEnemyInRange(enemy, baseTileRange))
             {
-                enemy.HealthSystem.TakeDamage(this, damage);
-                var finalKnockback = direction * knockback - Vector2.UnitY * (knockback);
+                enemy.HealthSystem.TakeDamage(this, damageToDeal);
+                var finalKnockback = direction * knockbackToApply - Vector2.UnitY * (knockbackToApply/2);
                 enemy.UpdatePosition(-Vector2.One);
                 enemy.ApplyKnockback(finalKnockback);
             }
@@ -359,6 +364,8 @@ class PunchTrap : Entity, ITower
 
             damage += 20;
             knockback *= 1.5f;
+            chargedDamage = damage;
+            chargedKnockback = knockback;
             UpdatePosition(new Vector2(-4, -2));
         }
         else if (newUpgrade.Name == Upgrade.RocketGlove.ToString())
