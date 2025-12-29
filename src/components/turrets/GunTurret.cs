@@ -368,8 +368,6 @@ class GunTurret : Entity, ITower
             var enemyCenter = enemy.Position + enemy.Size / 2;
             var distanceToEnemy = Vector2.Distance(towerCenter, enemyCenter);
 
-            DebugUtility.DrawDebugLine(towerCenter, enemyCenter, Color.Lime);
-
             if (distanceToEnemy > range)
                 continue;
 
