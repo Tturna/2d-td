@@ -21,7 +21,7 @@ class GunTurret : Entity, ITower
     private float actionsPerSecond = 1f;
     private float actionTimer;
     private float bulletPixelsPerSecond = 850f;
-    private float knockback=1f;
+    private float knockback=0f;
     private float muzzleOffsetFactor = 14f;
     private float turretSmoothSpeed = 5f;
     private Texture2D projectileSprite = AssetManager.GetTexture("gunTurret_base_bullet");
@@ -408,10 +408,10 @@ class GunTurret : Entity, ITower
         {
             newBaseTexture = AssetManager.GetTexture("gunTurret_botshot_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_botshot_gun");
-            realDamage = baseDamage + 8;
+            realDamage = baseDamage + 5;
             projectileSprite = AssetManager.GetTexture("gunTurret_botshot_bullet");
             actionsPerSecond *= 0.75f;
-            knockback *= 2f;
+            knockback += 2f;
         }
         else if (newUpgrade.Name == Upgrade.PhotonCannon.ToString())
         {

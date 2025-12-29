@@ -15,6 +15,7 @@ class Railgun : Entity, ITower
     private int realRange;
     private int damage = 30;
     private int pierce = 3;
+    private float knockback = 1f;
     private float bulletSpeed = 900f;
     private float actionsPerSecond = 0.5f;
     private float actionTimer;
@@ -119,6 +120,10 @@ class Railgun : Entity, ITower
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage+20, pierce+12);
         }
+        else if (towerCore.CurrentUpgrade.Name == Upgrade.SoundCannon.ToString())
+        {
+            HandleBasicShots(deltaTime, actionsPerSecond, damage-10, pierce+4);
+        }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.PolishedRound.ToString())
         {
             HandleBasicShots(deltaTime, actionsPerSecond, damage+25, pierce);
@@ -189,6 +194,7 @@ class Railgun : Entity, ITower
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
+        
 
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
         SoundSystem.PlaySound("railgunfire");
