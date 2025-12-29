@@ -53,7 +53,7 @@ class Drone : Entity, ITower
         var improvedRadarIcon = AssetManager.GetTexture("drone_improvedradar_icon");
 
         var flyingArsenal = new TowerUpgradeNode(Upgrade.FlyingArsenal.ToString(), flyingArsenalIcon, price: 120);
-        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), quadcopterIcon, price: 150);
+        var quadcopter = new TowerUpgradeNode(Upgrade.Quadcopter.ToString(), quadcopterIcon, price: 200);
         var advancedWeaponry = new TowerUpgradeNode(Upgrade.AdvancedWeaponry.ToString(), advancedWeaponryIcon,
             price: 20, leftChild: flyingArsenal, rightChild: quadcopter);
 
@@ -69,7 +69,7 @@ class Drone : Entity, ITower
         improvedRadar.Description = "+8 range";
         flyingArsenal.Description = "+50 damage,\n+1 shots/s";
         quadcopter.Description = "10 shots/s,\n120 degree sight angle\ndirectly downwards";
-        assassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+200 damage";
+        assassinDrone.Description = "+20 range,\n-35 degrees to sight angle,\n-1 shot/s,\n+200 damage,\ndouble bullet speed";
         artificer.Description = "-4 range, 0.5 shots/s\nAttack replaced with an energy pulse\nthat deals 20 damage and\nheals towers";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -454,6 +454,7 @@ class Drone : Entity, ITower
             realTileRange += 20;
             actionsPerSecond -= 1;
             damage = 200;
+            bulletSpeed *= 2f;
             firingSectorWidthDegrees -= 35;
         }
         else if (newUpgrade.Name == Upgrade.FlyingArsenal.ToString())
@@ -477,7 +478,7 @@ class Drone : Entity, ITower
             newIdleFrameCount = 2;
             turretAxisCenter = Position + new Vector2(newIdleTexture.Width / newIdleFrameCount / 2, newIdleTexture.Height + 1);
             gunSpriteOrigin = new Vector2(gunSprite.Width / 2, 0);
-            actionsPerSecond += 10;
+            actionsPerSecond = 10;
             firingDirectionDegrees = 90;
             firingSectorWidthDegrees = 120;
         }
