@@ -66,9 +66,8 @@ public class Game1 : Game
         Camera.Initialize(this);
         ParticleSystem.Initialize(this);
 
-        SceneManager.LoadMainMenu();
-
         SavingSystem.LoadGame();
+        SceneManager.LoadMainMenu();
 
         base.Initialize();
     }
