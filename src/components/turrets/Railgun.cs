@@ -15,7 +15,7 @@ class Railgun : Entity, ITower
     private int realRange;
     private int damage = 30;
     private int pierce = 3;
-    private float knockback = 1f;
+    private float knockback = 1.5f;
     private float bulletSpeed = 900f;
     private float actionsPerSecond = 0.5f;
     private float actionTimer;
@@ -59,10 +59,11 @@ class Railgun : Entity, ITower
         var cannonballIcon = AssetManager.GetTexture("railgun_cannonball_icon");
         var goldenGatlingIcon = AssetManager.GetTexture("railgun_goldengatling_icon");
         var polishedRoundsIcon = AssetManager.GetTexture("railgun_polishedrounds_icon");
-
-        var SoundCannon = new TowerUpgradeNode(Upgrade.SoundCannon.ToString(), antimatterLaserIcon, price: 80);
+        var soundCannonIcon = AssetManager.GetTexture("railgun_tungstenshells_icon"); //temp
+ 
+        var SoundCannon = new TowerUpgradeNode(Upgrade.SoundCannon.ToString(), soundCannonIcon, price: 80);
         var AntimatterLaser = new TowerUpgradeNode(Upgrade.AntimatterLaser.ToString(), antimatterLaserIcon, price: 135);
-        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser);
+        var Momentum = new TowerUpgradeNode(Upgrade.Momentum.ToString(), tungstenShellsIcon, price: 25, leftChild: AntimatterLaser, rightChild: SoundCannon);
 
         var Cannonball = new TowerUpgradeNode(Upgrade.Cannonball.ToString(), cannonballIcon, price: 95);
         var GoldenGatling = new TowerUpgradeNode(Upgrade.GoldenGatling.ToString(), goldenGatlingIcon, price: 100);
@@ -194,6 +195,7 @@ class Railgun : Entity, ITower
         bullet.Sprite = projectileSprite;
         bullet.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         bullet.RotationOffset = projectileRotationOffset;
+        bullet.Momentum = knockback;
         
 
         ParticleSystem.PlayShotSmokeEffect(Position + spawnOffset);
@@ -294,6 +296,7 @@ class Railgun : Entity, ITower
             newIdleFrameCount = 4;
             newFireFrameCount = 6;
             realRange = baseRange + 6;
+            knockback -= 1f;
             projectileSprite = AssetManager.GetTexture("railgun_antimatterlaser_bullet");
             muzzleFlashSprite = AssetManager.GetTexture("railgun_antimatterlaser_muzzleflash");
 
@@ -314,6 +317,7 @@ class Railgun : Entity, ITower
             newIdleFrameCount = 6;
             newFireFrameCount = 7;
             projectileSprite = AssetManager.GetTexture("railgun_cannonball_bullet");
+            knockback *= 5f;
 
             UpdatePosition(-Vector2.UnitY * 2);
         }
@@ -324,6 +328,7 @@ class Railgun : Entity, ITower
             newIdleFrameCount = 3;
             newFireFrameCount = 2;
             projectileSprite = AssetManager.GetTexture("railgun_goldengatling_bullet");
+            knockback -= 1;
 
             UpdatePosition(-Vector2.UnitY * 5);
         }
@@ -333,6 +338,16 @@ class Railgun : Entity, ITower
             newFireTexture = AssetManager.GetTexture("railgun_polishedrounds_fire");
             newIdleFrameCount = 8;
             newFireFrameCount = 5;
+        }
+        else if (newUpgrade.Name == Upgrade.SoundCannon.ToString())
+        {
+            //TEMP assets
+            newIdleTexture = AssetManager.GetTexture("railgun_tungstenshells_idle");
+            newFireTexture = AssetManager.GetTexture("railgun_tungstenshells_fire");
+            newIdleFrameCount = 6;
+            newFireFrameCount = 5;
+
+            knockback += 3f;
         }
         else
         {
