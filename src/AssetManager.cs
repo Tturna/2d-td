@@ -265,15 +265,15 @@ public static class AssetManager
         // environment
         LoadTexture("hq", "sprites/Misc/HQ");
 
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
+        LoadTexture("zone2_backdrop", "sprites/Backdrops/backdrop_zone2");
+        LoadTexture("zone3_backdrop", "sprites/Backdrops/backdrop_zone3");
+        LoadTexture("zone4_backdrop", "sprites/Backdrops/backdrop_zone4");
+
         // - zone4 bg moving objects
         LoadTexture("cloud_z1_1", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1");
         LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
-        // - zone4 bg
-        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
-        LoadTexture("skyscraper_ruins_1", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1");
-        LoadTexture("skyscraper_ruins_2", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2");
-
         // - zone4 midground moving objects
         LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
         // - zone4 mg
