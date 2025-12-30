@@ -30,7 +30,7 @@ public static class CurrencyManager
         tilePriceMap = new()
         {
             { Game1.Instance.Terrain.GetPlayerLightTileset(), 1 },
-            { Game1.Instance.Terrain.GetPlayerHeavyTileset(), 3 }
+            { Game1.Instance.Terrain.GetPlayerHeavyTileset(), 5 }
         };
     }
 
