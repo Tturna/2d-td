@@ -9,6 +9,19 @@ namespace _2d_td;
 #nullable enable
 public class MainMenuUIComponent : DrawableGameComponent
 {
+    private record struct LevelSelector
+    {
+        public string LevelName;
+        public Vector2 SelectorButtonPosition;
+    }
+
+    private record struct ZoneSelector
+    {
+        public string ZoneName;
+        public Texture2D LevelSelectorBackgroundSprite;
+        public LevelSelector[] LevelSelectors;
+    }
+
     private Game1 game;
     private List<UIEntity> uiEntities = new();
     private SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
@@ -19,54 +32,65 @@ public class MainMenuUIComponent : DrawableGameComponent
     private Stack<Action> menuScreenStack = new();
     private SettingsScreen? settingsScreen;
 
-    private Texture2D[] levelSelectorBackgrounds =
-    {
-        AssetManager.GetTexture("zone1levelselector_bg"),
-        AssetManager.GetTexture("zone2levelselector_bg"),
-        AssetManager.GetTexture("zone3levelselector_bg"),
-        AssetManager.GetTexture("zone4levelselector_bg")
-    };
-
-    private Vector2[][] levelSelectionButtonPositions =
-    {
+    private ZoneSelector[] zoneSelectors =
+    [
         // Zone 1
-        new Vector2[]
+        new ZoneSelector()
         {
-            new Vector2(164, 115),
-            new Vector2(228, 126),
-            new Vector2(332, 90),
-            new Vector2(270, 210),
-            new Vector2(410, 200)
+            ZoneName = "Zone 1",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone1levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(164, 115) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(250, 130) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(320, 80) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(300, 210) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(420, 190) }
+            ]
         },
-
         // Zone 2
-        new Vector2[]
+        new ZoneSelector()
         {
-            new Vector2(300, 75),
-            new Vector2(230, 115),
-            new Vector2(290, 165),
-            new Vector2(210, 230),
-            new Vector2(390, 180)
+            ZoneName = "Zone 2",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone2levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(300, 75) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(230, 115) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(290, 165) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(210, 210) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(390, 180) }
+            ]
         },
         // Zone 3
-        new Vector2[]
+        new ZoneSelector()
         {
-            new Vector2(164, 100),
-            new Vector2(260, 115),
-            new Vector2(360, 120),
-            new Vector2(250, 205),
-            new Vector2(370, 210)
+            ZoneName = "Zone 3",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone3levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(164, 90) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(260, 105) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(360, 110) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(260, 185) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(380, 200) }
+            ]
         },
         // Zone 4
-        new Vector2[]
+        new ZoneSelector()
         {
-            new Vector2(320, 75),
-            new Vector2(400, 145),
-            new Vector2(305, 200),
-            new Vector2(220, 250),
-            new Vector2(365, 280)
+            ZoneName = "Zone 4",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone4levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(320, 60) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(400, 145) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(305, 175) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(220, 230) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(365, 255) }
+            ]
         }
-    };
+    ];
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -231,7 +255,7 @@ public class MainMenuUIComponent : DrawableGameComponent
 
             var pos = zoneButtonPositions[i];
             var btn = new UIEntity(game, uiEntities, pos, iconAnimationData);
-            var text = $"{i + 1}";
+            var text = zoneSelectors[i].ZoneName;
 
             if (ProgressionManager.IsZoneUnlocked(i + 1))
             {
@@ -250,15 +274,15 @@ public class MainMenuUIComponent : DrawableGameComponent
                 btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
                 btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
             }
-            else
-            {
-                text += " (x)";
-            }
+            // else
+            // {
+            //     text += " (x)";
+            // }
 
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
+            zoneText.SetPosition(btn.Position + new Vector2(0, iconAnimationData.FrameSize.Y + 2));
         }
 
         var backButtonPos = new Vector2(0, game.NativeScreenHeight - btnFrameSize.Y);
@@ -280,7 +304,7 @@ public class MainMenuUIComponent : DrawableGameComponent
         var halfScreenHeight = game.NativeScreenHeight / 2;
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
-        var bg = new UIEntity(game, uiEntities, levelSelectorBackgrounds[selectedZone - 1]);
+        var bg = new UIEntity(game, uiEntities, zoneSelectors[selectedZone - 1].LevelSelectorBackgroundSprite);
 
         var titleText = "Select Level";
         var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
@@ -294,7 +318,7 @@ public class MainMenuUIComponent : DrawableGameComponent
             frameSize: btnFrameSize,
             delaySeconds: 0.5f);
 
-        var levels = levelSelectionButtonPositions[selectedZone - 1].Length;
+        var levels = zoneSelectors[selectedZone - 1].LevelSelectors.Length;
         var btnMargin = 20;
         var selectorWidth = btnFrameSize.X * levels + btnMargin * (levels - 1);
 
@@ -345,9 +369,9 @@ public class MainMenuUIComponent : DrawableGameComponent
                 frameSize: new Vector2(iconTexture.Width / frameCount, iconTexture.Height),
                 delaySeconds: float.PositiveInfinity);
 
-            var pos = levelSelectionButtonPositions[selectedZone - 1][i];
+            var pos = zoneSelectors[selectedZone - 1].LevelSelectors[i].SelectorButtonPosition;
             var btn = new UIEntity(game, uiEntities, pos, iconAnimationData);
-            var text = $"{i + 1}";
+            var text = zoneSelectors[selectedZone - 1].LevelSelectors[i].LevelName;
 
             if (isLevelUnlocked)
             {
@@ -363,8 +387,8 @@ public class MainMenuUIComponent : DrawableGameComponent
 
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
-            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2 + iconAnimationData.FrameSize.X / 2;
+            zoneText.SetPosition(btn.Position + new Vector2(textXOffset, iconAnimationData.FrameSize.Y + 2));
         }
 
         var backButtonPos = new Vector2(0, game.NativeScreenHeight - btnFrameSize.Y);
