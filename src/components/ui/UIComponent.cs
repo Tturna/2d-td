@@ -61,16 +61,17 @@ public class UIComponent : DrawableGameComponent
     {
         const float Gap = 16;
         const float Margin = 20;
-        Vector2 priceIconOffset = new Vector2(3, 3);
-        Vector2 priceTextOffset = new Vector2(2, -2);
-        var xPos = game.NativeScreenWidth - buttonFrameSize.X - Margin*3;
-        var yPos = game.NativeScreenHeight - buttonFrameSize.Y - Margin;
+        Vector2 priceIconOffset = new Vector2(2, 3);
+        Vector2 priceTextOffset = new Vector2(1, -2);
+        var buttonSprite = AssetManager.GetTexture("btn_square_small_empty");
+        var xPos = game.NativeScreenWidth - buttonSprite.Width - Margin*3;
+        var yPos = game.NativeScreenHeight - buttonSprite.Height - Margin - buttonFrameSize.Y/3;
         var heavyPos = new Vector2(xPos, yPos);
         var lightPos = heavyPos - new Vector2(buttonFrameSize.X + Gap, 0);
-
         var priceIcon = AssetManager.GetTexture("icon_scrap_small");
-        var heavyTileBuyButton = new UIEntity(game, uiElements, heavyPos, buttonAnimationData);
-        var lightTileBuyButton = new UIEntity(game, uiElements, lightPos, buttonAnimationData);
+
+        var heavyTileBuyButton = new UIEntity(game, uiElements, heavyPos, buttonSprite);
+        var lightTileBuyButton = new UIEntity(game, uiElements, lightPos, buttonSprite);
         var heavyTilePriceIcon = new UIEntity(game, uiElements, heavyPos,priceIcon);
         var lightTilePriceIcon = new UIEntity(game, uiElements, lightPos, priceIcon);
 
@@ -89,8 +90,8 @@ public class UIComponent : DrawableGameComponent
         var heavyTileIcon = new UIEntity(game, uiElements, AssetManager.GetTexture("heavytilesingle"));
         var lightTileIcon = new UIEntity(game, uiElements, AssetManager.GetTexture("lighttilesingle"));
 
-        heavyTileIcon.SetPosition(heavyTileBuyButton.Position + new Vector2(7, 8));
-        lightTileIcon.SetPosition(lightTileBuyButton.Position + new Vector2(7, 8));
+        heavyTileIcon.SetPosition(heavyTileBuyButton.Position + new Vector2(2, 2));
+        lightTileIcon.SetPosition(lightTileBuyButton.Position + new Vector2(2, 2));
 
         heavyTileBuyButton.ButtonPressed += () => 
         {
