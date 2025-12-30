@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _2d_td;
 using _2d_td.interfaces;
@@ -101,6 +102,7 @@ public static class InputSystem
             if (game.Components.Count < i + 1) continue;
 
             var component = game.Components[i];
+
             if (component is not IClickable clickable) continue;
 
             if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
