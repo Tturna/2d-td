@@ -84,6 +84,7 @@ public class Crane : Entity, ITower
         explosivePayload.Description = "Ball explodes instantly\non contact with an enemy,\ndealing 120 damage in a\n6 tile radius.";
         crusher.Description = "+180 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
         sawblade.Description = "Ball passes through enemies,\ndealing 120 DPS to all\ntouching the blade.";
+        lasergate.Description = "Replaces ball with a\nlaser beam that\ncontinuously damages\nenemies in its path\nfor 150 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -752,8 +753,6 @@ public class Crane : Entity, ITower
 
             UpdatePosition(towerOffset);
             ballOffset += ballOffsetAdjustment;
-            reelDelayTime = 3f;
-            cooldownTime = 2f;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData
