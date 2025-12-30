@@ -60,7 +60,7 @@ public class TurretDetailsPrompt : UIEntity
 
         sellBtn.ButtonPressed += () =>
         {
-            var returnScrap = CurrencyManager.SellTower(towerType, isBroken: core.Health.CurrentHealth <= 0);
+            var returnScrap = CurrencyManager.SellTower(core.TowerValue, isBroken: core.Health.CurrentHealth <= 0);
             targetTowerEntity.Destroy();
 
             var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
