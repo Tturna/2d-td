@@ -350,7 +350,7 @@ public class MainMenuUIComponent : DrawableGameComponent
                     {
                         textureName = "levelbutton_cleared";
                     }
-                    else if (ProgressionManager.IsLevelUnlocked(selectedZone + 1, i + 2))
+                    else if (ProgressionManager.IsLevelUnlocked(selectedZone + 1, 1))
                     {
                         textureName = "levelbutton_cleared";
                     }
