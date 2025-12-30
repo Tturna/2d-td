@@ -217,14 +217,6 @@ public class MainMenuUIComponent : DrawableGameComponent
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
         title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
             
-        var btnAnimationData = new AnimationSystem.AnimationData
-        (
-            texture: buttonSprite,
-            frameCount: 2,
-            frameSize: btnFrameSize,
-            delaySeconds: 0.5f
-        );
-
         var zones = 4;
         var btnMargin = 20;
         var selectorWidth = btnFrameSize.X * zones + btnMargin * (zones - 1);
@@ -313,12 +305,6 @@ public class MainMenuUIComponent : DrawableGameComponent
         title.Scale = Vector2.One * 2;
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
         title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
-
-        var btnAnimationData = new AnimationSystem.AnimationData(
-            texture: buttonSprite,
-            frameCount: 2,
-            frameSize: btnFrameSize,
-            delaySeconds: 0.5f);
 
         var levels = zoneSelectors[selectedZone - 1].LevelSelectors.Length;
         var btnMargin = 20;
