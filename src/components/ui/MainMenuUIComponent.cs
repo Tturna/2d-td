@@ -247,6 +247,8 @@ public class MainMenuUIComponent : DrawableGameComponent
 
                     LoadLevelSelector(zoneNumber);
                 };
+                btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
+                btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
             }
             else
             {
@@ -286,13 +288,11 @@ public class MainMenuUIComponent : DrawableGameComponent
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
         title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
 
-        var btnAnimationData = new AnimationSystem.AnimationData
-        (
-         texture: buttonSprite,
-         frameCount: 2,
-         frameSize: btnFrameSize,
-         delaySeconds: 0.5f
-        );
+        var btnAnimationData = new AnimationSystem.AnimationData(
+            texture: buttonSprite,
+            frameCount: 2,
+            frameSize: btnFrameSize,
+            delaySeconds: 0.5f);
 
         var levels = levelSelectionButtonPositions[selectedZone - 1].Length;
         var btnMargin = 20;
@@ -353,6 +353,8 @@ public class MainMenuUIComponent : DrawableGameComponent
             {
                 var levelNumber = i + 1;
                 btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+                btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
+                btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
             }
             // else
             // {
