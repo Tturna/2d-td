@@ -120,6 +120,7 @@ public static class AssetManager
 
         LoadTexture("crane_base_idle", "sprites/Towers/Crane/crane_base/crane_base_idle");
         LoadTexture("crane_base_attack", "sprites/Towers/Crane/crane_base/crane_base_attack");
+        LoadTexture("crane_base_ball", "sprites/Towers/Crane/crane_base/crane_base_projectile");
         LoadTexture("crane_biggerbox_idle", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle");
         LoadTexture("crane_biggerbox_attack", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack");
         LoadTexture("crane_biggerbox_box", "sprites/Towers/Crane/crane_biggerbox/biggerbox");
