@@ -79,7 +79,7 @@ class GunTurret : Entity, ITower
         photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
         botShot.Description = "-25% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
         rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
-        ultraCaliber.Description = "+20 damage,\n+6 range,\nTargest highest health enemy,\ndoes more damage to far\naway enemies.";
+        ultraCaliber.Description = "+20 damage,\n+6 range,\nTargets highest health enemy,\ndoes more damage to far\naway enemies.";
 
         towerCore.CurrentUpgrade = defaultNode;
         realTileRange = baseRange;
@@ -352,6 +352,7 @@ class GunTurret : Entity, ITower
             actionTimer = 0f;
             ultraCaliberLineTimer = ultraCaliberLineTime;
             ultraCaliberShotTarget = healthiesEnemy.Position + healthiesEnemy.Size / 2;
+            SoundSystem.PlaySound("shoot");
         }
     }
 
