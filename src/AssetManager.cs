@@ -274,6 +274,9 @@ public static class AssetManager
         LoadTexture("satellite_building", "sprites/Environment Objects/Zone 1/midground/satellite_building");
         LoadTexture("turret_building", "sprites/Environment Objects/Zone 1/midground/turret_building");
 
+        // - zone1 midground moving objects
+        LoadTexture("fighterjet", "sprites/Environment Objects/Zone 1/midground/Moving Objects/fighterjet");
+
         // - zone2 mg
         LoadTexture("tree1_z2", "sprites/Environment Objects/Zone 2/midground/tree_1");
         LoadTexture("tree2_z2", "sprites/Environment Objects/Zone 2/midground/tree_2");

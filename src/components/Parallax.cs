@@ -30,21 +30,9 @@ public class Parallax : DrawableGameComponent
 
         string[] bigSkyObjects = currentZone switch
         {
-            1 => [
-                "cloud_z1_1",
-                "cloud_z1_2",
-                "roboship"
-            ],
-            2 => [
-                "cloud_z1_1",
-                "cloud_z1_2",
-                "roboship"
-            ],
-            3 => [
-                "cloud_z1_1",
-                "cloud_z1_2",
-                "roboship"
-            ],
+            1 => [ ],
+            2 => [ ],
+            3 => [ ],
             4 => [
                 "cloud_z1_1",
                 "cloud_z1_2",
@@ -53,17 +41,20 @@ public class Parallax : DrawableGameComponent
             _ => throw new ArgumentOutOfRangeException(nameof(currentZone), $"Zone {currentZone} is out of range (1 to 4)")
         };
 
-        for (var i = 1; i < 20; i++)
+        if (bigSkyObjects.Length > 0)
         {
-            int index = rnd.Next(bigSkyObjects.Length);
+            for (var i = 1; i < 20; i++)
+            {
+                int index = rnd.Next(bigSkyObjects.Length);
 
-            var obj1 = new ParallaxObject(
-                pos: new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) * 2 - 100),
-                layer: rnd.Next(7,18) / 100f,
-                sprite: bigSkyObjects[index],
-                movement: Vector2.UnitX);
+                var obj1 = new ParallaxObject(
+                    pos: new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) * 2 - 100),
+                    layer: rnd.Next(7,18) / 100f,
+                    sprite: bigSkyObjects[index],
+                    movement: Vector2.UnitX);
 
-            _objects.Add(obj1);
+                _objects.Add(obj1);
+            }
         }
 
         string[] midObjects = currentZone switch
@@ -105,6 +96,7 @@ public class Parallax : DrawableGameComponent
         string[] midMovingObjects = currentZone switch
         {
             1 => [
+                "fighterjet"
             ],
             2 => [
             ],
@@ -116,17 +108,35 @@ public class Parallax : DrawableGameComponent
             _ => throw new ArgumentOutOfRangeException(nameof(currentZone), $"Zone {currentZone} is out of range (1 to 4)")
         };
 
+        var movementSpeed = currentZone switch
+        {
+            1 => 33,
+            _ => 1
+        };
+
+        var count = currentZone switch
+        {
+            1 => 3,
+            _ => 20
+        };
+
         if (midMovingObjects.Length > 0)
         {
-            for (var i = 1; i < 20; i++)
+            for (var i = 1; i < count; i++)
             {
+                var height = currentZone switch
+                {
+                    1 => rnd.Next(minY * 3, maxY) + 10,
+                    _ => rnd.Next(minY, maxY) + 40
+                };
+
                 int index = rnd.Next(midMovingObjects.Length);
 
                 var obj1 = new ParallaxObject(
-                    pos: new Vector2(rnd.Next(minX, maxX), rnd.Next(minY, maxY) + 40),
+                    pos: new Vector2(rnd.Next(minX, maxX), height),
                     layer: rnd.Next(75, 85) / 100f,
                     sprite: midMovingObjects[index],
-                    movement: Vector2.UnitX);
+                    movement: Vector2.UnitX * movementSpeed);
 
                 _objects.Add(obj1);
             }
