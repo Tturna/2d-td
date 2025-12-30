@@ -270,16 +270,24 @@ public static class AssetManager
         LoadTexture("zone3_backdrop", "sprites/Backdrops/backdrop_zone3");
         LoadTexture("zone4_backdrop", "sprites/Backdrops/backdrop_zone4");
 
+        // - zone1 mg
+        LoadTexture("satellite_building", "sprites/Environment Objects/Zone 1/midground/satellite_building");
+        LoadTexture("turret_building", "sprites/Environment Objects/Zone 1/midground/turret_building");
+
+        // - zone2 mg
+        LoadTexture("tree1_z2", "sprites/Environment Objects/Zone 2/midground/tree_1");
+        LoadTexture("tree2_z2", "sprites/Environment Objects/Zone 2/midground/tree_2");
+
         // - zone4 bg moving objects
         LoadTexture("cloud_z1_1", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1");
         LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
-        // - zone4 midground moving objects
-        LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
         // - zone4 mg
         LoadTexture("deadtree_1", "sprites/Environment Objects/Zone 4/midground/deadtree_1");
         LoadTexture("deadtree_2", "sprites/Environment Objects/Zone 4/midground/deadtree_2");
         LoadTexture("ruins_1", "sprites/Environment Objects/Zone 4/midground/ruins_1");
+        // - zone4 midground moving objects
+        LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
 
         LoadTexture("smog_1", "sprites/Smogs/Generic/smog_1");
         LoadTexture("smog_2", "sprites/Smogs/Generic/smog_2");

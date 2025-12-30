@@ -69,14 +69,12 @@ public class Parallax : DrawableGameComponent
         string[] midObjects = currentZone switch
         {
             1 => [
-                "deadtree_1",
-                "deadtree_2",
-                "ruins_1"
+                "satellite_building",
+                "turret_building"
             ],
             2 => [
-                "deadtree_1",
-                "deadtree_2",
-                "ruins_1"
+                "tree1_z2",
+                "tree2_z2"
             ],
             3 => [
                 "deadtree_1",
