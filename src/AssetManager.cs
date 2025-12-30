@@ -310,6 +310,10 @@ public static class AssetManager
         LoadTexture("levelbutton_uncleared", "sprites/UI/levelbutton_uncleared");
         LoadTexture("levelbutton_cleared", "sprites/UI/levelbutton_cleared");
         LoadTexture("levelbutton_inactive", "sprites/UI/levelbutton_inactive");
+        LoadTexture("pause_resume_button", "sprites/UI/pausemenu_resumebutton");
+        LoadTexture("settings_toggle_button", "sprites/UI/settingsscreen_togglebutton");
+        LoadTexture("settings_save_button", "sprites/UI/settingsscreen_savebutton");
+        LoadTexture("skip_button", "sprites/UI/skip_button");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
