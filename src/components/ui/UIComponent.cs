@@ -460,6 +460,7 @@ public class UIComponent : DrawableGameComponent
 
         exitButton.ButtonPressed += () =>
         {
+            TogglePauseMenu(false);
             SceneManager.LoadMainMenu();
             SoundSystem.PlaySound("menuClick");
         };
