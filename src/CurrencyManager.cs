@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace _2d_td;
 
@@ -13,10 +14,10 @@ public static class CurrencyManager
         { BuildingSystem.TowerType.GunTurret, 20 },
         { BuildingSystem.TowerType.Railgun, 25 },
         { BuildingSystem.TowerType.Drone, 25 },
-        { BuildingSystem.TowerType.Crane, 30 },
+        { BuildingSystem.TowerType.Crane, 15 },
         { BuildingSystem.TowerType.Mortar, 30 },
-        { BuildingSystem.TowerType.Hovership, 50 },
-        { BuildingSystem.TowerType.PunchTrap, 15 }
+        { BuildingSystem.TowerType.Hovership, 25 },
+        { BuildingSystem.TowerType.PunchTrap, 5 }
     };
 
     private static Dictionary<Tileset, int> tilePriceMap;
@@ -25,12 +26,16 @@ public static class CurrencyManager
 
     public static void Initialize()
     {
-        Balance = 200;
+        Balance = 80;
 
         tilePriceMap = new()
         {
             { Game1.Instance.Terrain.GetPlayerLightTileset(), 1 },
             { Game1.Instance.Terrain.GetPlayerHeavyTileset(), 3 }
+        };
+        WaveSystem.WaveEnded += () => 
+        {
+            // TODO: Give money here instead of WaveSystem, right now it doesnt work because it doesnt get reset when leaving the level
         };
     }
 

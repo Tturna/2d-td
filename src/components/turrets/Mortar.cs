@@ -9,9 +9,10 @@ namespace _2d_td;
 public class Mortar : Entity, ITower
 {
     private TowerCore towerCore;
-    private float actionsPerSecond = 0.5f;
+    private float actionsPerSecond = 0.3f;
     private float actionTimer;
     private bool isTargeting, canSetTarget;
+    private static float changeTargetFireDelay = 1f;
     private Vector2 projectileVelocity;
     private float projectileGravity = 0.12f;
     private Vector2 spawnOffset = new Vector2(-4, -4);
@@ -68,24 +69,24 @@ public class Mortar : Entity, ITower
         var hellRainIcon = AssetManager.GetTexture("mortar_hellrain_icon");
         var efficientReloadIcon = AssetManager.GetTexture("mortar_efficientreload_icon");
 
-        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 140);
-        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 300);
+        var bouncingBomb = new TowerUpgradeNode(Upgrade.BouncingBomb.ToString(), bouncingBombIcon, price: 110);
+        var nuke = new TowerUpgradeNode(Upgrade.Nuke.ToString(), nukeIcon, price: 150);
 
-        var heavyShells = new TowerUpgradeNode(Upgrade.HeavyShells.ToString(), bigBombIcon, price: 35,
+        var heavyShells = new TowerUpgradeNode(Upgrade.HeavyShells.ToString(), bigBombIcon, price: 30,
             leftChild: bouncingBomb, rightChild: nuke);
 
-        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 160);
-        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 150);
-        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 20,
+        var missileSilo = new TowerUpgradeNode(Upgrade.MissileSilo.ToString(), missileSiloIcon, price: 110);
+        var hellrain = new TowerUpgradeNode(Upgrade.Hellrain.ToString(), hellRainIcon, price: 85);
+        var efficientReload = new TowerUpgradeNode(Upgrade.EfficientReload.ToString(), efficientReloadIcon, price: 30,
             leftChild: missileSilo, rightChild: hellrain);
 
         var defaultUpgrade = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: heavyShells, rightChild: efficientReload);
 
         heavyShells.Description = "+2 tile radius,\n+10 damage";
-        efficientReload.Description = "+0.3 shots/s";
-        bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n3 times, exploding with\neach impact.";
-        nuke.Description = "+8 tile explosion radius\n+300 damage\n-0.3 shots/s\nLeaves a radiation cloud\nthat deals 5DPS for 5s.";
+        efficientReload.Description = "+0.5 shots/s";
+        bouncingBomb.Description = "+10 damage\nProjectile can bounce up to\n4 times, exploding with\neach impact.";
+        nuke.Description = "+8 tile explosion radius\n+300 damage\n -.2 shots/s";
         missileSilo.Description = "+2 projectiles\nFires homing missiles directly\nupwards, dealing 30 damage each.";
         hellrain.Description = "-2 tile explosion radius.\nFires in a 6-shot barrage\nwith considerable spread.";
 
@@ -127,6 +128,7 @@ public class Mortar : Entity, ITower
             projectileVelocity = CalculateProjectileVelocity(TargetHitpoint, deltaTime);
             isTargeting = false;
             IsMortarTargeting = false;
+            actionTimer += changeTargetFireDelay;
             EndTargeting?.Invoke(this);
         }
 
@@ -225,7 +227,7 @@ public class Mortar : Entity, ITower
         shell.Size = new Vector2(projectileSprite.Width, projectileSprite.Height);
         shell.RotationOffset = projectileRotationOffset;
 
-        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 3, deltaTime);
+        HandleBouncingHit(shell, damage, explosionTileRadius, bounceCount: 4, deltaTime);
 
         actionTimer = 1f / actionsPerSecond;
 
@@ -297,7 +299,7 @@ public class Mortar : Entity, ITower
     private void HandleBasicProjectileHit(MortarShell shell, int damage, int explosionTileRadius, float deltaTime)
     {
         EffectUtility.Explode(this, shell.Position + shell.Size / 2, explosionTileRadius * Grid.TileLength,
-            magnitude: 10f, damage, animation: explosionAnimation);
+            magnitude: 5f, damage, animation: explosionAnimation);
     }
 
     private void HandleBouncingHit(MortarShell shell, int damage, int explosionTileRadius, int bounceCount,
@@ -453,7 +455,7 @@ public class Mortar : Entity, ITower
             newFireTexture = AssetManager.GetTexture("mortar_efficientreload_fire");
             newIdleFrameCount = 1;
             newFireFrameCount = 3;
-            actionsPerSecond += 0.3f;
+            actionsPerSecond += 0.5f;
             UpdatePosition(-Vector2.UnitY * 2);
         }
         else if (newUpgrade.Name == Upgrade.HeavyShells.ToString())
@@ -515,7 +517,7 @@ public class Mortar : Entity, ITower
 
             explosionTileRadius += 8;
             damage += 300;
-            actionsPerSecond -= 0.3f;
+            actionsPerSecond -= 0.2f;
             UpdatePosition(-Vector2.UnitY * 7);
         }
 

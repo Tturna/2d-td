@@ -20,7 +20,7 @@ public class Crane : Entity, ITower
     private float cooldownTime = 1.5f;
     private float reelDelayTime = 1.5f;
     private float actionTime = 1f;
-    private int damage = 50;
+    private int damage = 75;
     private float reelSpeedFactor = 1.5f;
     private int pierce = 3;
 
@@ -66,13 +66,13 @@ public class Crane : Entity, ITower
         var chargedLiftsIcon = AssetManager.GetTexture("crane_chargedlifts_icon");
         var laserGateIcon = AssetManager.GetTexture("crane_lasergate_icon");
 
-        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 185);
-        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 190);
+        var explosivePayload = new TowerUpgradeNode(Upgrade.ExplosivePayload.ToString(), explosivePayloadIcon, price: 140);
+        var crusher = new TowerUpgradeNode(Upgrade.Crusher.ToString(), crusherIcon, price: 70);
         var bigBox = new TowerUpgradeNode(Upgrade.BigBox.ToString(), bigBoxIcon, price: 25,
             leftChild: explosivePayload, rightChild: crusher);
 
-        var sawblade = new TowerUpgradeNode(Upgrade.Sawblade.ToString(), sawbladeIcon, price: 170);
-        var lasergate = new TowerUpgradeNode(Upgrade.LaserGate.ToString(), laserGateIcon, price: 170);
+        var sawblade = new TowerUpgradeNode(Upgrade.Sawblade.ToString(), sawbladeIcon, price: 60);
+        var lasergate = new TowerUpgradeNode(Upgrade.LaserGate.ToString(), laserGateIcon, price: 70);
         var chargedLifts = new TowerUpgradeNode(Upgrade.ChargedLifts.ToString(), chargedLiftsIcon, price: 15,
             leftChild: sawblade, rightChild: lasergate);
 
@@ -84,6 +84,7 @@ public class Crane : Entity, ITower
         explosivePayload.Description = "Ball explodes instantly\non contact with an enemy,\ndealing 120 damage in a\n6 tile radius.";
         crusher.Description = "+180 damage\n+10 pierce.\nBall is no longer attached\nby a tether, instead\nrolls downhill until it stops.";
         sawblade.Description = "Ball passes through enemies,\ndealing 120 DPS to all\ntouching the blade.";
+        lasergate.Description = "Replaces ball with a\nlaser beam that\ncontinuously damages\nenemies in its path\nfor 150 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
     }
@@ -713,7 +714,7 @@ public class Crane : Entity, ITower
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
 
-            damage = 100;
+            damage = 150;
             var ballOffsetAdjustment = new Vector2(2, 3);
             var towerOffset = new Vector2(0, -2);
 
@@ -752,8 +753,6 @@ public class Crane : Entity, ITower
 
             UpdatePosition(towerOffset);
             ballOffset += ballOffsetAdjustment;
-            reelDelayTime = 3f;
-            cooldownTime = 2f;
         }
 
         var newIdleAnimation = new AnimationSystem.AnimationData

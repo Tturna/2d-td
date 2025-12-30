@@ -18,6 +18,7 @@ public class Enemy : Entity, IKnockable
     private double hurtAnimThreshold;
     private float selfDestructTime = 8;
     private float selfDestructTimer;
+    public bool ignoreSelfDestruct = false;
     private Vector2 previousMotionCheckPosition;
     private float motionCheckInterval = 0.3f;
     private float motionCheckTimer;
@@ -81,7 +82,7 @@ public class Enemy : Entity, IKnockable
 
         var rawXVelocity = MathF.Abs(posDiff.X);
 
-        if (rawXVelocity > 2f)
+        if (rawXVelocity > 2f || ignoreSelfDestruct)
         {
             selfDestructTimer = selfDestructTime;
         }

@@ -37,11 +37,8 @@ public static class ScrapSystem
             if (Corpses?.TotalValueCount > 0)
             {
                 var corpse = corpseAddOrder!.Pop();
-                CurrencyManager.AddBalance(corpse.ScrapValue);
-                UIComponent.SpawnFlyoutText($"+{corpse.ScrapValue}", corpse.Position, -Vector2.UnitY * 25f,
-                    lifetime: 1f, color: Color.White);
-                corpse.Destroy();
-
+                DestroyCorpse(corpse);
+                
                 if (Corpses.TotalValueCount == 0)
                 {
                     clearingScrap = false;
@@ -52,6 +49,14 @@ public static class ScrapSystem
                 clearingScrap = false;
             }
         }
+    }
+
+    public static void DestroyCorpse(ScrapCorpse corpse)
+    {
+        CurrencyManager.AddBalance(corpse.ScrapValue);
+        UIComponent.SpawnFlyoutText($"+{corpse.ScrapValue}", corpse.Position, -Vector2.UnitY * 25f,
+        lifetime: 1f, color: Color.White);
+        corpse.Destroy();
     }
 
     public static void AddCorpse(Game1 game, Vector2 position, AnimationSystem.AnimationData animation,

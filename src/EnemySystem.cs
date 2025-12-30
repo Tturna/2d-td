@@ -11,6 +11,7 @@ public static class EnemySystem
     public static Dictionary<string, EnemySpawner> EnemyNameToSpawner = new()
     {
         { "node", SpawnNodeEnemy },
+        { "chunk", SpawnChunkEnemy },
         { "bouncer", SpawnBouncerEnemy },
         { "meganode", SpawnMeganodeEnemy }
     };
@@ -57,6 +58,48 @@ public static class EnemySystem
         enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
         enemy.PhysicsSystem.LocalGravity = 0.5f;
         enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
+
+        EnemyBins.Add(enemy);
+
+        return enemy;
+    }
+    
+        public static Enemy SpawnChunkEnemy(Game game, Vector2 position)
+    {
+        var movementData = new MovementSystem.MovementData
+        {
+            Pattern = MovementSystem.MovementPattern.Charge,
+            CanWalk = true,
+            WalkSpeed = 0.25f,
+            JumpForce = 7f
+        };
+
+        var texture = AssetManager.GetTexture("chunk");
+        var frameSize = new Vector2(texture.Width, texture.Height);
+
+        var animationData = new AnimationSystem.AnimationData
+        (
+            texture: texture,
+            frameCount: 1,
+            frameSize: frameSize,
+            delaySeconds: float.PositiveInfinity
+        );
+
+        var enemy = new Enemy(game, position, frameSize, movementData, animationData,
+            health: 250, scrapValue: 2);
+        enemy.Size -= Vector2.One * 2;
+        enemy.DrawOffset = enemy.Size / 2 + Vector2.One;
+        enemy.DrawOrigin = enemy.Size / 2 + Vector2.One;
+        enemy.PhysicsSystem.LocalGravity = 0.5f;
+        enemy.PhysicsSystem.IgnoreBrokenTowerCollision = true;
+        enemy.KnockbackFactor = 0.5f;
+
+        //temp
+        if(DebugUtility.IsDebugEnabled())
+        {
+            enemy.ignoreSelfDestruct = true;
+        }
+        
 
         EnemyBins.Add(enemy);
 

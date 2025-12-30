@@ -15,10 +15,12 @@ class Hovership : Entity, ITower
     private int baseTargetHoverTileHeight = 10;
     private int realTargetHoverTileHeight;
     private static int baseTileRange = 20;
+
+    private int explosionRadius = 4;
     private int realTileRange;
     private int baseDamage = 15;
     private int realDamage;
-    private float knockback = 10f;
+    private float knockback = 3f;
     private int baseProjectileAmount = 3;
     private int realProjectileAmount;
     private int spawnedBombsDuringBarrage;
@@ -73,13 +75,13 @@ class Hovership : Entity, ITower
         var ufoIcon = AssetManager.GetTexture("hovership_ufo_icon");
         var efficientEnginesIcon = AssetManager.GetTexture("hovership_efficientengines_icon");
 
-        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), orbitalLaserIcon, price: 260);
-        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), carpetOfFireIcon, price: 190);
-        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), bombierBayIcon, price: 40, leftChild: OrbitalLaser, rightChild: CarpetofFire);
+        var OrbitalLaser = new TowerUpgradeNode(Upgrade.OrbitalLaser.ToString(), orbitalLaserIcon, price: 120);
+        var CarpetofFire = new TowerUpgradeNode(Upgrade.CarpetofFire.ToString(), carpetOfFireIcon, price: 100);
+        var BombierBay = new TowerUpgradeNode(Upgrade.BombierBay.ToString(), bombierBayIcon, price: 30, leftChild: OrbitalLaser, rightChild: CarpetofFire);
 
-        var KineticBomber = new TowerUpgradeNode(Upgrade.KineticBomber.ToString(), empShipIcon, price: 150);
-        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), ufoIcon, price: 180);
-        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), efficientEnginesIcon, price: 35, leftChild: KineticBomber, rightChild: UFO);
+        var KineticBomber = new TowerUpgradeNode(Upgrade.KineticBomber.ToString(), empShipIcon, price: 80);
+        var UFO = new TowerUpgradeNode(Upgrade.UFO.ToString(), ufoIcon, price: 90);
+        var EfficientEngines = new TowerUpgradeNode(Upgrade.EfficientEngines.ToString(), efficientEnginesIcon, price: 20, leftChild: KineticBomber, rightChild: UFO);
 
         var defaultNode = new TowerUpgradeNode(Upgrade.NoUpgrade.ToString(), upgradeIcon: null, price: 0,
             leftChild: BombierBay, rightChild: EfficientEngines);
@@ -88,8 +90,8 @@ class Hovership : Entity, ITower
         EfficientEngines.Description = "+20 tile range.\n+100% movement speed.";
         OrbitalLaser.Description = "+10 tile hover height.\nFires once every 8s.\nFires an orbital laser\nthat deals 1600\ndamage over 4s.";
         // TODO: figure out carpet of fire. Probably won't have time to implement fire
-        CarpetofFire.Description = "+3 projectiles.\nProjectiles inflict 1 burn\nstack and leave fire tiles\non the ground that\ndeal 10 DPS for 5s.";
-        KineticBomber.Description = "-2 projectiles.\n+5 tile area of effect.\n+50 damage.\n+200% knockback.";
+        CarpetofFire.Description = "+7 projectiles,\n+5 damage";
+        KineticBomber.Description = "-2 projectiles.\n+5 tile area of effect.\n+30 damage.\n++12 knockback.";
         UFO.Description = "Sucks up to 5 bots up toward it and\ndrops them back at the entrance.\nWhile held, they take 10 DPS.";
 
         towerCore.CurrentUpgrade = defaultNode;
@@ -431,7 +433,7 @@ class Hovership : Entity, ITower
         bomb.SetPosition(position);
         bomb.physics.DragFactor = 0f;
         bomb.physics.LocalGravity = 0.125f;
-        bomb.Destroyed += _ => EffectUtility.Explode(this, bomb.Position, radius: 4 * Grid.TileLength,
+        bomb.Destroyed += _ => EffectUtility.Explode(this, bomb.Position, radius: explosionRadius * Grid.TileLength,
             magnitude: knockback, damage: realDamage);
     }
 
@@ -616,7 +618,8 @@ class Hovership : Entity, ITower
             UpdatePosition(-Vector2.UnitY);
             bombSprite = AssetManager.GetTexture("hovership_carpetoffire_bomb");
 
-            realProjectileAmount += 3;
+            realProjectileAmount += 7;
+            realDamage += 5;
         }
         else if (newUpgrade.Name == Upgrade.KineticBomber.ToString())
         {
@@ -628,8 +631,10 @@ class Hovership : Entity, ITower
             bombSprite = AssetManager.GetTexture("hovership_emp_bomb");
 
             realProjectileAmount -= 2;
-            realDamage += 50;
-            knockback *= 3;
+            
+            explosionRadius += 5;
+            realDamage += 30;
+            knockback += 12;
         }
         else
         {

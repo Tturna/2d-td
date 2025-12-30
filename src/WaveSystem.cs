@@ -70,6 +70,7 @@ public static class WaveSystem
     private static int currentLevelNumber;
     private static Zone currentZone;
     private static Wave currentWave;
+    public static int WaveReward;
 
     private static Game1 game;
 
@@ -138,6 +139,8 @@ public static class WaveSystem
         // currentWave = currentZone.waves[CurrentWaveIndex];
 
         MaxWaveIndex = StartingMaxWaves + (currentLevelNumber - 1) * MaxWaveIncreasePerLevel;
+
+        WaveReward = 2;
     }
 
     public static void Update(GameTime gameTime)
@@ -240,8 +243,8 @@ public static class WaveSystem
         // called when the wave ends and will give the player time to build or wtv
 
         WaveEnded?.Invoke();
-
-        CurrencyManager.AddBalance(20);
+        
+        CurrencyManager.AddBalance(WaveSystem.WaveReward);
         var textVelocity = -Vector2.UnitY * 25f;
         var flyoutScreenPos = new Vector2(game.NativeScreenWidth / 2, game.NativeScreenHeight - 64);
         var flyoutPos = Camera.ScreenToWorldPosition(flyoutScreenPos);
@@ -256,6 +259,7 @@ public static class WaveSystem
     private static void NextWave()
     { 
         WaveStarted?.Invoke();
+        WaveReward += 3;
         CurrentWaveIndex++;
         currentWave = currentZone.waves[CurrentWaveIndex];
         Console.WriteLine("Wave " + CurrentWaveIndex + " Has Started");
