@@ -9,6 +9,19 @@ namespace _2d_td;
 #nullable enable
 public class MainMenuUIComponent : DrawableGameComponent
 {
+    private record struct LevelSelector
+    {
+        public string LevelName;
+        public Vector2 SelectorButtonPosition;
+    }
+
+    private record struct ZoneSelector
+    {
+        public string ZoneName;
+        public Texture2D LevelSelectorBackgroundSprite;
+        public LevelSelector[] LevelSelectors;
+    }
+
     private Game1 game;
     private List<UIEntity> uiEntities = new();
     private SpriteFont pixelsixFont = AssetManager.GetFont("pixelsix");
@@ -18,6 +31,66 @@ public class MainMenuUIComponent : DrawableGameComponent
     private Texture2D settingsButtonSprite = AssetManager.GetTexture("main_settings_button");
     private Stack<Action> menuScreenStack = new();
     private SettingsScreen? settingsScreen;
+
+    private ZoneSelector[] zoneSelectors =
+    [
+        // Zone 1
+        new ZoneSelector()
+        {
+            ZoneName = "Zone 1",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone1levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(164, 115) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(250, 130) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(320, 80) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(300, 210) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(420, 190) }
+            ]
+        },
+        // Zone 2
+        new ZoneSelector()
+        {
+            ZoneName = "Zone 2",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone2levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(300, 75) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(230, 115) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(290, 165) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(210, 210) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(390, 180) }
+            ]
+        },
+        // Zone 3
+        new ZoneSelector()
+        {
+            ZoneName = "Zone 3",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone3levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(164, 90) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(260, 105) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(360, 110) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(260, 185) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(380, 200) }
+            ]
+        },
+        // Zone 4
+        new ZoneSelector()
+        {
+            ZoneName = "Zone 4",
+            LevelSelectorBackgroundSprite = AssetManager.GetTexture("zone4levelselector_bg"),
+            LevelSelectors =
+            [
+                new() { LevelName = "Level 1", SelectorButtonPosition = new Vector2(320, 60) },
+                new() { LevelName = "Level 2", SelectorButtonPosition = new Vector2(400, 145) },
+                new() { LevelName = "Level 3", SelectorButtonPosition = new Vector2(305, 175) },
+                new() { LevelName = "Level 4", SelectorButtonPosition = new Vector2(220, 230) },
+                new() { LevelName = "Level 5", SelectorButtonPosition = new Vector2(365, 255) }
+            ]
+        }
+    ];
 
     public MainMenuUIComponent(Game game) : base(game)
     {
@@ -136,30 +209,45 @@ public class MainMenuUIComponent : DrawableGameComponent
         var halfScreenHeight = game.NativeScreenHeight / 2;
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
+        var bg = new UIEntity(game, uiEntities, AssetManager.GetTexture("zoneselector_bg"));
+
         var titleText = "Select Zone";
         var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
         title.Scale = Vector2.One * 2;
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
-        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
             
-        var btnAnimationData = new AnimationSystem.AnimationData
-        (
-            texture: buttonSprite,
-            frameCount: 2,
-            frameSize: btnFrameSize,
-            delaySeconds: 0.5f
-        );
-
-        var zones = 3;
+        var zones = 4;
         var btnMargin = 20;
         var selectorWidth = btnFrameSize.X * zones + btnMargin * (zones - 1);
 
+        var zoneButtonPositions = new Vector2[]
+        {
+            new Vector2(280, 80),
+            new Vector2(150, 100),
+            new Vector2(270, 200),
+            new Vector2(390, 250)
+        };
+
+        var zoneButtonTextures = new Texture2D[]
+        {
+            AssetManager.GetTexture("zonebutton1"),
+            AssetManager.GetTexture("zonebutton2"),
+            AssetManager.GetTexture("zonebutton3"),
+            AssetManager.GetTexture("zonebutton4")
+        };
+
         for (int i = 0; i < zones; i++)
         {
-            var offset = btnFrameSize.X * i + btnMargin * i;
-            var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
-            var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-            var text = $"{i + 1}";
+            var iconAnimationData = new AnimationSystem.AnimationData (
+                texture: zoneButtonTextures[i],
+                frameCount: 2,
+                frameSize: new Vector2(zoneButtonTextures[i].Width / 2, zoneButtonTextures[i].Height),
+                delaySeconds: float.PositiveInfinity);
+
+            var pos = zoneButtonPositions[i];
+            var btn = new UIEntity(game, uiEntities, pos, iconAnimationData);
+            var text = zoneSelectors[i].ZoneName;
 
             if (ProgressionManager.IsZoneUnlocked(i + 1))
             {
@@ -173,30 +261,32 @@ public class MainMenuUIComponent : DrawableGameComponent
                         menuScreenStack.Push(LoadZoneSelector);
                     }
 
+                    btn.Destroy();
                     LoadLevelSelector(zoneNumber);
                 };
+                btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
+                btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
             }
-            else
-            {
-                text += " (x)";
-            }
+            // else
+            // {
+            //     text += " (x)";
+            // }
 
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
             var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
+            zoneText.SetPosition(btn.Position + new Vector2(0, iconAnimationData.FrameSize.Y + 2));
         }
 
-        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
-        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        var backButtonPos = new Vector2(0, game.NativeScreenHeight - btnFrameSize.Y);
+        var backButton = new UIEntity(game, uiEntities, AssetManager.GetTexture("btn_back"));
+        backButton.SetPosition(backButtonPos);
         backButton.ButtonPressed += () =>
         {
+            backButton.Destroy();
             LoadMainMenu();
             SoundSystem.PlaySound("menuClick");
         };
-
-        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
-        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevelSelector(int selectedZone)
@@ -208,57 +298,101 @@ public class MainMenuUIComponent : DrawableGameComponent
         var halfScreenHeight = game.NativeScreenHeight / 2;
         var btnFrameSize = new Vector2(buttonSprite.Bounds.Width / 2, buttonSprite.Bounds.Height);
 
+        var bg = new UIEntity(game, uiEntities, zoneSelectors[selectedZone - 1].LevelSelectorBackgroundSprite);
+
         var titleText = "Select Level";
         var title = new UIEntity(game, uiEntities, pixelsixFont, titleText);
         title.Scale = Vector2.One * 2;
         var titleOffset = -pixelsixFont.MeasureString(titleText).X * title.Scale.X / 2;
-        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, halfScreenHeight - 40));
+        title.SetPosition(new Vector2(halfScreenWidth + titleOffset, 20));
 
-        var btnAnimationData = new AnimationSystem.AnimationData
-            (
-             texture: buttonSprite,
-             frameCount: 2,
-             frameSize: btnFrameSize,
-             delaySeconds: 0.5f
-            );
-
-        var levels = 5;
+        var levels = zoneSelectors[selectedZone - 1].LevelSelectors.Length;
         var btnMargin = 20;
         var selectorWidth = btnFrameSize.X * levels + btnMargin * (levels - 1);
 
         for (int i = 0; i < levels; i++)
         {
-            var offset = btnFrameSize.X * i + btnMargin * i;
-            var pos = new Vector2(halfScreenWidth - selectorWidth / 2 + offset, halfScreenHeight);
-            var btn = new UIEntity(game, uiEntities, pos, btnAnimationData);
-            var text = $"{i + 1}";
+            var isLevelUnlocked = ProgressionManager.IsLevelUnlocked(selectedZone, i + 1);
+            string textureName;
 
-            if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 1))
+            if (!isLevelUnlocked)
             {
-                var levelNumber = i + 1;
-                btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+                textureName = "levelbutton_inactive";
             }
             else
             {
-                text += " (x)";
+                if (i + 1 < 5)
+                {
+                    if (ProgressionManager.IsLevelUnlocked(selectedZone, i + 2))
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else
+                    {
+                        textureName = "levelbutton_uncleared";
+                    }
+                }
+                else
+                {
+                    if (selectedZone + 1 >= 4)
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else if (ProgressionManager.IsLevelUnlocked(selectedZone + 1, 1))
+                    {
+                        textureName = "levelbutton_cleared";
+                    }
+                    else
+                    {
+                        textureName = "levelbutton_uncleared";
+                    }
+                }
             }
+
+            var iconTexture = AssetManager.GetTexture(textureName);
+            var frameCount = textureName == "levelbutton_inactive" ? 1 : 2;
+            var iconAnimationData = new AnimationSystem.AnimationData(
+                texture: iconTexture,
+                frameCount: frameCount,
+                frameSize: new Vector2(iconTexture.Width / frameCount, iconTexture.Height),
+                delaySeconds: float.PositiveInfinity);
+
+            var pos = zoneSelectors[selectedZone - 1].LevelSelectors[i].SelectorButtonPosition;
+            var btn = new UIEntity(game, uiEntities, pos, iconAnimationData);
+            var text = zoneSelectors[selectedZone - 1].LevelSelectors[i].LevelName;
+
+            if (isLevelUnlocked)
+            {
+                var levelNumber = i + 1;
+                btn.ButtonPressed += () =>
+                {
+                    btn.Destroy();
+                    LoadLevel(selectedZone, levelNumber);
+                };
+
+                btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
+                btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
+            }
+            // else
+            // {
+            //     text += " (x)";
+            // }
 
             var zoneText = new UIEntity(game, uiEntities, pixelsixFont, text);
             zoneText.Scale = Vector2.One * 2;
-            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2;
-            zoneText.SetPosition(btn.Position + new Vector2(btnFrameSize.X / 2 + textXOffset, btnFrameSize.Y + 4));
+            var textXOffset = -pixelsixFont.MeasureString(text).X * zoneText.Scale.X / 2 + iconAnimationData.FrameSize.X / 2;
+            zoneText.SetPosition(btn.Position + new Vector2(textXOffset, iconAnimationData.FrameSize.Y + 2));
         }
 
-        var backButtonPos = new Vector2(halfScreenWidth - btnFrameSize.X / 2, halfScreenHeight + 80);
-        var backButton = new UIEntity(game, uiEntities, backButtonPos, btnAnimationData);
+        var backButtonPos = new Vector2(0, game.NativeScreenHeight - btnFrameSize.Y);
+        var backButton = new UIEntity(game, uiEntities, AssetManager.GetTexture("btn_back"));
+        backButton.SetPosition(backButtonPos);
         backButton.ButtonPressed += () =>
         {
+            backButton.Destroy();
             LoadZoneSelector();
             InputSystem.ForceClickableInterrupt();
         };
-
-        var backText = new UIEntity(game, uiEntities, pixelsixFont, "Back");
-        backText.SetPosition(backButtonPos);
     }
 
     private void LoadLevel(int zone, int level)

@@ -269,7 +269,7 @@ public static class AssetManager
         LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
         // - zone4 bg
-        LoadTexture("zone1_backdrop", "sprites/Backdrops/zone1_backdrop");
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
         LoadTexture("skyscraper_ruins_1", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1");
         LoadTexture("skyscraper_ruins_2", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2");
 
@@ -296,6 +296,19 @@ public static class AssetManager
         LoadTexture("main_play_button", "sprites/UI/mainmenu_playbutton");
         LoadTexture("main_quit_button", "sprites/UI/mainmenu_quitbutton");
         LoadTexture("main_settings_button", "sprites/UI/mainmenu_settingsbutton");
+        LoadTexture("zoneselector_bg", "sprites/UI/worldmap");
+        LoadTexture("zone1levelselector_bg", "sprites/UI/zoneselect_background_zone1");
+        LoadTexture("zone2levelselector_bg", "sprites/UI/zoneselect_background_zone2");
+        LoadTexture("zone3levelselector_bg", "sprites/UI/zoneselect_background_zone3");
+        LoadTexture("zone4levelselector_bg", "sprites/UI/zoneselect_background_zone4");
+        LoadTexture("zonebutton1", "sprites/UI/zonebutton_1");
+        LoadTexture("zonebutton2", "sprites/UI/zonebutton_2");
+        LoadTexture("zonebutton3", "sprites/UI/zonebutton_3");
+        LoadTexture("zonebutton4", "sprites/UI/zonebutton_4");
+        LoadTexture("btn_back", "sprites/UI/button_back");
+        LoadTexture("levelbutton_uncleared", "sprites/UI/levelbutton_uncleared");
+        LoadTexture("levelbutton_cleared", "sprites/UI/levelbutton_cleared");
+        LoadTexture("levelbutton_inactive", "sprites/UI/levelbutton_inactive");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
