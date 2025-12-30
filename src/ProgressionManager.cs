@@ -22,12 +22,13 @@ public static class ProgressionManager
     public static bool IsLevelUnlocked(int zone, int level)
     {
         if (zone < LastUnlockedZone) return true;
+
         return IsZoneUnlocked(zone) && level <= LastUnlockedLevel;
     }
 
     private static void OnLevelWin(int zone, int wonLevel)
     {
-        int maxZones = 5;
+        int maxZones = 4;
         int maxLevels = 5;
 
         if (wonLevel + 1 > maxLevels)
@@ -70,7 +71,7 @@ public static class ProgressionManager
 
     public static void UnlockNextLevel()
     {
-        if (LastUnlockedZone == 5 && LastUnlockedLevel == 5) return;
+        if (LastUnlockedZone == 4 && LastUnlockedLevel == 5) return;
 
         LastUnlockedLevel++;
 

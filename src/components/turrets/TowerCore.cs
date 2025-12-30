@@ -180,6 +180,9 @@ public class TowerCore : GameComponent, IClickable
         return Collision.IsPointInEntity(mouseWorldPosition, Turret);
     }
 
+    public void OnStartHover() { }
+    public void OnEndHover() { }
+
     private TowerUpgradeNode? GenericUpgrade(TowerUpgradeNode? childUpgrade)
     {
         if (childUpgrade is null)

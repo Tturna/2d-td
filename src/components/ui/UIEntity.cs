@@ -11,6 +11,8 @@ public class UIEntity : Entity, IClickable
 {
     public delegate void ButtonPressedHandler();
     public event ButtonPressedHandler? ButtonPressed;
+    public event ButtonPressedHandler? ButtonStartHover;
+    public event ButtonPressedHandler? ButtonEndHover;
 
     private Func<UIEntity, bool> removeUIEntityCallback;
     private SpriteFont? font;
@@ -107,11 +109,6 @@ public class UIEntity : Entity, IClickable
         base.Destroy();
     }
 
-    private void OnButtonPressed()
-    {
-        ButtonPressed?.Invoke();
-    }
-
     public void ClearButtonHandlers()
     {
         ButtonPressed = null;
@@ -119,7 +116,7 @@ public class UIEntity : Entity, IClickable
 
     public void OnLeftClick()
     {
-        OnButtonPressed();
+        ButtonPressed?.Invoke();
     }
 
     public void OnRightClick() { }
@@ -131,5 +128,15 @@ public class UIEntity : Entity, IClickable
         // TODO: Consider implementing a system that prevents buttons from being clicked if
         // another UI element is on top of it.
         return Collision.IsPointInEntity(mouseScreenPosition, this);
+    }
+
+    public void OnStartHover()
+    {
+        ButtonStartHover?.Invoke();
+    }
+
+    public void OnEndHover()
+    {
+        ButtonEndHover?.Invoke();
     }
 }

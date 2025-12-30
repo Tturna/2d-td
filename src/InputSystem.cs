@@ -15,6 +15,7 @@ public static class InputSystem
     private static bool isMouseLeftClicked;
     private static bool isMouseRightClicked;
     private static Dictionary<Keys, bool> keysDownMap = new();
+    private static HashSet<IClickable> hoveredClickables = new();
 
     private static int totalScrollAmount;
     private static int justScrolledAmount;
@@ -75,60 +76,60 @@ public static class InputSystem
         justScrolledAmount = newScrollAmount - totalScrollAmount;
         totalScrollAmount = newScrollAmount;
 
+        var mouseScreenPos = InputSystem.GetMouseScreenPosition();
+        var mouseWorldPos = InputSystem.GetMouseWorldPosition();
+        var leftClicked = false;
+        var rightClicked = false;
+
         if (IsLeftMouseButtonClicked())
         {
-            var mouseScreenPos = InputSystem.GetMouseScreenPosition();
-            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
             OnLeftClicked(mouseScreenPos, mouseWorldPos);
+            leftClicked = true;
+        }
+        else if (IsRightMouseButtonClicked())
+        {
+            OnRightClicked(mouseScreenPos, mouseWorldPos);
+            rightClicked = true;
+        }
 
-            collectionModified = false;
+        collectionModified = false;
 
-            for (int i = game.Components.Count - 1; i >= 0; i--)
+        for (int i = game.Components.Count - 1; i >= 0; i--)
+        {
+            // If a clickable destroys multiple components, i might go out of bounds.
+            // Iterate until we find the next available one.
+            if (game.Components.Count < i + 1) continue;
+
+            var component = game.Components[i];
+            if (component is not IClickable clickable) continue;
+
+            if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
             {
-                // If a clickable destroys multiple components, i might go out of bounds.
-                // Iterate until we find the next available one.
-                if (game.Components.Count < i + 1) continue;
+                if (!hoveredClickables.Contains(clickable))
+                {
+                    hoveredClickables.Add(clickable);
+                    clickable.OnStartHover();
+                }
 
-                var component = game.Components[i];
-                if (component is not IClickable) continue;
-
-                var clickable = (IClickable)component;
-
-                if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
+                if (leftClicked)
                 {
                     clickable.OnLeftClick();
                 }
-
-                // When a clickable causes a scene change, the components list will change.
-                // The loop should break to not check for clicks incorrectly.
-                if (collectionModified) break;
-            }
-        }
-
-        if (IsRightMouseButtonClicked())
-        {
-            var mouseScreenPos = InputSystem.GetMouseScreenPosition();
-            var mouseWorldPos = InputSystem.GetMouseWorldPosition();
-            OnRightClicked(mouseScreenPos, mouseWorldPos);
-
-            collectionModified = false;
-
-            for (int i = game.Components.Count - 1; i >= 0; i--)
-            {
-                if (game.Components.Count < i + 1) continue;
-
-                var component = game.Components[i];
-                if (component is not IClickable) continue;
-
-                var clickable = (IClickable)component;
-
-                if (clickable.IsMouseColliding(mouseScreenPos, mouseWorldPos))
+                
+                if (rightClicked)
                 {
                     clickable.OnRightClick();
                 }
-
-                if (collectionModified) break;
             }
+            else if (hoveredClickables.Contains(clickable))
+            {
+                hoveredClickables.Remove(clickable);
+                clickable.OnEndHover();
+            }
+
+            // When a clickable causes a scene change, the components list will change.
+            // The loop should break to not check for clicks incorrectly.
+            if (collectionModified) break;
         }
     }
 
@@ -233,5 +234,10 @@ public static class InputSystem
     public static void ForceClickableInterrupt()
     {
         collectionModified = true;
+    }
+
+    public static bool RemoveHoveredClickable(IClickable clickable)
+    {
+        return hoveredClickables.Remove(clickable);
     }
 }

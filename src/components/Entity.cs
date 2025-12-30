@@ -10,6 +10,7 @@ public class Entity : DrawableGameComponent
 {
     // Hide Game field of DrawableGameComponent so children can directly use a Game1 instance.
     new protected Game1 Game;
+    public string Name { get; set; } = String.Empty;
     public Vector2 Position { get; private set; } = Vector2.Zero;
     public float RotationRadians { get; set; }
     public Vector2 Size { get; set; }
@@ -44,10 +45,20 @@ public class Entity : DrawableGameComponent
             {
                 Size = size;
             }
+
+            if (Name == String.Empty)
+            {
+                Name = "Unnamed Entity";
+            }
         }
         else
         {
             Size = new Vector2(Sprite.Width, Sprite.Height);
+
+            if (Name == String.Empty)
+            {
+                Name = Sprite.Name;
+            }
         }
 
         if (position is not null)
@@ -66,6 +77,11 @@ public class Entity : DrawableGameComponent
         AnimationSystem = new AnimationSystem(animationData);
         Size = animationData.FrameSize;
         Game.Components.Add(this);
+
+        if (Name == String.Empty)
+        {
+            Name = animationData.Texture.Name;
+        }
     }
 
     public override void Initialize()
@@ -146,6 +162,11 @@ public class Entity : DrawableGameComponent
             if (this is ITower)
             {
                 BuildingSystem.Towers.Remove(this);
+            }
+
+            if (this is IClickable clickable)
+            {
+                InputSystem.RemoveHoveredClickable(clickable);
             }
 
             IsDestroyed = true;
