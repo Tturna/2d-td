@@ -269,6 +269,7 @@ public class MainMenuUIComponent : DrawableGameComponent
                         menuScreenStack.Push(LoadZoneSelector);
                     }
 
+                    btn.Destroy();
                     LoadLevelSelector(zoneNumber);
                 };
                 btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
@@ -290,6 +291,7 @@ public class MainMenuUIComponent : DrawableGameComponent
         backButton.SetPosition(backButtonPos);
         backButton.ButtonPressed += () =>
         {
+            backButton.Destroy();
             LoadMainMenu();
             SoundSystem.PlaySound("menuClick");
         };
@@ -376,7 +378,12 @@ public class MainMenuUIComponent : DrawableGameComponent
             if (isLevelUnlocked)
             {
                 var levelNumber = i + 1;
-                btn.ButtonPressed += () => LoadLevel(selectedZone, levelNumber);
+                btn.ButtonPressed += () =>
+                {
+                    btn.Destroy();
+                    LoadLevel(selectedZone, levelNumber);
+                };
+
                 btn.ButtonStartHover += () => btn.AnimationSystem!.NextFrame();
                 btn.ButtonEndHover += () => btn.AnimationSystem!.NextFrame();
             }
@@ -396,6 +403,7 @@ public class MainMenuUIComponent : DrawableGameComponent
         backButton.SetPosition(backButtonPos);
         backButton.ButtonPressed += () =>
         {
+            backButton.Destroy();
             LoadZoneSelector();
             InputSystem.ForceClickableInterrupt();
         };

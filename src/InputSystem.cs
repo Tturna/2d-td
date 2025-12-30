@@ -235,4 +235,9 @@ public static class InputSystem
     {
         collectionModified = true;
     }
+
+    public static bool RemoveHoveredClickable(IClickable clickable)
+    {
+        return hoveredClickables.Remove(clickable);
+    }
 }
