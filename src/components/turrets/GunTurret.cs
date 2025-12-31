@@ -67,10 +67,10 @@ class GunTurret : Entity, ITower
             leftChild: doubleGun, rightChild: improvedBarrel);
 
         doubleGun.Description = "+1 shots/sec";
-        improvedBarrel.Description = "+3 damage,\n+4 range";
-        photonCannon.Description = "Fires a constant beam\nthat deals 60 DPS\nto one unit.";
-        botShot.Description = "-25% fire rate,\n-2 range,\n+8 damage,\nx5 projectiles.\nIncreased knockback.";
-        rocketShots.Description = "+20 damage,\n+4 range,\n2 tile radius explosion\non impact ";
+        improvedBarrel.Description = "+15 damage,\n+4 range";
+        photonCannon.Description = "Fires a constant beam\nthat deals 80 DPS\nto one unit.";
+        botShot.Description = "-75% fire rate,\n-2 range,\n+5 damage,\nx5 projectiles.\n+2 knockback.";
+        rocketShots.Description = "+20 damage,\n+8 range,\n2 tile radius explosion\non impact ";
 
         towerCore.CurrentUpgrade = defaultNode;
         realRange = baseRange;
@@ -446,7 +446,7 @@ class GunTurret : Entity, ITower
             newBaseTexture = AssetManager.GetTexture("gunTurret_rocketshots_body");
             turretHead!.Sprite = AssetManager.GetTexture("gunTurret_rocketshots_gun");
             realRange = baseRange + 8;
-            realDamage = baseDamage + 20;
+            realDamage = baseDamage + 23;
             projectileSprite = AssetManager.GetTexture("gunTurret_rocketshots_rocket");
             projectileRotationOffset = MathHelper.Pi; // rotate 180 degrees
         }
