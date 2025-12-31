@@ -325,6 +325,7 @@ public static class AssetManager
         LoadTexture("settings_toggle_button", "sprites/UI/settingsscreen_togglebutton");
         LoadTexture("settings_save_button", "sprites/UI/settingsscreen_savebutton");
         LoadTexture("skip_button", "sprites/UI/skip_button");
+        LoadTexture("sell_button", "sprites/UI/sellbutton");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");
