@@ -207,16 +207,8 @@ public class UIComponent : DrawableGameComponent
 
         CreateTileBuyButtons();
 
-        var pauseIconTexture = AssetManager.GetTexture("btn_pause");
-        var pauseButtonAnimation = new AnimationSystem.AnimationData
-        (
-            texture: pauseIconTexture,
-            frameCount: 2,
-            frameSize: new Vector2(pauseIconTexture.Width / 2, pauseIconTexture.Height),
-            delaySeconds: 0.5f
-        );
-
-        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonAnimation);
+        var pauseButtonSprite = AssetManager.GetTexture("btn_pause");
+        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonSprite);
         pauseButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
 
         base.Initialize();
