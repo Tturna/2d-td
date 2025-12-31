@@ -291,7 +291,6 @@ class Hovership : Entity, ITower
             var maxBeamLength = realTargetHoverTileHeight * 2 * Grid.TileLength;
 
             orbitalLaserBeam!.SetPosition(beamPos);
-            orbitalLaserBeam.Scale = new Vector2(1, maxBeamLength);
 
             var beamEndPoint = shipCenterBottom + Vector2.UnitY * maxBeamLength;
 
@@ -313,6 +312,7 @@ class Hovership : Entity, ITower
             }
 
             var beamLength = Vector2.Distance(shipCenterBottom, beamEndPoint);
+            orbitalLaserBeam.Scale = new Vector2(1, beamLength);
             var enemyCandidates = EnemySystem.EnemyBins.GetValuesInBinLine(shipCenterBottom,
                 BinGrid<Enemy>.LineDirection.Down, lineWidthAdditionInCells: 2);
 
