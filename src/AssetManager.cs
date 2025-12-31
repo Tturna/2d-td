@@ -287,6 +287,7 @@ public static class AssetManager
         // ui
         LoadTexture("btn_square", "sprites/UI/button_square");
         LoadTexture("btn_square_small", "sprites/UI/button_smallsquare");
+        LoadTexture("btn_square_small_empty", "sprites/UI/button_smallsquare_empty");
         LoadTexture("btn_square_empty", "sprites/UI/button_square_empty");
         LoadTexture("btn_info", "sprites/UI/infobutton");
         LoadTexture("btn_pause", "sprites/UI/pausebutton");
