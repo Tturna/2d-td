@@ -3060,6 +3060,42 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon.png;sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon
 
+#begin sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_base_idle.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_base_idle.gif
+
+#begin sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_gun.png
+
+#begin sprites/Towers/Turret/turret_ultracaliber/ultracalibbullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/ultracalibbullet.png
+
 #begin sprites/tree.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3276,6 +3312,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/UI/mainmenu_settingsbutton.png;sprites/UI/mainmenu_settingsbutton
 
+#begin sprites/UI/nextlevel_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/UI/nextlevel_button.png
+
 #begin sprites/UI/pausebutton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3323,6 +3371,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/UI/scrapicon.png;sprites/UI/scrapicon
+
+#begin sprites/UI/sellbutton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/UI/sellbutton.png
 
 #begin sprites/UI/settingsscreen_savebutton.png
 /importer:TextureImporter

@@ -494,15 +494,17 @@ public class UIComponent : DrawableGameComponent
         isWon = true;
         var beatTheGame = game.CurrentZone == 3 && game.CurrentLevel == 5;
 
-        var quitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 10);
-        var quitButton = new UIEntity(game, uiElements, quitButtonPos, buttonAnimationData);
+        var quitButtonSprite = AssetManager.GetTexture("main_quit_button");
+        var quitButtonPos = new Vector2(halfScreenWidth - quitButtonSprite.Width / 2,
+            halfScreenHeight + quitButtonSprite.Height / 2 + 10);
+        var quitButton = new UIEntity(game, uiElements, quitButtonPos, quitButtonSprite);
 
         if (!beatTheGame)
         {
-            var nextLevelButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
-            var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, buttonAnimationData);
-            var nextLevelButtonText = new UIEntity(game, uiElements, pixelsixFont, "Next Level");
-            nextLevelButtonText.SetPosition(nextLevelButtonPos + nextLevelButton.Size / 2 - nextLevelButtonText.Size / 2);
+            var nextButtonSprite = AssetManager.GetTexture("nextlevel_button");
+            var nextLevelButtonPos = new Vector2(halfScreenWidth - nextButtonSprite.Width / 2,
+                halfScreenHeight - nextButtonSprite.Height / 2);
+            var nextLevelButton = new UIEntity(game, uiElements, nextLevelButtonPos, nextButtonSprite);
 
             nextLevelButton.ButtonPressed += () =>
             {
@@ -520,16 +522,11 @@ public class UIComponent : DrawableGameComponent
             };
 
             winScreenElements.Add(nextLevelButton);
-            winScreenElements.Add(nextLevelButtonText);
         }
 
         quitButton.ButtonPressed += () => SceneManager.LoadMainMenu();
 
-        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        exitButtonText.SetPosition(quitButtonPos + quitButton.Size / 2 - exitButtonText.Size / 2);
-
         winScreenElements.Add(quitButton);
-        winScreenElements.Add(exitButtonText);
     }
 
     private void ShowWaveCooldownSkipButton()

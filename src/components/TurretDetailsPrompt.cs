@@ -10,7 +10,7 @@ namespace _2d_td;
 public class TurretDetailsPrompt : UIEntity
 {
     private UIEntity sellBtn;
-    private string sellText;
+    private UIEntity sellText;
     private UIEntity? repairBtn;
     private UIEntity? leftUpgradeBtn;
     private UIEntity? rightUpgradeBtn;
@@ -19,6 +19,7 @@ public class TurretDetailsPrompt : UIEntity
     private UIEntity upgradeIndicator;
     private Entity targetTowerEntity;
     private ITower targetTowerInterface;
+    private TowerCore core;
     private Vector2 upgradeBgSpriteSize, buttonSpriteSize, upgradeIndicatorSpriteSize;
     private int leftUpgradePrice, rightUpgradePrice;
     private SpriteFont pixelsixFont;
@@ -35,6 +36,7 @@ public class TurretDetailsPrompt : UIEntity
     {
         targetTowerEntity = turret;
         targetTowerInterface = (ITower)turret;
+        this.core = core;
         var upgradeBgSprite = AssetManager.GetTexture("upgradebg");
         var buttonSprite = AssetManager.GetTexture("btn_square");
         var upgradeIndicatorSprite = AssetManager.GetTexture("upgrade_indicator");
@@ -54,9 +56,12 @@ public class TurretDetailsPrompt : UIEntity
         );
 
         towerType = BuildingSystem.GetTowerTypeFromEntity(targetTowerEntity);
-        sellBtn = new UIEntity(game, UIComponent.Instance.AddUIEntity, 
-            UIComponent.Instance.RemoveUIEntity, Vector2.Zero, buttonAnimationData);
-        sellText = $"Sell ({CurrencyManager.GetTowerPrice(towerType) / 2})";
+        sellBtn = new UIEntity(game, Vector2.Zero, UIComponent.Instance.AddUIEntity, 
+            UIComponent.Instance.RemoveUIEntity, AssetManager.GetTexture("sell_button"));
+
+        sellText = new UIEntity(game, UIComponent.Instance.AddUIEntity,
+            UIComponent.Instance.RemoveUIEntity, pixelsixFont, "99");
+        sellText.Text = $"{core.TowerValue / 2}";
 
         sellBtn.ButtonPressed += () =>
         {
@@ -179,6 +184,10 @@ public class TurretDetailsPrompt : UIEntity
         sellBtn.SetPosition(sellBtnScreenPosition);
         upgradeIndicator.SetPosition(upgradeIndicatorScreenPosition);
 
+        var sellTextSize = pixelsixFont.MeasureString(sellText.Text);
+        var sellTextPos = sellBtn.Position + new Vector2(sellBtn.Size.X, 0);
+        sellText.SetPosition(sellTextPos);
+
         const int InfoButtonMargin = 5;
 
         if (leftUpgradeBtn is not null)
@@ -221,10 +230,6 @@ public class TurretDetailsPrompt : UIEntity
             Game.SpriteBatch.DrawString(pixelsixFont, rightUpgradePrice.ToString(), pos, Color.White);
         }
 
-        var sellTextSize = pixelsixFont.MeasureString(sellText);
-        var sellTextPos = sellBtn.Position + sellBtn.Size / 2 - sellTextSize / 2;
-        Game.SpriteBatch.DrawString(pixelsixFont, sellText, sellTextPos, Color.White);
-
         if (repairBtn is not null)
         {
             var repairPrice = CurrencyManager.GetTowerPrice(towerType) / 2;
@@ -253,6 +258,7 @@ public class TurretDetailsPrompt : UIEntity
     public override void Destroy()
     {
         sellBtn.Destroy();
+        sellText?.Destroy();
         repairBtn?.Destroy();
         leftUpgradeBtn?.Destroy();
         rightUpgradeBtn?.Destroy();
@@ -294,6 +300,7 @@ public class TurretDetailsPrompt : UIEntity
         if (newUpgrade is null) return;
 
         upgradeIndicator.AnimationSystem!.NextFrame();
+        sellText.Text = $"{(int)MathF.Ceiling((float)core.TowerValue / 2)}";
 
         if (tooltipEntities.Count > 0) CloseUpgradeTooltip();
 
