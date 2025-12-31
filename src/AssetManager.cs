@@ -63,6 +63,9 @@ public static class AssetManager
         LoadTexture("gunTurret_rocketshots_body", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_body");
         LoadTexture("gunTurret_rocketshots_gun", "sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_gun");
         LoadTexture("gunTurret_rocketshots_rocket", "sprites/Towers/Turret/turret_rocketshot/rocket");
+        LoadTexture("gunTurret_ultracaliber_body", "sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_base_idle");
+        LoadTexture("gunTurret_ultracaliber_gun", "sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_gun");
+        LoadTexture("gunTurret_ultracaliber_bullet", "sprites/Towers/Turret/turret_ultracaliber/ultracalibbullet");
 
         LoadTexture("gunTurret_botshot_icon", "sprites/Towers/Turret/turret_botshot/turret_botshot_icon");
         LoadTexture("gunTurret_doublegun_icon", "sprites/Towers/Turret/turret_doublegun/turret_doublegun_icon");

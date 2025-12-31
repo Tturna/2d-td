@@ -550,8 +550,17 @@ class GunTurret : Entity, ITower
         }
         else if (newUpgrade.Name == Upgrade.UltraCaliber.ToString())
         {
+            newBaseTexture = AssetManager.GetTexture("gunTurret_ultracaliber_body");
+            turretHead!.Sprite = AssetManager.GetTexture("gunTurret_ultracaliber_gun");
+            projectileSprite = AssetManager.GetTexture("gunTurret_ultracaliber_bullet");
             realDamage += 20;
             realTileRange += 6;
+            UpdatePosition(new Vector2(-2, -2));
+
+            turretHeadAxisCenter = Position + new Vector2(11, turretHead.Sprite.Height);
+            turretHead.SetPosition(turretHeadAxisCenter);
+            turretHead.DrawOrigin = new Vector2(turretHead!.Sprite!.Width - 4, turretHead.Sprite.Height / 2);
+            muzzleOffsetFactor = 25;
         }
         else if (newUpgrade.Name == Upgrade.ImprovedBarrel.ToString())
         {

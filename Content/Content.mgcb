@@ -360,6 +360,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/enemy.png
 
+#begin sprites/Environment Objects/Zone 1/midground/Moving Objects/fighterjet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Environment Objects/Zone 1/midground/Moving Objects/fighterjet.png
+
 #begin sprites/Environment Objects/Zone 1/midground/satellite_building.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2676,6 +2688,54 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Railgun/railgun_polishedrounds/railgun_polishedrounds_idle.png
 
+#begin sprites/Towers/Railgun/railgun_soundcannon/railgun_soundcannon_fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_soundcannon/railgun_soundcannon_fire.png
+
+#begin sprites/Towers/Railgun/railgun_soundcannon/railgun_soundcannon_idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_soundcannon/railgun_soundcannon_idle.png
+
+#begin sprites/Towers/Railgun/railgun_soundcannon/soundcannon_icon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_soundcannon/soundcannon_icon.png
+
+#begin sprites/Towers/Railgun/railgun_soundcannon/soundwave.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Railgun/railgun_soundcannon/soundwave.png
+
 #begin sprites/Towers/Railgun/railgun_tungstenshells/railgun_tungstenshells_fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3000,6 +3060,42 @@
 /processorParam:TextureFormat=Color
 /build:sprites/Towers/Turret/turret_rocketshot/turret_rocketshot_icon.png
 
+#begin sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_base_idle.gif
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_base_idle.gif
+
+#begin sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_gun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/turret_ultracaliber_gun.png
+
+#begin sprites/Towers/Turret/turret_ultracaliber/ultracalibbullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/Towers/Turret/turret_ultracaliber/ultracalibbullet.png
+
 #begin sprites/tree.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3059,6 +3155,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/UI/button_back.png
+
+#begin sprites/UI/button_smallsquare_empty.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/UI/button_smallsquare_empty.png
 
 #begin sprites/UI/button_smallsquare.png
 /importer:TextureImporter
