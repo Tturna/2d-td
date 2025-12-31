@@ -66,9 +66,8 @@ public class Game1 : Game
         Camera.Initialize(this);
         ParticleSystem.Initialize(this);
 
-        SceneManager.LoadMainMenu();
-
         SavingSystem.LoadGame();
+        SceneManager.LoadMainMenu();
 
         base.Initialize();
     }
@@ -259,7 +258,7 @@ public class Game1 : Game
                 var cameraManger = new CameraManager(this);
                 Components.Add(cameraManger);
 
-                var parallax = new Parallax(this);
+                var parallax = new Parallax(this, CurrentZone);
                 Components.Add(parallax);
 
                 SoundSystem.PlaySong("moonlightsonata");

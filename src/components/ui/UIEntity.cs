@@ -109,9 +109,11 @@ public class UIEntity : Entity, IClickable
         base.Destroy();
     }
 
-    public void ClearButtonHandlers()
+    public void ClearAllButtonHandlers()
     {
         ButtonPressed = null;
+        ButtonStartHover = null;
+        ButtonEndHover = null;
     }
 
     public void OnLeftClick()
@@ -123,7 +125,7 @@ public class UIEntity : Entity, IClickable
 
     public bool IsMouseColliding(Vector2 mouseScreenPosition, Vector2 mouseWorldPosition)
     {
-        if (ButtonPressed is null) return false;
+        if (ButtonPressed is null && ButtonStartHover is null && ButtonEndHover is null) return false;
 
         // TODO: Consider implementing a system that prevents buttons from being clicked if
         // another UI element is on top of it.

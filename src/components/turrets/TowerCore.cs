@@ -10,6 +10,7 @@ public class TowerCore : GameComponent, IClickable
     public Entity Turret { get; private set; }
     public TowerUpgradeNode CurrentUpgrade { get; set; }
     public HealthSystem Health { get; private set; }
+    public int TowerValue { get; private set; }
 
     public TurretDetailsPrompt? detailsPrompt;
     public bool DetailsClosed = true;
@@ -31,6 +32,7 @@ public class TowerCore : GameComponent, IClickable
         Health.IsRepairable = true;
         CurrentUpgrade = new TowerUpgradeNode("Default", upgradeIcon: null, price: 0, parent: null,
             leftChild: null, rightChild: null);
+        TowerValue = CurrencyManager.GetTowerPrice(BuildingSystem.GetTowerTypeFromEntity(Turret));
 
         Turret.Game.Components.Add(this);
 
@@ -192,6 +194,7 @@ public class TowerCore : GameComponent, IClickable
 
         if (!CurrencyManager.TryBuyUpgrade(childUpgrade.Price)) return null;
 
+        TowerValue += childUpgrade.Price;
         var costText = $"-{childUpgrade.Price}";
         CurrentUpgrade = childUpgrade;
         ((ITower)Turret).UpgradeTower(CurrentUpgrade);

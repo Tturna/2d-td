@@ -31,7 +31,7 @@ public static class CurrencyManager
         tilePriceMap = new()
         {
             { Game1.Instance.Terrain.GetPlayerLightTileset(), 1 },
-            { Game1.Instance.Terrain.GetPlayerHeavyTileset(), 3 }
+            { Game1.Instance.Terrain.GetPlayerHeavyTileset(), 5 }
         };
         WaveSystem.WaveEnded += () => 
         {
@@ -78,10 +78,10 @@ public static class CurrencyManager
         return true;
     }
 
-    public static int SellTower(BuildingSystem.TowerType towerType, bool isBroken)
+    public static int SellTower(int towerValue, bool isBroken)
     {
         var priceDivisor = isBroken ? 4 : 2;
-        var returnScrap = (int)Math.Ceiling((double)GetTowerPrice(towerType) / priceDivisor);
+        var returnScrap = (int)Math.Ceiling((double)towerValue / priceDivisor);
         AddBalance(returnScrap);
         SoundSystem.PlaySound("sell");
 

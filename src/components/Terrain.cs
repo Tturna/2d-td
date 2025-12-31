@@ -35,8 +35,16 @@ public class Terrain : DrawableGameComponent
     private Dictionary<Vector2, HeavyTile> heavyTiles = new();
     private Vector2 levelOffset = new Vector2(0, 64 * Grid.TileLength);
     private float tileDamageDelay = 0.5f;
+    private int leftTerrainPadding = 10;
+    private int rightTerrainPadding = 40;
+    private int paddingDepth = 25;
+    private int paddingTileId = 33;
+    private int playableAreaHeightAboveTerrain = 30;
 
-    private Vector2 topRightMostTile;
+    private Vector2 topRightMostTile = new Vector2(float.NegativeInfinity, 0);
+    private Vector2 topLeftMostTile = new Vector2(float.PositiveInfinity, 0);
+    private Vector2 topMostTile = new Vector2(0, float.PositiveInfinity);
+    private Vector2 bottomMostTile = new Vector2(0, float.NegativeInfinity);
 
     public Terrain(Game game, int zone, int level, string tilesetName = "groundtiles_zone1",
         string bgTilesetName = "blacktiles", int tilesetWidth = 12, int tilesetHeight = 4,
@@ -96,10 +104,64 @@ public class Terrain : DrawableGameComponent
                     {
                         topRightMostTile = tilePosition;
                     }
+
+                    if (col < topLeftMostTile.X)
+                    {
+                        topLeftMostTile = tilePosition;
+                    }
+
+                    if (row < topMostTile.Y)
+                    {
+                        topMostTile = tilePosition;
+                    }
+
+                    if (row > bottomMostTile.Y)
+                    {
+                        bottomMostTile = tilePosition;
+                    }
                 }
 
                 line = levelReader.ReadLine();
                 row++;
+            }
+        }
+
+        // left padding
+        for (int y = (int)topLeftMostTile.Y; y <= bottomMostTile.Y; y++)
+        {
+            for (int x = (int)topLeftMostTile.X - leftTerrainPadding; x <= topLeftMostTile.X; x++)
+            {
+                var tilePosition = new Vector2(x, y);
+
+                if (tiles.ContainsKey(tilePosition)) continue;
+
+                tiles[tilePosition] = paddingTileId;
+            }
+        }
+
+        // right padding
+        for (int y = (int)topRightMostTile.Y; y <= bottomMostTile.Y; y++)
+        {
+            for (int x = (int)topRightMostTile.X; x <= topRightMostTile.X + rightTerrainPadding; x++)
+            {
+                var tilePosition = new Vector2(x, y);
+
+                if (tiles.ContainsKey(tilePosition)) continue;
+
+                tiles[tilePosition] = paddingTileId;
+            }
+        }
+
+        // bottom padding
+        for (int y = (int)bottomMostTile.Y; y <= bottomMostTile.Y + paddingDepth; y++)
+        {
+            for (int x = (int)topLeftMostTile.X - leftTerrainPadding; x <= topRightMostTile.X + rightTerrainPadding; x++)
+            {
+                var tilePosition = new Vector2(x, y);
+
+                if (tiles.ContainsKey(tilePosition)) continue;
+
+                tiles[tilePosition] = paddingTileId;
             }
         }
 
@@ -430,5 +492,13 @@ public class Terrain : DrawableGameComponent
 
         UIComponent.SpawnFlyoutText(damage.ToString(), tileWorldPosition, -Vector2.UnitY * 25f,
             1f, Color.White);
+    }
+
+    public (Vector2, Vector2) GetPlayableTerrainBounds()
+    {
+        var min = new Vector2(topLeftMostTile.X, topMostTile.Y - playableAreaHeightAboveTerrain) * Grid.TileLength + levelOffset;
+        var max = new Vector2(topRightMostTile.X, bottomMostTile.Y) * Grid.TileLength + levelOffset;
+
+        return (min, max);
     }
 }

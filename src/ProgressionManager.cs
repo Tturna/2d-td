@@ -46,18 +46,26 @@ public static class ProgressionManager
         UnlockLevel(zone, wonLevel + 1);
     }
 
-    public static void UnlockLevel(int zone, int level)
+    public static void UnlockLevel(int zone, int level, bool autoSave = true)
     {
         if (zone > LastUnlockedZone)
         {
             LastUnlockedZone = zone;
             LastUnlockedLevel = level;
-            SavingSystem.SaveGame();
+
+            if (autoSave)
+            {
+                SavingSystem.SaveGame();
+            }
         }
         else if (zone == LastUnlockedZone && level > LastUnlockedLevel)
         {
             LastUnlockedLevel = level;
-            SavingSystem.SaveGame();
+
+            if (autoSave)
+            {
+                SavingSystem.SaveGame();
+            }
         }
     }
 

@@ -72,6 +72,13 @@ public class CameraManager : GameComponent
         // Camera.Scale = totalCameraScale;
 
         preShakePosition += posChange;
+
+        var (minBound, maxBound) = game.Terrain.GetPlayableTerrainBounds();
+
+        // Prevent camera from seeing into enemy spawn area to the left
+        minBound += Vector2.UnitX * game.NativeScreenWidth / 2;
+
+        preShakePosition = Vector2.Clamp(preShakePosition, minBound, maxBound);
         Camera.Position = preShakePosition;
         
         if (cameraShakeDurationLeft > 0)

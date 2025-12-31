@@ -60,7 +60,7 @@ public class TurretDetailsPrompt : UIEntity
 
         sellBtn.ButtonPressed += () =>
         {
-            var returnScrap = CurrencyManager.SellTower(towerType, isBroken: core.Health.CurrentHealth <= 0);
+            var returnScrap = CurrencyManager.SellTower(core.TowerValue, isBroken: core.Health.CurrentHealth <= 0);
             targetTowerEntity.Destroy();
 
             var indicatorPos = targetTowerEntity.Position - Vector2.UnitY * 6;
@@ -81,7 +81,8 @@ public class TurretDetailsPrompt : UIEntity
             leftInfoBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
                 UIComponent.Instance.RemoveUIEntity, infoIconSprite);
 
-            leftInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(currentUpgrade.LeftChild);
+            leftInfoBtn.ButtonStartHover += () => ToggleUpgradeTooltip(currentUpgrade.LeftChild);
+            leftInfoBtn.ButtonEndHover += () => ToggleUpgradeTooltip(currentUpgrade.LeftChild);
         }
         else
         {
@@ -99,7 +100,8 @@ public class TurretDetailsPrompt : UIEntity
             rightInfoBtn = new UIEntity(game, position: null, UIComponent.Instance.AddUIEntity,
                 UIComponent.Instance.RemoveUIEntity, infoIconSprite);
 
-            rightInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(currentUpgrade.RightChild);
+            rightInfoBtn.ButtonStartHover += () => ToggleUpgradeTooltip(currentUpgrade.RightChild);
+            rightInfoBtn.ButtonEndHover += () => ToggleUpgradeTooltip(currentUpgrade.RightChild);
         }
         else
         {
@@ -299,8 +301,9 @@ public class TurretDetailsPrompt : UIEntity
         {
             leftUpgradePrice = newUpgrade.LeftChild.Price;
             leftUpgradeBtn!.Sprite = newUpgrade.LeftChild.UpgradeIcon;
-            leftInfoBtn!.ClearButtonHandlers();
-            leftInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.LeftChild);
+            leftInfoBtn!.ClearAllButtonHandlers();
+            leftInfoBtn.ButtonStartHover += () => ToggleUpgradeTooltip(newUpgrade.LeftChild);
+            leftInfoBtn.ButtonEndHover += () => ToggleUpgradeTooltip(newUpgrade.LeftChild);
         }
         else
         {
@@ -314,8 +317,9 @@ public class TurretDetailsPrompt : UIEntity
         {
             rightUpgradePrice = newUpgrade.RightChild.Price;
             rightUpgradeBtn!.Sprite = newUpgrade.RightChild.UpgradeIcon;
-            rightInfoBtn!.ClearButtonHandlers();
-            rightInfoBtn.ButtonPressed += () => ToggleUpgradeTooltip(newUpgrade.RightChild);
+            rightInfoBtn!.ClearAllButtonHandlers();
+            rightInfoBtn.ButtonStartHover += () => ToggleUpgradeTooltip(newUpgrade.RightChild);
+            rightInfoBtn.ButtonEndHover += () => ToggleUpgradeTooltip(newUpgrade.RightChild);
         }
         else
         {

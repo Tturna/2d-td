@@ -120,6 +120,7 @@ public static class AssetManager
 
         LoadTexture("crane_base_idle", "sprites/Towers/Crane/crane_base/crane_base_idle");
         LoadTexture("crane_base_attack", "sprites/Towers/Crane/crane_base/crane_base_attack");
+        LoadTexture("crane_base_ball", "sprites/Towers/Crane/crane_base/crane_base_projectile");
         LoadTexture("crane_biggerbox_idle", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_idle");
         LoadTexture("crane_biggerbox_attack", "sprites/Towers/Crane/crane_biggerbox/crane_biggerbox_attack");
         LoadTexture("crane_biggerbox_box", "sprites/Towers/Crane/crane_biggerbox/biggerbox");
@@ -265,21 +266,32 @@ public static class AssetManager
         // environment
         LoadTexture("hq", "sprites/Misc/HQ");
 
+        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
+        LoadTexture("zone2_backdrop", "sprites/Backdrops/backdrop_zone2");
+        LoadTexture("zone3_backdrop", "sprites/Backdrops/backdrop_zone3");
+        LoadTexture("zone4_backdrop", "sprites/Backdrops/backdrop_zone4");
+
+        // - zone1 mg
+        LoadTexture("satellite_building", "sprites/Environment Objects/Zone 1/midground/satellite_building");
+        LoadTexture("turret_building", "sprites/Environment Objects/Zone 1/midground/turret_building");
+
+        // - zone1 midground moving objects
+        LoadTexture("fighterjet", "sprites/Environment Objects/Zone 1/midground/Moving Objects/fighterjet");
+
+        // - zone2 mg
+        LoadTexture("tree1_z2", "sprites/Environment Objects/Zone 2/midground/tree_1");
+        LoadTexture("tree2_z2", "sprites/Environment Objects/Zone 2/midground/tree_2");
+
         // - zone4 bg moving objects
         LoadTexture("cloud_z1_1", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_1");
         LoadTexture("cloud_z1_2", "sprites/Environment Objects/Zone 4/background/Moving Objects/cloud_z1_2");
         LoadTexture("roboship", "sprites/Environment Objects/Zone 4/background/Moving Objects/roboship_1");
-        // - zone4 bg
-        LoadTexture("zone1_backdrop", "sprites/Backdrops/backdrop_zone1");
-        LoadTexture("skyscraper_ruins_1", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_1");
-        LoadTexture("skyscraper_ruins_2", "sprites/Environment Objects/Zone 4/background/skyscraper_ruins_2");
-
-        // - zone4 midground moving objects
-        LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
         // - zone4 mg
         LoadTexture("deadtree_1", "sprites/Environment Objects/Zone 4/midground/deadtree_1");
         LoadTexture("deadtree_2", "sprites/Environment Objects/Zone 4/midground/deadtree_2");
         LoadTexture("ruins_1", "sprites/Environment Objects/Zone 4/midground/ruins_1");
+        // - zone4 midground moving objects
+        LoadTexture("hovercraft", "sprites/Environment Objects/Zone 4/midground/Moving Objects/hovercraft_1");
 
         LoadTexture("smog_1", "sprites/Smogs/Generic/smog_1");
         LoadTexture("smog_2", "sprites/Smogs/Generic/smog_2");
@@ -311,6 +323,10 @@ public static class AssetManager
         LoadTexture("levelbutton_uncleared", "sprites/UI/levelbutton_uncleared");
         LoadTexture("levelbutton_cleared", "sprites/UI/levelbutton_cleared");
         LoadTexture("levelbutton_inactive", "sprites/UI/levelbutton_inactive");
+        LoadTexture("pause_resume_button", "sprites/UI/pausemenu_resumebutton");
+        LoadTexture("settings_toggle_button", "sprites/UI/settingsscreen_togglebutton");
+        LoadTexture("settings_save_button", "sprites/UI/settingsscreen_savebutton");
+        LoadTexture("skip_button", "sprites/UI/skip_button");
 
         // fonts
         LoadFont("pixelsix", "fonts/pixelsix/pixelsix_bitmap_test");

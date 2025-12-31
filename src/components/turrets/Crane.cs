@@ -91,10 +91,11 @@ public class Crane : Entity, ITower
 
     public override void Initialize()
     {
+        var baseBall = AssetManager.GetTexture("crane_base_ball");
         var baseBallAnimation = new AnimationSystem.AnimationData(
-            texture: TextureUtility.GetBlankTexture(Game.SpriteBatch, Grid.TileLength, Grid.TileLength, Color.White),
+            texture: baseBall,
             frameCount: 1,
-            frameSize: Vector2.One * Grid.TileLength,
+            frameSize: new Vector2(baseBall.Width, baseBall.Height),
             delaySeconds: float.PositiveInfinity);
 
         ballOffset = defaultBallOffset;
@@ -113,7 +114,6 @@ public class Crane : Entity, ITower
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.BigBox.ToString())
         {
-            // TODO: Increased ball size?
             HandleDefaultCrane(deltaTime);
         }
         else if (towerCore.CurrentUpgrade.Name == Upgrade.ChargedLifts.ToString())
@@ -632,11 +632,19 @@ public class Crane : Entity, ITower
                 delaySeconds: float.PositiveInfinity);
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+            ballThing.Size = newBallAnimation.FrameSize;
 
             damage += 30;
-            UpdatePosition(-Vector2.UnitY * 2);
+            var ballOffsetAdjustment = new Vector2(0, 2);
+            var towerOffset = new Vector2(-2, -2);
 
-            ballOffset += Vector2.UnitY * 2;
+            if (ballThing.Position == Position + ballOffset)
+            {
+                ballThing.UpdatePosition(ballOffsetAdjustment + towerOffset);
+            }
+
+            UpdatePosition(towerOffset);
+            ballOffset += ballOffsetAdjustment;
         }
         else if (newUpgrade.Name == Upgrade.ExplosivePayload.ToString())
         {
@@ -653,6 +661,7 @@ public class Crane : Entity, ITower
                 delaySeconds: float.PositiveInfinity);
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+            ballThing.Size = newBallAnimation.FrameSize;
 
             damage = 120;
             UpdatePosition(-Vector2.UnitY * 3);
@@ -674,6 +683,7 @@ public class Crane : Entity, ITower
                 delaySeconds: float.PositiveInfinity);
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+            ballThing.Size = newBallAnimation.FrameSize;
 
             damage += 180;
             pierce += 10;
@@ -713,6 +723,7 @@ public class Crane : Entity, ITower
                 delaySeconds: 0.1f);
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+            ballThing.Size = newBallAnimation.FrameSize;
 
             damage = 150;
             var ballOffsetAdjustment = new Vector2(2, 3);
@@ -741,6 +752,7 @@ public class Crane : Entity, ITower
                 delaySeconds: 0.1f);
 
             ballThing!.AnimationSystem!.ChangeAnimationState(null, newBallAnimation);
+            ballThing.Size = newBallAnimation.FrameSize;
 
             damage = 120;
             var ballOffsetAdjustment = new Vector2(-3, 5);

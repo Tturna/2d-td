@@ -60,10 +60,10 @@ public static class SavingSystem
         var saveJson = File.ReadAllText(savePath);
         var saveData = JsonSerializer.Deserialize<SaveData>(saveJson);
 
-        ProgressionManager.UnlockLevel(saveData.UnlockedZone, saveData.UnlockedLevel);
         SettingsSystem.MasterVolume = saveData.MasterVolume;
         SettingsSystem.RawSoundEffectVolume = saveData.SfxVolume;
         SettingsSystem.RawMusicVolume = saveData.MusicVolume;
+        ProgressionManager.UnlockLevel(saveData.UnlockedZone, saveData.UnlockedLevel, autoSave: false);
 
         Console.WriteLine("Save loaded");
     }

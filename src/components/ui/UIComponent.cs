@@ -22,7 +22,6 @@ public class UIComponent : DrawableGameComponent
     private UIEntity waveIndicator;
     private UIEntity waveCooldownTimer;
     private UIEntity waveCooldownSkipButton;
-    private UIEntity waveCooldownSkipText;
     private SettingsScreen settingsScreen;
     private bool isPauseMenuVisible;
     private bool escHeld;
@@ -209,16 +208,8 @@ public class UIComponent : DrawableGameComponent
 
         CreateTileBuyButtons();
 
-        var pauseIconTexture = AssetManager.GetTexture("btn_pause");
-        var pauseButtonAnimation = new AnimationSystem.AnimationData
-        (
-            texture: pauseIconTexture,
-            frameCount: 2,
-            frameSize: new Vector2(pauseIconTexture.Width / 2, pauseIconTexture.Height),
-            delaySeconds: 0.5f
-        );
-
-        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonAnimation);
+        var pauseButtonSprite = AssetManager.GetTexture("btn_pause");
+        var pauseButton = new UIEntity(game, uiElements, Vector2.Zero, pauseButtonSprite);
         pauseButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
 
         base.Initialize();
@@ -429,14 +420,14 @@ public class UIComponent : DrawableGameComponent
 
         loseScreenElements.Clear();
 
-        var resumeButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2);
-        var resumeButton = new UIEntity(game, uiElements, resumeButtonPos, buttonAnimationData);
+        var resumeButtonPos = new Vector2(16, halfScreenHeight);
+        var resumeButton = new UIEntity(game, uiElements, resumeButtonPos, AssetManager.GetTexture("pause_resume_button"));
 
-        var settingsButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight - buttonFrameSize.Y / 2 + 30);
-        var settingsButton = new UIEntity(game, uiElements, settingsButtonPos, buttonAnimationData);
+        var settingsButtonPos = new Vector2(16, halfScreenHeight + resumeButton.Size.Y + 4);
+        var settingsButton = new UIEntity(game, uiElements, settingsButtonPos, AssetManager.GetTexture("main_settings_button"));
 
-        var exitButtonPos = new Vector2(halfScreenWidth - buttonFrameSize.X / 2, halfScreenHeight + buttonFrameSize.Y / 2 + 40);
-        var exitButton = new UIEntity(game, uiElements, exitButtonPos, buttonAnimationData);
+        var exitButtonPos = new Vector2(16, halfScreenHeight + resumeButton.Size.Y + settingsButton.Size.Y + 8);
+        var exitButton = new UIEntity(game, uiElements, exitButtonPos, AssetManager.GetTexture("main_quit_button"));
 
         resumeButton.ButtonPressed += () => TogglePauseMenu(!isPauseMenuVisible);
         settingsButton.ButtonPressed += () =>
@@ -466,22 +457,9 @@ public class UIComponent : DrawableGameComponent
             SoundSystem.PlaySound("menuClick");
         };
 
-        var resumeButtonText = new UIEntity(game, uiElements, pixelsixFont, "Resume");
-        var settingsButtonText = new UIEntity(game, uiElements, pixelsixFont, "Settings");
-        var exitButtonText = new UIEntity(game, uiElements, pixelsixFont, "Exit");
-        resumeButtonText.SetPosition(resumeButtonPos + resumeButton.Size / 2 - resumeButtonText.Size / 2);
-        settingsButtonText.SetPosition(settingsButtonPos + settingsButton.Size / 2 - settingsButtonText.Size / 2);
-        exitButtonText.SetPosition(exitButtonPos + exitButton.Size / 2 - exitButtonText.Size / 2);
-        resumeButtonText.DrawLayerDepth = 0.8f;
-        settingsButtonText.DrawLayerDepth = 0.8f;
-        exitButtonText.DrawLayerDepth = 0.8f;
-
         pauseMenuElements.Add(resumeButton);
         pauseMenuElements.Add(settingsButton);
         pauseMenuElements.Add(exitButton);
-        pauseMenuElements.Add(resumeButtonText);
-        pauseMenuElements.Add(settingsButtonText);
-        pauseMenuElements.Add(exitButtonText);
     }
 
     private void ShowGameOverScreen(Entity _ = null)
@@ -558,18 +536,14 @@ public class UIComponent : DrawableGameComponent
     {
         if (waveCooldownSkipButton is not null) return;
 
-        var pos = new Vector2(game.NativeScreenWidth - buttonFrameSize.X - 4, 50);
-        waveCooldownSkipButton = new UIEntity(game, uiElements, pos, buttonAnimationData);
+        var skipButtonSprite = AssetManager.GetTexture("skip_button");
+        var pos = new Vector2(game.NativeScreenWidth - skipButtonSprite.Width - 4, 50);
+        waveCooldownSkipButton = new UIEntity(game, uiElements, pos, skipButtonSprite);
         waveCooldownSkipButton.ButtonPressed += () =>
         {
             WaveSystem.SkipWaveCooldown();
             SoundSystem.PlaySound("menuClick");
         };
-
-        waveCooldownSkipText = new UIEntity(game, uiElements, pixelsixFont, "Skip");
-        var skipTextSize = pixelsixFont.MeasureString("Skip");
-        waveCooldownSkipText.SetPosition(waveCooldownSkipButton.Position + waveCooldownSkipButton.Size / 2
-            - skipTextSize / 2);
     }
 
     private void HideWaveCooldownSkipButton()
@@ -577,9 +551,7 @@ public class UIComponent : DrawableGameComponent
         if (waveCooldownSkipButton is null) return;
 
         waveCooldownSkipButton.Destroy();
-        waveCooldownSkipText.Destroy();
         waveCooldownSkipButton = null;
-        waveCooldownSkipText = null;
     }
 
     private void OnMortarStartTargeting(Entity mortar)
