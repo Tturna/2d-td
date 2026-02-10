@@ -3,21 +3,69 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "zone1quarrylevel.tmx",
+    "activeFile": "zone 3/zone3rubblelevel.tmx",
     "expandedProjectPaths": [
-        "."
+        ".",
+        "zone2",
+        "zone1",
+        "zone 3"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
             "scaleInDock": 1
         },
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone3.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 11
+        },
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone4.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
+        },
         "backgroundtiles.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 8
+        },
+        "bgtiles_darkblue.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 1
+        },
+        "bgtiles_darkgreen.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
         },
         "groundtiles_zone1.tsx": {
             "scaleInDock": 3,
             "scaleInEditor": 11
+        },
+        "groundtiles_zone2.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 8
+        },
+        "groundtiles_zone2test.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
+        },
+        "groundtiles_zone3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 16
+        },
+        "zone 3/zone3buildinglevel.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 590.5,
+                "y": 101.5
+            }
+        },
+        "zone 3/zone3rubblelevel.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 451.66666666666674,
+                "y": -14.333333333333371
+            }
         },
         "zone1/backgroundtiles.tsx": {
             "dynamicWrapping": true,
@@ -28,34 +76,42 @@
         },
         "zone1/zone1flatlevel.tmx": {
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 422.75,
-                "y": 44.25
+                "x": 493.75,
+                "y": 58.25
             }
         },
         "zone1/zone1hillslevel.tmx": {
-            "scale": 2.3275,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 399.78517722878627,
-                "y": 181.95488721804514
+                "x": 403.66666666666674,
+                "y": 33.66666666666663
             }
         },
         "zone1/zone1quarrylevel.tmx": {
-            "scale": 2.3275,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 399.78517722878627,
-                "y": 59.93555316863592
+                "x": 470.33333333333326,
+                "y": 232.99999999999997
             }
         },
         "zone1/zone1tunnellevel.tmx": {
-            "scale": 3,
-            "selectedLayer": 1,
+            "scale": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 324.1666666666667,
-                "y": 185.16666666666669
+                "x": 355.75,
+                "y": 146.75
+            }
+        },
+        "zone1/zone2mountainlevel.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 447.66666666666674,
+                "y": 155.66666666666663
             }
         },
         "zone1quarrylevel.tmx": {
@@ -65,9 +121,41 @@
                 "x": 395.75,
                 "y": 122.25
             }
+        },
+        "zone2/zone2baselevel.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 379.66666666666674,
+                "y": 95
+            }
+        },
+        "zone2/zone2flatlevel.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 653.5,
+                "y": 65.5
+            }
+        },
+        "zone2/zone2slopelevel.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 396.5,
+                "y": 196.5
+            }
+        },
+        "zone2/zone2tunnellevel.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 453.5,
+                "y": 397.5
+            }
         }
     },
-    "last.exportedFilePath": "C:/Users/leoti/General/2d-td/LevelFiles/zone1",
+    "last.exportedFilePath": "C:/Users/leoti/General/2d-td/LevelFiles/zone 3/Exports",
     "last.externalTilesetPath": "C:/Users/leoti/General/2d-td/LevelFiles",
     "last.imagePath": "C:/Users/leoti/General/2d-td/Content/sprites/Tiles",
     "map.lastUsedExportFilter": "All Files (*)",
@@ -76,14 +164,31 @@
     "map.tileWidth": 8,
     "map.width": 100,
     "openFiles": [
-        "zone1quarrylevel.tmx",
-        "groundtiles_zone1.tsx"
+        "groundtiles_zone1.tsx",
+        "groundtiles_zone2.tsx",
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone3.tsx",
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone4.tsx",
+        "bgtiles_darkblue.tsx",
+        "bgtiles_darkgreen.tsx",
+        "zone2/zone2slopelevel.tmx",
+        "zone2/zone2baselevel.tmx",
+        "zone2/zone2tunnellevel.tmx",
+        "zone 3/zone3rubblelevel.tmx"
     ],
     "project": "2dtdlevels.tiled-project",
     "recentFiles": [
-        "zone1quarrylevel.tmx",
-        "zone1/zone1quarrylevel.tmx",
-        "groundtiles_zone1.tsx"
+        "groundtiles_zone1.tsx",
+        "groundtiles_zone2.tsx",
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone3.tsx",
+        "C:/Users/leoti/General/2d-td/Content/sprites/Tiles/groundtiles_zone4.tsx",
+        "bgtiles_darkblue.tsx",
+        "bgtiles_darkgreen.tsx",
+        "zone2/zone2slopelevel.tmx",
+        "zone2/zone2baselevel.tmx",
+        "zone2/zone2tunnellevel.tmx",
+        "zone 3/zone3rubblelevel.tmx",
+        "zone 3/zone3buildinglevel.tmx",
+        "zone2/zone2flatlevel.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
