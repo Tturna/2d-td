@@ -26,7 +26,7 @@ public static class CurrencyManager
 
     public static void Initialize()
     {
-        Balance = 80;
+        Balance = 80 + 50 * (Game1.Instance.CurrentZone - 1);
 
         tilePriceMap = new()
         {

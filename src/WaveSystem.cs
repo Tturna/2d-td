@@ -218,15 +218,13 @@ public static class WaveSystem
 
     private static void SpawnFormation(Formation formation)
     {
-        int positionIndex = 1;
+        int positionIndex = 0;
 
         float leftXBound = game.Terrain.GetPlayableTerrainBounds().Item1.X;
 
-        Console.WriteLine("Left x bound: " + leftXBound);
-
         foreach (var spawner in formation.enemies)
         {
-            spawner?.Invoke(game, new Vector2(positionIndex * 10, 400));// - leftXBound
+            spawner?.Invoke(game, new Vector2(positionIndex * 10 - 75 + leftXBound, 400));
             positionIndex++;
         }
     }
