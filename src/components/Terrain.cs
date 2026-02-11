@@ -61,11 +61,12 @@ public class Terrain : DrawableGameComponent
             throw new ArgumentException("Level can't be less than 1", nameof(level));
         }
 
-        var levelName = $"zone{zone}level{level}";
+        var levelName = $"zone{zone}_level{level}";
+        var folderName = $"zone{zone}level{level}";
         LevelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
-            "data", "levels", levelName, $"{levelName}.csv");
+            "data", "levels", folderName, $"{levelName}.csv");
         BgLevelPath = Path.Combine(AppContext.BaseDirectory, game.Content.RootDirectory,
-            "data", "levels", levelName, $"{levelName}_bg.csv");
+            "data", "levels", folderName, $"{levelName}_bg.csv");
 
         TerrainTileset = new Tileset(AssetManager.GetTexture(tilesetName), tilesetWidth, tilesetHeight);
         BackgroundTileset = new Tileset(AssetManager.GetTexture(bgTilesetName), bgTilesetWidth, bgTilesetHeight);

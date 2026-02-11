@@ -70,9 +70,9 @@ public static class DebugUtility
             EnemySystem.SpawnNodeEnemy(game, InputSystem.GetMouseWorldPosition());
         }
 
-        if (InputSystem.IsKeyTapped(Keys.F))
+        if (InputSystem.IsKeyTapped(Keys.S))
         {
-            //Game1.Instance.Terrain.PlaceLightTileAt(InputSystem.GetMouseWorldPosition(),1);
+            WaveSystem.SkipWaveCooldown();
         }
         if (InputSystem.IsKeyTapped(Keys.G))
         {
